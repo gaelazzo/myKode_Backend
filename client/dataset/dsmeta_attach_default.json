@@ -1,0 +1,114 @@
+{
+  "name": "attach_default",
+  "relations": {},
+  "tables": {
+    "attach": {
+      "name": "attach",
+      "key": "idattach",
+      "columns": {
+        "idattach": {
+          "caption": "idattach",
+          "name": "idattach",
+          "ctype": "Int32",
+          "allowDbNull": false,
+          "isDenyNull": true,
+          "isDenyZero": false,
+          "format": "",
+          "forPosting": "idattach"
+        },
+        "attachment": {
+          "caption": "attachment",
+          "name": "attachment",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "format": "",
+          "forPosting": "attachment"
+        },
+        "filename": {
+          "caption": "filename",
+          "name": "filename",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "format": "",
+          "forPosting": "filename"
+        },
+        "hash": {
+          "caption": "hash",
+          "name": "hash",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "format": "",
+          "forPosting": "hash"
+        },
+        "size": {
+          "caption": "size",
+          "name": "size",
+          "ctype": "Int32",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "format": "",
+          "forPosting": "size"
+        },
+        "ct": {
+          "caption": "ct",
+          "name": "ct",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ct"
+        },
+        "cu": {
+          "caption": "cu",
+          "name": "cu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "cu"
+        },
+        "lt": {
+          "caption": "lt",
+          "name": "lt",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lt"
+        },
+        "lu": {
+          "caption": "lu",
+          "name": "lu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lu"
+        }
+      },
+      "rows": [],
+      "tableForReading": "attach",
+      "tableForWriting": "attach",
+      "isCached": null,
+      "isTemporaryTable": false,
+      "autoIncrementColumns": {},
+      "staticFilter": null,
+      "skipSecurity": false,
+      "skipInsertCopy": false,
+      "realTable": "",
+      "viewTable": "",
+      "denyClear": null,
+      "defaults": {
+        "idattach": 0
+      },
+      "orderBy": null
+    }
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "name": "customuser_test",
+  "relations": {
+    "customuser_customusergroup": {
+      "parentTable": "customuser",
+      "parentCols": "idcustomuser",
+      "childTable": "customusergroup",
+      "childCols": "idcustomuser"
+    }
+  },
+  "tables": {
+    "customuser": {
+      "name": "customuser",
+      "key": "idcustomuser",
+      "columns": {
+        "idcustomuser": {
+          "caption": "Codice utente",
+          "name": "idcustomuser",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": true,
+          "isDenyZero": false,
+          "maxstringlen": 50,
+          "format": "",
+          "sqltype": "varchar",
+          "forPosting": "idcustomuser"
+        },
+        "ct": {
+          "caption": "data creazione",
+          "name": "ct",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "format": "",
+          "sqltype": "datetime",
+          "forPosting": "ct"
+        },
+        "cu": {
+          "caption": "nome utente creazione",
+          "name": "cu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "maxstringlen": 64,
+          "format": "",
+          "sqltype": "varchar",
+          "forPosting": "cu"
+        },
+        "lt": {
+          "caption": "data ultima modifica",
+          "name": "lt",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "format": "",
+          "sqltype": "datetime",
+          "forPosting": "lt"
+        },
+        "lu": {
+          "caption": "nome ultimo utente modifica",
+          "name": "lu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "maxstringlen": 64,
+          "format": "",
+          "sqltype": "varchar",
+          "forPosting": "lu"
+        },
+        "username": {
+          "caption": "Nome utente",
+          "name": "username",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": true,
+          "isDenyZero": false,
+          "maxstringlen": 50,
+          "format": "",
+          "sqltype": "varchar",
+          "forPosting": "username"
+        }
+      },
+      "rows": [],
+      "tableForReading": "customuser",
+      "tableForWriting": "customuser",
+      "isCached": null,
+      "isTemporaryTable": false,
+      "autoIncrementColumns": {},
+      "staticFilter": null,
+      "skipSecurity": false,
+      "skipInsertCopy": false,
+      "realTable": "",
+      "viewTable": "",
+      "denyClear": null,
+      "defaults": {
+        "idcustomuser": null,
+        "ct": "2021-10-11T09:45:49.635Z",
+        "cu": "-",
+        "lt": "2021-10-11T09:45:49.635Z",
+        "lu": "-",
+        "username": null
+      },
+      "orderBy": null
+    },
+    "customgroup": {
+      "name": "customgroup",
+      "key": "idcustomgroup",
+      "columns": {
+        "ct": {
+          "caption": "ct",
+          "name": "ct",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ct"
+        },
+        "cu": {
+          "caption": "cu",
+          "name": "cu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "cu"
+        },
+        "lt": {
+          "caption": "lt",
+          "name": "lt",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lt"
+        },
+        "lu": {
+          "caption": "lu",
+          "name": "lu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lu"
+        },
+        "idcustomgroup": {
+          "caption": "idcustomgroup",
+          "name": "idcustomgroup",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idcustomgroup"
+        },
+        "description": {
+          "caption": "description",
+          "name": "description",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "description"
+        },
+        "groupname": {
+          "caption": "groupname",
+          "name": "groupname",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "groupname"
+        }
+      },
+      "rows": [],
+      "tableForReading": "customgroup",
+      "tableForWriting": "customgroup",
+      "isCached": null,
+      "isTemporaryTable": false,
+      "autoIncrementColumns": {},
+      "staticFilter": null,
+      "skipSecurity": false,
+      "skipInsertCopy": false,
+      "realTable": "",
+      "viewTable": "",
+      "denyClear": null,
+      "defaults": {
+        "ct": null,
+        "cu": null,
+        "lt": null,
+        "lu": null,
+        "idcustomgroup": null,
+        "description": null,
+        "groupname": null
+      },
+      "orderBy": null
+    },
+    "customusergroup": {
+      "name": "customusergroup",
+      "key": "idcustomgroup,idcustomuser",
+      "columns": {
+        "idcustomuser": {
+          "caption": "idcustomuser",
+          "name": "idcustomuser",
+          "ctype": "String",
+          "allowDbNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idcustomuser"
+        },
+        "ct": {
+          "caption": "ct",
+          "name": "ct",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ct"
+        },
+        "cu": {
+          "caption": "cu",
+          "name": "cu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "cu"
+        },
+        "lt": {
+          "caption": "lt",
+          "name": "lt",
+          "ctype": "DateTime",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lt"
+        },
+        "lu": {
+          "caption": "lu",
+          "name": "lu",
+          "ctype": "String",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lu"
+        },
+        "idcustomgroup": {
+          "caption": "idcustomgroup",
+          "name": "idcustomgroup",
+          "ctype": "String",
+          "allowDbNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idcustomgroup"
+        }
+      },
+      "rows": [],
+      "tableForReading": "customusergroup",
+      "tableForWriting": "customusergroup",
+      "isCached": null,
+      "isTemporaryTable": false,
+      "autoIncrementColumns": {},
+      "staticFilter": null,
+      "skipSecurity": false,
+      "skipInsertCopy": false,
+      "realTable": "",
+      "viewTable": "",
+      "denyClear": null,
+      "defaults": {
+        "idcustomuser": null,
+        "ct": null,
+        "cu": null,
+        "lt": null,
+        "lu": null,
+        "idcustomgroup": null
+      },
+      "orderBy": null
+    }
+  }
+}

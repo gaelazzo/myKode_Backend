@@ -1,0 +1,5 @@
+{ "server": "localhost",
+  "dbName": "test",
+  "user": "user1",
+  "pwd": "user1user1"
+}

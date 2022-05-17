@@ -1,0 +1,51 @@
+{
+  "name": "attach_counter",
+  "relations": {},
+  "tables": {
+    "attach": {
+      "name": "attach",
+      "key": "idattach",
+      "columns": {
+        "idattach": {
+          "caption": "idattach",
+          "name": "idattach",
+          "ctype": "Int32",
+          "allowDbNull": false,
+          "isDenyNull": true,
+          "isDenyZero": false,
+          "format": "",
+          "sqltype": "int",
+          "forPosting": "idattach"
+        },
+        "counter": {
+          "caption": "counter",
+          "name": "counter",
+          "ctype": "Int32",
+          "allowDbNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "format": "",
+          "sqltype": "int",
+          "forPosting": "counter"
+        }
+      },
+      "rows": [],
+      "tableForReading": "attach",
+      "tableForWriting": "attach",
+      "isCached": null,
+      "isTemporaryTable": false,
+      "autoIncrementColumns": {},
+      "staticFilter": null,
+      "skipSecurity": false,
+      "skipInsertCopy": false,
+      "realTable": "",
+      "viewTable": "",
+      "denyClear": null,
+      "defaults": {
+        "idattach": 0,
+        "counter": null
+      },
+      "orderBy": null
+    }
+  }
+}

@@ -1,0 +1,271 @@
+const {JsDataQueryParser: parser} = require("../../src/jsDataQueryParser");
+const q = require("jsDataQuery");
+const DBList = require("./../../src/jsDbList");
+const jsPassword = require("./../../src/jsPassword");
+const dblogger = require("./_dbLogger");
+const jsToken = require("./../../src/jsToken");
+const jsDataSet = require("jsDataSet");
+const {CType} = require("jsDataSet");
+
+/**
+ *
+ * @param {Environment} env
+ */
+function serializeUsr(env){
+    return env.enumUsr().reduce((res, k) => {
+        let val = env.usr(k);
+        if (k.startsWith("cond_sor")){
+            const sqlFun = parser.from(val);
+            if (sqlFun === null){
+                res[k] = sqlFun;
+            } else {
+                res[k] = JSON.stringify(q.toObject(sqlFun));
+            }
+        } else {
+            res[k] = Array.isArray(val) ? val.join(',') : val;
+        }
+        return res;
+    }, {})
+}
+
+/**
+ *
+ * @param {Environment} env
+ */
+function serializeSys(env){
+    // COMMENTATO PER RAGIONI DI SICUREZZA NON INVIO LE SYS
+    return {};
+}
+
+
+/**
+ *
+ * @param {Context} ctx
+ * @param {string} userName
+ * @param {string} password
+ * @param {Date} accountDate
+ * @param {userName:string, name:string,surname:string,email:string,cf:string, createdAt:date} sessionInfoSSO
+ * @param {int} userkind
+ * @param {Request} req
+ * @param {Response} res
+ * @return {Promise<void>}
+ * @private
+ */
+async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  userkind, req, res){
+    let dbInfo = DBList.getDbInfo(ctx.dbCode);
+    let codeDip= dbInfo.DBDipartimento;
+    let env = ctx.environment;
+    env.sys("idcustomuser",null);
+    let filter = q.and(q.eq("username",userName),
+        q.eq("codicedipartimento",codeDip),
+        q.eq("userkind",userkind));
+
+    let sys_user;
+    try {
+        //dt is an array of rows with a name
+        let data =  await ctx.dataAccess.select({tableName:"virtualuser",filter: filter});
+
+        if (data.length!==0 ){
+            let vUser = data[0];
+            sys_user = vUser["sys_user"];
+            ctx.dataAccess.externalUser = userName;
+            env.usr("externalUser",userName);
+            env.usr("HasVirtualUser","S");
+            env.usr("user",vUser["sys_user"]);
+            env.usr("usergrouplist",null);
+            env.usr("forename",vUser["forename"]);
+            env.usr("surname",vUser["surname"]);
+            env.usr("email",vUser["email"]);
+            env.usr("cf",vUser["cf"]);
+        }
+        else {
+            // NON linked to an external user
+            env.usr("user",userName);
+            env.usr("usergrouplist",null);
+        }
+    }
+    catch (err){
+        sys_user = userName;
+        ctx.dataAccess.externalUser = userName;
+        env.usr("user",userName);
+        env.usr("usergrouplist",null);
+    }
+    //evaluates idcustomuser
+    await env.getCustomUser(ctx.dataAccess);
+    if (!await dataAllowed(ctx, accountDate)){
+        res.send(401,"Date Not Allowed");
+        return ;
+    }
+
+    let registryreference =   await ctx.dataAccess.select({tableName:"registryreference",
+        filter: q.eq("userweb",userName)});
+
+    if (registryreference.length===0){
+        if (dbInfo.EnableSSORegistration && sessionInfoSSO){
+            // registration is requested
+            res.status(301).json({
+                login:sessionInfoSSO.userName,
+                forename:sessionInfoSSO.name,
+                surname:sessionInfoSSO.surname,
+                email:sessionInfoSSO.email,
+                cf:sessionInfoSSO.cf
+            });
+            return;
+        }
+        res.send(401,"Bad credentials");
+        return ;
+    }
+
+    let referenceRow = registryreference[0];
+    let email = referenceRow["email"];
+
+    // se non si tratta di SSO verifico la password
+    if (!sessionInfoSSO){
+        let iterations = referenceRow["iterweb"];
+        if (!iterations){
+            res.send(401,"Bad Credential");
+            return ;
+        }
+        //i bytearray sono convertiti in string da EdgeCompiler.cs tramite Convert.ToBase64String ((byte[])value)
+        // quindi � necessario riconvertirli in buffer come segue
+        let salt= new Buffer(referenceRow["saltweb"],"base64");
+        let hash = new Buffer(referenceRow["passwordweb"],"base64");
+
+        if (! await  jsPassword.verify(password, salt, hash, iterations)){
+            return res.send(401,"Bad credentials");
+        }
+    }
+
+
+    let idreg = referenceRow["idreg"];
+    let title = await ctx.dataAccess.doReadValue({
+        tableName:"registry",
+        filter: q.eq("idreg",idreg),
+        expr:"title"
+    });
+
+    await env.getGroupList(ctx.dataAccess);
+    let idflowchart = env.sys("idflowchart");
+    let ndetail = env.sys("ndetail");
+
+    //modify environment "in place" so it is already in the cache
+    await env.calcUserEnvironment(ctx.dataAccess);
+
+    // assure user is under security rules
+    if (!env.sys("idflowchart")  || ! env.sys("ndetail")){
+        await dblogger({error:"user not in security",
+            methodInfo:"login",
+            metadata:"esercizio:"+env.sys("esercizio")+", sys_user = "+sys_user+
+                ", idcustomuser:"+env.sys("idcustomuser")+
+                ", userName: "+userName
+        });
+        res.send(401,"User not in security");
+        return;
+    }
+
+    env.usr("userweb", userName);
+    env.usr("idreg",idreg);
+
+    let roles = await getRoles(today(),env.sys("idcustomuser"));
+
+    //modify temporary identity
+    let identity = ctx.identity;
+    identity.title = title;
+    identity.name = userName;
+    identity.email = email;
+    identity.idflowchart = idflowchart;
+    identity.ndetail = ndetail;
+    identity.isAnonymous = false;
+    //identity.sessionguid = ctx.identity.sessionID() already set
+
+    let token = new jsToken.Token(req,identity);
+
+    res.send({
+        usr: serializeUsr(env),
+        sys: serializeSys(env),
+        token: token.getToken(),
+        dtRoles:roles.serialize(),
+        expiresOn:identity.expiresOn
+    });
+
+
+
+}
+
+
+
+/**
+ *
+ * @param {Date}aDate
+ * @param {string}idCustomUser
+ * @param {Context}ctx
+ * @return {Promise<DataTable>}
+ */
+async function getRoles(aDate,idCustomUser, ctx){
+    let roles = await ctx.dataAccess.callSP("compute_roles",[aDate,idCustomUser])[0];
+    let t = new jsDataSet.DataTable("roles");
+    t.setDataColumn("idflowchart",CType.string);
+    t.setDataColumn("title",CType.string);
+    t.setDataColumn("ndetail",CType.int);
+    t.setDataColumn("k",CType.string);
+    t.key("k");
+    return  t;
+}
+
+/**
+ *
+ * @param ctx
+ * @param {Date} newDate
+ * @return {boolean}
+ * @constructor
+ */
+async function dataAllowed(ctx, newDate) {
+    let idcustomuser = ctx.environment.sys("idcustomuser");
+    if (!idcustomuser) return true;
+    // if(await  ctx.dataAccess.selectCount({tableName:"flowchartuser",
+    //                                             filter: q.eq("idcustomuser",idcustomuser)})===0){
+    //     return  true; //fuori dall'organigramma
+    // }
+    let ayearStr = newDate.getFullYear().toString();
+
+
+    let filterDateYear = q.and(q.eq("idcustomuser",idcustomuser),
+        q.like(ayearStr.substr(2)+"%"),
+        q.isNullOrLe("start",newDate),
+        q.isNullOrGe("stop",newDate)
+    );
+    if (await  ctx.dataAccess.selectCount({tableName:"flowchartuser",
+        filter: filterDateYear
+    })===0){
+        return  false;
+    }
+
+
+    let filterDateToday = q.and(q.eq("idcustomuser",idcustomuser),
+        q.like(ayearStr.substr(2)+"%"),
+        q.isNullOrLe("start",today()),
+        q.isNullOrGe("stop",today())
+    );
+    return await ctx.dataAccess.selectCount({
+        tableName: "flowchartuser",
+        filter: filterDateToday
+    }) !== 0;
+
+}
+
+/**
+ * Evaluates date part of current date
+ * @return {Date}
+ */
+function today(){
+    let d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
+
+module.exports = {
+    serializeUsr:serializeUsr,
+    serializeSys:serializeSys,
+    _doLogin:_doLogin,
+    today:today
+};
