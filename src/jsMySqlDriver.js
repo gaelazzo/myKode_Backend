@@ -5,7 +5,7 @@
  * @type {defer}
  */
 const defer     = require("JQDeferred");
-const CType = require("jsDataSet").CType;
+const CType = require("./../client/components/metadata/jsDataSet").CType;
 let  _         = require('lodash');
 let formatter = require('./jsSqlServerFormatter').jsSqlServerFormatter;
 let edge      = require('edge-js');

@@ -1,6 +1,6 @@
 let anonymousPermissions = require("../../config/anonymousPermissions");
 let jsToken = require("../../src/jsToken");
-let DataSet = require("jsDataSet");
+let DataSet = require("./../../client/components/metadata/jsDataSet");
 
 /**
  * Checks if anonymmous policies are satisfied by the request

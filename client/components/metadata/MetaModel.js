@@ -1,6 +1,5 @@
 ﻿/*globals ObjectRow,DataRelation,define,self,jsDataSet,jsDataQuery,sqlFun */
-const _ = require("lodash");
-const {jsDataQuery: q} = require("jsDataQuery");
+
 /**
  * @module MetaModel
  * @description
@@ -757,12 +756,10 @@ const {jsDataQuery: q} = require("jsDataQuery");
 			if (!ctype) {
 				return false;
 			}
-			return (ctype === "Decimal" ||
-				ctype === "Double" ||
-				ctype === "Single" ||
-				ctype === "Int16" ||
-				ctype === "Int32" ||
-				ctype === "Int64");
+			const CType = jsDataSet.CType;
+
+			return (ctype ===  CType.number  ||
+				ctype === CType.int);
 		},
 
         /**
@@ -1637,7 +1634,7 @@ const {jsDataQuery: q} = require("jsDataQuery");
 
 	//window.appMeta.metaModel = new MetaModel();
 }.call(this,
-	(typeof jsDataSet === 'undefined') ? require('jsDataSet') : jsDataSet,
-	(typeof jsDataQuery === 'undefined') ? require('jsDataQuery') : jsDataQuery,
+	(typeof jsDataSet === 'undefined') ? require('./jsDataSet') : jsDataSet,
+	(typeof jsDataQuery === 'undefined') ? require('./jsDataQuery') : jsDataQuery,
 	(typeof _ === 'undefined') ? require('lodash') : _,
 	) );

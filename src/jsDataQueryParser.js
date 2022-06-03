@@ -1,5 +1,5 @@
 /*globals Context,sqlFun,DataRelation,ObjectRow  */
-const q = require('jsDataQuery');
+const q = require('./../client/components/metadata/jsDataQuery');
 const _ = require('lodash');
 
 /**

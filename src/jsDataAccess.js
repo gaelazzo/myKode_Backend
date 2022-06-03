@@ -6,7 +6,7 @@
  * provides facilities to access a database without knowing exactly the database type or implementation details
  * @module DataAccess
  */
-const jsDataSet = require('jsDataSet'),
+const jsDataSet = require('./../client/components/metadata/jsDataSet'),
     DataTable = jsDataSet.DataTable;
 
 /**
@@ -23,7 +23,7 @@ const {type} = require("JQDeferred/lib/jquery");
  * @private
  * @property {jsDataQuery} $dq
  */
-const $dq = require('jsDataQuery').jsDataQuery;
+const $dq = require('./../client/components/metadata/jsDataQuery').jsDataQuery;
 
 /**
  *
@@ -1000,7 +1000,7 @@ DataAccess.prototype.multiSelect = function (options) {
     }
 
     const selList = multiSelect.groupSelect(options.selectList),
-        opt = _.defaults(options, {applySecurity: true, filter: null, packetSize: 0}),
+        opt = _.defaults(options, {applySecurity: true, filter: null, packetSize: 0, raw:false}),
         that = this;
 
     // gets the security filter for each Select in the list
@@ -1266,9 +1266,13 @@ function doMultiSelect(conn, packetSize, cmd, aliasList, raw) {
     }
     conn.queryPackets(cmd, raw, packetSize)
         .progress(function (r) {
-            if (r.meta) {
+            if (r.meta) { //can only be received when raw is true
                 currTableInfo.meta = r.meta;
                 currTableInfo.tableName = aliasList[r.set];
+                // se raw=true deve notificare il pacchetto altrimenti non notifica nulla??
+                if (raw){
+                    notifyPacket(r);
+                }
             } else {
                 notifyPacket(r);
             }

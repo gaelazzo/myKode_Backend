@@ -4,7 +4,7 @@
 console.log("running jsMySqlDriverSpec");
 
 
-const  $dq = require("jsDataQuery");
+const  $dq = require("../../client/components/metadata/jsDataQuery");
 const _ = require("lodash");
 
 const fs = require("fs");
@@ -192,7 +192,7 @@ describe('MySqlDriver ', function () {
 
 
         it('set transaction isolation level should call queryBatch', function (done) {
-            spyOn(sqlConn, 'queryBatch').andCallThrough();
+            spyOn(sqlConn, 'queryBatch').and.callThrough();
             sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted)
                 .done(function () {
                     expect(sqlConn.queryBatch).toHaveBeenCalled();
@@ -205,23 +205,23 @@ describe('MySqlDriver ', function () {
         });
 
         it('consecutive set transaction with same isolation level should not call queryBatch', function (done) {
-            spyOn(sqlConn, 'queryBatch').andCallThrough();
-            expect(sqlConn.queryBatch.callCount).toEqual(0);
+            spyOn(sqlConn, 'queryBatch').and.callThrough();
+            expect(sqlConn.queryBatch.calls.count()).toEqual(0);
             sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted)
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(1);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(1);
                     return sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted);
                 })
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(1);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(1);
                     return sqlConn.setTransactionIsolationLevel(IsolationLevel.repeatableRead);
                 })
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(2);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(2);
                     return sqlConn.setTransactionIsolationLevel(IsolationLevel.repeatableRead);
                 })
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(2);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(2);
                     done();
                 })
                 .fail(function (err) {

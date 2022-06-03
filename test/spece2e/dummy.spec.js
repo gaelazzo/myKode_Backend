@@ -29,7 +29,7 @@ describe('jsbackend core',
                     done();
                 }
             };
-            jQuery.ajax(options)
+            jQuery.ajax(options);
 
         }, 100000);
 });

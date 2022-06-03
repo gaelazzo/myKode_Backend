@@ -1,6 +1,6 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler'); //https://zellwk.com/blog/async-await-express/
-const q = require("jsDataQuery");
+const q = require("./../../client/components/metadata/jsDataQuery");
 
 /**
  *

@@ -12,8 +12,9 @@ const EncryptedFile = require('./jsEncryptedFile');
  * {Deferred}
  */
 const Deferred = require("JQDeferred");
-const DataColumn = require("jsDataSet").DataColumn;
-const DataTable = require("jsDataSet").DataTable;
+
+const DataColumn = require("./../client/components/metadata/jsDataSet").DataColumn;
+const DataTable = require("./../client/components/metadata/jsDataSet").DataTable;
 const DataAccess = require("./jsDataAccess").DataAccess;
 const _ = require('lodash');
 

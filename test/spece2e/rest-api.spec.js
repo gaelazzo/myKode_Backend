@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
-const q = require('jsDataQuery');
-const jsDataSet = require("jsDataSet");
+const q = require('../../client/components/metadata/jsDataQuery');
+const jsDataSet = require("../../client/components/metadata/jsDataSet");
 
 
 const configName = path.join('config',  'dbList.json');

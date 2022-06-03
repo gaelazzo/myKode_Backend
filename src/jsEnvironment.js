@@ -1,6 +1,6 @@
 const Deferred = require("jQDeferred");
 const _ = require('lodash');
-const Q = require('jsDataQuery');
+const Q = require('./../client/components/metadata/jsDataQuery');
 
 /**
  *  Identity class is declared in jsToken. Identity must have name,idflowchart,ndetail set

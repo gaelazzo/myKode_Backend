@@ -1,11 +1,11 @@
 const {JsDataQueryParser: parser} = require("../../src/jsDataQueryParser");
-const q = require("jsDataQuery");
+const q = require("./../../client/components/metadata/jsDataQuery");
 const DBList = require("./../../src/jsDbList");
 const jsPassword = require("./../../src/jsPassword");
 const dblogger = require("./_dbLogger");
 const jsToken = require("./../../src/jsToken");
-const jsDataSet = require("jsDataSet");
-const {CType} = require("jsDataSet");
+const jsDataSet = require("./../../client/components/metadata/jsDataSet");
+const {CType} = require("./../../client/components/metadata/jsDataSet");
 
 /**
  *

@@ -16,8 +16,8 @@ const fs = require('fs');
  * @private
  * @type jsDataQuery
  */
-const $dq = require('jsDataQuery');
-const Deferred = require("jqDeferred");
+const $dq = require('./../../client/components/metadata/jsDataQuery');
+const Deferred = require("JQDeferred");
 
 /**
  * *****************************************************************************************
@@ -637,6 +637,8 @@ describe('dataAccess', function () {
             multiSel.push(new Select('*').from('customerkind'));
             const mSel = DAC.multiSelect({selectList: multiSel, raw: true});
             mSel.progress(function (r) {
+                //console.log("packet received");
+                //console.log(r);
                 tableCount += 1;
                 expect(r.rows).toEqual(jasmine.any(Array));
                 expect(r.meta).toEqual(jasmine.any(Array));
@@ -655,14 +657,13 @@ describe('dataAccess', function () {
                 expect(tables.A[0].idcustomer).toBeDefined();
                 expect(tables.B[0].idseller).toBeDefined();
                 expect(tables.customerkind[0].idcustomerkind).toBeDefined();
-
                 done();
             });
             mSel.fail(function (err) {
                 expect(err).toBeUndefined();
                 done();
             });
-        });
+        }, 10000);
 
         it('multiSelect should give tables with alias - packeting', function (done) {
             const multiSel = [];
@@ -718,9 +719,9 @@ describe('dataAccess', function () {
                     tableCount += 1;
                     tables[r.tableName] = [];
                 }
-                expect(r.rows).toEqual(jasmine.any(Array));
-                expect(r.meta).toEqual(jasmine.any(Array));
-                expect(r.rows.length).toBeLessThan(6);
+                if (r.rows) expect(r.rows).toEqual(jasmine.any(Array));
+                if (r.meta) expect(r.meta).toEqual(jasmine.any(Array));
+                if (r.rows) expect(r.rows.length).toBeLessThan(6);
                 expect(r.tableName).toEqual(jasmine.any(String));
                 tables[r.tableName] = tables[r.tableName].concat(DA.objectify(r.meta, r.rows));
             });

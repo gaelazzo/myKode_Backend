@@ -1,11 +1,13 @@
-console.log("running ApplicationAnonymousSpec");
 'use strict';
+
+console.log("running ApplicationAnonymousSpec");
+
 
 const path = require("path");
 const FormData = require('form-data');
 const fs = require("fs");
-const q = require('jsDataQuery');
-const jsDataSet = require("jsDataSet");
+const q = require('../../client/components/metadata/jsDataQuery');
+const jsDataSet = require("../../client/components/metadata/jsDataSet");
 const configName = path.join('config', 'dbList.json');
 const http = require("http");
 let request = require('request');

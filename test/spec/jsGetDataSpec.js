@@ -6,9 +6,9 @@
 
 console.log("running jsGetDataSpec");
 
-var getData = require('../../src/jsGetData'),
+const getData = require('../../src/jsGetData'),
     getContext = require('../data/GetData/fakeContext').getContext,
-    dq = require('jsDataQuery'),
+    dq = require('./../../client/components/metadata/jsDataQuery'),
     dataSetProvider = require('../data/GetData/fakeDataSetProvider'),
     _ = require('lodash'),
     fs = require('fs'),
@@ -131,7 +131,7 @@ describe('getData', function () {
     });
 
 
-    it('getFilterKey should filter key fields (multi key)',async function  (done) {
+    it('getFilterKey should filter key fields (multi key)',async function  () {
         //customerphone key  is idcustomer idphone
         try {
             let filter = await getData.getFilterKey(ctx, 'customerphone', {idcustomer: 3, idphone: 2, c: 3, a: 4});
@@ -147,27 +147,27 @@ describe('getData', function () {
             expect(res).toEqual([
                 {a: 5, idcustomer: 3, idphone: 2}
             ]);
-            done();
+            //done();
         }
         catch (err){
             expect(err).toBeUndefined();
             expect(true).toBeUndefined();
-            done();
+            //done();
         }
     });
 
-    it('fillDataSetByKey should fill a dataset (single table)', async function (done) {
+    it('fillDataSetByKey should fill a dataset (single table)', async function () {
         try {
             expect(dsCustomer.tables['customer'].rows.length).toBe(0);
             await getData.fillDataSetByKey(ctx, dsCustomer, dsCustomer.tables['customer'], {idcustomer: 10});
             expect(dsCustomer.tables['customer'].rows.length).toBe(1);
             expect(dsCustomer.tables['customer'].rows[0]['idcustomer']).toBe(10);
             expect(dsCustomer.tables['customer'].rows[0]['name']).toBe('name10');
-            done();
+            //done();
         }
         catch (err){
             expect(err).toBeUndefined();
-            done();
+            //done();
         }
     });
 
@@ -189,7 +189,7 @@ describe('getData', function () {
 
     it('fillDataSetByKey should call getStartingFrom)', function (done) {
         var dsSell = dataSetProvider('sell','default');
-        spyOn(getData, 'getStartingFrom').andCallThrough();
+        spyOn(getData, 'getStartingFrom').and.callThrough();
         getData.fillDataSetByKey(ctx, dsSell, dsSell.tables['sell'], {idsell:20})
             .done(function () {
                 expect(getData.getStartingFrom).toHaveBeenCalled();
@@ -203,7 +203,7 @@ describe('getData', function () {
 
     it('fillDataSetByKey should call getByKey)', function (done) {
         var dsSell = dataSetProvider('sell','default');
-        spyOn(getData, 'getByKey').andCallThrough();
+        spyOn(getData, 'getByKey').and.callThrough();
         getData.fillDataSetByKey(ctx, dsSell, dsSell.tables['sell'], {idsell:20})
             .done(function () {
                 expect(getData.getByKey).toHaveBeenCalled();
@@ -217,7 +217,7 @@ describe('getData', function () {
 
     it('fillDataSetByKey should call getStartingFrom)', function (done) {
         var dsSell = dataSetProvider('sell','default');
-        spyOn(getData, 'getStartingFrom').andCallThrough();
+        spyOn(getData, 'getStartingFrom').and.callThrough();
         getData.fillDataSetByKey(ctx, dsSell, dsSell.tables['sell'], {idsell:20})
             .done(function () {
                 expect(getData.getStartingFrom).toHaveBeenCalled();
@@ -231,11 +231,11 @@ describe('getData', function () {
 
     it('fillDataSetByKey should call getStartingFrom with given table filled)', function (done) {
         var dsSell = dataSetProvider('sell','default');
-        spyOn(getData, 'getStartingFrom').andCallThrough();
+        spyOn(getData, 'getStartingFrom').and.callThrough();
         getData.fillDataSetByKey(ctx, dsSell, dsSell.tables['sell'], {idsell:20})
             .done(function () {
-                expect(getData.getStartingFrom.calls[0].args[0]).toBe(ctx);
-                expect(getData.getStartingFrom.calls[0].args[1]).toBe(dsSell.tables['sell']);
+                expect(getData.getStartingFrom.calls.argsFor(0)[0]).toBe(ctx);
+                expect(getData.getStartingFrom.calls.argsFor(0)[1]).toBe(dsSell.tables['sell']);
                 done();
             })
             .fail(function (err) {
@@ -246,7 +246,7 @@ describe('getData', function () {
 
     it('fillDataSetByKey should call scanTables)', function (done) {
         var dsSell = dataSetProvider('sell', 'default');
-        spyOn(getData, 'scanTables').andCallThrough();
+        spyOn(getData, 'scanTables').and.callThrough();
         getData.fillDataSetByKey(ctx, dsSell, dsSell.tables['sell'], {idsell:20})
             .done(function () {
                 expect(getData.scanTables).toHaveBeenCalled();
@@ -354,11 +354,11 @@ describe('getData', function () {
 
     it('fillDataSetByFilter should call getParentRows on every single row read', function (done) {
         var dsSell = dataSetProvider('sell', 'default');
-        spyOn(getData, 'getParentRows').andCallThrough();
+        spyOn(getData, 'getParentRows').and.callThrough();
         getData.fillDataSetByFilter(ctx,  dsSell.tables['sell'], dq.eq('idsell', 6))
             .done(function () {
 
-                expect(getData.getParentRows.callCount).toEqual(
+                expect(getData.getParentRows.calls.count()).toEqual(
                     _.reduce(dsSell.tables, function (accumulator, t) {
                         accumulator += t.rows.length;
                         return accumulator;
@@ -375,11 +375,11 @@ describe('getData', function () {
 
     it('fillDataSetByFilter should call getAllChildRows on every not-empty table read', function (done) {
         var dsSell = dataSetProvider('sell', 'default');
-        spyOn(getData, 'getAllChildRows').andCallThrough();
+        spyOn(getData, 'getAllChildRows').and.callThrough();
         getData.fillDataSetByFilter(ctx, dsSell.tables['sell'], dq.eq('idsell', 13))
             .done(function () {
 
-                expect(getData.getAllChildRows.callCount).toEqual(
+                expect(getData.getAllChildRows.calls.count()).toEqual(
                     _.reduce(dsSell.tables, function (accumulator, t) {
                         if (t.rows.length > 0) {
                             accumulator += 1;

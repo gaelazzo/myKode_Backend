@@ -1,11 +1,11 @@
 const express = require('express');
 const  isAnonymousAllowed = require("../data/_AnonymousAllowed");
-const jsDataSet = require("jsDataSet");
+const jsDataSet = require("./../../client/components/metadata/jsDataSet");
 const _ = require("lodash");
 const asyncHandler = require('express-async-handler'); //https://zellwk.com/blog/async-await-express/
 const metaModel = require("./../../client/components/metadata/MetaModel");
 const attachUtils = require("./../../client/components/metadata/_attachmentutils");
-const {DataSet} = require("jsDataSet");
+const {DataSet} = require("./../../client/components/metadata/jsDataSet");
 const jsBusinessLogic =require("../../src/jsBusinessLogic");
 const {BusinessMessage} = require("../../src/jsBusinessLogic");
 

@@ -10,14 +10,11 @@ const PostData = require('../../src/jsPostData').PostData,
     BasicMessage = require('../../src/jsPostData').BasicMessage,
     MaxCacher = require('../../src/jsPostData').MaxCacher,
     IInnerPoster=require('../../src/jsPostData').IInnerPoster,
-    dsNameSpace = require('jsDataSet'),
-    dq = require('jsDataQuery'),
+    dsNameSpace = require('./../../client/components/metadata/jsDataSet'),
+    dq = require('./../../client/components/metadata/jsDataQuery'),
     DA = require('../../src/jsDataAccess');
 
-/**
- *
- * @type {Deferred}
- */
+
 const Deferred = require("JQDeferred");
 const Environment = require('../data/PostData/fakeEnvironment'),
     getContext  =  require('../data/PostData/fakeContext').getContext,
@@ -115,7 +112,7 @@ function createSet(t){
     return s;
 }
 
-describe('Deferred Chain', function (done) {
+describe('Deferred Chain', function () {
     it('chain should return the last resolve', function (done){
         let d1= new Deferred();
         let d2= new Deferred();
@@ -706,7 +703,7 @@ describe('PostData', function () {
                 ds = new DataSet('d'),
                 t = ds.newTable('operator'),
                 r = t.newRow({});
-            spyOn(DAC, 'readSingleValue').andCallFake(function () {
+            spyOn(DAC, 'readSingleValue').and.callFake(function () {
                 const def = Deferred().resolve(1);
                 return def.promise();
             });
@@ -733,18 +730,18 @@ describe('PostData', function () {
                     t = ds.newTable('operator'),
                     r = t.newRow({});
                 let n = 0;
-                spyOn(DAC, 'readSingleValue').andCallFake(function () {
+                spyOn(DAC, 'readSingleValue').and.callFake(function () {
                     const def = Deferred().resolve(++n);
                     return def.promise();
                 });
                 M.getMax(r, column, null, filter, expr)
                     .done(function (res) {
                         expect(res).toBe(1);
-                        expect(DAC.readSingleValue.callCount).toEqual(1);
+                        expect(DAC.readSingleValue.calls.count()).toEqual(1);
                         M.getMax(r, column, null, filter, expr)
                             .done(function (res) {
                                 expect(res).toBe(1);
-                                expect(DAC.readSingleValue.callCount).toEqual(1);
+                                expect(DAC.readSingleValue.calls.count()).toEqual(1);
                             })
                             .fail(function (err) {
                                 expect(err).toBeUndefined();
@@ -773,7 +770,7 @@ describe('PostData', function () {
             parent.key(['idparent']);
             t.key(['idoperator', 'idparent']);
             ds.newRelation('r', 'parent', ['idparent'], 'operator', ['idparent']);
-            spyOn(DAC, 'readSingleValue').andCallFake(function () {
+            spyOn(DAC, 'readSingleValue').and.callFake(function () {
                 const def = Deferred().resolve(1);
                 return def.promise();
             });
@@ -805,8 +802,8 @@ describe('PostData', function () {
             parent.key(['idparent']);
             t.key(['idoperator', 'idparent']);
             rel = ds.newRelation('r', 'parent', ['idparent'], 'operator', ['idparent']);
-            spyOn(rel, 'getParents').andCallThrough();
-            spyOn(DAC, 'readSingleValue').andCallFake(function () {
+            spyOn(rel, 'getParents').and.callThrough();
+            spyOn(DAC, 'readSingleValue').and.callFake(function () {
                 const def = Deferred().resolve(1);
                 return def.promise();
             });
@@ -838,17 +835,17 @@ describe('PostData', function () {
                 parent.key(['idparent']);
                 t.key(['idoperator', 'idparent']);
                 rel = ds.newRelation('r', 'parent', ['idparent'], 'operator', ['idparent']);
-                spyOn(rel, 'getParents').andCallThrough();
-                spyOn(DAC, 'readSingleValue').andCallFake(function () {
+                spyOn(rel, 'getParents').and.callThrough();
+                spyOn(DAC, 'readSingleValue').and.callFake(function () {
                     const def = Deferred().resolve(1);
                     return def.promise();
                 });
                 M.getMax(rChild, column, ['idparent'], filter, expr)
                     .done(function (res) {
-                        expect(rel.getParents.callCount).toEqual(1);
+                        expect(rel.getParents.calls.count()).toEqual(1);
                         M.getMax(rChild, column, ['idparent'], filter, expr)
                             .done(function (res) {
-                                expect(rel.getParents.callCount).toEqual(1);
+                                expect(rel.getParents.calls.count()).toEqual(1);
                                 done();
                             })
                             .fail(function (err) {
@@ -883,7 +880,7 @@ describe('PostData', function () {
                 //t.autoIncrement('noperator', {selector:['idparent']}); //not necessary for the test
                 rel = ds.newRelation('r', 'parent', ['idparent'], 'operator', ['idparent']);
                 const parRel = rel.getParentsFilter(rChild);
-                spyOn(DAC, 'readSingleValue').andCallFake(function () {
+                spyOn(DAC, 'readSingleValue').and.callFake(function () {
                     const def = Deferred().resolve(1);
                     return def.promise();
                 });
@@ -920,7 +917,7 @@ describe('PostData', function () {
                 //t.autoIncrement('noperator', {selector:['idparent']}); //not necessary for the test
                 rel = ds.newRelation('r', 'parent', ['idparent'], 'operator', ['idparent']);
                 const parRel = rel.getParentsFilter(rChild);
-                spyOn(DAC, 'readSingleValue').andCallFake(function () {
+                spyOn(DAC, 'readSingleValue').and.callFake(function () {
                     const def = Deferred().resolve(100);
                     return def.promise();
                 });
@@ -957,7 +954,7 @@ describe('PostData', function () {
                 //t.autoIncrement('noperator', {selector:['idparent']}); //not necessary for the test
                 rel = ds.newRelation('r', 'parent', ['idparent'], 'operator', ['idparent']);
                 const parRel = rel.getParentsFilter(rChild);
-                spyOn(DAC, 'readSingleValue').andCallFake(function () {
+                spyOn(DAC, 'readSingleValue').and.callFake(function () {
                     const def = Deferred().resolve(100);
                     return def.promise();
                 });
@@ -1020,7 +1017,7 @@ describe('PostData', function () {
                     DAC = context.dataAccess;
                     ctx = context;
                     env= ctx.environment;
-                    spyOn(DAC, 'close').andCallThrough();
+                    spyOn(DAC, 'close').and.callThrough();
                     postData = new PostData();
                     postData.init(d,ctx).then(()=>{
                         done();
@@ -1065,7 +1062,7 @@ describe('PostData', function () {
                 return def.promise();
             };
 
-            spyOn(postData, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
             expect(postData.getChecks).not.toHaveBeenCalled();
 
             postData.doPost( opt)
@@ -1093,7 +1090,7 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(postData, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
@@ -1116,7 +1113,7 @@ describe('PostData', function () {
                     }
                 };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -1126,9 +1123,9 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
@@ -1154,7 +1151,7 @@ describe('PostData', function () {
                     return def.promise();
                 }
             };
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -1163,8 +1160,8 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -1188,7 +1185,7 @@ describe('PostData', function () {
                     throw "Exception threw on purpose";
                 }
             };
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
 
                 const def = Deferred();
                 def.resolve();
@@ -1198,9 +1195,9 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -1224,7 +1221,7 @@ describe('PostData', function () {
             postData.allPost[0].businessLogic ={
                 getChecks: function (res, conn,  post) {
                     const def = Deferred();
-                    res.addWarning("code"+errNum);
+                    res.addWarning("code"+errNum, post);
                     errNum += 1;
                     def.resolve(res);
                     return def.promise();
@@ -1234,8 +1231,8 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'rollback').andCallThrough();
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(DAC, 'rollback').and.callThrough();
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -1247,7 +1244,9 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     expect(postData.allPost[0].physicalPostBatch).toHaveBeenCalled();
-                    expect(res.checks).toContain( new BasicMessage("code12",true));
+                    let warn12 = new BasicMessage("code12",true);
+                    warn12.post=false;
+                    expect(res.checks).toContain(warn12 );
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
                     expect(DAC.isOpen).toBeFalsy();
@@ -1262,21 +1261,21 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
-            spyOn(postData.allPost[0], 'log').andCallThrough();
-           spyOn(DAC, 'commit').andCallThrough();
+            spyOn(postData.allPost[0], 'log').and.callThrough();
+           spyOn(DAC, 'commit').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.allPost[0].log.callCount).toBe(1);
+                    expect(postData.allPost[0].log.calls.count()).toBe(1);
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.commit).toHaveBeenCalled();
                     expect(DAC.isOpen).toBeFalsy();
@@ -1309,22 +1308,22 @@ describe('PostData', function () {
 
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postData.allPost[0], 'log').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postData.allPost[0], 'log').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.getChecks.callCount).toBe(1);
-                    expect(postData.allPost[0].log.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
+                    expect(postData.allPost[0].log.calls.count()).toBe(1);
                     expect(res.checks.find(c=>c.msg==="log reject" &&  c.canIgnore===false)).toBeDefined();
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
@@ -1356,22 +1355,22 @@ describe('PostData', function () {
 
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postData.allPost[0], 'log').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postData.allPost[0], 'log').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.getChecks.callCount).toBe(1);
-                    expect(postData.allPost[0].log.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
+                    expect(postData.allPost[0].log.calls.count()).toBe(1);
                     expect(res.checks.find(c=>c.msg==="Exception raised on purpose" &&  c.canIgnore===false)).toBeDefined();
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
@@ -1386,7 +1385,7 @@ describe('PostData', function () {
             postData.allPost[0].businessLogic ={
                 getChecks: function (res, conn,  post) {
                     const def = Deferred();
-                    res.addWarning("code"+errNum);
+                    res.addWarning("code"+errNum,post);
                     errNum += 1;
                     def.resolve(res);
                     return def.promise();
@@ -1398,14 +1397,14 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -1413,9 +1412,9 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(2);
-                    expect(res.checks).toContain( new BasicMessage("code12",true));
-                    expect(res.checks).toContain(new BasicMessage("code13",true));
+                    expect(postData.getChecks.calls.count()).toBe(2);
+                    expect(res.checks).toContain( _.extend(new BasicMessage("code12",true),{post:false}));
+                    expect(res.checks).toContain( _.extend(new BasicMessage("code13",true),{post:true}));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
                     expect(DAC.isOpen).toBeFalsy();
@@ -1442,14 +1441,14 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.reject('physicalPostBatch fake error');
                 return def.promise();
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -1457,7 +1456,7 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
                     expect(res.checks).toContain(_.extend(new BasicMessage("code12",true),{post:false}));
                     expect(res.checks).not.toContain(_.extend(new BasicMessage("code12",true),{post:true}));
                     expect(res.checks).toContain(new BasicMessage("physicalPostBatch fake error",false));
@@ -1487,12 +1486,12 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 throw "DataBase Error threw on purpose";
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -1500,7 +1499,7 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
                     expect(res.checks).toContain(_.extend(new BasicMessage("code12",true),{post:false}));
                     expect(res.checks).not.toContain(_.extend(new BasicMessage("code12",true),{post:true}));
                     expect(res.checks).toContain(new BasicMessage("DataBase Error threw on purpose",false));
@@ -1532,15 +1531,15 @@ describe('PostData', function () {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
 
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1551,9 +1550,9 @@ describe('PostData', function () {
                         expect(postData.allPost[0].physicalPostBatch).toHaveBeenCalled();
                         expect(postData.allPost[0].doUpdate).not.toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
-                        expect(DAC.close.callCount).toBe(1);
+                        expect(DAC.close.calls.count()).toBe(1);
                         expect(DAC.rollback).toHaveBeenCalled();
-                        expect(DAC.rollback.callCount).toBe(1);
+                        expect(DAC.rollback.calls.count()).toBe(1);
                         expect(DAC.isOpen).toBeFalsy();
                         done();
                     });
@@ -1568,12 +1567,12 @@ describe('PostData', function () {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1590,17 +1589,17 @@ describe('PostData', function () {
 
 
         it('should  call opt.doUpdate if physicalPostBatch is resolved and opt.doUpdate is given and there are checks' +
-            '    but they were already present',
+            ' but they were already present 3',
             function (done) {
                 let errNum = 12;
                 let rules = new BusinessLogicResult();
-                rules.addWarning("code12");
-                rules.addWarning("code13");
+                rules.addWarning("code12",false);
+                rules.addWarning("code13",true);
 
                 postData.allPost[0].businessLogic ={
                     getChecks: function (res, conn,  post) {
                         const def = Deferred();
-                        res.addWarning("code" + errNum);
+                        res.addWarning("code" + errNum, post);
                         errNum += 1;
                         def.resolve(res);
                         return def.promise();
@@ -1614,14 +1613,14 @@ describe('PostData', function () {
                     previousRules: rules
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(rules, 'mergeMessages').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(rules, 'mergeMessages').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1647,13 +1646,13 @@ describe('PostData', function () {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1685,14 +1684,14 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1725,14 +1724,14 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1749,28 +1748,26 @@ describe('PostData', function () {
                     });
             });
 
-        it('should  call commit  if optional doUpdate is rejected with a previously ignored message',
+        it('should  call commit  if optional doUpdate is rejected with a previously ignored message 2',
             function (done) {
                 var result = new BusinessLogicResult();
                 const err1="another doUpdate fake error";
                 const err2="another random fake error A";
-                result.addWarning(err1);
-                result.addWarning(err2);
+                result.addWarning(err1,false);
+                result.addWarning(err2,true);
                 let check1,check2;
                 postData.allPost[0].businessLogic ={
                     getChecks: function (res, conn,  post) {
                         const def = Deferred();
-                        check1=res.addWarning(err1);
+                        check1=res.addWarning(err1,post);
                         def.resolve(res);
                         return def.promise();
                     }
                 };
 
-
                 postData.allPost[0].doUpdate= function (conn,res) {
-                    check2=res.addWarning(err2);
+                    check2=res.addWarning(err2,true);
                 };
-
 
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
@@ -1778,14 +1775,14 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1795,8 +1792,7 @@ describe('PostData', function () {
                         //console.log(res);
                         expect(DAC.commit).toHaveBeenCalled();
                         expect(DAC.rollback).not.toHaveBeenCalled();
-                        expect(res.checks).toContain(check1);
-                        expect(res.checks).toContain(check2);
+                        expect(res.checks.length).toBe(0);
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.isOpen).toBeFalsy();
                         done();
@@ -1834,14 +1830,14 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1880,14 +1876,14 @@ describe('PostData', function () {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.reject('physicalPostBatch fake error');
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -1952,7 +1948,7 @@ describe('PostData', function () {
                     ctx = context;
                     env= ctx.environment;
                     conn = DAC.sqlConn;
-                    spyOn(DAC, 'close').andCallThrough();
+                    spyOn(DAC, 'close').and.callThrough();
                     postData = new PostData();
                     postData.init(d,ctx).then(()=>{
                         changes = postData.allPost[0].rowChanges;
@@ -1972,12 +1968,12 @@ describe('PostData', function () {
         });
 
         it('should call calcAllAutoId for every given row', function (done) {
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 def.resolve(false);
                 return def.promise();
             });
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -1985,14 +1981,14 @@ describe('PostData', function () {
             postData.allPost[0].getSqlStatements(changes, optimisticLocking)
                 .done(function (res) {
                     expect(postData.allPost[0].calcAllAutoId).toHaveBeenCalled();
-                    expect(postData.allPost[0].calcAllAutoId.callCount).toBe(changes.length);
+                    expect(postData.allPost[0].calcAllAutoId.calls.count()).toBe(changes.length);
                     done();
                 });
         });
 
         it('should call calcAllAutoId one at a time', function (done) {
             let overlap = false, isIn = false;
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 if (isIn) {
                     overlap = true;
                 }
@@ -2005,7 +2001,7 @@ describe('PostData', function () {
 
                 return def.promise();
             });
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2013,7 +2009,7 @@ describe('PostData', function () {
             postData.allPost[0].getSqlStatements(changes, optimisticLocking)
                 .done(function (res) {
                     expect(postData.allPost[0].calcAllAutoId).toHaveBeenCalled();
-                    expect(postData.allPost[0].calcAllAutoId.callCount).toBe(changes.length);
+                    expect(postData.allPost[0].calcAllAutoId.calls.count()).toBe(changes.length);
                     expect(overlap).toBeFalsy();
                     done();
                 });
@@ -2021,7 +2017,7 @@ describe('PostData', function () {
 
         it('if calcAllAutoId one does fail, should reject request and stop', function (done) {
             let overlap = false, isIn = false, nRows = 0;
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 if (isIn) {
                     overlap = true;
                 }
@@ -2039,7 +2035,7 @@ describe('PostData', function () {
 
                 return def.promise();
             });
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2051,7 +2047,7 @@ describe('PostData', function () {
                 })
                 .fail(function (err) {
                     expect(postData.allPost[0].calcAllAutoId).toHaveBeenCalled();
-                    expect(postData.allPost[0].calcAllAutoId.callCount).toBe(6);
+                    expect(postData.allPost[0].calcAllAutoId.calls.count()).toBe(6);
                     expect(overlap).toBeFalsy();
                     done();
                 });
@@ -2060,15 +2056,15 @@ describe('PostData', function () {
 
         it('should call DAC.getPostCommand and giveErrorNumberDataWasNotWritten for every given row', function (done) {
             let countCommands = 0;
-            spyOn(DAC, 'getPostCommand').andCallFake(function (row, locking, env) {
+            spyOn(DAC, 'getPostCommand').and.callFake(function (row, locking, env) {
                 const def = Deferred();
                 countCommands += 1;
                 def.resolve('fake sql' + countCommands);
                 return def.promise();
             });
-            spyOn(conn, 'giveErrorNumberDataWasNotWritten').andCallThrough();
+            spyOn(conn, 'giveErrorNumberDataWasNotWritten').and.callThrough();
 
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2078,9 +2074,9 @@ describe('PostData', function () {
             postData.allPost[0].getSqlStatements(changes, optimisticLocking)
                 .done(function (res) {
                     expect(DAC.getPostCommand).toHaveBeenCalled();
-                    expect(DAC.getPostCommand.callCount).toBe(changes.length);
+                    expect(DAC.getPostCommand.calls.count()).toBe(changes.length);
                     expect(conn.giveErrorNumberDataWasNotWritten).toHaveBeenCalled();
-                    expect(conn.giveErrorNumberDataWasNotWritten.callCount).toBe(changes.length);
+                    expect(conn.giveErrorNumberDataWasNotWritten.calls.count()).toBe(changes.length);
                     done();
                 });
         });
@@ -2088,15 +2084,15 @@ describe('PostData', function () {
         it('should call appendCommands for every given row ', function (done) {
             let nRows = 0;
             let countCommands = 0;
-            spyOn(DAC, 'getPostCommand').andCallFake(function (row, locking, env) {
+            spyOn(DAC, 'getPostCommand').and.callFake(function (row, locking, env) {
                 const def = Deferred();
                 countCommands += 1;
                 const sql = 'fake sql' + countCommands;
                 def.resolve(sql);
                 return def.promise();
             });
-            spyOn(conn, 'appendCommands').andCallThrough();
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(conn, 'appendCommands').and.callThrough();
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 process.nextTick(function () {
                     nRows += 1;
@@ -2106,7 +2102,7 @@ describe('PostData', function () {
                 return def.promise();
             });
 
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = new Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2114,7 +2110,7 @@ describe('PostData', function () {
             postData.allPost[0].getSqlStatements(changes, optimisticLocking)
                 .done(function (res) {
                     expect(conn.appendCommands).toHaveBeenCalled();
-                    expect(conn.appendCommands.callCount).toBe(changes.length);
+                    expect(conn.appendCommands.calls.count()).toBe(changes.length);
                     done();
                 })
                 .fail(function (err) {
@@ -2128,14 +2124,14 @@ describe('PostData', function () {
             let countCommands = 0;
             const expectedSql = [],
                 results = [];
-            spyOn(DAC, 'getPostCommand').andCallFake(function (row, locking, env) {
+            spyOn(DAC, 'getPostCommand').and.callFake(function (row, locking, env) {
                 countCommands += 1;
                 const sql = 'fake sql' + countCommands;
                 expectedSql.push(sql);
                 return sql;
             });
-            spyOn(conn, 'appendCommands').andCallThrough();
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(conn, 'appendCommands').and.callThrough();
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 process.nextTick(function () {
                     nRows += 1;
@@ -2145,7 +2141,7 @@ describe('PostData', function () {
                 return def.promise();
             });
 
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2156,7 +2152,7 @@ describe('PostData', function () {
                 })
                 .done(function (res) {
                     expect(conn.appendCommands).toHaveBeenCalled();
-                    expect(conn.appendCommands.callCount).toBe(changes.length);
+                    expect(conn.appendCommands.calls.count()).toBe(changes.length);
                     expect(results.length).toBeGreaterThan(0);
                     _.forEach(expectedSql, function (sql) {
                         expect(_.find(results, function (el) {
@@ -2177,14 +2173,14 @@ describe('PostData', function () {
             let countCommands = 0;
             const expectedSql = [],
                 results = [];
-            spyOn(DAC, 'getPostCommand').andCallFake(function (row, locking, env) {
+            spyOn(DAC, 'getPostCommand').and.callFake(function (row, locking, env) {
                 countCommands += 1;
                 const sql = 'fake sql' + countCommands;
                 expectedSql.push(sql);
                 return sql;
             });
-            spyOn(conn, 'appendCommands').andCallThrough();
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(conn, 'appendCommands').and.callThrough();
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 process.nextTick(function () {
                     nRows += 1;
@@ -2194,7 +2190,7 @@ describe('PostData', function () {
                 return def.promise();
             });
 
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2205,7 +2201,7 @@ describe('PostData', function () {
                 })
                 .done(function (res) {
                     expect(conn.appendCommands).toHaveBeenCalled();
-                    expect(conn.appendCommands.callCount).toBe(changes.length);
+                    expect(conn.appendCommands.calls.count()).toBe(changes.length);
                     expect(results.length).toBeGreaterThan(1);
                     _.forEach(expectedSql, function (sql) {
                         expect(_.find(results, function (el) {
@@ -2269,7 +2265,7 @@ describe('PostData', function () {
                     conn = DAC.sqlConn;
                     ctx = context;
                     env= ctx.environment;
-                    spyOn(DAC, 'close').andCallThrough();
+                    spyOn(DAC, 'close').and.callThrough();
                     postData = new PostData();
                     postData.init(d,ctx).then(()=>{
                         done();
@@ -2288,8 +2284,8 @@ describe('PostData', function () {
         });
 
         it('should call getSqlStatements', function (done) {
-            spyOn(postData.allPost[0], 'getSqlStatements').andCallThrough();
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(postData.allPost[0], 'getSqlStatements').and.callThrough();
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2303,7 +2299,7 @@ describe('PostData', function () {
         });
 
         it('should call runCmd', function (done) {
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 def.resolve(-1);
                 return def.promise();
@@ -2321,14 +2317,14 @@ describe('PostData', function () {
             let countCommands = 0;
             const expectedSql = [],
                 results = [];
-            spyOn(DAC, 'getPostCommand').andCallFake(function (row, locking, env) {
+            spyOn(DAC, 'getPostCommand').and.callFake(function (row, locking, env) {
                 countCommands += 1;
                 const sql = 'fake sql' + countCommands;
                 expectedSql.push(sql);
                 return sql;
             });
-            spyOn(conn, 'appendCommands').andCallThrough();
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(conn, 'appendCommands').and.callThrough();
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 process.nextTick(function () {
                     nRows += 1;
@@ -2339,7 +2335,7 @@ describe('PostData', function () {
             });
 
             let nOk = 0;
-            spyOn(DAC, 'runCmd').andCallFake(function (sqlComplete) {
+            spyOn(DAC, 'runCmd').and.callFake(function (sqlComplete) {
                 const def = Deferred();
                 nOk += 1;
                 if (nOk < 50) {
@@ -2367,14 +2363,14 @@ describe('PostData', function () {
             let countCommands = 0;
             const expectedSql = [],
                 results = [];
-            spyOn(DAC, 'getPostCommand').andCallFake(function (row, locking, env) {
+            spyOn(DAC, 'getPostCommand').and.callFake(function (row, locking, env) {
                 countCommands += 1;
                 const sql = 'fake sql' + countCommands;
                 expectedSql.push(sql);
                 return sql;
             });
-            spyOn(conn, 'appendCommands').andCallThrough();
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(conn, 'appendCommands').and.callThrough();
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 process.nextTick(function () {
                     nRows += 1;
@@ -2385,7 +2381,7 @@ describe('PostData', function () {
             });
 
             let nOk = 0;
-            spyOn(DAC, 'runCmd').andCallFake(function () {
+            spyOn(DAC, 'runCmd').and.callFake(function () {
                 const def = Deferred();
                 nOk += 1;
                 if (nOk < 50) {
@@ -2413,14 +2409,14 @@ describe('PostData', function () {
             let countCommands = 0;
             const expectedSql = [],
                 runnedSql = [];
-            spyOn(DAC, 'getPostCommand').andCallFake(function (row, locking, env) {
+            spyOn(DAC, 'getPostCommand').and.callFake(function (row, locking, env) {
                 countCommands += 1;
                 const sql = 'fake sql >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + countCommands;
                 expectedSql.push(sql);
                 return sql;
             });
-            spyOn(conn, 'appendCommands').andCallThrough();
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(conn, 'appendCommands').and.callThrough();
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 process.nextTick(function () {
                     nRows += 1;
@@ -2431,7 +2427,7 @@ describe('PostData', function () {
             });
 
             let nOk = 0;
-            spyOn(DAC, 'runCmd').andCallFake(function (sqlComplete) {
+            spyOn(DAC, 'runCmd').and.callFake(function (sqlComplete) {
                 const def = Deferred();
                 nOk += 1;
                 runnedSql.push(sqlComplete);
@@ -2459,14 +2455,14 @@ describe('PostData', function () {
             let countCommands = 0;
             const expectedSql = [],
                 runnedSql = [];
-            spyOn(DAC, 'getPostCommand').andCallFake(function () {  //row, locking, env
+            spyOn(DAC, 'getPostCommand').and.callFake(function () {  //row, locking, env
                 countCommands += 1;
                 const sql = 'fake sql >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + countCommands;
                 expectedSql.push(sql);
                 return sql;
             });
-            spyOn(conn, 'appendCommands').andCallThrough();
-            spyOn(postData.allPost[0], 'calcAllAutoId').andCallFake(function (r) {
+            spyOn(conn, 'appendCommands').and.callThrough();
+            spyOn(postData.allPost[0], 'calcAllAutoId').and.callFake(function (r) {
                 const def = Deferred();
                 process.nextTick(function () {
                     nRows += 1;
@@ -2477,7 +2473,7 @@ describe('PostData', function () {
             });
 
             let nOk = 0;
-            spyOn(DAC, 'runCmd').andCallFake(function (sqlComplete) {
+            spyOn(DAC, 'runCmd').and.callFake(function (sqlComplete) {
                 const def = Deferred();
                 nOk += 1;
                 runnedSql.push(sqlComplete);
@@ -2550,7 +2546,7 @@ describe('PostData', function () {
                     conn = DAC.sqlConn;
                     ctx = context;
                     env= ctx.environment;
-                    spyOn(DAC, 'close').andCallThrough();
+                    spyOn(DAC, 'close').and.callThrough();
                     postData = new PostData();
                     postData.init(d,ctx).then(()=>{
                         changes = postData.allPost[0].getChanges(d);
@@ -2662,7 +2658,7 @@ describe('PostData', function () {
                     DAC = context.dataAccess;
                     ctx = context;
                     env= ctx.environment;
-                    spyOn(DAC, 'close').andCallThrough();
+                    spyOn(DAC, 'close').and.callThrough();
                     postData = new PostData();
                     postData.init(d1,ctx).then(()=>{
                         postData.init(d2,ctx).then(()=>{
@@ -2699,14 +2695,14 @@ describe('PostData', function () {
             postData.getChecks= function (conn,  post) {
                 const def = Deferred();
                 let res = new BusinessLogicResult();
-                res.addError("code0");
+                res.addError("code0",post);
                 //{checks: [{code: errNum}], shouldContinue: false};
                 def.resolve(res);
                 //console.log('returning checks:'+res);
                 return def.promise();
             };
 
-            spyOn(postData, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
             expect(postData.getChecks).not.toHaveBeenCalled();
 
             postData.doPost( opt)
@@ -2733,7 +2729,7 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(postData, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
@@ -2756,7 +2752,7 @@ describe('PostData', function () {
                 }
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -2766,9 +2762,9 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
@@ -2802,12 +2798,12 @@ describe('PostData', function () {
                     return def.promise();
                 }
             };
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -2815,8 +2811,8 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -2824,9 +2820,9 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     expect(DAC.open).toHaveBeenCalled();
-                    expect(DAC.open.callCount).toBe(1);
+                    expect(DAC.open.calls.count()).toBe(1);
                     expect(DAC.beginTransaction).toHaveBeenCalled();
-                    expect(DAC.beginTransaction.callCount).toBe(1);
+                    expect(DAC.beginTransaction.calls.count()).toBe(1);
                     expect(postData.allPost[0].physicalPostBatch).not.toHaveBeenCalled();
                     expect(postData.allPost[1].physicalPostBatch).not.toHaveBeenCalled();
                     expect(DAC.close).toHaveBeenCalled();
@@ -2848,13 +2844,13 @@ describe('PostData', function () {
                     throw "Exception threw on purpose 2";
                 }
             };
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
 
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
 
                 const def = Deferred();
                 def.resolve();
@@ -2864,9 +2860,9 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -2874,9 +2870,9 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     expect(DAC.open).toHaveBeenCalled();
-                    expect(DAC.open.callCount).toBe(1);
+                    expect(DAC.open.calls.count()).toBe(1);
                     expect(DAC.beginTransaction).toHaveBeenCalled();
-                    expect(DAC.beginTransaction.callCount).toBe(1);
+                    expect(DAC.beginTransaction.calls.count()).toBe(1);
                     expect(postData.allPost[0].physicalPostBatch).not.toHaveBeenCalled();
                     expect(postData.allPost[1].physicalPostBatch).not.toHaveBeenCalled();
                     expect(res.checks).toContain( new BasicMessage("Exception threw on purpose 1",false));
@@ -2894,7 +2890,7 @@ describe('PostData', function () {
             postData.allPost[0].businessLogic ={
                 getChecks: function (res, conn,  post) {
                     const def = Deferred();
-                    res.addWarning("codeA"+errNum);
+                    res.addWarning("codeA"+errNum,post);
                     errNum += 1;
                     def.resolve(res);
                     return def.promise();
@@ -2903,7 +2899,7 @@ describe('PostData', function () {
             postData.allPost[1].businessLogic ={
                 getChecks: function (res, conn,  post) {
                     const def = Deferred();
-                    res.addWarning("codeB"+errNum);
+                    res.addWarning("codeB"+errNum,post);
                     errNum += 1;
                     def.resolve(res);
                     return def.promise();
@@ -2913,13 +2909,13 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'rollback').andCallThrough();
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(DAC, 'rollback').and.callThrough();
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -2932,11 +2928,11 @@ describe('PostData', function () {
                 .always(function (res) {
                     expect(postData.allPost[0].physicalPostBatch).toHaveBeenCalled();
                     expect(postData.allPost[1].physicalPostBatch).toHaveBeenCalled();
-                    expect(res.checks).toContain( new BasicMessage("codeA12",true));
-                    expect(res.checks).toContain( new BasicMessage("codeB13",true));
+                    expect(res.checks).toContain( _.extend(new BasicMessage("codeA12",true),{post:false}));
+                    expect(res.checks).toContain( _.extend(new BasicMessage("codeB13",true),{post:false}));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -2949,31 +2945,31 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
-            spyOn(postData.allPost[0], 'log').andCallThrough();
-            spyOn(postData.allPost[1], 'log').andCallThrough();
-            spyOn(DAC, 'commit').andCallThrough();
+            spyOn(postData.allPost[0], 'log').and.callThrough();
+            spyOn(postData.allPost[1], 'log').and.callThrough();
+            spyOn(DAC, 'commit').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.allPost[0].log.callCount).toBe(1);
-                    expect(postData.allPost[1].log.callCount).toBe(1);
+                    expect(postData.allPost[0].log.calls.count()).toBe(1);
+                    expect(postData.allPost[1].log.calls.count()).toBe(1);
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.commit).toHaveBeenCalled();
-                    expect(DAC.commit.callCount).toBe(1);
+                    expect(DAC.commit.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -3017,34 +3013,34 @@ describe('PostData', function () {
 
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postData.allPost[0], 'log').andCallThrough();
-            spyOn(postData.allPost[1], 'log').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postData.allPost[0], 'log').and.callThrough();
+            spyOn(postData.allPost[1], 'log').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.getChecks.callCount).toBe(1);
-                    expect(postData.allPost[0].log.callCount).toBe(1);
-                    expect(postData.allPost[1].log.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
+                    expect(postData.allPost[0].log.calls.count()).toBe(1);
+                    expect(postData.allPost[1].log.calls.count()).toBe(1);
                     expect(res.checks.find(c=>c.msg==="log reject" &&  c.canIgnore===false)).toBeDefined();
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -3084,34 +3080,34 @@ describe('PostData', function () {
 
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postData.allPost[0], 'log').andCallThrough();
-            spyOn(postData.allPost[1], 'log').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postData.allPost[0], 'log').and.callThrough();
+            spyOn(postData.allPost[1], 'log').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.getChecks.callCount).toBe(1);
-                    expect(postData.allPost[0].log.callCount).toBe(1);
-                    expect(postData.allPost[1].log.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
+                    expect(postData.allPost[0].log.calls.count()).toBe(1);
+                    expect(postData.allPost[1].log.calls.count()).toBe(1);
                     expect(res.checks.find(c=>c.msg==="Exception raised on purpose" &&  c.canIgnore===false)).toBeDefined();
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -3123,7 +3119,7 @@ describe('PostData', function () {
             postData.allPost[0].businessLogic ={
                 getChecks: function (res, conn,  post) {
                     const def = Deferred();
-                    res.addWarning("codeA"+errNum);
+                    res.addWarning("codeA"+errNum,post);
                     errNum += 1;
                     def.resolve(res);
                     return def.promise();
@@ -3132,7 +3128,7 @@ describe('PostData', function () {
             postData.allPost[1].businessLogic ={
                 getChecks: function (res, conn,  post) {
                     const def = Deferred();
-                    res.addWarning("codeB"+errNum);
+                    res.addWarning("codeB"+errNum,post);
                     errNum += 1;
                     def.resolve(res);
                     return def.promise();
@@ -3143,14 +3139,14 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -3158,12 +3154,12 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(1);
-                    expect(res.checks).toContain( new BasicMessage("codeA12",true));
-                    expect(res.checks).toContain(new BasicMessage("codeB13",true));
+                    expect(postData.getChecks.calls.count()).toBe(1);
+                    expect(res.checks).toContain( _.extend(new BasicMessage("codeA12",true),{post:false}));
+                    expect(res.checks).toContain(_.extend(new BasicMessage("codeB13",true), {post:false}));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -3197,19 +3193,19 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.reject('physicalPostBatch fake error');
                 return def.promise();
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -3217,7 +3213,7 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
                     expect(res.checks).toContain(_.extend(new BasicMessage("codeA12",true),{post:false}));
                     expect(res.checks).not.toContain(_.extend(new BasicMessage("codeA12",true),{post:true}));
                     expect(res.checks).toContain(_.extend(new BasicMessage("codeB13",true),{post:false}));
@@ -3225,7 +3221,7 @@ describe('PostData', function () {
                     expect(res.checks).toContain(new BasicMessage("physicalPostBatch fake error",false));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -3260,15 +3256,15 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 return Deferred().resolve();
             });
-            spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                 throw "DataBase Error threw on purpose";
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -3276,7 +3272,7 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(1);
                     expect(res.checks).toContain(_.extend(new BasicMessage("codeA12",true),{post:false}));
                     expect(res.checks).not.toContain(_.extend(new BasicMessage("codeA12",true),{post:true}));
                     expect(res.checks).toContain(_.extend(new BasicMessage("codeB13",true),{post:false}));
@@ -3284,7 +3280,7 @@ describe('PostData', function () {
                     expect(res.checks).toContain(new BasicMessage("DataBase Error threw on purpose",false));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -3319,20 +3315,20 @@ describe('PostData', function () {
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
                 };
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3344,7 +3340,7 @@ describe('PostData', function () {
                         expect(postData.allPost[1].doUpdate).not.toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
-                        expect(DAC.rollback.callCount).toBe(1);
+                        expect(DAC.rollback.calls.count()).toBe(1);
                         expect(DAC.isOpen).toBeFalsy();
                         done();
                     });
@@ -3375,20 +3371,20 @@ describe('PostData', function () {
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
                 };
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3400,7 +3396,7 @@ describe('PostData', function () {
                         expect(postData.allPost[1].doUpdate).not.toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
-                        expect(DAC.rollback.callCount).toBe(1);
+                        expect(DAC.rollback.calls.count()).toBe(1);
                         expect(DAC.isOpen).toBeFalsy();
                         done();
                     });
@@ -3431,20 +3427,20 @@ describe('PostData', function () {
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
                 };
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3456,7 +3452,7 @@ describe('PostData', function () {
                         expect(postData.allPost[1].doUpdate).not.toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
-                        expect(DAC.rollback.callCount).toBe(1);
+                        expect(DAC.rollback.calls.count()).toBe(1);
                         expect(DAC.isOpen).toBeFalsy();
                         done();
                     });
@@ -3471,19 +3467,19 @@ describe('PostData', function () {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3501,7 +3497,7 @@ describe('PostData', function () {
 
 
         it('should  call opt.doUpdate if physicalPostBatch is resolved and opt.doUpdate is given and there are checks' +
-            '    but they were already present',
+            ' but they were already present 1',
             function (done) {
                 let errNum = 12;
                 let rules = new BusinessLogicResult();
@@ -3531,22 +3527,22 @@ describe('PostData', function () {
                     previousRules: rules
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
 
-                spyOn(rules, 'mergeMessages').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
+                spyOn(rules, 'mergeMessages').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3558,9 +3554,9 @@ describe('PostData', function () {
                         expect(postData.allPost[1].doUpdate).toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.commit).toHaveBeenCalled();
-                        expect(DAC.commit.callCount).toBe(1);
+                        expect(DAC.commit.calls.count()).toBe(1);
                         expect(DAC.isOpen).toBeFalsy();
-                        expect(res.checks.length).toBe(2);
+                        expect(res.checks.length).toBe(0);
                         done();
                     });
             });
@@ -3573,20 +3569,20 @@ describe('PostData', function () {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3616,14 +3612,14 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3655,20 +3651,20 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3686,7 +3682,7 @@ describe('PostData', function () {
                     });
             });
 
-        it('should  call commit  if optional doUpdate is rejected with a previosly ignored message',
+        it('should  call commit  if optional doUpdate is rejected with a previosly ignored message 3',
             function (done) {
                 var result = new BusinessLogicResult();
                 const err1="another doUpdate fake error";
@@ -3697,7 +3693,7 @@ describe('PostData', function () {
                 postData.allPost[0].businessLogic ={
                     getChecks: function (res, conn,  post) {
                         const def = Deferred();
-                        check1=res.addWarning(err1);
+                        check1=res.addWarning(err1,post);
                         def.resolve(res);
                         return def.promise();
                     }
@@ -3717,20 +3713,20 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3740,8 +3736,7 @@ describe('PostData', function () {
                         //console.log(res);
                         expect(DAC.commit).toHaveBeenCalled();
                         expect(DAC.rollback).not.toHaveBeenCalled();
-                        expect(res.checks).toContain(check1);
-                        expect(res.checks).toContain(check2);
+                        expect(res.checks.length).toBe(0);
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.isOpen).toBeFalsy();
                         done();
@@ -3779,20 +3774,20 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3830,20 +3825,20 @@ describe('PostData', function () {
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                 };
-                spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postData.allPost[1], 'physicalPostBatch').andCallFake(function () {
+                spyOn(postData.allPost[1], 'physicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.reject('physicalPostBatch fake error');
                     return def.promise();
                 });
-                spyOn(postData.allPost[0], 'doUpdate').andCallThrough();
-                spyOn(postData.allPost[1], 'doUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData.allPost[0], 'doUpdate').and.callThrough();
+                spyOn(postData.allPost[1], 'doUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -3950,7 +3945,7 @@ describe('PostData', function () {
                     DAC = context.dataAccess;
                     ctx = context;
                     env= ctx.environment;
-                    spyOn(DAC, 'close').andCallThrough();
+                    spyOn(DAC, 'close').and.callThrough();
                     postData = new PostData();
                     innerPoster = new IInnerPoster();
                     postDataInner = innerPoster.p;
@@ -3997,14 +3992,14 @@ describe('PostData', function () {
             };
 
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
@@ -4037,7 +4032,7 @@ describe('PostData', function () {
                 return def.promise();
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4046,8 +4041,8 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
@@ -4078,7 +4073,7 @@ describe('PostData', function () {
                 return def.promise();
             };
 
-            spyOn(postData.allPost[0], 'physicalPostBatch').andCallFake(function () {
+            spyOn(postData.allPost[0], 'physicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4087,8 +4082,8 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
@@ -4110,14 +4105,14 @@ describe('PostData', function () {
                     return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4128,15 +4123,15 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .always(function (res) {
                     expect(DAC.open).toHaveBeenCalled();
                     expect(DAC.beginTransaction).toHaveBeenCalled();
-                    expect(DAC.beginTransaction.callCount).toBe(1);
+                    expect(DAC.beginTransaction.calls.count()).toBe(1);
                     expect(postData.doAllPhisicalPostBatch).toHaveBeenCalled();
                     expect(postDataInner.doAllPhisicalPostBatch).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
@@ -4160,14 +4155,14 @@ describe('PostData', function () {
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4176,12 +4171,12 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
 
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -4189,9 +4184,9 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     expect(DAC.open).toHaveBeenCalled();
-                    expect(DAC.open.callCount).toBe(1);
+                    expect(DAC.open.calls.count()).toBe(1);
                     expect(DAC.beginTransaction).toHaveBeenCalled();
-                    expect(DAC.beginTransaction.callCount).toBe(1);
+                    expect(DAC.beginTransaction.calls.count()).toBe(1);
                     expect(postData.getChecks).toHaveBeenCalled();
                     expect(postDataInner.getChecks).toHaveBeenCalled();
                     expect(postData.doAllPhisicalPostBatch).toHaveBeenCalled();
@@ -4216,14 +4211,14 @@ describe('PostData', function () {
                 throw "Exception threw on purpose 1";
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4232,9 +4227,9 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -4242,9 +4237,9 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     expect(DAC.open).toHaveBeenCalled();
-                    expect(DAC.open.callCount).toBe(1);
+                    expect(DAC.open.calls.count()).toBe(1);
                     expect(DAC.beginTransaction).toHaveBeenCalled();
-                    expect(DAC.beginTransaction.callCount).toBe(1);
+                    expect(DAC.beginTransaction.calls.count()).toBe(1);
                     expect(postData.doAllPhisicalPostBatch).toHaveBeenCalled();
                     expect(postDataInner.doAllPhisicalPostBatch).not.toHaveBeenCalled();
                     expect(res.checks).toContain( new BasicMessage("Exception threw on purpose 1",false));
@@ -4270,14 +4265,14 @@ describe('PostData', function () {
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4286,12 +4281,12 @@ describe('PostData', function () {
             const opt = {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
 
-            spyOn(DAC, 'open').andCallThrough();
-            spyOn(DAC, 'beginTransaction').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'open').and.callThrough();
+            spyOn(DAC, 'beginTransaction').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -4299,9 +4294,9 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     expect(DAC.open).toHaveBeenCalled();
-                    expect(DAC.open.callCount).toBe(1);
+                    expect(DAC.open.calls.count()).toBe(1);
                     expect(DAC.beginTransaction).toHaveBeenCalled();
-                    expect(DAC.beginTransaction.callCount).toBe(1);
+                    expect(DAC.beginTransaction.calls.count()).toBe(1);
                     expect(postData.getChecks).toHaveBeenCalled();
                     expect(postDataInner.getChecks).toHaveBeenCalled();
                     expect(postData.doAllPhisicalPostBatch).toHaveBeenCalled();
@@ -4330,14 +4325,14 @@ describe('PostData', function () {
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4345,9 +4340,9 @@ describe('PostData', function () {
 
 
 
-            spyOn(postDataInner, 'doAllLog').andCallThrough();
-            spyOn(postData, 'doAllLog').andCallThrough();
-            spyOn(DAC, 'commit').andCallThrough();
+            spyOn(postDataInner, 'doAllLog').and.callThrough();
+            spyOn(postData, 'doAllLog').and.callThrough();
+            spyOn(DAC, 'commit').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -4360,7 +4355,7 @@ describe('PostData', function () {
                     expect(postDataInner.doAllLog).toHaveBeenCalled();
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.commit).toHaveBeenCalled();
-                    expect(DAC.commit.callCount).toBe(1);
+                    expect(DAC.commit.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -4380,14 +4375,14 @@ describe('PostData', function () {
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4401,31 +4396,31 @@ describe('PostData', function () {
 
             };
 
-            spyOn(postData, 'doAllLog').andCallThrough();
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
+            spyOn(postData, 'doAllLog').and.callThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
 
 
-            spyOn(postDataInner, 'doAllLog').andCallFake(function () {
+            spyOn(postDataInner, 'doAllLog').and.callFake(function () {
                 const def = Deferred();
                 def.reject("log rejection on purpose");
                 return def.promise();
             });
 
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.getChecks.callCount).toBe(2);
-                    expect(postData.doAllLog.callCount).toBe(1);
-                    expect(postDataInner.doAllLog.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(2);
+                    expect(postData.doAllLog.calls.count()).toBe(1);
+                    expect(postDataInner.doAllLog.calls.count()).toBe(1);
                     expect(res.checks.find(c=>c.msg==="log rejection on purpose" &&  c.canIgnore===false)).toBeDefined();
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -4446,14 +4441,14 @@ describe('PostData', function () {
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4470,26 +4465,26 @@ describe('PostData', function () {
 
 
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postData, 'doAllLog').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'doAllLog').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postData, 'doAllLog').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'doAllLog').and.callThrough();
 
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                 })
                 .always(function (res) {
-                    expect(postData.getChecks.callCount).toBe(2);
-                    expect(postDataInner.getChecks.callCount).toBe(1);
-                    expect(postData.doAllLog.callCount).toBe(1);
-                    expect(postDataInner.doAllLog.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(2);
+                    expect(postDataInner.getChecks.calls.count()).toBe(1);
+                    expect(postData.doAllLog.calls.count()).toBe(1);
+                    expect(postDataInner.doAllLog.calls.count()).toBe(1);
                     expect(res.checks.find(c=>c.msg==="Exception raised on purpose" &&  c.canIgnore===false)).toBeDefined();
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -4505,19 +4500,19 @@ describe('PostData', function () {
 
             postDataInner.getChecks = function(conn,post) {
                 let  res = this.createBusinessLogicResult();
-                res.addWarning("codeB"+errNum);
+                res.addWarning("codeB"+errNum,post);
                 errNum += 1;
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
@@ -4527,9 +4522,9 @@ describe('PostData', function () {
                 optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
             };
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -4537,13 +4532,13 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(2);
-                    expect(postDataInner.getChecks.callCount).toBe(2);
-                    expect(res.checks).toContain( new BasicMessage("codeB12",true));
-                    expect(res.checks).toContain(new BasicMessage("codeB13",true));
+                    expect(postData.getChecks.calls.count()).toBe(2);
+                    expect(postDataInner.getChecks.calls.count()).toBe(2);
+                    expect(res.checks).toContain( _.extend(new BasicMessage("codeB12",true),{post:false}));
+                    expect(res.checks).toContain( _.extend(new BasicMessage("codeB13",true),{post:true}));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -4565,14 +4560,14 @@ describe('PostData', function () {
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.reject('physicalPostBatch fake error');
                 return def.promise();
@@ -4584,9 +4579,9 @@ describe('PostData', function () {
 
 
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -4594,15 +4589,15 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(2);
-                    expect(postDataInner.getChecks.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(2);
+                    expect(postDataInner.getChecks.calls.count()).toBe(1);
 
                     expect(res.checks).toContain(_.extend(new BasicMessage("codeB12",true),{post:false}));
                     expect(res.checks).not.toContain(_.extend(new BasicMessage("codeB13",true),{post:true}));
                     expect(res.checks).toContain(new BasicMessage("physicalPostBatch fake error",false));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -4624,14 +4619,14 @@ describe('PostData', function () {
                 return Deferred().resolve(res).promise();
             };
 
-            spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                 const def = Deferred();
                 def.resolve();
                 return def.promise();
             });
 
 
-            spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+            spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                 throw "DataBase Error threw on purpose";
             });
 
@@ -4642,9 +4637,9 @@ describe('PostData', function () {
 
 
 
-            spyOn(postData, 'getChecks').andCallThrough();
-            spyOn(postDataInner, 'getChecks').andCallThrough();
-            spyOn(DAC, 'rollback').andCallThrough();
+            spyOn(postData, 'getChecks').and.callThrough();
+            spyOn(postDataInner, 'getChecks').and.callThrough();
+            spyOn(DAC, 'rollback').and.callThrough();
 
             postData.doPost( opt)
                 .fail(function (err) {
@@ -4652,14 +4647,14 @@ describe('PostData', function () {
                 })
                 .always(function (res) {
                     //console.log(res);
-                    expect(postData.getChecks.callCount).toBe(2);
-                    expect(postDataInner.getChecks.callCount).toBe(1);
+                    expect(postData.getChecks.calls.count()).toBe(2);
+                    expect(postDataInner.getChecks.calls.count()).toBe(1);
                     expect(res.checks).toContain(_.extend(new BasicMessage("codeB12",true),{post:false}));
                     expect(res.checks).not.toContain(_.extend(new BasicMessage("codeB13",true),{post:true}));
                     expect(res.checks).toContain(new BasicMessage("DataBase Error threw on purpose",false));
                     expect(DAC.close).toHaveBeenCalled();
                     expect(DAC.rollback).toHaveBeenCalled();
-                    expect(DAC.rollback.callCount).toBe(1);
+                    expect(DAC.rollback.calls.count()).toBe(1);
                     expect(DAC.isOpen).toBeFalsy();
                     done();
                 });
@@ -4688,12 +4683,12 @@ describe('PostData', function () {
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
                 };
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
@@ -4701,9 +4696,9 @@ describe('PostData', function () {
 
 
 
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -4715,7 +4710,7 @@ describe('PostData', function () {
                         expect(postDataInner.doAllUpdate).not.toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
-                        expect(DAC.rollback.callCount).toBe(1);
+                        expect(DAC.rollback.calls.count()).toBe(1);
                         expect(DAC.isOpen).toBeFalsy();
                         done();
                     });
@@ -4741,20 +4736,20 @@ describe('PostData', function () {
                     let  res = this.createBusinessLogicResult();
                     return Deferred().resolve(res).promise();
                 };
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
 
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -4772,22 +4767,22 @@ describe('PostData', function () {
 
 
         it('should  call opt.doUpdate if physicalPostBatch is resolved and opt.doUpdate is given and there are checks' +
-            '    but they were already present',
+            ' but they were already present 2',
             function (done) {
                 let errNum = 12;
                 let rules = new BusinessLogicResult();
-                rules.addWarning("code12");
-                rules.addWarning("code13");
+                rules.addWarning("code12",false);
+                rules.addWarning("code13",false);
 
                 postData.getChecks = function(conn,post) {
                     let  res = this.createBusinessLogicResult();
-                    res.addWarning("code12");
+                    res.addWarning("code12",post);
                     return Deferred().resolve(res).promise();
                 };
 
                 postDataInner.getChecks = function(conn,post) {
                     let  res = this.createBusinessLogicResult();
-                    res.addWarning("code13");
+                    res.addWarning("code13",post);
                     return Deferred().resolve(res).promise();
                 };
 
@@ -4797,22 +4792,23 @@ describe('PostData', function () {
                     previousRules: rules
                 };
 
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
 
-                spyOn(rules, 'mergeMessages').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
+                spyOn(rules, 'mergeMessages').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -4824,9 +4820,10 @@ describe('PostData', function () {
                         expect(postDataInner.doAllUpdate).toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.commit).toHaveBeenCalled();
-                        expect(DAC.commit.callCount).toBe(1);
+                        expect(DAC.commit.calls.count()).toBe(1);
+                        expect(DAC.rollback).not.toHaveBeenCalled();
                         expect(DAC.isOpen).toBeFalsy();
-                        expect(res.checks.length).toBe(2);
+                        expect(res.checks.length).toBe(0);
                         done();
                     });
             });
@@ -4847,22 +4844,22 @@ describe('PostData', function () {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                 };
 
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
 
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -4890,12 +4887,12 @@ describe('PostData', function () {
                     return Deferred().resolve(res).promise();
                 };
 
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
@@ -4920,10 +4917,10 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -4961,12 +4958,12 @@ describe('PostData', function () {
 
                 };
 
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
@@ -4986,10 +4983,10 @@ describe('PostData', function () {
                     return def.promise();
                 };
 
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -5007,13 +5004,13 @@ describe('PostData', function () {
                     });
             });
 
-        it('should  call commit  if optional doUpdate is rejected with a previously ignored message',
+        it('should  call commit  if optional doUpdate is rejected with a previously ignored message 1',
             function (done) {
                 var result = new BusinessLogicResult();
                 const err1="another doUpdate fake error";
                 const err2="another random fake error";
-                result.addWarning(err1);
-                result.addWarning(err2);
+                result.addWarning(err1,true);
+                result.addWarning(err2,true);
                 let check1,check2;
 
                 postData.getChecks = function(conn,post) {
@@ -5029,7 +5026,7 @@ describe('PostData', function () {
 
                 postData.doAllUpdate= function (conn,res) {
                     const def = Deferred();
-                    check1=res.addWarning(err1);
+                    check1=res.addWarning(err1,true);
                     def.resolve(res);
                     return def.promise();
                 };
@@ -5037,31 +5034,31 @@ describe('PostData', function () {
 
                 postDataInner.doAllUpdate=  function (conn,res) {
                     const def = Deferred();
-                    check2=res.addWarning(err2);
+                    check2=res.addWarning(err2,true);
                     def.resolve(res);
                     return def.promise();
                 };
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
 
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                     previousRules: result
 
                 };
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -5071,8 +5068,7 @@ describe('PostData', function () {
                         //console.log(res);
                         expect(DAC.commit).toHaveBeenCalled();
                         expect(DAC.rollback).not.toHaveBeenCalled();
-                        expect(res.checks).toContain(check1);
-                        expect(res.checks).toContain(check2);
+                        expect(res.checks.length).toBe(0);  //quando il commit riesce non restituisce messaggi
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.isOpen).toBeFalsy();
                         done();
@@ -5113,27 +5109,27 @@ describe('PostData', function () {
                     def.resolve(res);
                     return def.promise();
                 };
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
 
                 const opt = {
                     optimisticLocking: new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu']),
                     previousRules: result
 
                 };
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
 
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {
@@ -5190,12 +5186,12 @@ describe('PostData', function () {
                     return def.promise();
                 };
 
-                spyOn(postData, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postData, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.resolve();
                     return def.promise();
                 });
-                spyOn(postDataInner, 'doAllPhisicalPostBatch').andCallFake(function () {
+                spyOn(postDataInner, 'doAllPhisicalPostBatch').and.callFake(function () {
                     const def = Deferred();
                     def.reject('physicalPostBatch fake error');
                     return def.promise();
@@ -5206,10 +5202,10 @@ describe('PostData', function () {
                 };
 
 
-                spyOn(postData, 'doAllUpdate').andCallThrough();
-                spyOn(postDataInner, 'doAllUpdate').andCallThrough();
-                spyOn(DAC, 'commit').andCallThrough();
-                spyOn(DAC, 'rollback').andCallThrough();
+                spyOn(postData, 'doAllUpdate').and.callThrough();
+                spyOn(postDataInner, 'doAllUpdate').and.callThrough();
+                spyOn(DAC, 'commit').and.callThrough();
+                spyOn(DAC, 'rollback').and.callThrough();
 
                 postData.doPost( opt)
                     .fail(function (err) {

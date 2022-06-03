@@ -200,7 +200,7 @@
                         return false;
                     }
 
-                    if (c.ctype === CType.date) {
+                    if (c.ctype === CType.date ) {
                         if (!val) {
                             outMsg = emptyKeyMsg;
                             outField = colname;
@@ -724,7 +724,7 @@
     (typeof appMeta === 'undefined') ? require('./Logger').logTypeEnum : appMeta.logTypeEnum,
     (typeof appMeta === 'undefined') ? undefined : appMeta.getMeta.bind(appMeta),
     (typeof appMeta === 'undefined') ? undefined : appMeta.getData,
-    (typeof jsDataSet === 'undefined') ? require('jsDataSet').CType : jsDataSet.CType,
+    (typeof jsDataSet === 'undefined') ? require('./jsDataSet').CType : jsDataSet.CType,
     (typeof appMeta === 'undefined') ? undefined : appMeta.security,
     )
 );

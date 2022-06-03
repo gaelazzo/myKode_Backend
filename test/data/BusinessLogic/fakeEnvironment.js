@@ -1,5 +1,5 @@
 'use strict';
-var Deferred = require("jQDeferred");
+var Deferred = require("JQDeferred");
 var _ = require('lodash');
 
 function Environment() {

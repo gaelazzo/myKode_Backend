@@ -1,6 +1,6 @@
 const express = require('express');
-const q = require('jsDataQuery');
-const jsDataSet = require("jsDataSet");
+const q = require('./../../client/components/metadata/jsDataQuery');
+const jsDataSet = require("./../../client/components/metadata/jsDataSet");
 const multiSelect = require('./../../src/jsMultiSelect');
 
 function multiRunSelect(req,res,next){

@@ -6,7 +6,7 @@
 
 console.log("running jsMultiSelectSpec");
 
-var $q = require('jsDataQuery');
+var $q = require('../../client/components/metadata/jsDataQuery');
 var mSel = require('../../src/jsMultiSelect');
 var Select = mSel.Select;
 var groupSelect = mSel.groupSelect;
@@ -290,8 +290,8 @@ describe('multiSelect', function () {
                 mc2 = new MultiCompare(['b'], [1]),
                 selMc1 = new Select().multiCompare(mc1),
                 selMc2 = new Select().multiCompare(mc2);
-            spyOn(selMc1.omc, 'joinWith').andCallThrough();
-            spyOn(selMc2.omc, 'joinWith').andCallThrough();
+            spyOn(selMc1.omc, 'joinWith').and.callThrough();
+            spyOn(selMc2.omc, 'joinWith').and.callThrough();
             expect(selMc1.optimizedAppendTo(selMc2)).toBeFalsy();
             expect(selMc1.omc.joinWith).toHaveBeenCalledWith(selMc2.omc);
             expect(selMc2.omc.joinWith).not.toHaveBeenCalled();
@@ -303,8 +303,8 @@ describe('multiSelect', function () {
                 mc2 = new MultiCompare(['a'], [2]),
                 selMc1 = new Select().multiCompare(mc1),
                 selMc2 = new Select().multiCompare(mc2);
-            spyOn(selMc1.omc, 'joinWith').andCallThrough();
-            spyOn(selMc2.omc, 'joinWith').andCallThrough();
+            spyOn(selMc1.omc, 'joinWith').and.callThrough();
+            spyOn(selMc2.omc, 'joinWith').and.callThrough();
             expect(selMc1.optimizedAppendTo(selMc2)).toBeTruthy();
             expect(selMc1.omc.joinWith).toHaveBeenCalledWith(selMc2.omc);
             expect(selMc2.omc.joinWith).not.toHaveBeenCalled();
@@ -318,11 +318,11 @@ describe('multiSelect', function () {
                 selMc2 = new Select().multiCompare(mc2),
                 saveOmc1 = selMc1.omc,
                 saveOmc2 = selMc2.omc;
-            spyOn(saveOmc1, 'joinWith').andCallThrough();
-            spyOn(saveOmc2, 'joinWith').andCallThrough();
-            spyOn(saveOmc1, 'getFilter').andCallThrough();
-            spyOn(saveOmc2, 'getFilter').andCallThrough();
-            spyOn($q, 'or').andCallThrough();
+            spyOn(saveOmc1, 'joinWith').and.callThrough();
+            spyOn(saveOmc2, 'joinWith').and.callThrough();
+            spyOn(saveOmc1, 'getFilter').and.callThrough();
+            spyOn(saveOmc2, 'getFilter').and.callThrough();
+            spyOn($q, 'or').and.callThrough();
             selMc1.appendTo(selMc2);
 
             expect(saveOmc1.joinWith).not.toHaveBeenCalled();
@@ -439,8 +439,8 @@ describe('multiSelect', function () {
                     return new StubObj(el);
                 });
 
-            spyOn(StubObj.prototype, 'appendTo').andCallThrough();
-            spyOn(StubObj.prototype, 'optimizedAppendTo').andCallThrough();
+            spyOn(StubObj.prototype, 'appendTo').and.callThrough();
+            spyOn(StubObj.prototype, 'optimizedAppendTo').and.callThrough();
 
             groupSelect(list);
 
@@ -455,8 +455,8 @@ describe('multiSelect', function () {
                     return new StubObj(el);
                 });
 
-            spyOn(StubObj.prototype, 'appendTo').andCallThrough();
-            spyOn(StubObj.prototype, 'optimizedAppendTo').andCallThrough();
+            spyOn(StubObj.prototype, 'appendTo').and.callThrough();
+            spyOn(StubObj.prototype, 'optimizedAppendTo').and.callThrough();
 
             groupSelect(list);
 
@@ -473,8 +473,8 @@ describe('multiSelect', function () {
                     return new StubObj(el);
                 });
 
-            spyOn(StubObj.prototype, 'appendTo').andCallThrough();
-            spyOn(StubObj.prototype, 'optimizedAppendTo').andCallThrough();
+            spyOn(StubObj.prototype, 'appendTo').and.callThrough();
+            spyOn(StubObj.prototype, 'optimizedAppendTo').and.callThrough();
 
             groupSelect(list);
 

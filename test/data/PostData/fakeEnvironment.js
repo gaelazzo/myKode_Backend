@@ -1,6 +1,6 @@
 'use strict';
-var Deferred = require("JQDeferred");
-var _ = require('lodash');
+const Deferred = require("JQDeferred");
+const _ = require('lodash');
 
 function Environment() {
     this.mySys = {};

@@ -4,7 +4,7 @@
 
 console.log("running jsMySqlFormatterSpec");
 
-const $q= require('jsDataQuery').jsDataQuery,
+const $q= require('./../../client/components/metadata/jsDataQuery').jsDataQuery,
     $qf = require('../../src/jsMySqlFormatter').jsMySqlFormatter;
 
 function fieldGet(field){return function(r){return r[field];};}
@@ -296,7 +296,7 @@ describe('DataQuery functions', function () {
             var q1 = $q.eq('a',2);
             var q2 = $q.eq('a',3);
             var q3 = $q.and(q1,q2);
-            spyOn(q1,'toSql').andCallThrough();
+            spyOn(q1,'toSql').and.callThrough();
             expect(q3.toSql($qf)).toBe('((a=2) and (a=3))');
             expect(q1.toSql).toHaveBeenCalled();
         });

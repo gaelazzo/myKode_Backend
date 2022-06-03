@@ -4,7 +4,7 @@
 
 console.log("running jsSqlServerFormatterSpec");
 
-const $q= require('jsDataQuery').jsDataQuery,
+const $q= require('../../client/components/metadata/jsDataQuery').jsDataQuery,
     $qf = require('../../src/jsSqlServerFormatter').jsSqlServerFormatter;
 
 function fieldGet(field){return function(r){return r[field];};}

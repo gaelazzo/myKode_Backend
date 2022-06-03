@@ -1,5 +1,5 @@
 'use strict';
-var dsSpace = require('jsDataSet');
+var dsSpace = require('../../../client/components/metadata/jsDataSet');
 var _ = require('lodash');
 
 

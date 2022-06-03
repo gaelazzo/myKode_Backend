@@ -8,9 +8,9 @@ const BusinessLogic = require('../../src/jsBusinessLogic').BusinessLogic,
     BusinessMessage = require('../../src/jsBusinessLogic').BusinessMessage,
     OneSubst = require('../../src/jsBusinessLogic').OneSubst,
     SubstGroup= require('../../src/jsBusinessLogic').SubstGroup,
-    dsNameSpace = require('jsDataSet'),
+    dsNameSpace = require('../../client/components/metadata/jsDataSet'),
     DataRow = dsNameSpace.DataRow,
-    q = require('jsDataQuery'),
+    q = require('../../client/components/metadata/jsDataQuery'),
     CType = dsNameSpace.CType,
     DA = require('../../src/jsDataAccess'),
     GetDataSpace = require('../../src/jsGetData'),
@@ -194,6 +194,34 @@ describe('js prerequisites', function () {
         expect(failed).toBe(true);
         done();
     });
+
+    it("A Deferred should be awaitable", async function(){
+
+        let Def = Deferred();
+        setTimeout(()=>Def.resolve(10),1000);
+        let res = await  Def;
+
+        expect(res).toBe(10);
+
+    });
+
+    it("An async should be then-able",  function(done){
+
+        let DefHelp = Deferred();
+        setTimeout(()=>DefHelp.resolve(14),1000);
+
+        async function f (){
+            return await DefHelp;
+        }
+
+        let res =f()
+            .then((res)=>{
+                expect(res).toBe(14);
+                done();
+            });
+    });
+
+
 
 
 });
@@ -586,7 +614,7 @@ describe("BusinessLogic",function() {
             let rCustomer2 = tCustomer.newRow({idcustomer: 2});
             let rCustomerPhone = tCustomerPhone.newRow(null, rCustomer2);
             let dsRules;
-            spyOn(context.getDataSpace, 'getStartingFrom').andCallFake(function (context, ds) {
+            spyOn(context.getDataSpace, 'getStartingFrom').and.callFake(function (context, ds) {
                 const def = Deferred().resolve();
                 dsRules = ds;
                 return def.promise();
@@ -994,7 +1022,7 @@ describe("BusinessLogic",function() {
             let rCustomer2 = tCustomer.newRow({idcustomer: 2});
             let rCustomerPhone = tCustomerPhone.newRow(null, rCustomer2);
             let dsRules;
-            spyOn(context.getDataSpace, 'getStartingFrom').andCallFake(function (context, ds) {
+            spyOn(context.getDataSpace, 'getStartingFrom').and.callFake(function (context, ds) {
                 const def = Deferred().resolve();
                 dsRules = ds;
                 return def.promise();
@@ -1212,27 +1240,28 @@ describe("BusinessLogic",function() {
             });
 
 
-            it("should  set queries and columns for views without a key", function (done) {
+            it("should  set queries and columns for views without a key", async function () {
                 let ds = new DataSet("temp");
                 expect(context).toBeDefined();
                 let BL = new BusinessLogic(context, changes);
 
-                BL.refineMessages_evaluateQueries(ds, bm)
-                    .then(function () {
+                try {
+                        await BL.refineMessages_evaluateQueries(ds, bm);
+
                         expect(bm[3].openSubstitutions[0].query).toBeDefined();
                         expect(bm[3].openSubstitutions[0].queryCols.size).toBe(1);
 
                         expect(bm[3].openSubstitutions[0].queryCols.has("idcustomer")).toBeTruthy();
                         expect(bm[3].openSubstitutions[0].queryString).toBe("idcustomer==29");
 
-                        done();
-                    })
-                    .catch(function (err) {
+
+                }
+                catch(err) {
                         console.log("error");
                         console.log(err);
                         expect(err).toBeUndefined();
-                        done();
-                    });
+
+                }
 
 
             });
@@ -1437,7 +1466,7 @@ describe("BusinessLogic",function() {
 
 
         describe("executeQueries", function () {
-            it("should invoke dataAccess.select for every group (same table)", async function (done) {
+            it("should invoke dataAccess.select for every group (same table)", async function () {
                 let ds = new DataSet("temp");
                 expect(context).toBeDefined();
                 let BL = new BusinessLogic(context, changes);
@@ -1467,7 +1496,7 @@ describe("BusinessLogic",function() {
 
                 //console.log(bm);
                 let selectParams = [];
-                spyOn(BL.context.dataAccess, 'select').andCallFake(function (p) {
+                spyOn(BL.context.dataAccess, 'select').and.callFake(function (p) {
                     const def = Deferred();
                     setTimeout(() => {
                         def.resolve();
@@ -1491,11 +1520,11 @@ describe("BusinessLogic",function() {
                 expect(selectParams[1].tableName).toBe("customer");
                 expect(selectParams[1].filter.toString()).toBe("idcustomer==value4 OR idcustomer==value5");
                 expect(selectParams[1].columns).toBe("idcustomer,surname");
-                done();
+
 
             });
 
-            it("should invoke dataAccess.select for every group (two tables )", async function (done) {
+            it("should invoke dataAccess.select for every group (two tables )", async function () {
                 let ds = new DataSet("temp");
 
                 expect(context).toBeDefined();
@@ -1523,7 +1552,7 @@ describe("BusinessLogic",function() {
 
                 //console.log(bm);
                 let selectParams = [];
-                spyOn(BL.context.dataAccess, 'select').andCallFake(function (p) {
+                spyOn(BL.context.dataAccess, 'select').and.callFake(function (p) {
                     const def = Deferred();
                     setTimeout(() => {
                         def.resolve();
@@ -1550,7 +1579,6 @@ describe("BusinessLogic",function() {
                 expect(selectParams[2].tableName).toBe("customerview");
                 expect(selectParams[2].filter.toString()).toBe("idcustomer==value5");
                 expect(selectParams[2].columns).toBe("idcustomer,customerkind");
-                done();
 
             });
         });
@@ -1558,7 +1586,7 @@ describe("BusinessLogic",function() {
 
         describe("applySubstitutions", function () {
 
-            it("should replace placeholders with values obtained from db", async function (done) {
+            it("should replace placeholders with values obtained from db", async function () {
                 let ds = new DataSet("temp");
 
                 expect(context).toBeDefined();
@@ -1619,7 +1647,7 @@ describe("BusinessLogic",function() {
                 expect(bm[2].msg).toBe("Text about Small and other things"); //q.and(q.eq("idcustomer","value1"),q.eq("idphone",3))
                 expect(bm[3].msg).toBe("Text about plain and other things"); //q.eq("idcustomer","value5")
                 expect(bm[4].msg).toBe("Text about 20 and other things, except for Red"); //(q.eq("idcustomer","value1")
-                done();
+
             });
 
 
@@ -2202,7 +2230,7 @@ describe("BusinessLogic",function() {
             let rCustomerPhone = tCustomerPhone.newRow({col1:'cc',col2:'dd'}, rCustomer2);
             //let rCustomerPhone1 = tCustomer.newRow({idcustomer: 1,idphone:1});
             let dsRules;
-            spyOn(context.getDataSpace, 'getStartingFrom').andCallFake(
+            spyOn(context.getDataSpace, 'getStartingFrom').and.callFake(
                 /**
                  * Fake getStartingFrom
                  * @param {Context} context
@@ -2274,7 +2302,7 @@ describe("BusinessLogic",function() {
                 });
             //let paramsUsed= [];
             let BL = new BusinessLogic(context, [rCustomer1, rCustomer2, rCustomerPhone]);
-            spyOn(BusinessLogic.prototype, 'parametersFor').andCallFake(
+            spyOn(BusinessLogic.prototype, 'parametersFor').and.callFake(
                 /**
                  *
                  * @param {DataSet} auditDS
@@ -2292,13 +2320,13 @@ describe("BusinessLogic",function() {
             let rc3 = new RowChange(1, rCustomerPhone.getRow(),[auditRows[5]],"@var3","var3");
             let changes = [rc1,rc2,rc3];
             let runSqlCalls= [];
-            spyOn(context.dataAccess, 'runSql').andCallFake(
+            spyOn(context.dataAccess, 'runSql').and.callFake(
                 async function (sql) {
                     runSqlCalls.push(sql);
                     return [{var1:3, var2:6, var3:1}];
                 }
             );
-            spyOn(BL.driver, 'getBitArray').andCallThrough();
+            spyOn(BL.driver, 'getBitArray').and.callThrough();
             let busResult = new BusinessLogicResult();
             BL.auditsPromise.then(auditsDS=> {
                 BL.execCheckBatch(context.dataAccess, changes,"various sp call",busResult,true)
@@ -2307,7 +2335,7 @@ describe("BusinessLogic",function() {
                         expect(runSqlCalls[0].indexOf("various sp call")).toBe(0);
                         expect(runSqlCalls[0].indexOf("SELECT")).toBeGreaterThan(0);
 
-                        expect(BL.driver.getBitArray.calls.length).toBe(3);
+                        expect(BL.driver.getBitArray.calls.count()).toBe(3);
 
                         expect(busResult.checks.length).toBe(5);
                         expect(busResult.checks[0].msg).toBe("audit00 on customer A");
@@ -2336,7 +2364,7 @@ describe("BusinessLogic",function() {
             let rCustomerPhone = tCustomerPhone.newRow({col1:'cc',col2:'dd'}, rCustomer2);
             //let rCustomerPhone1 = tCustomer.newRow({idcustomer: 1,idphone:1});
             let dsRules;
-            spyOn(context.getDataSpace, 'getStartingFrom').andCallFake(
+            spyOn(context.getDataSpace, 'getStartingFrom').and.callFake(
                 /**
                  * Fake getStartingFrom
                  * @param {Context} context
@@ -2408,7 +2436,7 @@ describe("BusinessLogic",function() {
                 });
             //let paramsUsed= [];
             let BL = new BusinessLogic(context, [rCustomer1, rCustomer2, rCustomerPhone]);
-            spyOn(BusinessLogic.prototype, 'parametersFor').andCallFake(
+            spyOn(BusinessLogic.prototype, 'parametersFor').and.callFake(
                 /**
                  *
                  * @param {DataSet} auditDS
@@ -2426,13 +2454,13 @@ describe("BusinessLogic",function() {
             let rc3 = new RowChange(1, rCustomerPhone.getRow(),[auditRows[5]],"@var3","var3");
             let changes = [rc1,rc2,rc3];
             let runSqlCalls= [];
-            spyOn(context.dataAccess, 'runSql').andCallFake(
+            spyOn(context.dataAccess, 'runSql').and.callFake(
                 async function (sql) {
                     runSqlCalls.push(sql);
                     return [{var1:3, var2:6, var3:1}];
                 }
             );
-            spyOn(BL.driver, 'getBitArray').andCallThrough();
+            spyOn(BL.driver, 'getBitArray').and.callThrough();
             let busResult = new BusinessLogicResult();
             BL.auditsPromise.then(auditsDS=> {
                 BL.execCheckBatch(context.dataAccess, changes,"various sp call",busResult,true)
@@ -2441,7 +2469,7 @@ describe("BusinessLogic",function() {
                         expect(runSqlCalls[0].indexOf("various sp call")).toBe(0);
                         expect(runSqlCalls[0].indexOf("SELECT")).toBeGreaterThan(0);
 
-                        expect(BL.driver.getBitArray.calls.length).toBe(3);
+                        expect(BL.driver.getBitArray.calls.count()).toBe(3);
                         expect(busResult.checks.length).toBe(4);
                         expect(busResult.checks[0].msg).toBe("error on customer");
                         expect(busResult.checks[0].idRule).toBe("audit00");
@@ -2472,7 +2500,7 @@ describe("BusinessLogic",function() {
             let rCustomerPhone = tCustomerPhone.newRow(null, rCustomer2);
             //let rCustomerPhone1 = tCustomer.newRow({idcustomer: 1,idphone:1});
             let dsRules;
-            spyOn(context.getDataSpace, 'getStartingFrom').andCallFake(
+            spyOn(context.getDataSpace, 'getStartingFrom').and.callFake(
                 /**
                  * Fake getStartingFrom
                  * @param {Context} context
@@ -2544,7 +2572,7 @@ describe("BusinessLogic",function() {
                 });
             let paramsUsed= [];
             let BL = new BusinessLogic(context, [rCustomer1, rCustomer2, rCustomerPhone]);
-            spyOn(BusinessLogic.prototype, 'parametersFor').andCallFake(
+            spyOn(BusinessLogic.prototype, 'parametersFor').and.callFake(
                 /**
                  *
                  * @param {DataSet} auditDS
@@ -2596,7 +2624,7 @@ describe("BusinessLogic",function() {
             let rCustomerPhone = tCustomerPhone.newRow(null, rCustomer2);
             //let rCustomerPhone1 = tCustomer.newRow({idcustomer: 1,idphone:1});
             let dsRules;
-            spyOn(context.getDataSpace, 'getStartingFrom').andCallFake(
+            spyOn(context.getDataSpace, 'getStartingFrom').and.callFake(
                 /**
                  * Fake getStartingFrom
                  * @param {Context} context
@@ -2670,10 +2698,10 @@ describe("BusinessLogic",function() {
             let paramsUsed= [];
 
             let BL = new BusinessLogic(context, [rCustomer1, rCustomer2, rCustomerPhone]);
-            spyOn(BusinessLogic.prototype, 'parametersFor').andCallThrough();
+            spyOn(BusinessLogic.prototype, 'parametersFor').and.callThrough();
 
             let paramsExecBatchUsed= [];
-            spyOn(BusinessLogic.prototype, 'execCheckBatch').andCallFake(
+            spyOn(BusinessLogic.prototype, 'execCheckBatch').and.callFake(
                 function(conn,changes, res,post,results) {
                     paramsExecBatchUsed.push({conn:conn,changes:changes,res:res,post:post,results:results});
                     //eventually add some error to results
@@ -2686,7 +2714,7 @@ describe("BusinessLogic",function() {
                 BL.getChecks(result, context.dataAccess, true)
                     .then(function(checks){
 
-                        expect(BusinessLogic.prototype.parametersFor.calls.length).toBe(3);
+                        expect(BusinessLogic.prototype.parametersFor.calls.count()).toBe(3);
                         expect(paramsExecBatchUsed.length).toBe(1);
                         expect(paramsExecBatchUsed[0].changes.length).toBe(3);
                         expect(paramsExecBatchUsed[0].changes[0].tableName).toBe("customer");
@@ -2728,7 +2756,7 @@ describe("BusinessLogic",function() {
             let rCustomerPhone = tCustomerPhone.newRow(null, rCustomer2);
             //let rCustomerPhone1 = tCustomer.newRow({idcustomer: 1,idphone:1});
             let dsRules;
-            spyOn(context.getDataSpace, 'getStartingFrom').andCallFake(
+            spyOn(context.getDataSpace, 'getStartingFrom').and.callFake(
                 /**
                  * Fake getStartingFrom
                  * @param {Context} context
@@ -2802,10 +2830,10 @@ describe("BusinessLogic",function() {
             let paramsUsed= [];
 
             let BL = new BusinessLogic(context, [rCustomer1, rCustomer2, rCustomerPhone]);
-            spyOn(BusinessLogic.prototype, 'parametersFor').andCallThrough();
+            spyOn(BusinessLogic.prototype, 'parametersFor').and.callThrough();
 
             let paramsExecBatchUsed= [];
-            spyOn(BusinessLogic.prototype, 'execCheckBatch').andCallFake(
+            spyOn(BusinessLogic.prototype, 'execCheckBatch').and.callFake(
                 /**
                  * fake method
                  * @param {DataAccess} conn
@@ -2840,7 +2868,7 @@ describe("BusinessLogic",function() {
                         expect(checks.checks.length).toBe(3);
                         expect(checks.canIgnore).toBe(false);
 
-                        expect(BusinessLogic.prototype.parametersFor.calls.length).toBe(3);
+                        expect(BusinessLogic.prototype.parametersFor.calls.count()).toBe(3);
 
                         expect(paramsExecBatchUsed.length).toBe(2);
                         expect(paramsExecBatchUsed[0].changes.length).toBe(2);

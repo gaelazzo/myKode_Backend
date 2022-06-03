@@ -1,10 +1,10 @@
 /*globals Context,sqlFun,DataRelation,ObjectRow  */
 
 
-const dsSpace = require('jsDataSet'),
+const dsSpace = require('../client/components/metadata/jsDataSet'),
     dataRowState = dsSpace.dataRowState,
     _ = require('lodash'),
-    dq = require('jsDataQuery'),
+    dq = require('../client/components/metadata/jsDataQuery'),
     dbList = require('./jsDbList'),
     multiSelect = require('./jsMultiSelect'),
     Model= require('./../client/components/metadata/MetaModel');

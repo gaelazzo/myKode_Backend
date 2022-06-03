@@ -8,7 +8,7 @@
 
 /* jshint -W069 */
 const GetDataSpace = require('../src/jsGetData');
-const dsSpace = require('jsDataSet');
+const dsSpace = require('./../client/components/metadata/jsDataSet');
 const DataSet = dsSpace.DataSet;
 const DataColumn = dsSpace.DataColumn;
 const DataRowVersion = dsSpace.dataRowVersion;
@@ -28,7 +28,7 @@ const DataAccess = require('./jsDataAccess').DataAccess;
 const Select = jsMultiSelect.Select;
 const isolationLevels = require('./jsDataAccess').isolationLevels;
 
-const q = require("jsDataQuery").jsDataQuery;
+const q = require("./../client/components/metadata/jsDataQuery").jsDataQuery;
 const _ = require('lodash');
 const BusinessLogicResult = require("./jsPostData").BusinessLogicResult;
 const BasicMessage = require("./jsPostData").BasicMessage;

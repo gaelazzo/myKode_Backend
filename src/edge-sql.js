@@ -267,10 +267,14 @@ EdgeConnection.prototype.updateBatch = function (query,timeout) {
 EdgeConnection.prototype.queryLines = function (query, raw,timeout) {
 	let def = defer(),
 		lastMeta,
-		callback = function (data) {
+		callback = function (data, extCallback) {
 			if (data.resolve) {
 				def.resolve();
 				return {};
+			}
+			if (data.meta){
+				lastMeta = data.meta;
+				if (!data.rows) def.notify(data);
 			}
 			if (data.rows) {
 				if (raw) {
@@ -278,10 +282,9 @@ EdgeConnection.prototype.queryLines = function (query, raw,timeout) {
 				} else {
 					def.notify({row: simpleObjectifier(lastMeta, data.rows[0])});
 				}
-			} else {
-				lastMeta = data.meta;
-				def.notify(data);
 			}
+
+			if (extCallback)extCallback();
 			return {};
 		},
 		edge      = require('edge-js'),
@@ -331,19 +334,22 @@ EdgeConnection.prototype.queryPackets = function (query, raw, packSize, timeout)
 		packetSize = packSize || 0,
 		lastMeta,
 		currentSet = -1,
-		callback = function (data) {
+		callback = function (data, extCallback) {
 			if (data.resolve) {
+				def.resolve();
 				def.resolve();
 				return {};
 			}
+			//meta is received for any new table, eventually with data
 			if (data.meta) {
 				currentSet += 1;
 			}
 			data.set = currentSet;
 			if (raw) {
 				def.notify(data);
-			} else {
-				if (data.meta) {
+			}
+			else {
+				if (data.meta) { //meta when present is a list of column names
 					lastMeta = data.meta;
 				}
 				if (data.rows) {
@@ -351,6 +357,7 @@ EdgeConnection.prototype.queryPackets = function (query, raw, packSize, timeout)
 				}
 
 			}
+			if (extCallback) extCallback();
 			return {};
 		};
 	let that = this;

@@ -5,10 +5,10 @@
  */
 
 /* jshint -W116 */
-const dsSpace = require('jsDataSet');
+const dsSpace = require('./../client/components/metadata/jsDataSet');
 const DataSet = dsSpace.DataSet;
 const QParser = require('./jsDataQueryParser').JsDataQueryParser;
-const Q = require('jsDataQuery');
+const Q = require('./../client/components/metadata/jsDataQuery');
 const _ = require("lodash");
 
 /**

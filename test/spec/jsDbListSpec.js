@@ -5,22 +5,17 @@ console.log("running jsDbListSpec");
 
 const path = require("path");
 const DataAccess = require('../../src/jsDataAccess').DataAccess;
-/**
- *
- * @type {Deferred}
- */
+
 const Deferred = require("JQDeferred");
-let DataSet =  require("jsDataSet").DataSet;
-let DataTable =  require("jsDataSet").DataTable;
-let DataColumn = require("jsDataSet").DataColumn;
+const DataSet =  require("./../../client/components/metadata/jsDataSet").DataSet;
+const DataTable =  require("./../../client/components/metadata/jsDataSet").DataTable;
+const DataColumn = require("./../../client/components/metadata/jsDataSet").DataColumn;
 
 
 const dbList = require('../../src/jsDbList');
 const DbDescriptor = dbList.DbDescriptor;
 
-/**
- * @type fs
- */
+
 const fs = require('fs');
 
 const _ = require('lodash');

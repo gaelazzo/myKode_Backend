@@ -1,10 +1,10 @@
 const Path = require("path");
-const DataSet = require("jsDataSet").DataSet;
+const DataSet = require("./../../client/components/metadata/jsDataSet").DataSet;
 const fs = require('fs');
 const isAnonymousAllowed = require("./_AnonymousAllowed");
 const express = require("express");
 const asyncHandler = require("express-async-handler");
-const q = require("jsDataQuery");
+const q = require("./../../client/components/metadata/jsDataQuery");
 const metaModel = require('./../../client/components/metadata/MetaModel');
 const _ = require('lodash');
 /**

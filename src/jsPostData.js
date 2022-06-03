@@ -5,7 +5,7 @@
  */
 
 /* jshint -W116 */
-const dsSpace = require('jsDataSet');
+const dsSpace = require('./../client/components/metadata/jsDataSet');
 const DataSet = dsSpace.DataSet;
 
 /**
@@ -1261,7 +1261,7 @@ PostData.prototype.doPost = function(options) {
                    * @return {exports}
                    */
                   function (res) {
-                    if (res.checks.length !== prevRuleLen) return resolve();
+                    if (res.checks.length > prevRuleLen) return resolve();
               });
         })
         .then(function () {

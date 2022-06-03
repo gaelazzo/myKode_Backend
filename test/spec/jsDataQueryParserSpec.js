@@ -11,12 +11,9 @@ const qParser = require('../../src/jsDataQueryParser').JsDataQueryParser,
         BuildingExpr =  require('../../src/jsDataQueryParser').BuildingExpression,
     Token = require('../../src/jsDataQueryParser').Token,
     TokenKind =  require('../../src/jsDataQueryParser').TokenKind,
-    q = require('jsDataQuery');
+    q = require('./../../client/components/metadata/jsDataQuery');
 
-/**
- *
- * @type {Deferred}
- */
+
 const Deferred = require("JQDeferred");
 const Environment = require('../data/jsDataQueryParser/fakeEnvironment'),
     getContext  =  require('../data/jsDataQueryParser/fakeContext').getContext,

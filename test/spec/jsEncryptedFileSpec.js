@@ -3,9 +3,9 @@
 
 console.log("running jsEncryptedFileSpec");
 
-var fs = require('fs');
+const fs = require('fs');
 
-var EncryptedFile = require('../../src/jsEncryptedFile');
+const EncryptedFile = require('../../src/jsEncryptedFile');
 
 describe('EncryptedFile', function () {
 

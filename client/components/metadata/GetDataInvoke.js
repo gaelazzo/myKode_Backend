@@ -9,7 +9,7 @@
 
 const Deferred = require("./EventManager").Deferred;
 /*jsDataQuery*/
-const q = require('jsDataQuery').jsDataQuery;
+const q = require('./jsDataQuery').jsDataQuery;
 const getDataUtils = require("./GetDataUtils");
 const logger =  require('./Logger').logger ;
 const logType = require('./Logger').logTypeEnum;
@@ -22,7 +22,7 @@ const Select = mSel.Select;
 const GetDataSet = require("./GetDataSet");
 const GetData = require("./../../../src/jsGetData");
 const {orderBy} = require("lodash");
-const jsDataSet = require("jsDataSet");
+const jsDataSet = require("./jsDataSet");
 const {readFile} = require("fs/promises");
 const path = require("path");
 

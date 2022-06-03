@@ -1,7 +1,7 @@
 const express = require('express');
 
 const path = require('path');
-const q = require('jsDataQuery');
+const q = require('./../../client/components/metadata/jsDataQuery');
 let uploadPath = "Uploads/";
 
 function download(req,res,next){

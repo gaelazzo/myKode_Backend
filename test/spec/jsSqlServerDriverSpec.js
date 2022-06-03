@@ -1,13 +1,14 @@
 /*globals describe,beforeEach,it,expect,jasmine,spyOn,afterEach,xit,progress*/
+'use strict';
 
 
 console.log("running jsSqlServerDriverSpec");
 
-'use strict';
-var $dq = require('jsDataQuery');
-var _ = require('lodash');
-var fs = require("fs");
-const path = require("path");
+
+const $dq = require('./../../client/components/metadata/jsDataQuery'),
+     _ = require('lodash'),
+    fs = require("fs"),
+    path = require("path");
 
 
 /**
@@ -24,7 +25,8 @@ const path = require("path");
 //PUT THE  FILENAME OF YOUR FILE HERE:
 
 
-const configName = path.join('test',  'dbSqlServer.json');
+const configName = 'test/data/jsSqlServerDriver/db.json';
+    //path.join('test','data', 'jsSqlServerDriver', 'dbSqlServer.json');
 
 let dbConfig;
 if (process.env.TRAVIS){

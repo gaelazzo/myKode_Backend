@@ -1,5 +1,5 @@
 'use strict';
-var dbList = require('../../../src/jsDbList'),
+const dbList = require('../../../src/jsDbList'),
     envProvider = require('./fakeEnvironmentProvider'),
     getDescriptor = dbList.getDescriptor;
 
@@ -7,7 +7,7 @@ var dbList = require('../../../src/jsDbList'),
  *
  * @type {Deferred}
  */
-var    Deferred = require("JQDeferred");
+const    Deferred = require("JQDeferred");
 
 
 

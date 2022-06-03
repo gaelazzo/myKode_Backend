@@ -1,7 +1,9 @@
 
-const jsDataSet = require('jsDataSet');
+const jsDataSet = require('../../client/components/metadata/jsDataSet');
 const metaModel = require('../../client/components/metadata/MetaModel');
 const _ = require('lodash');
+
+console.log("running ModelSpec");
 
 describe("MetaModel", function () {
 

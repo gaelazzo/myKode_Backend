@@ -1,13 +1,13 @@
 const express = require('express');
 const  isAnonymousAllowed = require("../data/_AnonymousAllowed");
-const jsDataSet = require("jsDataSet");
+const jsDataSet = require("./../../client/components/metadata/jsDataSet");
 let DataSetPath = "./../../datasets";
 const asyncHandler = require('express-async-handler'); //https://zellwk.com/blog/async-await-express/
 const metaModel = require("./../../client/components/metadata/MetaModel");
 const {readFile} = require("fs/promises");
-const q = require("jsDataQuery");
+const q = require("./../../client/components/metadata/jsDataQuery");
 const GetDataSet = require("./../../client/components/metadata/GetDataSet");
-const {DataSet} = require("jsDataSet");
+const {DataSet} = require("./../../client/components/metadata/jsDataSet");
 
 async function getNewRowCopyChilds(req,res,next){
     let ctx = req.app.locals.context;

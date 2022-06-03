@@ -1,6 +1,6 @@
 const express = require("express");
 const asyncHandler = require("express-async-handler");
-const q = require("jsDataQuery");
+const q = require("./../../client/components/metadata/jsDataQuery");
 const parser = require("../../src/jsDataQueryParser").JsDataQueryParser;
 const AuthUtils = require("./../auth/_autUtils");
 

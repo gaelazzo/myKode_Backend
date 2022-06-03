@@ -87,10 +87,11 @@
                 }
                 else {
                     //executed on server
-                    this.dictionary =  new (require("./../languages/LocalResource"+lbnSuffix))();
+                    this.dictionary =  require("./../languages/LocalResource"+lbnSuffix).resource;
                 }
 
             } catch (e){
+                console.log(e);
                 console.log("Language " + lng + " doesn't exist! Go to i18n folder and create the file localResource" + lng + ".js");
             }
         },

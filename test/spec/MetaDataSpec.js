@@ -1,12 +1,23 @@
-/*globals ObjectRow,DataRelation,define,self,jsDataSet,jsDataQuery */
+/*globals define,self */
+
+console.log("running MetaDataSpec");
+let LocalResource = require("./../../client/components/metadata/LocalResource");
+
+let localResource = new LocalResource();
+localResource.setLanguage("it");
+
+let MetaData = require("./../../client/components/metadata/MetaData");
+
+let jsDataSet = require("./../../client/components/metadata/jsDataSet");
+const CType = jsDataSet.CType;
+
+let jsDataQuery = require("./../../client/components/metadata/jsDataQuery");
 
 describe('MetaData', function () {
-    var MetaData;
-    var localResource = appMeta.localResource;
-
     beforeEach(function() {
-        MetaData = appMeta.MetaData;
+        //MetaData = appMeta.MetaData;
         //loadFixtures('HtmlPageTest.html');
+
     });
 
     describe("MetaData class",
@@ -41,15 +52,15 @@ describe('MetaData', function () {
                     let stringTooLong =  localResource.dictionary.stringTooLong;
                     let noDataSelected =  localResource.dictionary.noDataSelected;
 
-                    var ds = new jsDataSet.DataSet("temp");
-                    var t = ds.newTable("t");
-                    var objrow1, objrow2, objrow3, objrow4 ;
+                    const ds = new jsDataSet.DataSet("temp");
+                    const t = ds.newTable("t");
+                    let objrow1, objrow2, objrow3, objrow4 ;
 
-                    t.setDataColumn("Code", "Single");
-                    t.setDataColumn("Name", "String");
-                    t.setDataColumn("City", "String");
-                    t.setDataColumn("Born", "DateTime");
-                    t.setDataColumn("Age", "Int32");
+                    t.setDataColumn("Code", CType.number);
+                    t.setDataColumn("Name", CType.string);
+                    t.setDataColumn("City", CType.string);
+                    t.setDataColumn("Born", CType.date);
+                    t.setDataColumn("Age", CType.int);
 
                     t.columns["Code"].allowDbNull = false;
                     t.columns["Name"].allowDbNull = false;
@@ -75,25 +86,31 @@ describe('MetaData', function () {
                     t.add(objrow4);
 
                     var meta = new MetaData();
+                    meta.setLanguage("it");
+
                     meta.isValid(objrow1.getRow()).then(function (result) {
-                        expect(result).toBeNull()
+                        expect(result).toBeNull();
                     });
 
                     meta.isValid().then(function (result) {
+                        expect(result).not.toBeNull("isValid without data gives error");
                         expect(result.errMsg).toContain(noDataSelected);
                     });
 
                     meta.isValid(objrow2.getRow()).then(function (result) {
+                        expect(result).not.toBeNull("Zero column with allowZero false errors");
                         expect(result.errField).toBe("Code");
                         expect(result.errMsg).toContain(emptyKeyMsg); // colonna zero e non permette zero
                     });
 
                     meta.isValid(objrow3.getRow()).then(function (result) {
+                        expect(result).not.toBeNull("empty Date with not allowNull errors");
                         expect(result.errField).toBe("Born");
                         expect(result.errMsg).toContain(emptyFieldMsg); // data default vuota
                     });
 
                     meta.isValid(objrow4.getRow()).then(function (result) {
+                        expect(result).not.toBeNull("string too long errors");
                         expect(result.errField).toBe("City");
                         expect(result.errMsg).toContain(stringTooLong);
                     });

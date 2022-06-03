@@ -251,7 +251,7 @@
         selectedRows: "righe selezionate"
     };
 
-
+    let resource = new LocalResourceIt();
 
     // Some AMD build optimizers like r.js check for condition patterns like the following:
     //noinspection JSUnresolvedVariable
@@ -260,24 +260,24 @@
         // errors in cases where lodash is loaded by a script tag and not intended
         // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
         // more details.
-        root.localResourceIt = LocalResourceIt;
+        root.resource = resource;
 
         // Define as an anonymous module so, through path mapping, it can be
         // referenced as the "underscore" module.
         //noinspection JSUnresolvedFunction
         define(function () {
-            return LocalResourceIt;
+            return resource;
         });
     }
     // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
     else if (freeExports && freeModule) {
         // Export for Node.js or RingoJS.
         if (moduleExports) {
-            (freeModule.exports = LocalResourceIt).localResourceIt = LocalResourceIt;
+            (freeModule.exports = resource).resource = resource;
         }
         // Export for Narwhal or Rhino -require.
         else {
-            freeExports.localResourceIt = LocalResourceIt;
+            freeExports.resource = resource;
         }
     }
     else {
@@ -286,7 +286,7 @@
             root.appMeta.localResourceIt = LocalResourceIt;
         }
         else {
-            root.localResourceIt=LocalResourceIt;
+            root.resource=resource;
         }
 
     }

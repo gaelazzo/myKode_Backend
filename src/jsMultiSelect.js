@@ -8,7 +8,7 @@
 const util = require('util');
 const _ = require('lodash');
 
-const $dq = require('jsDataQuery');
+const $dq = require('./../client/components/metadata/jsDataQuery');
 
 
 /**

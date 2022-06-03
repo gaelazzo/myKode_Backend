@@ -1,5 +1,5 @@
 const express = require('express');
-const q = require('jsDataQuery');
+const q = require('./../../client/components/metadata/jsDataQuery');
 const asyncHandler = require("express-async-handler");
 
 async function doReadValue(req,res,next){

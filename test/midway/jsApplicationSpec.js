@@ -1,7 +1,9 @@
-console.log("running ApplicationSpec");
-
 /* globals describe, beforeEach,it,expect,jasmine,spyOn */
 'use strict';
+
+console.log("running ApplicationSpec");
+
+
 
 
 /*jshint -W069*/
@@ -10,8 +12,8 @@ console.log("running ApplicationSpec");
 const path = require("path");
 const FormData = require('form-data');
 const fs = require("fs");
-const q = require('jsDataQuery');
-const jsDataSet = require("jsDataSet");
+const q = require('../../client/components/metadata/jsDataQuery');
+const jsDataSet = require("../../client/components/metadata/jsDataSet");
 const configName = path.join('config', 'dbList.json');
 const http = require("http");
 let request = require('request');

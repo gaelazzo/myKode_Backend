@@ -4,9 +4,9 @@ const asyncHandler = require("express-async-handler");
 const DBList = require("./../../src/jsDbList");
 let AuthUtils = require("./_autUtils");
 const _ = require("lodash");
-const q = require("jsDataQuery");
+const q = require("./../../client/components/metadata/jsDataQuery");
 const {PostData} = require("../../src/jsPostData");
-const jsDataSet = require("jsDataSet");
+const jsDataSet = require("./../../client/components/metadata/jsDataSet");
 const {stat} = require("fs/promises");
 const jsPassword = require("./../../src/jsPassword");
 

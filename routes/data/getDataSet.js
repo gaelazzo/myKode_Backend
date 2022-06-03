@@ -1,9 +1,9 @@
 const express = require('express');
 const  isAnonymousAllowed = require("../data/_AnonymousAllowed");
-const jsDataSet = require("jsDataSet");
+const jsDataSet = require("./../../client/components/metadata/jsDataSet");
 let DataSetPath = "./../../datasets";
 const asyncHandler = require('express-async-handler'); //https://zellwk.com/blog/async-await-express/
-const metaModel = require("./../../client/components/metadata/MetaModel");
+const metaModel = require("../../client/components/metadata/MetaModel.js");
 const {readFile} = require("fs/promises");
 
 const path = require('path');

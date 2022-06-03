@@ -1,5 +1,5 @@
-var dsSpace = require('jsDataSet');
-var _ = require('lodash');
+const dsSpace = require('../../../client/components/metadata/jsDataSet');
+const _ = require('lodash');
 
 
 var

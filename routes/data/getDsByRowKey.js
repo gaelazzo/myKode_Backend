@@ -1,7 +1,7 @@
 const isAnonymousAllowed = require("../data/_AnonymousAllowed");
 const express = require("express");
 const asyncHandler = require("express-async-handler");
-const q = require("jsDataQuery");
+const q = require("./../../client/components/metadata/jsDataQuery");
 const GetData = require("../../src/jsGetData");
 const attachUtils = require("./../../client/components/metadata/_attachmentutils");
 

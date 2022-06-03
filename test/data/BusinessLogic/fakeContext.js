@@ -1,6 +1,6 @@
 var _ = require('lodash'),
-    dbList = require('jsDbList'),
-    dataAccess = require('jsDataAccess'),
+    dbList = require('./../../../src/jsDbList'),
+    dataAccess = require('../../../src/jsDataAccess'),
     envProvider = require('./fakeEnvironmentProvider'),
     getDescriptor = dbList.getDescriptor,
     Deferred = require("JQDeferred"),
