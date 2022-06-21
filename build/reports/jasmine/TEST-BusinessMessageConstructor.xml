@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BusinessMessage Constructor" errors="0" tests="7" failures="0" time="0.003" timestamp="2021-10-28T15:35:11">
+  <testcase classname="BusinessMessage Constructor" name="msg should be set to Long Message (plain message)" time="0.001"></testcase>
+  <testcase classname="BusinessMessage Constructor" name="msg should be set to Long Message (plain message)" time="0"></testcase>
+  <testcase classname="BusinessMessage Constructor" name="msg should compile same table fields" time="0"></testcase>
+  <testcase classname="BusinessMessage Constructor" name="msg should compile parent table fields" time="0.001"></testcase>
+  <testcase classname="BusinessMessage Constructor" name="msg should compile child table fields" time="0"></testcase>
+  <testcase classname="BusinessMessage Constructor" name="msg should not compile child table fields if not really child rows" time="0"></testcase>
+  <testcase classname="BusinessMessage Constructor" name="msg should compile multiple fields" time="0.001"></testcase>
+</testsuite>

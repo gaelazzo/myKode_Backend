@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="EncryptedFile Encrypted File (encrypted)" errors="0" tests="12" failures="0" time="0.09" timestamp="2021-07-08T15:04:28">
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Encrypted file should be a function" time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Encrypted file should have a read method " time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Encrypted file should have a write method " time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Encrypted file should have a fileName property" time="0"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Encrypted file should have a fileName property" time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Reading a not-existent file should return an empty object" time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="writing an object should create a json copy of the object" time="0.006"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Reading a new file should return a new object" time="0.005"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Reading same file should return same object if available" time="0.013"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="Multiple calls to write/read should not generate errors" time="0.055"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="plain file should not be created" time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (encrypted)" name="After writing crypted, reading will get that object" time="0.005"></testcase>
+</testsuite>

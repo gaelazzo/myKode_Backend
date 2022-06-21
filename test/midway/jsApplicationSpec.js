@@ -72,7 +72,9 @@ describe('js prerequisites', function () {
 describe('rest api',
     function () {
 
-        const timeout = 500000;
+        const timeout = 30000;
+
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout;
 
         let sqlConn;
 
@@ -85,41 +87,52 @@ describe('rest api',
             return undefined;
         }
 
+
+
         beforeEach(function (done) {
             sqlConn = getConnection('test_sqlServer');
             sqlConn.open().done(function () {
+                console.log("Connection opened");
                 done();
             }).fail(function (err) {
-                console.log('Error failing ' + err);
-                done();
+                console.log('Error during opening: ' + err);
+                throw err;
             });
-        }, timeout);
-
-        afterEach(function () {
-            if (sqlConn) {
-                sqlConn.destroy();
-            }
-            sqlConn = null;
         });
 
-        describe('setup dataBase', function () {
-            it('should run the setup script', function (done) {
+        afterEach(function (done) {
+            if (sqlConn) {
+                console.log("Connection closed");
+                sqlConn.destroy()
+                    .then(()=>done());
+            }
+            sqlConn = null;
+        },timeout);
+
+        //describe('setup dataBase', function () {
+        it('should run the setup script', function (done) {
+                console.log("Running script");
                 sqlConn.run(fs.readFileSync('test/data/jsApplication/setup.sql').toString())
                     .done(function () {
+                        console.log("db created");
                         expect(true).toBeTruthy();
                         done();
+                        return;
                     })
                     .fail(function (res) {
+                        console.log(res);
                         expect(res).toBeUndefined();
                         done();
                     });
-            }, timeout);
+            },timeout);
 
-        });
+        //});
 
         it("select ws: query on customusergroup returns DataTable",
             function (done) {
-                let filter = q.or(q.eq('idcustomuser', 'AZZURRO'), q.eq('idcustomuser', 'BIANCO'), q.eq('idcustomuser', 'NERO'));
+                let filter = q.or(q.eq('idcustomuser', 'AZZURRO'),
+                    q.eq('idcustomuser', 'BIANCO'),
+                    q.eq('idcustomuser', 'NERO'));
                 let objser = q.toObject(filter);
                 let filterSerialized = JSON.stringify(objser);
 
@@ -135,8 +148,9 @@ describe('rest api',
                 }, function (error, response, body) {
                     if (error) {
                         console.log(error);
-                        expect(true).toBe(false);
+                        expect(error).toBe(undefined);
                         done();
+                        return;
                     }
                     expect(response).toBeDefined();
                     const dtObj = JSON.parse(body);
@@ -164,8 +178,9 @@ describe('rest api',
                 }, function (error, response, body) {
                     if (error) {
                         console.log(error);
-                        expect(true).toBe(false);
+                        expect(error).toBe(undefined);
                         done();
+                        return;
                     }
                     // N.B respect to .net be, express send() funct not send numbers. So we have to manage the response in the client.
                     // --> client must expect string type not number type!
@@ -212,10 +227,11 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(response).toBeDefined();
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
                     expect(ds.name).toBe('temp');
                     expect(ds.tables.customuser.rows.length).toBe(2);
@@ -238,10 +254,11 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(response).toBeDefined();
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
                     expect(ds.name).toBe('customuser_test');
                     expect(ds.tables.customuser).toBeDefined();
@@ -256,7 +273,9 @@ describe('rest api',
 
         it("getPagedTable ws: returns customusergroup paged datatable",
             function (done) {
-                let filter = q.or(q.eq('idcustomuser', 'AZZURRO'), q.eq('idcustomuser', 'BIANCO'), q.eq('idcustomuser', 'NERO'));
+                let filter = q.or(q.eq('idcustomuser', 'AZZURRO'),
+                    q.eq('idcustomuser', 'BIANCO'),
+                    q.eq('idcustomuser', 'NERO'));
                 let objser = q.toObject(filter);
                 let filterSerialized = JSON.stringify(objser);
                 const tableName = 'customusergroup';
@@ -277,13 +296,14 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
-                    var objParsed = JSON.parse(body);
-                    var totpage = objParsed.totpage;
-                    var totrows = objParsed.totrows;
+                    const objParsed = JSON.parse(body);
+                    const totpage = objParsed.totpage;
+                    const totrows = objParsed.totrows;
                     expect(totpage).toBe(1);
                     expect(totrows).toBe(3);
-                    var dtObj = JSON.parse(objParsed.dt);
+                    const dtObj = JSON.parse(objParsed.dt);
                     const dt = new jsDataSet.DataTable(dtObj.name);
                     dt.deSerialize(dtObj, true);
                     expect(dt.name).toBe('customusergroup');
@@ -305,8 +325,8 @@ describe('rest api',
                 }, function (error, response, body) {
 
                     expect(response).toBeDefined();
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
                     //
@@ -332,10 +352,11 @@ describe('rest api',
                             console.log(error);
                             expect(true).toBe(false);
                             done();
+                            return;
                         }
                         expect(response).toBeDefined();
-                        var objParsed = JSON.parse(body);
-                        var ds = new jsDataSet.DataSet(objParsed.name);
+                        const objParsed = JSON.parse(body);
+                        const ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         expect(ds.name).toBe('customuser_test');
                         expect(ds.tables.customuser.rows.length).toBe(1);
@@ -364,15 +385,15 @@ describe('rest api',
                     }
                 }, function (error, response, body) {
 
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
                     const objrow = {idcustomuser: idcustomuser};
                     ds.tables.customuser.add(objrow);
                     ds.tables.customuser.acceptChanges();
-                    var objser = ds.serialize(true);
-                    var dsSerialized = JSON.stringify(objser);
+                    const objser = ds.serialize(true);
+                    const dsSerialized = JSON.stringify(objser);
 
                     const filter = ds.tables.customuser.keyFilter(objrow);
                     let objserFilter = q.toObject(filter);
@@ -392,9 +413,10 @@ describe('rest api',
                             console.log(error);
                             expect(true).toBe(false);
                             done();
+                            return;
                         }
-                        var objParsed = JSON.parse(body);
-                        var ds = new jsDataSet.DataSet(objParsed.name);
+                        const objParsed = JSON.parse(body);
+                        const ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         expect(ds.name).toBe('customuser_test');
                         expect(ds.tables.customuser.rows.length).toBe(1);
@@ -422,15 +444,15 @@ describe('rest api',
                     }
                 }, function (error, response, body) {
 
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
                     const objrow = {idcustomuser: idcustomuser};
                     ds.tables.customuser.add(objrow);
                     ds.tables.customuser.acceptChanges();
-                    var objser = ds.serialize(true);
-                    var dsSerialized = JSON.stringify(objser);
+                    const objser = ds.serialize(true);
+                    const dsSerialized = JSON.stringify(objser);
 
                     const filter = ds.tables.customuser.keyFilter(objrow);
                     let objserFilter = q.toObject(filter);
@@ -451,8 +473,8 @@ describe('rest api',
                             expect(true).toBe(false);
                             done();
                         }
-                        var objParsed = JSON.parse(body);
-                        var ds = new jsDataSet.DataSet(objParsed.name);
+                        const objParsed = JSON.parse(body);
+                        const ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         expect(ds.name).toBe('customuser_test');
                         // soloe le periferiche poichè  onlyPeripherals: true
@@ -476,9 +498,10 @@ describe('rest api',
                 }, function (error, response, body) {
                     if (error) {
                         console.log(error);
-                        console.log(bodyparsed.error);
+                        console.log(body.parsed.error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(response).toBeDefined();
                     expect(typeof body).toBe("string");
@@ -507,6 +530,7 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(response).toBeDefined();
                     expect(typeof body).toBe("string");
@@ -531,8 +555,9 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
-                    var objParsed = JSON.parse(body);
+                    const objParsed = JSON.parse(body);
                     expect(Object.keys(objParsed.sys).length).toBe(0);
                     expect(Object.keys(objParsed.usr).length).toBeGreaterThan(0);
                     expect(objParsed.usr.usergrouplist).toBe('ORGANIGRAMMA');
@@ -552,6 +577,7 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(response).toBeDefined();
                     const dtObj = JSON.parse(body);
@@ -575,6 +601,7 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(response).toBeDefined();
                     const dtObj = JSON.parse(body);
@@ -603,8 +630,8 @@ describe('rest api',
                     }
                 }, function (error, response, body) {
 
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
                     const objrow = {idcustomgroup: idcustomgroup};
@@ -624,23 +651,23 @@ describe('rest api',
                         }
                     }, function (error, response, body) {
 
-                        var objParsed = JSON.parse(body);
-                        var ds = new jsDataSet.DataSet(objParsed.name);
+                        const objParsed = JSON.parse(body);
+                        const ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         // 3. modifico il dataset
-                        var field = "lu";
-                        var tcustomusergroup = ds.tables.customusergroup;
-                        var rowTested = tcustomusergroup.rows[0];
-                        var characterToAdd = "%";
+                        const field = "lu";
+                        const tcustomusergroup = ds.tables.customusergroup;
+                        const rowTested = tcustomusergroup.rows[0];
+                        const characterToAdd = "%";
                         // evito di aggiugneread ogni lancio dit est il "newValue", quindi se la stringa contiene come ultimo carattere "newValue"
                         // lo rimuovo, altrimenti lo concateno (la volta successiva così lo rimuovo)
-                        var originalValue = rowTested[field];
-                        var newValue = originalValue + characterToAdd;
+                        const originalValue = rowTested[field];
+                        const newValue = originalValue + characterToAdd;
                         tcustomusergroup.assignField(rowTested, field, newValue);
                         tcustomusergroup.rows[0].getRow().state = jsDataSet.dataRowState.modified;
 
-                        var objser = ds.serialize(true);
-                        var dsSerialized = JSON.stringify(objser);
+                        const objser = ds.serialize(true);
+                        const dsSerialized = JSON.stringify(objser);
                         request({
                             url: 'http://localhost:3000/test/data/saveDataSet',
                             method: 'POST',
@@ -656,18 +683,20 @@ describe('rest api',
                                 console.log(error);
                                 expect(true).toBe(false);
                                 done();
+                                return;
                             }
                             expect(response).toBeDefined();
-                            var objParsed = JSON.parse(body);
+                            const objParsed = JSON.parse(body);
 
-                            var dsObj = objParsed.dataset;
-                            var success = objParsed.success;
-                            var canIgnore = objParsed.canIgnore;
-                            var messages = objParsed.messages;
+                            const dsObj = objParsed.dataset;
+                            const success = objParsed.success;
+                            const canIgnore = objParsed.canIgnore;
+                            const messages = objParsed.messages;
 
-                            var ds = new jsDataSet.DataSet(dsObj.name);
+                            const ds = new jsDataSet.DataSet(dsObj.name);
                             ds.deSerialize(dsObj, true);
                             expect(ds.name).toBe('customuser_test');
+
                             expect(messages.length).toBe(0); //non ci sono messaggi
                             expect(success).toBe(true); // metodo esegue correttamente
                             expect(canIgnore).toBe(true); //
@@ -702,8 +731,8 @@ describe('rest api',
                     }
                 }, function (error, response, body) {
 
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
                     const objrow = {idcustomuser: idcustomuser};
@@ -723,23 +752,23 @@ describe('rest api',
                         }
                     }, function (error, response, body) {
 
-                        var objParsed = JSON.parse(body);
-                        var ds = new jsDataSet.DataSet(objParsed.name);
+                        let objParsed = JSON.parse(body);
+                        let ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         // 3. modifico il dataset
-                        var field = "username";
-                        var tcustomuser = ds.tables.customuser;
-                        var rowTested = tcustomuser.rows[0];
-                        var characterToAdd = "%";
+                        const field = "username";
+                        const tcustomuser = ds.tables.customuser;
+                        const rowTested = tcustomuser.rows[0];
+                        const characterToAdd = "%";
                         // evito di aggiugneread ogni lancio dit est il "newValue", quindi se la stringa contiene come ultimo carattere "newValue"
                         // lo rimuovo, altrimenti lo concateno (la volta successiva così lo rimuovo)
-                        var originalValue = rowTested[field];
-                        var newValue = originalValue + characterToAdd;
+                        const originalValue = rowTested[field];
+                        const newValue = originalValue + characterToAdd;
                         tcustomuser.assignField(rowTested, field, newValue);
                         tcustomuser.rows[0].getRow().state = jsDataSet.dataRowState.modified;
 
-                        var objser = ds.serialize(true);
-                        var dsSerialized = JSON.stringify(objser);
+                        const objser = ds.serialize(true);
+                        const dsSerialized = JSON.stringify(objser);
                         request({
                             url: 'http://localhost:3000/test/data/saveDataSet',
                             method: 'POST',
@@ -750,23 +779,26 @@ describe('rest api',
                                 ds: dsSerialized
                             }
                         }, function (error, response, body) {
+                            //console.log(response);
 
                             if (error) {
                                 console.log(error);
                                 expect(true).toBe(false);
                                 done();
+                                return;
                             }
                             expect(response).toBeDefined();
-                            var objParsed = JSON.parse(body);
+                            const objParsed = JSON.parse(body);
 
-                            var dsObj = objParsed.dataset;
-                            var success = objParsed.success;
-                            var canIgnore = objParsed.canIgnore;
-                            var messages = objParsed.messages;
+                            const dsObj = objParsed.dataset;
+                            const success = objParsed.success;
+                            const canIgnore = objParsed.canIgnore;
+                            const messages = objParsed.messages;
 
-                            var ds = new jsDataSet.DataSet(dsObj.name);
+                            const ds = new jsDataSet.DataSet(dsObj.name);
                             ds.deSerialize(dsObj, true);
                             expect(ds.name).toBe('customuser_test');
+                            //console.log(messages);
                             expect(messages.length).toBe(1); //non ci sono messaggi
                             expect(messages[0].description).toBe('operation not permitted msg');
                             expect(messages[0].id).toBe('post/undefined/U/1');
@@ -807,6 +839,7 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(body).toBeDefined('Bad credentials');
                     expect(response.statusCode).toBeDefined(401);
@@ -831,6 +864,7 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(body).toBeDefined('Bad credentials');
                     expect(response.statusCode).toBeDefined(401);
@@ -839,7 +873,7 @@ describe('rest api',
             }, timeout);
 
         // ----> FILE CONTROLLER
-        it('upload file chunk less 1MB. ok',
+        fit('upload file chunk less 1MB. ok',
             function (done) {
 
                 // simulo nome file come atteso dal backend (CONVENZIONE!)
@@ -863,7 +897,8 @@ describe('rest api',
                         }
                     }
                 };
-                // lato server il fileName è "skyppato". utilizza il fileName orginale e quindi forzo il nome con la convenzione.
+                // lato server il fileName è ignorato. utilizza il fileName originale e
+                //  quindi forzo il nome con la convenzione.
                 formData.file.value.path = path.replace(fileName, filePartName);
 
                 request({
@@ -877,11 +912,14 @@ describe('rest api',
                     if (error) {
                         console.log(error);
                         expect(true).toBe(false);
-                        done();
+                        done.fail(error);
+                        return;
                     }
+                    console.log(body);
                     expect(response).toBeDefined();
-                    var objParsed = JSON.parse(body);
-                    var ds = new jsDataSet.DataSet(objParsed.name);
+                    const objParsed = JSON.parse(body);
+
+                    const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
                     expect(ds.name).toBe('attach_default');
                     expect(ds.tables.attach.rows.length).toBe(1);
@@ -895,10 +933,10 @@ describe('rest api',
                     expect(files.length).toBe(1);
                     done();
                 });
-            }, timeout);
+            });
 
         it('upload file with 2 chunk. Chunk are merged in single file on backend',
-          async function (done) {
+           function (done) {
 
               // simulo nome file come atteso dal backend (CONVENZIONE!)
               let partCount = 1;
@@ -939,6 +977,7 @@ describe('rest api',
                       console.log(error);
                       expect(true).toBe(false);
                       done();
+                      return;
                   }
                   expect(body).toBe('');
                   expect(response.statusCode).toBe(200);
@@ -967,8 +1006,8 @@ describe('rest api',
                       formData: formData
                   }, async function (error, response, body) {
 
-                      var objParsed = JSON.parse(body);
-                      var ds = new jsDataSet.DataSet(objParsed.name);
+                      const objParsed = JSON.parse(body);
+                      const ds = new jsDataSet.DataSet(objParsed.name);
                       ds.deSerialize(objParsed, true);
                       expect(ds.name).toBe('attach_default');
                       expect(ds.tables.attach.rows.length).toBe(1);
@@ -979,7 +1018,7 @@ describe('rest api',
                       // verifico ci sia il file
                       let allFiles = await readdir(uploadPath);
                       let files = _.filter(allFiles, fname =>  {
-                          return fname.indexOf(chunkName) > 0
+                          return fname.indexOf(chunkName) > 0;
                       });
                       // verifico ce ne sia solo uno e le _part_x_y siano state quindi eliminate
                       // dal be durante il merge
@@ -994,7 +1033,7 @@ describe('rest api',
                       done();
                   });
               });
-          }, timeout);
+          });
 
         it('download file (after test upload file chunk less 1MB. ok)',
             function (done) {
@@ -1006,39 +1045,38 @@ describe('rest api',
                         console.log(error);
                         expect(true).toBe(false);
                         done();
+                        return;
                     }
                     expect(body.indexOf('1. test file used to test upload api rest for node js.')).not.toBe(-1);
                     done();
                 });
-            }, timeout);
+            });
 
-        describe('clear dataBase', function () {
-            it('should run the destroy script', function (done) {
-                sqlConn.run(fs.readFileSync('test/data/jsApplication/Destroy.sql').toString())
-                    .done(function () {
-                        expect(true).toBeTruthy();
-                        done();
-                    })
-                    .fail(function (res) {
-                        expect(res).toBeUndefined();
-                        done();
-                    });
-            }, timeout);
+
+        it('should run the destroy script', function (done) {
+            sqlConn.run(fs.readFileSync('test/data/jsApplication/Destroy.sql').toString())
+                .done(function () {
+                    expect(true).toBeTruthy();
+                    done();
+                })
+                .fail(function (res) {
+                    expect(res).toBeUndefined();
+                    done();
+                });
         });
 
-        describe('clear filesystem', function () {
-            it('should delete uploaded files', async function (done) {
-                let allFiles = await readdir(uploadPath);
-                var totFileToClear = 2;
-                // mi aspetto totFileToClear file caricati durante test. Uno per singolo chunk, il secondo con multipli chunk
-                expect(allFiles.length).toBe(totFileToClear);
-                // li elimino tutti
-                for (let fname of allFiles) {
-                    await unlink(uploadPath + fname);
-                }
-                allFiles = await readdir(uploadPath);
-                expect(allFiles.length).toBe(0);
-                done();
-            }, timeout);
-        });
+
+        xit('should delete uploaded files', async function () {
+            let allFiles = await readdir(uploadPath);
+            const totFileToClear = 2;
+            // mi aspetto totFileToClear file caricati durante test. Uno per singolo chunk, il secondo con multipli chunk
+            expect(allFiles.length).toBe(totFileToClear);
+            // li elimino tutti
+            for (let fname of allFiles) {
+                await unlink(uploadPath + fname);
+            }
+            allFiles = await readdir(uploadPath);
+            expect(allFiles.length).toBe(0);
+            //done();
+        }, timeout);
     });

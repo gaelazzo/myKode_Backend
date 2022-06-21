@@ -19,6 +19,8 @@ const DbDescriptor = dbList.DbDescriptor;
 const fs = require('fs');
 
 const _ = require('lodash');
+const {v4: uuidv4} = require("uuid");
+const mySqlDriver = require("../../src/jsMySqlDriver");
 
 /**
  * *****************************************************************************************
@@ -61,12 +63,56 @@ const good = {
     sqlModule: 'jsMySqlDriver'
 };
 
+let dbName;
+
+
+describe("jsDbList",function(){
+    let masterConn;
+    beforeAll(function(done){
+        if (process.env.TRAVIS) return;
+
+        masterConn= null;
+        dbName = "jsDA_"+ uuidv4().replace(/\-/g, '_');
+        good.database = dbName;
+
+        let options =  _.extend({},good);
+        if (options) {
+            options.database = null;
+            options.dbCode = "good";
+            masterConn = new mySqlDriver.Connection(options);
+            masterConn.open()
+                .then(function () {
+                    return masterConn.run("create database "+dbName);
+                })
+                .then(function () {
+                    done();
+                })
+                .fail((err)=>{
+                    console.log(err);
+                });
+        }
+
+    });
+
+    afterAll(function (done){
+        if (!masterConn) {
+            done();
+        }
+        masterConn.run("drop database IF EXISTS "+dbName)
+            .then(()=>{
+                return masterConn.close();
+            })
+            .then(()=>{
+                done();
+            });
+
+    });
 
 describe('setup dataBase', function () {
     let sqlConn;
     beforeEach(function (done) {
-        dbList.setDbInfo('test', good);
-        sqlConn = dbList.getConnection('test');
+        dbList.setDbInfo('testDbList', good);
+        sqlConn = dbList.getConnection('testDbList');
         sqlConn.open().done(function () {
             done();
         });
@@ -102,7 +148,7 @@ describe('table descriptor', function () {
 
 
     beforeEach(function (done) {
-        sqlConn = dbList.getConnection('test');
+        sqlConn = dbList.getConnection('testDbList');
         dbDescr = new DbDescriptor(sqlConn);
         sqlConn.open().done(function () {
             done();
@@ -297,15 +343,15 @@ describe('dbList', function () {
 describe('destroy dataBase', function () {
     let sqlConn;
     beforeEach(function (done) {
-        dbList.setDbInfo('test', good);
-        sqlConn = dbList.getConnection('test');
+        dbList.setDbInfo('testDbList', good);
+        sqlConn = dbList.getConnection('testDbList');
         sqlConn.open().done(function () {
             done();
         });
     }, 10000);
 
     afterEach(function () {
-        dbList.delDbInfo('test');
+        dbList.delDbInfo('testDbList');
         if (sqlConn) {
             sqlConn.destroy();
         }
@@ -328,3 +374,7 @@ describe('destroy dataBase', function () {
     }, 30000);
 
 });
+
+
+
+})

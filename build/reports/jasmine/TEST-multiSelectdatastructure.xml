@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="multiSelect data structure" errors="0" tests="6" failures="0" time="0.004" timestamp="2021-07-29T16:30:29">
+  <testcase classname="multiSelect data structure" name="Select should be a function" time="0.003"></testcase>
+  <testcase classname="multiSelect data structure" name="groupSelect should be a function" time="0"></testcase>
+  <testcase classname="multiSelect data structure" name="MultiCompare should be a function" time="0"></testcase>
+  <testcase classname="multiSelect data structure" name="OptimizedMultiCompare should be a function" time="0"></testcase>
+  <testcase classname="multiSelect data structure" name="groupSelectStep should be a function" time="0"></testcase>
+  <testcase classname="multiSelect data structure" name="groupSelect should be a function" time="0"></testcase>
+</testsuite>

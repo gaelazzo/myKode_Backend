@@ -44,6 +44,8 @@ var mySqlDriver = require('../../src/jsMySqlDriver'),
         snapshot: 'SNAPSHOT',
         serializable: 'SERIALIZABLE'
     };
+const {v4: uuidv4} = require("uuid");
+const sqlServerDriver = require("../../src/jsSqlServerDriver");
 
 
 describe('MySqlDriver ', function () {
@@ -74,10 +76,12 @@ describe('MySqlDriver ', function () {
         }
         return undefined;
     }
-
+    let canExecute=false;
     beforeEach(function (done) {
+        canExecute=false;
         sqlConn = getConnection('good');
         sqlConn.open().done(function () {
+                canExecute=true;
                 done();
             })
             .fail(function (err) {
@@ -93,9 +97,49 @@ describe('MySqlDriver ', function () {
         sqlConn = null;
     });
 
+    let dbName;
+    let masterConn;
+    beforeAll(function(done){
+        masterConn= null;
+        dbName = "mysqldrv_"+ uuidv4().replace(/\-/g, '_');
+        let options =  _.extend({},dbInfo["good"]);
+        if (options) {
+            options.database = null;
+            options.dbCode = "good";
+            masterConn = new mySqlDriver.Connection(options);
+            masterConn.open()
+                .then(function () {
+                    return masterConn.run("create database "+dbName);
+                })
+                .then(function () {
+                    done();
+                })
+                .fail((err)=>{
+                    console.log(err);
+                });
+        }
+
+    });
+
+    afterAll(function (done){
+        if (!masterConn) {
+            done();
+        }
+        masterConn.run("drop database IF EXISTS "+dbName)
+            .then(()=>{
+                return masterConn.close();
+            })
+            .then(()=>{
+                done();
+            });
+
+    });
+
 
     describe('setup dataBase', function () {
         it('should run the setup script', function (done) {
+            expect(canExecute).toBeTruthy();
+            canExecute=false;
             sqlConn.run(fs.readFileSync(path.join('test', 'data', 'MySqlDriver', 'setup.sql')).toString())
                 .done(function () {
                     expect(true).toBeTruthy();
@@ -114,23 +158,28 @@ describe('MySqlDriver ', function () {
 
 
         it('should be defined', function () {
+            expect(canExecute).toBeTruthy();
             expect(mySqlDriver).toEqual(jasmine.any(Object));
         });
 
         it('Connection should be a function', function () {
+            expect(canExecute).toBeTruthy();
             expect(mySqlDriver.Connection).toEqual(jasmine.any(Function));
         });
 
         it('Connection should be a Constructor function', function () {
+            expect(canExecute).toBeTruthy();
             expect(mySqlDriver.Connection.prototype.constructor).toEqual(mySqlDriver.Connection);
         });
 
         it('Connection() should return an object', function (done) {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn).toEqual(jasmine.any(Object));
             done();
         });
 
         it('Connection.open should be a function', function (done) {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.open).toEqual(jasmine.any(Function));
             done();
         });
@@ -140,22 +189,25 @@ describe('MySqlDriver ', function () {
 
 
         it('open should return a deferred', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.open()
                 .done(function () {
                     expect(true).toBe(true);
-                    sqlConn.destroy();
-                    done();
+                    sqlConn.destroy()
+                        .then(()=>done());
                 })
                 .fail(function () {
                     expect(true).toBe(true);
-                    sqlConn.destroy();
-                    done();
+                    sqlConn.destroy()
+                        .then(()=>done());
+
                 });
 
         });
 
 
         it('open with  right credential should return a success', function (done) {
+            expect(canExecute).toBeTruthy();
             var goodSqlConn = getConnection('good');
             goodSqlConn.open()
                 .done(function () {
@@ -171,6 +223,7 @@ describe('MySqlDriver ', function () {
         });
 
         it('open with bad credential should return an error', function (done) {
+            expect(canExecute).toBeTruthy();
             var badSqlConn = getConnection('bad');
             badSqlConn.open()
                 .done(function (res) {
@@ -192,6 +245,7 @@ describe('MySqlDriver ', function () {
 
 
         it('set transaction isolation level should call queryBatch', function (done) {
+            expect(canExecute).toBeTruthy();
             spyOn(sqlConn, 'queryBatch').and.callThrough();
             sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted)
                 .done(function () {
@@ -205,6 +259,7 @@ describe('MySqlDriver ', function () {
         });
 
         it('consecutive set transaction with same isolation level should not call queryBatch', function (done) {
+            expect(canExecute).toBeTruthy();
             spyOn(sqlConn, 'queryBatch').and.callThrough();
             expect(sqlConn.queryBatch.calls.count()).toEqual(0);
             sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted)
@@ -231,6 +286,7 @@ describe('MySqlDriver ', function () {
         });
 
         it('begin transaction should return success', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.beginTransaction(IsolationLevel.repeatableRead)
                 .done(function () {
                     expect(true).toBe(true);
@@ -245,6 +301,7 @@ describe('MySqlDriver ', function () {
 
 
         it('rollback transaction should fail without open conn', function (done) {
+            expect(canExecute).toBeTruthy();
             var closedSqlConn = getConnection('good');
             closedSqlConn.rollBack()
                 .done(function () {
@@ -258,6 +315,7 @@ describe('MySqlDriver ', function () {
         });
 
         it('rollback transaction should fail without begin tran', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.open()
                 .then(function () {
                     sqlConn.rollBack()
@@ -275,6 +333,7 @@ describe('MySqlDriver ', function () {
         });
 
         it('rollback transaction should success with a begin tran', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.beginTransaction(IsolationLevel.repeatableRead)
                 .then(function () {
                     sqlConn.rollBack()
@@ -295,6 +354,7 @@ describe('MySqlDriver ', function () {
 
 
         it('getDeleteCommand should compose a delete', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.getDeleteCommand(
                 {
                     tableName: 'customer',
@@ -304,6 +364,7 @@ describe('MySqlDriver ', function () {
         });
 
         it('getInsertCommand should compose an insert', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.getInsertCommand('ticket',
                 ['col1', 'col2', 'col3'],
                 ['a', 'b', 'c']
@@ -311,6 +372,7 @@ describe('MySqlDriver ', function () {
         });
 
         it('getUpdateCommand should compose an update', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.getUpdateCommand({
                 table: 'ticket',
                 filter: $dq.eq('idticket', 1),
@@ -330,6 +392,7 @@ describe('MySqlDriver ', function () {
          END
          */
         it('callSPWithNamedParams should have success', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.callSPWithNamedParams({
                     spName: 'testSP2',
                     paramList: [
@@ -376,6 +439,7 @@ describe('MySqlDriver ', function () {
         END
          */
         it('callSPWithNamedParams with unsorted params should FAIL  - param order matters - named params not supported', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.callSPWithNamedParams({
                     spName: 'testSP2',
                     paramList: [
@@ -415,6 +479,7 @@ describe('MySqlDriver ', function () {
 
          */
         it('callSPWithNamedParams with output params should have success', function (done) {
+            expect(canExecute).toBeTruthy();
             var table;
             let paramList=[
                 {name: 'esercizio', value: 2013},
@@ -469,6 +534,7 @@ describe('MySqlDriver ', function () {
         END
          */
         it('callSPWithNamedParams should return multiple tables', function (done) {
+            expect(canExecute).toBeTruthy();
             var table;
             let paramList=[
                 {name: 'esercizio', value: 2013}
@@ -501,6 +567,7 @@ describe('MySqlDriver ', function () {
 
     describe('tableDescriptor',function (){
         it('should return a TableDescriptor',function(done){
+            expect(canExecute).toBeTruthy();
             sqlConn.tableDescriptor('customer')
                 .then(/*{TableDescriptor}*/t=>{
                     expect(t.xtype).toBe("T");
@@ -519,6 +586,7 @@ describe('MySqlDriver ', function () {
 
     describe('clear dataBase', function () {
         it('should run the destroy script', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.run(fs.readFileSync(path.join('test','data','MySqlDriver', 'destroy.sql')).toString())
                 .done(function () {
                     expect(true).toBeTruthy();

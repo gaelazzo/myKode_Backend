@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="sqlServerDriver  clear dataBase" errors="0" tests="1" failures="0" time="0.583" timestamp="2021-10-15T13:26:19">
+  <testcase classname="sqlServerDriver  clear dataBase" name="should run the destroy script" time="0.583"></testcase>
+</testsuite>

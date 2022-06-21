@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataQuery functions quoting constants" errors="0" tests="18" failures="0" time="0.005" timestamp="2021-07-29T17:02:13">
+  <testcase classname="DataQuery functions quoting constants" name="quote number should use . for separating decimals " time="0.003"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="quote number should not use use , for separating thousands " time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="nosurround quotes has no effect on numbers" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="strings without quotes are returned quoted" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="strings quotes in strings are doubled" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="external quotes in strings quotes are not returned if nosurround is specified" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="dates with times are written with the ts notation" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="dates have no problem with limit values (min)" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="dates have no problem with limit values (min)" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="dates without times are written with the d notation" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="dates without times are written with the d notation" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="integer are rendered without dot" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="negative numbers are rendered" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="boolean are rendered" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="0 is rendered" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="empty string is rendered" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="null are rendered" time="0"></testcase>
+  <testcase classname="DataQuery functions quoting constants" name="undefined are rendered as null" time="0"></testcase>
+</testsuite>

@@ -13,6 +13,7 @@ const jsDataSet = require('../../client/components/metadata/jsDataSet');
 const jsDataQuery = require('../../client/components/metadata/jsDataQuery');
 
 const    _ = require('lodash');
+const Deferred = require("JQDeferred");
 
 beforeEach(function() {
   jasmine.addMatchers({
@@ -140,6 +141,40 @@ describe('System status', function () {
   it('_ should be defined', function () {
     expect(_).not.toBeNull();
   });
+
+  function def(g){
+    let d = Deferred();
+    try {
+      g().then((res)=>d.resolve(res),
+          (err)=>d.reject(err));
+    }
+    catch (e){
+      d.reject("divide by zero");
+    }
+    return d;
+  }
+
+
+  it ("Throwing exceptions generates a rejected promise ",function(done){
+    let DefHelp = function(){
+      return Deferred().resolve(null.ciao());
+    };
+
+
+    let intermediate=0;
+
+    let res = def(DefHelp)
+        .fail((err) => {
+          console.log(err);
+          expect(err).toBe("divide by zero");
+          intermediate=12;
+        })
+        .always((res)=>{
+          expect(intermediate).toBe(12);
+          done();
+        });
+  });
+
 });
 
 

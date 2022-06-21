@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BusinessLogic getChecks" errors="0" tests="3" failures="0" time="0.218" timestamp="2021-10-28T15:35:13">
+  <testcase classname="BusinessLogic getChecks" name="should call parametersFor for every RowChange" time="0.085"></testcase>
+  <testcase classname="BusinessLogic getChecks" name="should call execCheckBatch with a batch of changes  with correct parameters" time="0.071"></testcase>
+  <testcase classname="BusinessLogic getChecks" name="should call execCheckBatch splitting changes in batches with correct parameters" time="0.062"></testcase>
+</testsuite>

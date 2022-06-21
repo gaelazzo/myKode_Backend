@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BusinessLogic getProcName" errors="0" tests="3" failures="0" time="0.126" timestamp="2021-10-28T15:35:11">
+  <testcase classname="BusinessLogic getProcName" name="inserted row gives check_table_i_pre/post" time="0.044"></testcase>
+  <testcase classname="BusinessLogic getProcName" name="modified row gives check_table_i_pre/post" time="0.043"></testcase>
+  <testcase classname="BusinessLogic getProcName" name="inserted row gives check_table_i_pre/post" time="0.039"></testcase>
+</testsuite>

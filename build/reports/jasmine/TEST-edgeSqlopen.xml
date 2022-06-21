@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="edgeSql  open" errors="0" tests="3" failures="0" time="0.351" timestamp="2021-07-08T15:04:39">
+  <testcase classname="edgeSql  open" name="open should return a deferred" time="0.107"></testcase>
+  <testcase classname="edgeSql  open" name="open with  right credential should return a success" time="0.109"></testcase>
+  <testcase classname="edgeSql  open" name="open with bad credential should return an error" time="0.135"></testcase>
+</testsuite>

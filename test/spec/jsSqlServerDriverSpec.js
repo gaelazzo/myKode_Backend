@@ -1,6 +1,7 @@
 /*globals describe,beforeEach,it,expect,jasmine,spyOn,afterEach,xit,progress*/
 'use strict';
 
+const { v4: uuidv4 } = require('uuid');
 
 console.log("running jsSqlServerDriverSpec");
 
@@ -40,7 +41,6 @@ else {
     dbConfig = JSON.parse(fs.readFileSync(configName).toString());
 }
 
-
 const sqlServerDriver = require('../../src/jsSqlServerDriver'),
     IsolationLevel = {
         readUncommitted: 'READ_UNCOMMITTED',
@@ -49,30 +49,35 @@ const sqlServerDriver = require('../../src/jsSqlServerDriver'),
         snapshot: 'SNAPSHOT',
         serializable: 'SERIALIZABLE'
     };
+const dbList = require("../../src/jsDbList");
+const Deferred = require("JQDeferred");
+const mySqlDriver = require("../../src/jsMySqlDriver");
 
+
+
+let dbName = "sqldrv_"+ uuidv4().replace(/\-/g, '_');
 
 describe('sqlServerDriver ', function () {
-    let sqlConn,
-        dbInfo = {
+    let dbInfo = {
             good: {
                 server: dbConfig.server,
                 useTrustedConnection: false,
                 user: dbConfig.user,
                 pwd: dbConfig.pwd,
-                database: dbConfig.dbName
+                database: dbName,
             },
             bad: {
                 server: dbConfig.server,
                 useTrustedConnection: false,
                 user: dbConfig.user,
                 pwd: dbConfig.pwd + 'AA',
-                database: dbConfig.dbName
+                database: dbName
             }
         };
 
 
     function getConnection(dbCode) {
-        let options = dbInfo[dbCode];
+        let options = _.extend({},dbInfo[dbCode]);
         if (options) {
             options.dbCode = dbCode;
             return new sqlServerDriver.Connection(options);
@@ -80,61 +85,137 @@ describe('sqlServerDriver ', function () {
         return undefined;
     }
 
+    let masterConn;
+    let sqlConn;
+
+    beforeAll(function(done){
+        masterConn= null;
+        sqlConn= null;
+        canExecute=false;
+        let sqlOpen = Deferred();
+        let options =  _.extend({},dbInfo["good"]);
+        if (options) {
+            options.database = null;
+            options.dbCode = "good";
+            masterConn = new sqlServerDriver.Connection(options);
+            masterConn.open()
+                .then(function () {
+                    console.log("creating db "+dbName);
+                    return masterConn.run("drop database IF EXISTS "+dbName+";\n\rcreate database "+dbName);
+                })
+                .then(function(){
+                    console.log("connecting to db");
+                    sqlConn = getConnection('good');
+                    sqlConn.open()
+                        .then((rr)=> {
+                            console.log("db connected");
+                            sqlOpen.resolve(rr);
+                        })
+                        .fail(rr=> {
+                                sqlOpen.reject(rr);
+                            });
+                })
+                .fail((err)=>{
+                    console.log(err);
+                    sqlOpen.reject(err);
+                });
+
+            sqlOpen.then(()=>{
+                console.log("db connected, running setup");
+                sqlConn.run(fs.readFileSync(path.join('test', 'data', 'sqlServer', 'Setup.sql')).toString())
+                    .then(()=>{
+                        console.log("setup runned, closing");
+                        return sqlConn.close();
+                    })
+                    .then(()=>{
+                        console.log("closed connection 1");
+                        done();
+                    });
+            });
+        }
+    });
+
+
+
+    afterAll(function (done){
+        //console.log("running Afterall");
+        if (!masterConn) {
+            //console.log("no masterConn, quitting afterAll");
+            done();
+        }
+        console.log("dropping db "+dbName);
+        masterConn.run("drop database IF EXISTS "+dbName)
+            .then(()=>{
+                //console.log("DB Dropped");
+                masterConn.close()
+                    .then(()=>{
+                        //console.log("closing connection 0");
+                        done();
+                    });
+            }, (err)=>{
+                //console.log("dropping error");
+                //console.log(err);
+            });
+
+    },30000);
+
+
+    let canExecute=false;
     beforeEach(function (done) {
+        //console.log("running beforeEach");
+        canExecute=false;
         sqlConn = getConnection('good');
-        sqlConn.open().done(function () {
+        sqlConn.open().then(function () {
+            //console.log("opened connection 2");
+            canExecute=true;
             done();
         }).fail(function (err) {
-            console.log('Error failing '+err);
+            //console.log('Error failing '+err);
             done();
         });
     }, 30000);
 
-    afterEach(function () {
+    afterEach(function (done) {
+        //console.log("running afterEach");
         if (sqlConn) {
-            sqlConn.destroy();
+            sqlConn.destroy()
+                .then(()=>{
+                    //console.log("closed connection 2");
+                    done();
+                });
         }
         sqlConn = null;
     });
 
 
-    describe('setup dataBase', function () {
-        it('should run the setup script', function (done) {
-            sqlConn.run(fs.readFileSync('test/data/sqlServer/Setup.sql').toString())
-                .done(function () {
-                    expect(true).toBeTruthy();
-                    done();
-                })
-                .fail(function (res) {
-                    expect(res).toBeUndefined();
-                    done();
-                });
-        }, 30000);
-
-    });
 
 
     describe('structure', function () {
 
 
         it('should be defined', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlServerDriver).toEqual(jasmine.any(Object));
         });
 
         it('Connection should be a function', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlServerDriver.Connection).toEqual(jasmine.any(Function));
         });
 
         it('Connection should be a Constructor function', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlServerDriver.Connection.prototype.constructor).toEqual(sqlServerDriver.Connection);
         });
 
         it('Connection() should return an object', function (done) {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn).toEqual(jasmine.any(Object));
             done();
         });
 
         it('Connection.open should be a function', function (done) {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.open).toEqual(jasmine.any(Function));
             done();
         });
@@ -144,6 +225,7 @@ describe('sqlServerDriver ', function () {
 
 
         it('open should return a deferred', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.open()
                 .done(function () {
                     expect(true).toBe(true);
@@ -162,6 +244,7 @@ describe('sqlServerDriver ', function () {
 
 
         it('open with  right credential should return a success', function (done) {
+            expect(canExecute).toBeTruthy();
             var goodSqlConn = getConnection('good');
             goodSqlConn.open()
                 .done(function () {
@@ -177,6 +260,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('open with bad credential should return an error', function (done) {
+            expect(canExecute).toBeTruthy();
             var badSqlConn = getConnection('bad');
             badSqlConn.open()
                 .done(function (res) {
@@ -195,6 +279,7 @@ describe('sqlServerDriver ', function () {
     describe('various', function () {
 
         it('select getdate() should give results', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.queryBatch('SELECT getdate() as currtime')
                 .done(function (result) {
                     expect(result).toBeDefined();
@@ -208,6 +293,7 @@ describe('sqlServerDriver ', function () {
 
 
         it('select * from table should give results', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.queryBatch('select * from customer')
                 .done(function (result) {
                     expect(result).toBeDefined();
@@ -220,6 +306,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('Date should be given as objects', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.queryBatch('SELECT * from customer')
                 .done(function (result) {
                     _(result).forEach(function (r) {
@@ -239,6 +326,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('notify should be called from queryRaw when multiple result got (two select)', function (done) {
+            expect(canExecute).toBeTruthy();
             var progressCalled, nResult = 0;
             sqlConn.queryBatch('select top 5 * from customer ; select top 10 * from seller; ')
             .progress(function (result) {
@@ -260,6 +348,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('notify should be called from queryRaw when multiple result got (three select)', function (done) {
+            expect(canExecute).toBeTruthy();
             var len            = [];
             sqlConn.queryBatch('select top 1 * from seller;select top 3 * from seller;select top 5 * from customer;'+
                 'select top 10 * from seller;select top  2 * from customer;')
@@ -284,7 +373,8 @@ describe('sqlServerDriver ', function () {
 
 
         it('set transaction isolation level should call queryBatch', function (done) {
-            spyOn(sqlConn, 'queryBatch').andCallThrough();
+            expect(canExecute).toBeTruthy();
+            spyOn(sqlConn, 'queryBatch').and.callThrough();
             sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted)
                 .done(function () {
                     expect(sqlConn.queryBatch).toHaveBeenCalled();
@@ -297,23 +387,24 @@ describe('sqlServerDriver ', function () {
         });
 
         it('consecutive set transaction with same isolation level should not call queryBatch', function (done) {
-            spyOn(sqlConn, 'queryBatch').andCallThrough();
-            expect(sqlConn.queryBatch.callCount).toEqual(0);
+            expect(canExecute).toBeTruthy();
+            spyOn(sqlConn, 'queryBatch').and.callThrough();
+            expect(sqlConn.queryBatch.calls.count()).toEqual(0);
             sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted)
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(1);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(1);
                     return sqlConn.setTransactionIsolationLevel(IsolationLevel.readCommitted);
                 })
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(1);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(1);
                     return sqlConn.setTransactionIsolationLevel(IsolationLevel.repeatableRead);
                 })
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(2);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(2);
                     return sqlConn.setTransactionIsolationLevel(IsolationLevel.repeatableRead);
                 })
                 .then(function () {
-                    expect(sqlConn.queryBatch.callCount).toEqual(2);
+                    expect(sqlConn.queryBatch.calls.count()).toEqual(2);
                     done();
                 })
                 .fail(function (err) {
@@ -323,6 +414,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('begin transaction should return success', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.beginTransaction(IsolationLevel.repeatableRead)
                 .done(function () {
                     expect(true).toBe(true);
@@ -337,6 +429,7 @@ describe('sqlServerDriver ', function () {
 
 
         it('rollback transaction should fail without open conn', function (done) {
+            expect(canExecute).toBeTruthy();
             var closedSqlConn = getConnection('good');
             closedSqlConn.rollBack()
                 .done(function () {
@@ -350,6 +443,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('rollback transaction should fail without begin tran', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.open()
                 .then(function () {
                     sqlConn.rollBack()
@@ -367,6 +461,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('rollback transaction should success with a begin tran', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.beginTransaction(IsolationLevel.repeatableRead)
                 .then(function () {
                     sqlConn.rollBack()
@@ -387,6 +482,7 @@ describe('sqlServerDriver ', function () {
 
 
         it('getDeleteCommand should compose a delete', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.getDeleteCommand(
                 {
                     tableName: 'customer',
@@ -396,6 +492,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('getInsertCommand should compose an insert', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.getInsertCommand('ticket',
                 ['col1', 'col2', 'col3'],
                 ['a', 'b', 'c']
@@ -403,6 +500,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('getUpdateCommand should compose an update', function () {
+            expect(canExecute).toBeTruthy();
             expect(sqlConn.getUpdateCommand({
                     table: 'ticket',
                     filter: $dq.eq('idticket', 1),
@@ -422,6 +520,7 @@ describe('sqlServerDriver ', function () {
          END
          */
         it('callSPWithNamedParams should have success', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.callSPWithNamedParams({
                     spName: 'testSP2',
                     paramList: [
@@ -461,6 +560,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('callSPWithNamedParams with unsorted params should have success - param order does not matter', function (done) {
+            expect(canExecute).toBeTruthy();
             let paramList=[
                 {name: '@defparam', value: 10},
                 {name: '@mess', value: 'ciao JS'},
@@ -514,6 +614,7 @@ describe('sqlServerDriver ', function () {
 
          */
         it('callSPWithNamedParams with output params should have success', function (done) {
+            expect(canExecute).toBeTruthy();
             var table;
             let paramList=[
                 {name: '@esercizio', value: 2013},
@@ -569,6 +670,7 @@ describe('sqlServerDriver ', function () {
         END
          */
         it('callSPWithNamedParams should return multiple tables', function (done) {
+            expect(canExecute).toBeTruthy();
             var table;
             let paramList=[
                 {name: '@esercizio', value: 2013}
@@ -603,6 +705,7 @@ describe('sqlServerDriver ', function () {
 
 
         it('queryLines should return as many meta as read tables ', function (done) {
+            expect(canExecute).toBeTruthy();
             var nResp = 0;
             sqlConn.queryLines(
                 'select top 10 * from customer; select top 20 * from seller; select top 2 * from customerkind', true)
@@ -624,6 +727,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('meta returned from queryLines should be arrays ', function (done) {
+            expect(canExecute).toBeTruthy();
             sqlConn.queryLines(
                 'select top 10 * from sellerkind; select top 20 * from seller; select top 2 * from customerkind', true)
                 .progress(function (r) {
@@ -643,6 +747,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('queryLines should return all rows one at a time', function (done) {
+            expect(canExecute).toBeTruthy();
             var nResp = 0;
             sqlConn.queryLines('select top 5 * from seller', true)
                 .progress(function (r) {
@@ -652,7 +757,7 @@ describe('sqlServerDriver ', function () {
                          let buff = new Buffer(r.row[9],"base64");
                          //let text = buff.toString('utf-8');
                          fs.writeFileSync('decifraBase64.txt', buff);
-                         if (nResp===1) console.log(buff);
+                         //if (nResp===1) console.log(buff);
                     }
                 })
                 .done(function () {
@@ -667,6 +772,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('queryLines should return row as arrays ', function (done) {
+            expect(canExecute).toBeTruthy();
             var nResp = 0;
             sqlConn.queryLines('select top 5 * from customerkind', true)
                 .progress(function (r) {
@@ -686,6 +792,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('queryLines should return row as objects when raw=false ', function (done) {
+            expect(canExecute).toBeTruthy();
             var nResp = 0;
             sqlConn.queryLines('select top 5 * from customerkind', false)
                 .progress(function (r) {
@@ -709,6 +816,7 @@ describe('sqlServerDriver ', function () {
         });
 
         it('queryLines should work with multiple results ', function (done) {
+            expect(canExecute).toBeTruthy();
             var nResp = 0;
             sqlConn.queryLines('select top 5 * from customerkind; select top 10 * from customer', false)
                 .progress(function (r) {
@@ -747,6 +855,7 @@ describe('sqlServerDriver ', function () {
 
     describe('tableDescriptor',function (){
         it('should return a TableDescriptor',function(done){
+            expect(canExecute).toBeTruthy();
             sqlConn.tableDescriptor('customer')
                 .then(/*{TableDescriptor}*/t=>{
                     expect(t.xtype).toBe("T");
@@ -764,17 +873,18 @@ describe('sqlServerDriver ', function () {
     });
 
 
-    describe('clear dataBase', function () {
-        it('should run the destroy script', function (done) {
-            sqlConn.run(fs.readFileSync('test/data/sqlServer/Destroy.sql').toString())
-                .done(function () {
-                    expect(true).toBeTruthy();
-                    done();
-                })
-                .fail(function (res) {
-                    expect(res).toBeUndefined();
-                    done();
-                });
-        }, 30000);
-    });
+    // describe('clear dataBase', function () {
+    //     it('should run the destroy script', function (done) {
+    //         expect(canExecute).toBeTruthy();
+    //         sqlConn.run(fs.readFileSync('test/data/sqlServer/Destroy.sql').toString())
+    //             .done(function () {
+    //                 expect(true).toBeTruthy();
+    //                 done();
+    //             })
+    //             .fail(function (res) {
+    //                 expect(res).toBeUndefined();
+    //                 done();
+    //             });
+    //     }, 30000);
+    // });
 });

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataSet DataSet Functions" errors="0" tests="12" failures="0" time="0.003" timestamp="2022-05-26T14:27:54">
+  <testcase classname="DataSet DataSet Functions" name="ds.name should be writeable" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds should have a clone function" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.clone should return a DataSet" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.clone should create tables" time="0.001"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.clone should fill tables with DataTables" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.clone should create relations" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.copy should return something" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.copy should return a dataset" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="spyOn(ds, &amp;apos;clone&amp;apos;) should return something " time="0.001"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="spyOn(ds, &amp;apos;clone&amp;apos;).andCallThrough should return something " time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.copy should call ds.clone" time="0"></testcase>
+  <testcase classname="DataSet DataSet Functions" name="ds.copy should copy rows" time="0.001"></testcase>
+</testsuite>

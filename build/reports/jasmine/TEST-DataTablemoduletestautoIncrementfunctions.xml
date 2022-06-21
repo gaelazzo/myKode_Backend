@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataTable module test autoIncrement functions" errors="0" tests="27" failures="1" time="0.005" timestamp="2022-05-26T14:27:54">
+  <testcase classname="DataTable module test autoIncrement functions" name="should define setOptimized" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="should define isOptimized" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="should define clearMaxCache" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="should define setMaxExpr" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="should define minimumTempValue" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="should define getMaxExpr" time="0.001"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="isOptimized should describe the state of Optimized" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="clearMaxCache should not change the state of Optimized" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="minimumTempValue should get/set minimum value admitted for a field" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="getMaxExpr should throw  when table is not optimized" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="getMaxExpr should give values when set by setMaxExpr, 0 otherwise" time="0.001"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="clearMaxCache should clear cached values" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="should define unCachedMaxSubstring" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="should define cachedMaxSubstring" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should give max of column when start and len are zero" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should give max of column when start and len are zero" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should give filtered max of column when start and len are zero" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should consider deleted rows" time="0.001"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should take substring when start,len are given" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should take substring from start where len is greater than string length" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should give null/undefined if start or len are null/undefined" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should give 0 when no row matches filter" time="0.001"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="unCachedMaxSubstring should give values greater than minimumValue set" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="cachedMaxSubstring should give values greater than minimumValue set" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="cachedMaxSubstring should call unCachedMaxSubstring when not optimized" time="0"><failure type="expect" message="TypeError: t.unCachedMaxSubstring.calls.count is not a function">TypeError: t.unCachedMaxSubstring.calls.count is not a function
+    at jasmine.Spec.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\test\spec\jsDataSetSpec.js:1320:43)
+    at jasmine.Block.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:1145:17)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at jasmine.Queue.start (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2130:8)
+    at jasmine.Spec.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2458:14)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at jasmine.Queue.start (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2130:8)
+    at jasmine.Suite.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2604:14)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at jasmine.Queue.start (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2130:8)
+    at jasmine.Suite.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2604:14)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2173:18)
+    at jasmine.Suite.finish (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2561:5)
+    at jasmine.Queue.onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2605:10)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2187:14)
+    at onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2173:18)
+    at jasmine.Spec.finish (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2432:5)
+    at jasmine.Queue.onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2459:10)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2187:14)
+    at Timeout._onTimeout (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2167:18)
+    at listOnTimeout (internal/timers.js:554:17)
+    at processTimers (internal/timers.js:497:7)
+</failure></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="cachedMaxSubstring should never call unCachedMaxSubstring when is optimized" time="0"></testcase>
+  <testcase classname="DataTable module test autoIncrement functions" name="cachedMaxSubstring should never call unCachedMaxSubstring when is optimized" time="0"></testcase>
+</testsuite>

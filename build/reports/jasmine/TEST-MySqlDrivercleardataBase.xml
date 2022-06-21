@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="MySqlDriver  clear dataBase" errors="0" tests="1" failures="0" time="0.174" timestamp="2021-09-20T12:08:14">
+  <testcase classname="MySqlDriver  clear dataBase" name="should run the destroy script" time="0.174"></testcase>
+</testsuite>

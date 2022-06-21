@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataTable module test deSerialize" errors="0" tests="8" failures="0" time="0.003" timestamp="2022-05-26T14:27:54">
+  <testcase classname="DataTable module test deSerialize" name="should be a function" time="0"></testcase>
+  <testcase classname="DataTable module test deSerialize" name="should preserve row number" time="0"></testcase>
+  <testcase classname="DataTable module test deSerialize" name="should preserve state and value for added rows" time="0"></testcase>
+  <testcase classname="DataTable module test deSerialize" name="should preserve state and value for unchanged rows" time="0.001"></testcase>
+  <testcase classname="DataTable module test deSerialize" name="should preserve state and value for deleted rows" time="0"></testcase>
+  <testcase classname="DataTable module test deSerialize" name="should preserve state and value for modified rows" time="0.001"></testcase>
+  <testcase classname="DataTable module test deSerialize" name="should preserve field addition for modified rows" time="0"></testcase>
+  <testcase classname="DataTable module test deSerialize" name="should preserve field deletion for modified rows" time="0.001"></testcase>
+</testsuite>

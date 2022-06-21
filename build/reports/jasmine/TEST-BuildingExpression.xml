@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BuildingExpression" errors="0" tests="1" failures="0" time="0.004" timestamp="2021-07-29T16:30:35">
+  <testcase classname="BuildingExpression" name="should be defined" time="0.004"></testcase>
+</testsuite>

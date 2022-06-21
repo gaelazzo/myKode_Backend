@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="Deferred Chain" errors="0" tests="5" failures="0" time="0.016" timestamp="2021-09-20T12:08:57">
+  <testcase classname="Deferred Chain" name="chain should return the last resolve" time="0.001"></testcase>
+  <testcase classname="Deferred Chain" name="fail should work also when it is raided from first Deferred of the chain" time="0.011"></testcase>
+  <testcase classname="Deferred Chain" name="fail should work also when it is raided from second Deferred of the chain" time="0.002"></testcase>
+  <testcase classname="Deferred Chain" name="a resolved promise should fire every then" time="0.001"></testcase>
+  <testcase classname="Deferred Chain" name="then function are implicitly promises" time="0.001"></testcase>
+</testsuite>

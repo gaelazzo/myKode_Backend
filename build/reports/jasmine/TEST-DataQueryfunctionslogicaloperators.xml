@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataQuery functions logical operators" errors="0" tests="3" failures="0" time="0.001" timestamp="2021-07-29T17:02:13">
+  <testcase classname="DataQuery functions logical operators" name="and should join given function with AND" time="0"></testcase>
+  <testcase classname="DataQuery functions logical operators" name="and should join given function with AND (using context)" time="0.001"></testcase>
+  <testcase classname="DataQuery functions logical operators" name="or should join given function with OR" time="0"></testcase>
+</testsuite>

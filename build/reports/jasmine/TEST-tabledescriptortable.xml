@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="table descriptor table" errors="0" tests="6" failures="0" time="0.467" timestamp="2021-07-26T16:33:16">
+  <testcase classname="table descriptor table" name="should return an object with columns array, name and xtype" time="0.087"></testcase>
+  <testcase classname="table descriptor table" name="tableDescriptor should return an object with all columns" time="0.075"></testcase>
+  <testcase classname="table descriptor table" name="tableDescriptor should have a key" time="0.073"></testcase>
+  <testcase classname="table descriptor table" name="A view should not have a key" time="0.074"></testcase>
+  <testcase classname="table descriptor table" name="should add Columns to a DataTable" time="0.085"></testcase>
+  <testcase classname="table descriptor table" name="tableDescriptor should return an object with all columns" time="0.073"></testcase>
+</testsuite>

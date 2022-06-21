@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="MySqlDriver  structure" errors="0" tests="5" failures="0" time="0.239" timestamp="2021-09-20T12:08:12">
+  <testcase classname="MySqlDriver  structure" name="should be defined" time="0.048"></testcase>
+  <testcase classname="MySqlDriver  structure" name="Connection should be a function" time="0.046"></testcase>
+  <testcase classname="MySqlDriver  structure" name="Connection should be a Constructor function" time="0.045"></testcase>
+  <testcase classname="MySqlDriver  structure" name="Connection() should return an object" time="0.043"></testcase>
+  <testcase classname="MySqlDriver  structure" name="Connection.open should be a function" time="0.057"></testcase>
+</testsuite>

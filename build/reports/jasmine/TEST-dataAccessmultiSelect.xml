@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="dataAccess multiSelect" errors="0" tests="5" failures="0" time="0.388" timestamp="2021-09-30T16:26:10">
+  <testcase classname="dataAccess multiSelect" name="multiSelect should give multiple tables" time="0.074"></testcase>
+  <testcase classname="dataAccess multiSelect" name="multiSelect should give tables with alias" time="0.078"></testcase>
+  <testcase classname="dataAccess multiSelect" name="multiSelect should give tables with alias (raw)" time="0.061"></testcase>
+  <testcase classname="dataAccess multiSelect" name="multiSelect should give tables with alias - packeting" time="0.076"></testcase>
+  <testcase classname="dataAccess multiSelect" name="multiSelect should give tables with alias - packeting raw" time="0.098"></testcase>
+</testsuite>

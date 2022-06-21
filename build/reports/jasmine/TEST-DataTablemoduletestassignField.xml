@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataTable module test assignField" errors="0" tests="6" failures="1" time="0.008" timestamp="2022-05-26T14:27:54">
+  <testcase classname="DataTable module test assignField" name="should assign simple fields" time="0.001"></testcase>
+  <testcase classname="DataTable module test assignField" name="should call cascadeAssignField" time="0"><failure type="expect" message="TypeError: ds.tables.d.cascadeAssignField.calls.count is not a function">TypeError: ds.tables.d.cascadeAssignField.calls.count is not a function
+    at jasmine.Spec.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\test\spec\jsDataSetSpec.js:1562:51)
+    at jasmine.Block.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:1145:17)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at jasmine.Queue.start (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2130:8)
+    at jasmine.Spec.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2458:14)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at jasmine.Queue.start (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2130:8)
+    at jasmine.Suite.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2604:14)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at jasmine.Queue.start (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2130:8)
+    at jasmine.Suite.execute (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2604:14)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2177:31)
+    at onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2173:18)
+    at jasmine.Suite.finish (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2561:5)
+    at jasmine.Queue.onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2605:10)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2187:14)
+    at onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2173:18)
+    at jasmine.Spec.finish (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2432:5)
+    at jasmine.Queue.onComplete (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2459:10)
+    at jasmine.Queue.next_ (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2187:14)
+    at Timeout._onTimeout (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:2167:18)
+    at listOnTimeout (internal/timers.js:554:17)
+    at processTimers (internal/timers.js:497:7)
+</failure></testcase>
+  <testcase classname="DataTable module test assignField" name="should cascade assign fields (simple case)" time="0.001"></testcase>
+  <testcase classname="DataTable module test assignField" name="should cascade assign fields on complex case (prefix field, middle field)" time="0.002"></testcase>
+  <testcase classname="DataTable module test assignField" name="should cascade assign fields on complex case (linear) (prefix field, middle field)" time="0.001"></testcase>
+  <testcase classname="DataTable module test assignField" name="should evaluate autoincrement fields on more complex case (selectors, prefix field, middle field)" time="0.003"></testcase>
+</testsuite>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="sqlServerDriver  commands" errors="0" tests="7" failures="4" time="1.765" timestamp="2021-10-15T13:25:44">
+  <testcase classname="sqlServerDriver  commands" name="getDeleteCommand should compose a delete" time="0.212"></testcase>
+  <testcase classname="sqlServerDriver  commands" name="getInsertCommand should compose an insert" time="0.207"></testcase>
+  <testcase classname="sqlServerDriver  commands" name="getUpdateCommand should compose an update" time="0.223"></testcase>
+  <testcase classname="sqlServerDriver  commands" name="callSPWithNamedParams should have success" time="0.281"><failure type="expect" message="Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP2&amp;apos;. running EXEC testSP2 @esercizio=2013,@meseinizio=1,@mess=&amp;apos;ciao JS&amp;apos;,@defparam=10&amp;apos; to be undefined.">Error: Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP2&amp;apos;. running EXEC testSP2 @esercizio=2013,@meseinizio=1,@mess=&amp;apos;ciao JS&amp;apos;,@defparam=10&amp;apos; to be undefined.
+    at new jasmine.ExpectationResult (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:114:32)
+    at matchersClass.toBeUndefined (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:1316:29)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\test\spec\jsSqlServerDriverSpec.js:456:33)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\src\jsSqlServerDriver.js:729:19)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at D:\progetti\jsMetaBackend\src\edge-sql.js:204:9
+</failure></testcase>
+  <testcase classname="sqlServerDriver  commands" name="callSPWithNamedParams with unsorted params should have success - param order does not matter" time="0.267"><failure type="expect" message="Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP2&amp;apos;. running EXEC testSP2 @defparam=10,@mess=&amp;apos;ciao JS&amp;apos;,@esercizio=2013,@meseinizio=1&amp;apos; to be undefined.">Error: Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP2&amp;apos;. running EXEC testSP2 @defparam=10,@mess=&amp;apos;ciao JS&amp;apos;,@esercizio=2013,@meseinizio=1&amp;apos; to be undefined.
+    at new jasmine.ExpectationResult (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:114:32)
+    at matchersClass.toBeUndefined (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:1316:29)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\test\spec\jsSqlServerDriverSpec.js:497:33)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\src\jsSqlServerDriver.js:729:19)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at D:\progetti\jsMetaBackend\src\edge-sql.js:204:9
+</failure></testcase>
+  <testcase classname="sqlServerDriver  commands" name="callSPWithNamedParams with output params should have success" time="0.307"><failure type="expect" message="Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP1&amp;apos;. running DECLARE @mese int;EXEC testSP1 @esercizio=2013,@meseinizio=2,@mesefine=@mese OUTPUT,@mess=&amp;apos;ciao JS&amp;apos;,@defparam=10;SELECT @mese AS mese&amp;apos; to be undefined.">Error: Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP1&amp;apos;. running DECLARE @mese int;EXEC testSP1 @esercizio=2013,@meseinizio=2,@mesefine=@mese OUTPUT,@mess=&amp;apos;ciao JS&amp;apos;,@defparam=10;SELECT @mese AS mese&amp;apos; to be undefined.
+    at new jasmine.ExpectationResult (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:114:32)
+    at matchersClass.toBeUndefined (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:1316:29)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\test\spec\jsSqlServerDriverSpec.js:555:33)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\src\jsSqlServerDriver.js:729:19)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at D:\progetti\jsMetaBackend\src\edge-sql.js:204:9
+</failure></testcase>
+  <testcase classname="sqlServerDriver  commands" name="callSPWithNamedParams should return multiple tables" time="0.265"><failure type="expect" message="Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP3&amp;apos;. running EXEC testSP3 @esercizio=2013&amp;apos; to be undefined.">Error: Expected &amp;apos;System.Data.SqlClient.SqlException: Could not find stored procedure &amp;apos;testSP3&amp;apos;. running EXEC testSP3 @esercizio=2013&amp;apos; to be undefined.
+    at new jasmine.ExpectationResult (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:114:32)
+    at matchersClass.toBeUndefined (D:\progetti\jsMetaBackend\node_modules\jasmine-node\lib\jasmine-node/jasmine-1.3.1.js:1316:29)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\test\spec\jsSqlServerDriverSpec.js:593:33)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at Object.&amp;lt;anonymous&amp;gt; (D:\progetti\jsMetaBackend\src\jsSqlServerDriver.js:729:19)
+    at fire (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:212:30)
+    at Object.fireWith [as rejectWith] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:324:7)
+    at Object.deferred.&amp;lt;computed&amp;gt; [as reject] (D:\progetti\jsMetaBackend\node_modules\JQDeferred\lib\jquery-deferred.js:73:33)
+    at D:\progetti\jsMetaBackend\src\edge-sql.js:204:9
+</failure></testcase>
+</testsuite>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="Token getToken" errors="0" tests="1" failures="0" time="0" timestamp="2021-06-18T16:46:12">
+  <testcase classname="Token getToken" name="Get Token " time="0"></testcase>
+</testsuite>

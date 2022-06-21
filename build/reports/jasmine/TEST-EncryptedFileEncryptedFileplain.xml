@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="EncryptedFile Encrypted File (plain)" errors="0" tests="9" failures="0" time="0.058" timestamp="2021-07-08T15:04:28">
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Plain file should be a function" time="0.003"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Plain file should have a read method " time="0.004"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Plain file should have a write method " time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Plain file should have a fileName property" time="0.002"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Plain file should have a fileName property" time="0.002"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Reading a not-existent file should return an empty object" time="0.001"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="writing an object should create a json copy of the object" time="0.02"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Reading a new file should return a new object" time="0.008"></testcase>
+  <testcase classname="EncryptedFile Encrypted File (plain)" name="Reading same file should return same object if available" time="0.016"></testcase>
+</testsuite>

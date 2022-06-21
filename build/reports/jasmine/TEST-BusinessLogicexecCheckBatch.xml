@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BusinessLogic execCheckBatch" errors="0" tests="2" failures="0" time="0.109" timestamp="2021-10-28T15:35:13">
+  <testcase classname="BusinessLogic execCheckBatch" name="should select messages based on sp result " time="0.061"></testcase>
+  <testcase classname="BusinessLogic execCheckBatch" name="should merge identical messages " time="0.048"></testcase>
+</testsuite>

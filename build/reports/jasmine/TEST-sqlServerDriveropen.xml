@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="sqlServerDriver  open" errors="0" tests="3" failures="0" time="1.045" timestamp="2021-10-15T13:25:40">
+  <testcase classname="sqlServerDriver  open" name="open should return a deferred" time="0.209"></testcase>
+  <testcase classname="sqlServerDriver  open" name="open with  right credential should return a success" time="0.408"></testcase>
+  <testcase classname="sqlServerDriver  open" name="open with bad credential should return an error" time="0.427"></testcase>
+</testsuite>

@@ -322,10 +322,12 @@ DataAccess.prototype = {
      */
     destroy: function () {
         if (this.sqlConn) {
-            this.sqlConn.destroy();
+            return this.sqlConn.destroy();
         }
         this.sqlConn = null;
+        return Deferred().resolve().promise();
     },
+
     toString: function () {
         return 'DataAccess';
     },

@@ -5,6 +5,8 @@ const asyncHandler = require("express-async-handler");
 
 
 async function selectCount(req,res,next){
+    //console.log("Request received");
+    //console.log(req);
     let ctx = req.app.locals.context;
     let getDataInvoke = ctx.getDataInvoke;
     let jsonFilter= JSON.parse(req.body.filter);

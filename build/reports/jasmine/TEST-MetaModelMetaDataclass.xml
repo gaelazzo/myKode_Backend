@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="MetaModel MetaData class" errors="0" tests="30" failures="0" time="0.016" timestamp="2021-09-30T17:48:08">
+  <testcase classname="MetaModel MetaData class" name="exists" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="checkForFalseUpdates() and removeFalseUpdates() methods work fine" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="xVerifyRowChange() and xVerifyChangeChilds() methods work fine" time="0.003"></testcase>
+  <testcase classname="MetaModel MetaData class" name="hasChanges() method returs true or false if there are or not changes" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="getRelatedRowColumn() method returns value row related childs, or null if no relation specified" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="getRelatedRowColumn() method returns value row related parents, or null if no relation specified" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="calculateRow() evaluates evaluates custom fields for a single row &amp;quot;r&amp;quot;" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="calculateTable() evaluates custom fields for every row of a table" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="getTemporaryValues() Evaluate expressions of all t rows" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="addNotEntityChildFilter() set notEntityChild property on child table" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="addNotEntityChildFilterRel() set notEntityChild property on child table" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="checkChildRel() returns true. it connects any field that is primarykey for both parent and child" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="xRemoveChilds() removes a Row with all his subentity childs" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="moveDataRow() moves a Row from table to another" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="xMoveChilds() moves rows from source to dest" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="xCopy() copy rows from source to dest" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="copyDataRow() copy a Row from table to another" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="xCopyChilds() moves rows from source to dest" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="cmpSelectors() compares the values of the rows on selector columns of the autoIncrement properties and returns boolean" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="isSubEntityRelation() returns true beacause &amp;quot;childTable&amp;quot; is a subentity table of &amp;quot;parentTable&amp;quot;" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="isSubEntityRelation() returns false because allthe key of parent are key of child" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="isParentTableByKey() returns true beacause table &amp;quot;parentTable&amp;quot; is related with KEY fields of Child table &amp;quot;childTable&amp;quot;" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="isParentTableByKey() returns false because table &amp;quot;parentTable&amp;quot; is not related with KEY fields of Child table &amp;quot;childTable&amp;quot;" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="isSubEntity() returns false beacause &amp;quot;childTable&amp;quot; relation column is not a primary key of the table" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="isSubEntity() returns false beacause &amp;quot;parentTable&amp;quot; primaryKey is not the same of the keys of the relation" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="isSubEntity() returns true beacause &amp;quot;childTable&amp;quot; is a subentity table of &amp;quot;parentTable&amp;quot;" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="copyAutoincrementsProperties() copies all autoincrement properties from DataTable Input to DataTable output" time="0.001"></testcase>
+  <testcase classname="MetaModel MetaData class" name="lockRead() + cachedTable()" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="copyPrimaryKey() sets the primary key of dest to table source" time="0"></testcase>
+  <testcase classname="MetaModel MetaData class" name="clearValue() sets a field to DBNull (or -1(int)  or 0-like values when DBNull is not allowed)" time="0.001"></testcase>
+</testsuite>

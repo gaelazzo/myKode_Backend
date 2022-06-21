@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="Token getToken NOT1" errors="0" tests="16" failures="0" time="0.004" timestamp="2021-07-29T16:30:35">
+  <testcase classname="Token getToken NOT1" name="Get Token " time="0.001"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token NOT132 12" time="0.001"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token NO1T13A2 12 A" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token NOT" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token IS NULL" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token IS NOT NULL" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token IS NOT NULL2" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token IS NULL XX" time="0.001"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token IS    NULL XX" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token ISNULL XX" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token ISNULLO XX" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token IS NULLL XX" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token &amp;lt;=" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token &amp;lt;&amp;gt;" time="0"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token =" time="0.001"></testcase>
+  <testcase classname="Token getToken NOT1" name="Get Token isnull(1,2)" time="0"></testcase>
+</testsuite>

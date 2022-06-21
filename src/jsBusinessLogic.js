@@ -293,6 +293,18 @@ BusinessLogic.prototype = {
     envFilterVariableName:"filterrules",
     getFilterForRules: function(){
         return this.environment.sys(this.envFilterVariableName);
+    },
+    destroy: function() {
+        const def = Deferred();
+        if (!this.auditsPromise) {
+            return def.resolve(true).promise();
+        }
+        this.auditsPromise.then(() => {
+                def.resolve(true);
+            },
+                err => def.reject(err)
+        );
+        return def.promise();
     }
 };
 
@@ -407,7 +419,9 @@ BusinessLogic.prototype.getRules = function  ( rowChanges){
     GetDataSpace.getStartingFrom(this.context, tableOp).
         then(function(){
             def.resolve(ds);
-    });
+        })
+        .fail(err=>def.reject(err));
+
     return def.promise();
 };
 
@@ -1383,6 +1397,11 @@ BusinessPostData.prototype =  _.extend(
             return new BusinessLogicResult();
         },
 
+        init : function ( ds) {
+            this.superClass.init.call(this, ds, this.context);
+        },
+
+
         /**
          * This is meant to be replaced or overridden in derived classes
          * @param {Context} context
@@ -1395,7 +1414,6 @@ BusinessPostData.prototype =  _.extend(
                 .then(()=>{
                     return bl;
                 });
-
         }
 
     }

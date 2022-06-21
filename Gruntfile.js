@@ -21,20 +21,38 @@ jasmineObj.exitOnCompletion = false;
 
 jasmineObj.jasmine.getEnv().clearReporters(); // remove default reporter logs
 
+const JasmineConsoleReporter = require('jasmine-console-reporter');
+
 
 const rep = JasmineClass.ConsoleReporter;  //require("jasmine.console_reporter.js");
 //console.log(JasmineClass);
 
-const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
-jasmineObj.jasmine.getEnv().addReporter(
-    new SpecReporter({
-        // add jasmine-spec-reporter
-        spec: {
-            displaySuccessful:false,
-            displayPending: false,
-        },
-    })
-);
+// const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+// jasmineObj.jasmine.getEnv().addReporter(
+//     new SpecReporter({
+//         // add jasmine-spec-reporter
+//         spec: {
+//             displaySuccessful:true,
+//             displayPending: true,
+//         },
+//     })
+// );
+//
+
+const reporter = new JasmineConsoleReporter({
+    colors: 2,           // (0|false)|(1|true)|2
+    cleanStack: 1,       // (0|false)|(1|true)|2|3
+    verbosity: 2,        // (0|false)|1|2|(3|true)|4|Object
+    listStyle: 'indent', // "flat"|"indent"
+    timeUnit: 'ms',      // "ms"|"ns"|"s"
+    timeThreshold: { ok: 500, warn: 1000, ouch: 3000 }, // Object|Number
+    activity: "dots",     // boolean or string ("dots"|"star"|"flip"|"bouncingBar"|...)
+    emoji: true,
+    beep: true
+});
+
+jasmineObj.jasmine.getEnv().addReporter(reporter);
+
 //
 // jasmineObj.jasmine.getEnv().addReporter(new rep({
 //     verbosity: 2,
@@ -244,7 +262,19 @@ module.exports = function (grunt) {
         gruntConfig.jasmine[className + "Midway"] = {
             spec_dir: './test/midway/',
             spec_files: [className + "Spec.js"],
-            autotest: false
+            env: {
+                // Whether to fail a spec that ran no expectations
+                failSpecWithNoExpectations: true,
+
+                // Stop execution of a spec after the first expectation failure in it
+                stopSpecOnExpectationFailure: true,
+
+                // Stop execution of the suite after the first spec failure
+                stopOnSpecFailure: true,
+
+                // Run specs in semi-random order
+                random: false
+            }
         };
     });
 
@@ -318,12 +348,13 @@ module.exports = function (grunt) {
                 }
                 grunt.log.writeln("Node server running (not err)");
                 console.log(res, code, buffer);
+                done();
             }
         );
         setTimeout(function () {
             grunt.log.writeln("Node server running (timeout)");
             done();
-        }, 2000);
+        }, 5000);
     });
 
     grunt.registerTask("test Client", "test client", async function () {
@@ -430,7 +461,7 @@ module.exports = function (grunt) {
 
 
     classesMidway.forEach(function (className) {
-        grunt.registerTask(className + " Midway", ["NodeStart", 'jasmine:' + className + "Midway"]);
+        grunt.registerTask(className + " Midway", ["NodeStart", 'jasmine:' + className + "Midway"]);//, 'keepalive'
     });
 
 

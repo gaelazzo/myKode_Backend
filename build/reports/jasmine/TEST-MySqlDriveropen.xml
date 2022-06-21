@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="MySqlDriver  open" errors="0" tests="3" failures="0" time="0.241" timestamp="2021-09-20T12:08:13">
+  <testcase classname="MySqlDriver  open" name="open should return a deferred" time="0.05"></testcase>
+  <testcase classname="MySqlDriver  open" name="open with  right credential should return a success" time="0.082"></testcase>
+  <testcase classname="MySqlDriver  open" name="open with bad credential should return an error" time="0.109"></testcase>
+</testsuite>

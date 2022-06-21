@@ -132,14 +132,17 @@ EdgeConnection.prototype.open = function () {
 			});
 	edgeOpenInternal({}, function (error, result) {
 		if (error) {
+			//console.log(error);
 			def.reject(error);
 			return;
 		}
 		if (result) {
+			//console.log("got handler "+result+" for "+that.connectionString);
 			that.edgeHandler = result;
 			def.resolve();
 			return;
 		}
+		console.log("shouldn't reach here");
 		def.reject("shouldn't reach here");
 	});
 	return def.promise();
@@ -156,10 +159,11 @@ EdgeConnection.prototype.close = function () {
 		edge      = require('edge-js');
 
 	if (this.edgeHandler===null) {
+		//console.log("an EdgeConnection was found without an handler");
 		def.resolve();
 		return def;
 	}
-
+	//console.log("closing  handler "+this.edgeHandler+" for "+this.connectionString);
 	let	edgeClose = edge.func(this.sqlCompiler,
 			{
 				handler: this.edgeHandler,
@@ -170,15 +174,18 @@ EdgeConnection.prototype.close = function () {
 	
 	edgeClose({}, function (error) {
 		if (error) {
+			//console.log("error closing handler "+that.edgeHandler+" for "+that.connectionString+":"+error);
 			def.reject(error);
 			return;
 		}
+		//console.log("closed handler "+that.edgeHandler+" for "+that.connectionString);
 		that.edgeHandler = null;
 		def.resolve();
 	});
 	return def.promise();
 };
 
+let nCommand =0;
 /**
  * Executes a sql command and returns all sets of results. Each Results is given via a notify or resolve
  * @method queryBatch
@@ -195,13 +202,22 @@ EdgeConnection.prototype.queryBatch = function (query, raw, timeout) {
 	//  and mysql blocking nature, it starts notifying tables before the promise is actually returned
 	//   causing data to be loss
 
-
+	var that=this;
 	process.nextTick(function () {
+		nCommand++;
+		let cc = nCommand;
+		if (that.edgeHandler === null) {
+			//console.log("executing command  " + cc + "(" + that.edgeHandler + "):" + query);
+		}
 		edgeQuery({}, function (error, result) {
-			//console.log("receiving result");
+			//console.log("receiving result  "+cc+"("+that.edgeHandler+")");
 			//console.log(result);
 			if (error) {
 				def.reject(error + ' running ' + query);
+				return def.promise();
+			}
+			if (typeof result ==='object' && typeof  result.error === 'string'){
+				def.reject(result.error + ' running ' + query);
 				return def.promise();
 			}
 			let i;
@@ -335,8 +351,12 @@ EdgeConnection.prototype.queryPackets = function (query, raw, packSize, timeout)
 		lastMeta,
 		currentSet = -1,
 		callback = function (data, extCallback) {
+			if (data.error) {
+				//console.log("got error "+data.error+" running "+query);
+				def.reject(new Error(data.error+" running "+query));
+				return {};
+			}
 			if (data.resolve) {
-				def.resolve();
 				def.resolve();
 				return {};
 			}
@@ -374,6 +394,7 @@ EdgeConnection.prototype.queryPackets = function (query, raw, packSize, timeout)
 
 		edgeQuery({}, function (error) {
 			if (error) {
+				//console.log("error "+error+" running "+query);
 				def.reject(error + ' running ' + query);
 				return def.promise();
 			}

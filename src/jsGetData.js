@@ -327,16 +327,20 @@ function getStartingFrom(ctx, primaryTable) {
             return that.scanTables(ctx, ds, toVisit, visited);
         })
         .then(function () {
+            if (opened) {
+                return ctx.dataAccess.close().then(()=>def.resolve());
+            }
             def.resolve();
+            return def;
         })
         .fail(function (err) {
-            def.reject(err);
-        })
-        .always(function () {
             if (opened) {
-                ctx.dataAccess.close();
+                return ctx.dataAccess.close().then(()=>def.reject(err));
             }
+            def.reject(err);
+            return def;
         });
+
 
     return def.promise();
 

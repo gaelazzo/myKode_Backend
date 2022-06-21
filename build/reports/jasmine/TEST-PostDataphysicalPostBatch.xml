@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="PostData physicalPostBatch" errors="0" tests="7" failures="0" time="0.092" timestamp="2021-09-20T12:08:58">
+  <testcase classname="PostData physicalPostBatch" name="should be a function" time="0.005"></testcase>
+  <testcase classname="PostData physicalPostBatch" name="should call getSqlStatements" time="0.024"></testcase>
+  <testcase classname="PostData physicalPostBatch" name="should call runCmd" time="0.012"></testcase>
+  <testcase classname="PostData physicalPostBatch" name="if runCmd fails then physicalPostBatch should fail too" time="0.013"></testcase>
+  <testcase classname="PostData physicalPostBatch" name="if runCmd resolves into a bad number, an internal error should be raised" time="0.014"></testcase>
+  <testcase classname="PostData physicalPostBatch" name="runCmd should be called with every sql cmd got from getPostCommand (grouped)" time="0.012"></testcase>
+  <testcase classname="PostData physicalPostBatch" name="runCmd should be called with every sql cmd got from getPostCommand (single)" time="0.012"></testcase>
+</testsuite>

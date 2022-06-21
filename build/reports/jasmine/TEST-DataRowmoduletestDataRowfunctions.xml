@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataRow module test DataRow functions" errors="0" tests="20" failures="0" time="0.002" timestamp="2022-05-26T14:27:54">
+  <testcase classname="DataRow module test DataRow functions" name="new DataRow should return an object" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="new DataRow should return a DataRow" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="new DataRow called with a DataRow object should throw exception" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="new DataRow called with an  object already linked to a DataRow should not throw exception" time="0.001"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="new DataRow called with an  object already linked to a DataRow should create an independent DataRow" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name=" DataRow called with an  object already linked to a DataRow should return the linked DataRow" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="Initial value should be the same" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="Value should be changeable" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="Initial rowstate is unchanged" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="Changes does modify rowstate to modified" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="Reverting changes restores rowstate to unchanged" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="Deletes does modify rowstate to deleted" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="acceptChanges should not modify current value" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="DataRow.rejectChanges should revert modifications" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="dataRow.rejectChanges should revert field additions" time="0.001"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="dataRow.rejectChanges should revert field deletions" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="adding and deleting fields results in unchanged datarowversion" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="adding and deleting fields results in unchanged datarowversion" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="deleting and adding fields results in unchanged datarowversion" time="0"></testcase>
+  <testcase classname="DataRow module test DataRow functions" name="deleting and adding fields results in unchanged datarowversion" time="0"></testcase>
+</testsuite>

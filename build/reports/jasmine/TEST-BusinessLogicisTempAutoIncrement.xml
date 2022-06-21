@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BusinessLogic isTempAutoIncrement" errors="0" tests="5" failures="0" time="0.188" timestamp="2021-10-28T15:35:11">
+  <testcase classname="BusinessLogic isTempAutoIncrement" name="should give true on auto increment column if state is added" time="0.036"></testcase>
+  <testcase classname="BusinessLogic isTempAutoIncrement" name="should give true on autoincrement detail column if state is added" time="0.038"></testcase>
+  <testcase classname="BusinessLogic isTempAutoIncrement" name="should give true on auto increment column if state is unchanged or modified" time="0.038"></testcase>
+  <testcase classname="BusinessLogic isTempAutoIncrement" name="should give true on parent autoincrement column if parent state is added" time="0.038"></testcase>
+  <testcase classname="BusinessLogic isTempAutoIncrement" name="should give false on parent autoincrement column if parent state is unchanged" time="0.037"></testcase>
+</testsuite>

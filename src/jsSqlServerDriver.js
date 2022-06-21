@@ -7,7 +7,7 @@ const Deferred = require("JQDeferred");
 const _ = require('lodash');
 const formatter = require('./jsSqlServerFormatter').jsSqlServerFormatter;
 const CType = require("./../client/components/metadata/jsDataSet").CType;
-const edge = require('edge-js');
+//const edge = require('edge-js');
 const {tableName} = require("../config/anonymousPermissions");
 const EdgeConnection = require("./edge-sql").EdgeConnection;
 
@@ -132,6 +132,7 @@ function SqlParameter(paramValue,paramName, varName,sqlType, forOutput){
  * {string} [options.useTrustedConnection=true] is assumed true if no user name is provided
  * {string} [options.user] user name for connecting to db
  * {string} [options.pwd] user password for connecting to db
+ * {string} [options.timeOut] time out to connect default 600
  * {string} [options.database] database name
  * {string} [options.sqlCompiler] Edge Compiler
  * {string} [options.defaultSchema=options.user ||'DBO'] default schema associated with user name
@@ -146,7 +147,7 @@ function Connection(options) {
      */
     this.opt = _.clone(options);
     this.sqlCompiler = this.opt.sqlCompiler || 'db';
-    this.edgeHandler = null;
+    this.edgeConnection = null;
     /**
      * Indicates the open/closed state of the underlying connection
      * @property isOpen
@@ -163,6 +164,8 @@ function Connection(options) {
      * @type {string}
      */
     this.schema = this.defaultSchema;
+
+    this.timeOut = this.opt.timeOut || 600;
 
     /**
      * Current transaction annidation level
@@ -187,21 +190,21 @@ function Connection(options) {
     this.isolationLevel = null;
 
     this.adoString = 'Data Source=' + this.opt.server +
-        ";Initial Catalog=" + this.opt.database + ';' +
+        (this.opt.database? ";Initial Catalog=" + this.opt.database : "")+
         (this.opt.useTrustedConnection ?
-            "Integrated Security=True;" :
-        "User ID=" + this.opt.user + ";Password=" + this.opt.pwd + ";") +
-        "Application Name=HiNode;" +
+            ";Integrated Security=True" :
+        ";User ID=" + this.opt.user + ";Password=" + this.opt.pwd ) +
+        ";Application Name=HiNode" +
             //"WorkStation ID =" + Environment.MachineName.ToUpper() +
-        "Pooling=false;" +
-        "Connection Timeout=600;";
+        ";Pooling=false" +
+        ";Connection Timeout="+this.timeOut+";";
 
     /**
      *
      * @type {EdgeConnection}
      */
     this.edgeConnection = new EdgeConnection(this.adoString,'sqlServer');
-}
+} //Data Source=192.168.10.107,1434;Initial Catalog=test;User ID=nino;Password=falco;Application Name=HiNode;Pooling=false;Connection Timeout=600;
 
 Connection.prototype = {
     constructor: Connection
@@ -229,9 +232,10 @@ Connection.prototype.useSchema = function (schema) {
 /**
  * Destroy this connection and closes the underlying connection
  * @method destroy
+ * @return {Deferred}
  */
 Connection.prototype.destroy = function () {
-    this.close();
+    return this.close();
 };
 
 /**
@@ -325,69 +329,6 @@ Connection.prototype.open = function () {
 
 
 /**
- * Opens the phisical connection
- * @method edgeOpen
- * @private
- * @returns {*}
- */
-Connection.prototype.edgeOpen = function () {
-    /**
-     * type {Deferred}
-     */
-    const def = Deferred(),
-        that = this,
-        edgeOpenInternal = edge.func(this.sqlCompiler,
-            {
-                source: 'open',
-                connectionString: this.adoString,
-                cmd: 'open'
-            });
-    edgeOpenInternal({}, function (error, result) {
-        let i;
-        if (error) {
-            def.reject(null);
-            return;
-        }
-        if (result) {
-            that.edgeHandler = result;
-            def.resolve(that);
-            return;
-        }
-        def.reject('shouldnt reach here');
-    });
-    return def.promise();
-};
-
-/**
- * Closes the phisical connection
- * @method edgeClose
- * @returns {*}
- */
-Connection.prototype.edgeClose = function () {
-    const def = Deferred(),
-        that = this,
-        edgeClose = edge.func(this.sqlCompiler,
-            {
-                handler: that.edgeHandler,
-                source: 'close',
-                cmd: 'close',
-                driver: 'sqlServer'
-            });
-    edgeClose({}, function (error, result) {
-        if (error) {
-            def.reject(error);
-            return;
-        }
-        that.edgeHandler = null;
-        def.resolve();
-    });
-    return def.promise();
-};
-
-
-
-
-/**
  * the "edgeQuery" function is written in c#, and executes a series of select.
  * If a callback is specified, data is returned separately as {meta} - {rows} - {meta} - {rows} .. notifications
  * in this case has sense the parameter packetSize to limit the length of rows returned in each {rows} packet
@@ -420,9 +361,10 @@ Connection.prototype.queryPackets = function (query, raw, packSize, timeout) {
 Connection.prototype.close = function () {
     const def = Deferred(),
         that = this;
-    if (this.edgeHandler !== null) {
+    if (this.edgeConnection !== null) {
         return this.edgeConnection.close();
     } else {
+        console.log("closing a connection without edgeConnection");
         that.isOpen = false;
         def.resolve();
     }

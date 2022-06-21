@@ -8,7 +8,7 @@ const defer     = require("JQDeferred");
 const CType = require("./../client/components/metadata/jsDataSet").CType;
 let  _         = require('lodash');
 let formatter = require('./jsSqlServerFormatter').jsSqlServerFormatter;
-let edge      = require('edge-js');
+//let edge      = require('edge-js');
 let EdgeConnection  = require("./edge-sql").EdgeConnection;
 
 
@@ -127,6 +127,7 @@ function SqlParameter(paramValue,paramName,varName, sqlType, forOutput){
  * {string} [options.useTrustedConnection=true] is assumed true if no user name is provided
  * {string} [options.user] user name for connecting to db
  * {string} [options.pwd] user password for connecting to db
+ * {string} [options.timeOut] time out to connect default 600
  * {string} [options.database] database name
  * {string} [options.defaultSchema=options.user ||'DBO'] default schema associated with user name
  * {string} [options.connectionString] connection string to connect (can be used instead of all previous listed)
@@ -142,6 +143,8 @@ function Connection(options) {
 
     ////DBO is the default used for trusted connections
     this.defaultSchema = this.opt.defaultSchema || this.opt.user || 'DBO';
+
+    this.timeOut = this.opt.timeOut || 600;
 
     /**
      * Indicates the open/closed state of the underlying connection
@@ -180,12 +183,13 @@ function Connection(options) {
     this.isolationLevel = null;
 
     this.adoString = 'Server=' + this.opt.server +
-        ";database=" + this.opt.database + ';' +
+        (this.opt.database? ";database=" + this.opt.database : "")+
         (this.opt.useTrustedConnection ?
-                "IntegratedSecurity=yes;uid=auth_windows;" :
-                "uid=" + this.opt.user + ";pwd=" + this.opt.pwd + ";") +
-        "Pooling=False;" +
-        "Connection Timeout=600;Allow User Variables=True;";
+                ";IntegratedSecurity=yes;uid=auth_windows" :
+                ";uid=" + this.opt.user + ";pwd=" + this.opt.pwd) +
+        ";Pooling=False" +
+        ";Connection Timeout="+this.timeOut+
+        ";Allow User Variables=True;";
     /**
      * 
      * @type {EdgeConnection}
@@ -212,9 +216,10 @@ Connection.prototype.useSchema = function (schema) {
 /**
  * Destroy this connection and closes the underlying connection
  * @method destroy
+ * @return {Deferred}
  */
 Connection.prototype.destroy = function () {
-    this.close();
+    return this.close();
 };
 
 /**
@@ -293,7 +298,7 @@ Connection.prototype.checkLogin = function (login, password) {
  * @returns {Connection}
  */
 Connection.prototype.open = function () {
-    var connDef = defer(),
+    let connDef = defer(),
         that = this;
     if (this.isOpen) {
         return connDef.resolve(this).promise();
@@ -330,7 +335,7 @@ Connection.prototype.open = function () {
 Connection.prototype.close = function () {
     var def  = defer(),
         that = this;
-    if (this.edgeHandler !== null) {
+    if (this.edgeConnection !== null) {
         return this.edgeConnection.close();
     } else {
         that.isOpen = false;

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="table descriptor" errors="0" tests="3" failures="0" time="0.758" timestamp="2021-07-26T16:33:15">
+  <testcase classname="table descriptor" name="tableDescriptor should be a method" time="0.06"></testcase>
+  <testcase classname="table descriptor" name="tableDescriptor should return an object when table exists" time="0.077"></testcase>
+  <testcase classname="table descriptor" name="tableDescriptor should fail when table does not exist" time="0.085"></testcase>
+</testsuite>

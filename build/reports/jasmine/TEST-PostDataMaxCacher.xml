@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="PostData MaxCacher" errors="0" tests="11" failures="0" time="0.007" timestamp="2021-09-20T12:08:57">
+  <testcase classname="PostData MaxCacher" name="new MaxCacher(conn,environment) should return a class" time="0.001"></testcase>
+  <testcase classname="PostData MaxCacher" name="getHash should return a string" time="0"></testcase>
+  <testcase classname="PostData MaxCacher" name="getHash should return a string different if parameters are different" time="0.001"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax should call conn.readSingleValue null when there is no selector" time="0"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax should not call conn.readSingleValue null when there is no selector the 2th time is called" time="0.001"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax should call conn.readSingleValue  when there is selector but parent not added" time="0"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax SHOULD call relation.getParents  when there is selector but parent not added" time="0.001"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax SHOULD NOT call relation.getParents  when there is selector but parent not added - 2th call in a row" time="0.001"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax should NOT call conn.readSingleValue  when there is selector and parent is added and autoincrement" time="0.001"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax SHOULD call conn.readSingleValue  when there is selector and parent is added but NOT autoincrement" time="0.001"></testcase>
+  <testcase classname="PostData MaxCacher" name="getMax SHOULD call conn.readSingleValue  when there is selector and parent is autoincrement but NOT added" time="0"></testcase>
+</testsuite>

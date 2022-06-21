@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataQuery functions evaluating functions" errors="0" tests="7" failures="0" time="0.001" timestamp="2021-07-29T17:02:13">
+  <testcase classname="DataQuery functions evaluating functions" name="toSql of a string should give the quoted string" time="0"></testcase>
+  <testcase classname="DataQuery functions evaluating functions" name="toSql of a numer should give the number as string" time="0"></testcase>
+  <testcase classname="DataQuery functions evaluating functions" name="toSql of an array should give the sql set of values" time="0"></testcase>
+  <testcase classname="DataQuery functions evaluating functions" name="toSql of an array should give the sql set of values (with context)" time="0"></testcase>
+  <testcase classname="DataQuery functions evaluating functions" name="toSql of a query function should call the toSql method of the function" time="0.001"></testcase>
+  <testcase classname="DataQuery functions evaluating functions" name="toSql of a composed query works" time="0"></testcase>
+  <testcase classname="DataQuery functions evaluating functions" name="toSql of a composed query works (using context)" time="0"></testcase>
+</testsuite>

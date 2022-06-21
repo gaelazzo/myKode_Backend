@@ -1,5 +1,5 @@
-{ "server": "192.168.10.107,1434",
+{ "server": "192.168.10.122,1434",
   "dbName": "test",
   "user": "nino",
-  "pwd": "falco"
+  "pwd": "falcomatrix.A2"
 }

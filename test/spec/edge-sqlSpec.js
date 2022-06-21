@@ -4,6 +4,8 @@ var _ = require('lodash');
 var fs = require("fs");
 var path = require("path");
 var edgeSql = require('../../src/edge-sql');
+const {v4: uuidv4} = require("uuid");
+const mySqlDriver = require("../../src/jsMySqlDriver");
 console.log("running edge-sqlSpec");
 /**
  * *****************************************************************************************
@@ -19,7 +21,11 @@ console.log("running edge-sqlSpec");
     //PUT THE  FILENAME OF YOUR FILE HERE:
 var configName = path.join('test', 'dbMySql.json');
 var dbConfig;
+let dbName;
+dbName = "edge"+ uuidv4().replace(/\-/g, '_');
+
 if (process.env.TRAVIS){
+    dbName="test";
     dbConfig = { "server": "127.0.0.1",
         "dbName": "test",
         "user": "root",
@@ -30,8 +36,10 @@ else {
     dbConfig = JSON.parse(fs.readFileSync(configName).toString());
 }
 
+
 describe('edgeSql ', function () {
     let sqlConn,dbInfo,driver;
+    let dbInfoConnectionString;
     let sqlServer=false;
     if (sqlServer){
         /*
@@ -44,36 +52,70 @@ describe('edgeSql ', function () {
         ";Pooling=false" +
         ";Connection Timeout=300;"
          */
-
         dbInfo = {
-            good: "data source=localhost;initial catalog=test;User ID =user1;Password=user1user1;" +
+            good: {
+                server: "localhost",
+                useTrustedConnection: false,
+                user: "user1",
+                pwd: "user1user1",
+                database: null
+            },
+            bad: {
+                server: "localhost",
+                useTrustedConnection: false,
+                user: "user1",
+                pwd: "x",
+                database: null
+            }
+        };
+        dbInfo.database = dbName;
+
+        dbInfoConnectionString = {
+            good: "data source=localhost;initial catalog="+dbName+";User ID =user1;Password=user1user1;" +
                 "Pooling=False;Connection Timeout=600;",
-            bad: "data source=localhost;initial catalog=test;User ID =user1;Password=x;" +
+            bad: "data source=localhost;initial catalog="+dbName+";User ID =user1;Password=x;" +
                 "Pooling=False;Connection Timeout=600;"
         };
         driver = 'sqlServer';
     }
     else {
         dbInfo = {
-            good: "Server=localhost;database=test;uid=user1;pwd=user1user1;" +
+            good: {
+                server: "localhost",
+                useTrustedConnection: false,
+                user: "user1",
+                pwd: "user1user1",
+                database: null
+            },
+            bad: {
+                server: "localhost",
+                useTrustedConnection: false,
+                user: "user1",
+                pwd: "x",
+                database: null
+            }
+        };
+
+        dbInfoConnectionString = {
+            good: "Server=localhost;database="+dbName+";uid=user1;pwd=user1user1;" +
                 "Pooling=False;Connection Timeout=600;Allow User Variables=True;",
-            bad: "Server=localhost;database=test;uid=user1;pwd=x;" +
+            bad: "Server=localhost;database="+dbName+";uid=user1;pwd=x;" +
                 "Pooling=False;Connection Timeout=600;Allow User Variables=True;"
         };
         driver = 'mySql';
     }
     if (process.env.TRAVIS) {
         dbInfo = {
-            good: "Server=127.0.0.1;database=test;uid=root;pwd=;"+
+            good: "Server=127.0.0.1;database="+dbName+";uid=root;pwd=;"+
             "Pooling=False;Connection Timeout=600;Allow User Variables=True;",
-            bad:  "Server=127.0.0.1;database=test;uid=root;pwd=x;"+
+            bad:  "Server=127.0.0.1;database="+dbName+";uid=root;pwd=x;"+
             "Pooling=False;Connection Timeout=600;Allow User Variables=True;"
         };
-    
+        driver = 'mySql';
     }
 
     function getConnection(dbCode) {
-        var connString = dbInfo[dbCode];
+        var connString = dbInfoConnectionString[dbCode];
         if (connString) {
             return new edgeSql.EdgeConnection(connString,driver);
         }
@@ -99,6 +141,44 @@ describe('edgeSql ', function () {
     });
 
 
+    let masterConn;
+
+    beforeAll(function(done){
+        masterConn= null;
+
+        let options =  _.extend({},dbInfo["good"]);
+        if (options) {
+            options.database = null;
+            options.dbCode = "good";
+            masterConn = new mySqlDriver.Connection(options);
+            masterConn.open()
+                .then(function () {
+                    return masterConn.run("create database "+dbName);
+                })
+                .then(function () {
+                    done();
+                })
+                .fail((err)=>{
+                    console.log(err);
+                });
+        }
+
+    });
+
+    afterAll(function (done){
+        if (!masterConn) {
+            done();
+        }
+        masterConn.run("drop database IF EXISTS "+dbName)
+            .then(()=>{
+                return masterConn.close();
+            })
+            .then(()=>{
+                done();
+            });
+
+    });
+
     describe('setup dataBase', function () {
         it('should run the setup script', function (done) {
             sqlConn.run(fs.readFileSync(path.join('test', driver+'Setup.sql')).toString())
@@ -116,7 +196,7 @@ describe('edgeSql ', function () {
 
     describe('open', function () {
 
-        var newSqlConn = getConnection('good');
+        let newSqlConn = getConnection('good');
         it('open should return a deferred', function (done) {
             newSqlConn.open()
             .done(function () {
@@ -193,6 +273,30 @@ describe('edgeSql ', function () {
             });
         });
 
+        it('select * from  not existent table should reject', function (done) {
+            sqlConn.queryBatch('select * from customersss')
+                .done(function (result) {
+                    expect(1).toBe(0);
+                    done();
+                })
+                .fail(function (err) {
+                    expect(err).toBeDefined();
+                    done();
+                });
+        });
+
+        it('select * from  not existent table should call always', function (done) {
+            sqlConn.queryBatch('select * from customers;select * from pippone')
+                .done(function (result) {
+                    expect(1).toBe(0);
+                    done();
+                })
+                .always(function (err) {
+                    expect(err).toBeDefined();
+                    done();
+                });
+        });
+
         it('Date should be given as objects', function (done) {
             sqlConn.queryBatch('SELECT * from customer')
             .done(function (result) {
@@ -263,6 +367,29 @@ describe('edgeSql ', function () {
                 done();
             });
         });
+
+        it('reject should be called from queryRaw when there is some sql error', function (done) {
+            var len            = [];
+            let sql='select * from sellerAA limit 1;select * from sellerBB limit 3;select * from customerAA limit 5;'+
+                'select * from sellerW limit 10;select * from customerAA limit 2;';
+            if (driver==='sqlServer'){
+                sql='select top 1 * from seller;select top 3 *  from seller;select top 5  * from customer;'+
+                    'select top 10 * from seller;select top 2 * from customer;';
+            }
+
+            sqlConn.queryBatch(sql)
+                .progress(function (result) {
+                    len.push(result.length);
+                    return true;
+                })
+                .fail(function (err) {
+                    expect(len).toEqual([]);
+                    expect(err).toBeDefined();
+                    done();
+                })
+
+        });
+
     });
 
 

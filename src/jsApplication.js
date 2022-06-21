@@ -217,6 +217,7 @@ JsApplication.prototype = {
 
     /**
      * Function that must create a PostData class, this is meant to be overridden in derived classes
+     * @param {Context} ctx
      * @return {BusinessPostData}
      */
     createPostData: function (ctx){
@@ -232,7 +233,6 @@ JsApplication.prototype = {
      * @return {DataSet}
      */
     getDataSet: function(tableName,editType){
-
       return commonGetDataSet.getDataSet(tableName,editType);
     },
 

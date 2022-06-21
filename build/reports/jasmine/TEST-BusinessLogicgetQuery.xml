@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BusinessLogic getQuery" errors="0" tests="4" failures="0" time="0.153" timestamp="2021-10-28T15:35:12">
+  <testcase classname="BusinessLogic getQuery" name="should give key columns" time="0.048"></testcase>
+  <testcase classname="BusinessLogic getQuery" name="should give key columns basing on source table" time="0.035"></testcase>
+  <testcase classname="BusinessLogic getQuery" name="should give key columns basing on source table, skipping not existing columns" time="0.035"></testcase>
+  <testcase classname="BusinessLogic getQuery" name="should give key columns basing on source table,adding ayear if it is present" time="0.035"></testcase>
+</testsuite>

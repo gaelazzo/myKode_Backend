@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="BusinessLogic groupChecks" errors="0" tests="4" failures="0" time="0.157" timestamp="2021-10-28T15:35:13">
+  <testcase classname="BusinessLogic groupChecks" name="should sort auditcheck by idaudit asc, idcheck asc and separate them by sp name" time="0.038"></testcase>
+  <testcase classname="BusinessLogic groupChecks" name="should filter operation by opkind" time="0.041"></testcase>
+  <testcase classname="BusinessLogic groupChecks" name="should skip ignorable audits and  audits without sql " time="0.037"></testcase>
+  <testcase classname="BusinessLogic groupChecks" name="should filter filter precheck/postcheck operation" time="0.041"></testcase>
+</testsuite>

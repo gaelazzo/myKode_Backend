@@ -19,8 +19,12 @@ var MultiCompare = mSel.MultiCompare;
  */
 var OptimizedMultiCompare = mSel.OptimizedMultiCompare;
 var _ = require('lodash');
+const {v4: uuidv4} = require("uuid");
+const mySqlDriver = require("../../src/jsMySqlDriver");
 
 describe('multiSelect', function () {
+
+
 
     describe('data structure', function () {
         it('Select should be a function', function () {
@@ -483,4 +487,6 @@ describe('multiSelect', function () {
 
         });
     });
+
+
 });

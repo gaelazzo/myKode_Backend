@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="DataTable module test newRow" errors="0" tests="6" failures="0" time="0.007" timestamp="2022-05-26T14:27:54">
+  <testcase classname="DataTable module test newRow" name="should assign defaults when those are present" time="0.001"></testcase>
+  <testcase classname="DataTable module test newRow" name="should call calcTemporaryId " time="0"></testcase>
+  <testcase classname="DataTable module test newRow" name="should call makeChild " time="0.001"></testcase>
+  <testcase classname="DataTable module test newRow" name="should evaluate autoincrement fields on simple case" time="0.002"></testcase>
+  <testcase classname="DataTable module test newRow" name="should evaluate autoincrement fields on complex case (prefix field, middle field)" time="0.001"></testcase>
+  <testcase classname="DataTable module test newRow" name="should evaluate autoincrement fields on more complex case (selectors, prefix field, middle field)" time="0.002"></testcase>
+</testsuite>
