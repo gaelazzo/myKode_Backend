@@ -42,11 +42,11 @@ const rep = JasmineClass.ConsoleReporter;  //require("jasmine.console_reporter.j
 const reporter = new JasmineConsoleReporter({
     colors: 2,           // (0|false)|(1|true)|2
     cleanStack: 1,       // (0|false)|(1|true)|2|3
-    verbosity: 2,        // (0|false)|1|2|(3|true)|4|Object
+    verbosity: 3,        // (0|false)|1|2|(3|true)|4|Object
     listStyle: 'indent', // "flat"|"indent"
     timeUnit: 'ms',      // "ms"|"ns"|"s"
     timeThreshold: { ok: 500, warn: 1000, ouch: 3000 }, // Object|Number
-    activity: "dots",     // boolean or string ("dots"|"star"|"flip"|"bouncingBar"|...)
+    activity: "star",     // boolean or string ("dots"|"star"|"flip"|"bouncingBar"|...)
     emoji: true,
     beep: true
 });
@@ -96,6 +96,13 @@ module.exports = function (grunt) {
             }
         },
 
+        open : {
+            doc : {
+                path: 'D:/progetti/jsMetaBackend/doc/index.html',
+                app: 'Google Chrome'  //also FireFox
+            },
+        },
+
         shell: {
             startNode: {
                 command: 'node server.js'
@@ -109,7 +116,21 @@ module.exports = function (grunt) {
         },
 
         pkg: grunt.file.readJSON('package.json'),
-        /*
+
+        jsdoc : {
+            dist : {
+                src: ['src/*.js',
+                        'client/components/*/*.js',
+                        //'client/components/languages/*.js',
+                        'routes/*/*.js'
+
+                ],
+                options: {
+                    destination: 'doc'
+                }
+            }
+        },
+
         yuidoc: {
           compile: {
             name: '<%= pkg.name %>',
@@ -121,10 +142,11 @@ module.exports = function (grunt) {
               outdir: 'doc'
             }
           }
-        },*/
+        },
 
         watch: {
-            files: ['src/*.js'],
+            plugins: ["plugins/markdown"],
+            files: ['src/*.js','client/components/metadata/*.js','client/components/languages/*.js'],
             tasks: ['test'],
             options: {
                 livereload: true
@@ -330,6 +352,8 @@ module.exports = function (grunt) {
         // }
         done();
     });
+
+    grunt.registerTask('doc', ['jsdoc','open:doc']);
 
     grunt.registerTask('test_Client', ['jasmine:client']);
     grunt.registerTask('test_Server', ['jasmine:server']);

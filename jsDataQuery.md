@@ -20,7 +20,8 @@ For example,
     });
     
 
-sqlFun are also higly optimized so that if the engine detects they are simplifiable, they will be treathed as constant and not submitted in their original form:
+sqlFun are also highly optimized so that if the engine detects they are simplifiable, they will be treated as constant 
+ and not submitted in their original form:
 
     it('and of false function with other function should be the always false function', 	function(){
       		var xx = {a: 'AABBCC', q: '1'},
@@ -30,9 +31,10 @@ sqlFun are also higly optimized so that if the engine detects they are simplifia
     		f = $q.and(cond1, cond2, cond3);
       		expect(f.isFalse).toBe(true);
     	});
-Notice that f.isFalse is a property of the function, not the result of applying the function to a particolar argument. The engine has detected that f is a constant function.    
+Notice that f.isFalse is a property of the function, not the result of applying the function to a particolar argument. 
+The engine has detected that f is a constant function.    
 
-If some parts of an expression are undefined, the expression may still be successfull evalued:
+If some parts of an expression are undefined, the expression may still be successful evaluated:
 
      it('and of a series of function including one undefined and one dinamically-false gives false', function () {
       	var xx = {a: 'AABBCC', q: '1'},
