@@ -39,7 +39,7 @@ const PostData=require("./jsPostData").PostData;
  *
  * let jBs = new jsBusinessLogic(conn, environment, rowChanges);
  * jBs
- * lest Post = new PostData(conn, environment);
+ * let Post = new PostData(conn, environment);
  */
 
 
@@ -291,6 +291,10 @@ BusinessLogic.prototype = {
     constructor: BusinessLogic,
     maxBatchSize: 40000,
     envFilterVariableName:"filterrules",
+    /**
+     *
+     * @return {jsDataQuery}
+     */
     getFilterForRules: function(){
         return this.environment.sys(this.envFilterVariableName);
     },
@@ -397,7 +401,7 @@ BusinessLogic.prototype.createAuditDataSet = function (){
  * Gets necessary rules from a database in order to save a set of row change. This can ben invoked
  *  before the start of a transaction.
  * @param {ObjectRow[]} rowChanges  changes made in memory
- * @returns {DataSet}
+ * @returns {Deferred<DataSet>}
  */
 BusinessLogic.prototype.getRules = function  ( rowChanges){
     let ds = BusinessLogic.prototype.createAuditDataSet();
@@ -823,7 +827,7 @@ BusinessLogic.prototype.refineMessages= async function (conn, results){
  * @param {DataTable} fromT
  * @param {DataRow} fromR
  * @param {DataTable} toTable
- * @param {string []} cols key columns  and eventually  ayear field if it belongs to table columns
+ * @param {Array.<string>} cols key columns  and eventually  ayear field if it belongs to table columns
  * @return {jsDataQuery}
  */
 BusinessLogic.prototype.getQuery = function (fromT, fromR, toTable, cols){
@@ -1004,13 +1008,13 @@ BusinessLogic.prototype.isTempAutoIncrement = function ( r, colName) {
  * @param {DataTable} auditParameters
  * @param {RowChange} rc
  * @param {boolean} post
- * @returns  {{name:string, value}[]}
+ * @returns  {Array.<{name:string, value}>}
  */
 BusinessLogic.prototype.parametersFor = function (auditParameters, rc,post) {
     /* {DataRow} */
     let row = rc.r;
     let filter = this.filterParameters(row, post);
-    /* {tablename:string, parameterid:int, paramtable:string, paramcolumn:string, flagoldvalue:string} []*/
+    /* Array.<{tablename:string, parameterid:int, paramtable:string, paramcolumn:string, flagoldvalue:string}> */
     let pp = _.sortBy(auditParameters.select(filter), ["parameterid"]);
 
     let result = [];
@@ -1397,8 +1401,13 @@ BusinessPostData.prototype =  _.extend(
             return new BusinessLogicResult();
         },
 
+        /***
+         *
+         * @param ds
+         * @return {Promise<SinglePostData>}
+         */
         init : function ( ds) {
-            this.superClass.init.call(this, ds, this.context);
+            return this.superClass.init.call(this, ds, this.context);
         },
 
 

@@ -12,7 +12,7 @@ var storage = multer.diskStorage({
         callback(null, file.originalname);
     },
     destination: function (req, file, cb) {
-        cb(null, uploadPath)
+        cb(null, uploadPath);
     },
 });
 
@@ -108,21 +108,38 @@ async function mergeFile(fileName){
 async function middleware(req,res,next){
     let ctx = req.app.locals.context;
 
+
+
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
+
+
     let resFile = null;
     for (let i=0; i<req.files.length; i++){
         let file = req.files[i];
         resFile = await mergeFile(file.originalname);
     }
+
+
     if (resFile === null){
         return res.send(200,"");
     }
     let attachTable = "attach";
 
-    let /* DataSet */ dsAttach = ctx.getDataSet(attachTable,"default");
+    let /* DataSet */ dsAttach;
+    try {
+        /* DataSet */ dsAttach = ctx.getDataSet(attachTable, "default");
+    }
+    catch (e){
+        return res.send(400,e);
+    }
     let metaAttach= ctx.getMeta(attachTable);
+
+    //return  res.status(400).send(metaAttach.name);
+
+
+
     let rAttach = await metaAttach.getNewRow(null, dsAttach.tables[attachTable]);
     const objRow = rAttach.current;
     objRow["filename"] = resFile.fileName;
@@ -132,10 +149,19 @@ async function middleware(req,res,next){
     objRow["cu"] = ctx.environment.mySys.idcustomuser;
     objRow["lu"] = ctx.environment.mySys.idcustomuser;
 
+
     let postData = ctx.createPostData.call(ctx);
-    await postData.init(dsAttach, ctx);
+
+
+    let rr =  postData.init(dsAttach);
+
+    await  rr;
+
+
     //returns  {canIgnore:boolean, checks:BasicMessage[], data:DataSet}
     let messages = await postData.doPost();
+
+
     if (messages.checks.length >0) {
         //Bad Request
         return res.status(400).send("Error uploading: " + messages.checks[0].getMessage());

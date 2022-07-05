@@ -1,7 +1,7 @@
 /*globals sqlFun */
 'use strict';
 /**
-  * @type function Deferred
+ * @typedef  Deferred
  */
 const Deferred = require("JQDeferred");
 const _ = require('lodash');
@@ -935,7 +935,7 @@ Connection.prototype.colNameFromVarName = function(varName) {
 
 /**
  * Get a command to convert a list of variables into a table with a column having a variable for each column
- * @param {{varName:string,colName:string}[]}vars
+ * @param {Array.<{varName:string,colName:string}>}vars
  * @return {string}
  */
 Connection.prototype.getSelectListOfVariables = function(vars) {

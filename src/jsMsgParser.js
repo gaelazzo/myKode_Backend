@@ -21,7 +21,7 @@ MsgParser.prototype.reset = function (){
 
 /**
  * @public
- * @return {{found:string|null, skipped:string}|null}
+ * @return {?{found:?string, skipped:string}}
  */
 MsgParser.prototype.getNext = function (){
     if (this.nextPosition>= this.msg.length){

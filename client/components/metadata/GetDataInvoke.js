@@ -39,8 +39,8 @@ SelectBuilder.prototype = {
 
 
     /**
-     * @constructor GetData
-     * @description
+     * Exposes server web services as local functions so that code can use them seemingly
+     * @constructor GetDataInvoke
      * @param {Context} ctx
      */
     function GetDataInvoke(ctx) {
@@ -98,7 +98,7 @@ SelectBuilder.prototype = {
          * @param {sqlFun} filter
          * @param {boolean} clear  if true table is cleared before reading
          * @param {string} top  parameter for "top" clause of select
-         * @param {{filter:sqlFun, top:string, table:DataTable}[]} selectList
+         * @param {Array.<filter:sqlFun, top:string, table:DataTable>} selectList
          * @returns {Deferred}
          */
         doGetTable: function (t, filter, clear, top, selectList) {
@@ -171,7 +171,7 @@ SelectBuilder.prototype = {
          * @param {DataTable} table
          * @param {string} top
          * @param {boolean} prepare
-         * @param {{filter:sqlFun, top:string, table:DataTable}[]} [selList]
+         * @param {Array.<filter:sqlFun, top:string, table:DataTable>} [selList]
          * @returns {Deferred}
          */
         getRowsByFilter: function (filter, multiCompare, table, top, prepare, selList) {
@@ -267,10 +267,10 @@ SelectBuilder.prototype = {
 
 
         /**
+         * Executes a bunch of select, based on "selectList". Not much different from a multiple runSelectIntoTable
          * @method multiRunSelect
          * @public
-         * Executes a bunch of select, based on "selectList". Not much different from a multiple runSelectIntoTable
-         * @param {{filter:sqlFun, top:string, table:DataTable}[]} selectList
+         * @param {Array.<filter:sqlFun, top:string, table:DataTable>} selectList
          * @returns {Deferred}
          */
         multiRunSelect: function (selectList) {

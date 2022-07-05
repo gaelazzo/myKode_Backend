@@ -152,11 +152,11 @@ describe("jsGetData",function() {
             getContext('testGetData', 'nino', 'default', '2014', new Date(2014, 1, 20, 10, 10, 10, 0))
                 .then(function (res) {
                     ctx = res;
-                    console.log("to open beforeEach "+ ctx.dataAccess);
+                    //console.log("to open beforeEach "+ ctx.dataAccess);
                     return ctx.dataAccess.open();
                 })
                 .then(()=>{
-                    console.log("beforeEach opened "+ ctx.dataAccess.edgeHandler);
+                    //console.log("beforeEach opened "+ ctx.dataAccess.edgeHandler);
                     done();
                 })
                 .fail(function (err) {

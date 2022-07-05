@@ -53,7 +53,7 @@ function serializeSys(env){
  */
 async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  userkind, req, res){
     let dbInfo = DBList.getDbInfo(ctx.dbCode);
-    let codeDip= dbInfo.DBDipartimento;
+    let codeDip= dbInfo.defaultSchema; //DBDipartimento;
     let env = ctx.environment;
     env.sys("idcustomuser",null);
     let filter = q.and(q.eq("username",userName),
@@ -62,6 +62,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
 
     let sys_user;
     try {
+        //Searches login in virtualuser table filtering userkind and codicedipartimento
         //dt is an array of rows with a name
         let data =  await ctx.dataAccess.select({tableName:"virtualuser",filter: filter});
 
@@ -79,7 +80,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
             env.usr("cf",vUser["cf"]);
         }
         else {
-            // NON linked to an external user
+            // it was not linked to a virtual user
             env.usr("user",userName);
             env.usr("usergrouplist",null);
         }
@@ -90,6 +91,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
         env.usr("user",userName);
         env.usr("usergrouplist",null);
     }
+
     //evaluates idcustomuser
     await env.getCustomUser(ctx.dataAccess);
     if (!await dataAllowed(ctx, accountDate)){
@@ -180,6 +182,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
 
     let token = new jsToken.Token(req,identity);
 
+    //Sends token to the client
     res.send({
         usr: serializeUsr(env),
         sys: serializeSys(env),
@@ -195,7 +198,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
 
 
 /**
- *
+ * Computes a  list of roles, invoking stored procedure compute_roles(aDate,idCustomUser)
  * @param {Date}aDate
  * @param {string}idCustomUser
  * @param {Context}ctx
@@ -209,6 +212,9 @@ async function getRoles(aDate,idCustomUser, ctx){
     t.setDataColumn("ndetail",CType.int);
     t.setDataColumn("k",CType.string);
     t.key("k");
+    _.forEach(roles,r=>{
+        let row = t.newRow();
+    })
     return  t;
 }
 

@@ -165,7 +165,7 @@ describe('System status', function () {
 
     let res = def(DefHelp)
         .fail((err) => {
-          console.log(err);
+          //console.log(err);
           expect(err).toBe("divide by zero");
           intermediate=12;
         })

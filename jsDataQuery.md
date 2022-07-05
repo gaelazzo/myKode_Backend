@@ -34,7 +34,7 @@ sqlFun are also highly optimized so that if the engine detects they are simplifi
 Notice that f.isFalse is a property of the function, not the result of applying the function to a particolar argument. 
 The engine has detected that f is a constant function.    
 
-If some parts of an expression are undefined, the expression may still be successful evaluated:
+If some parts of an expression are undefined, the expression may still be successfully evaluated:
 
      it('and of a series of function including one undefined and one dinamically-false gives false', function () {
       	var xx = {a: 'AABBCC', q: '1'},
@@ -70,7 +70,7 @@ where $q.field(x) is the function that applied to an object will return the fiel
       	expect(g(x)).toBeFalsy();
     });
 
-Here f and g are the function that compares the field named 'a' of the argument with the constant 1.
+Here f and g are the function that compare the field named 'a' of the argument with the constant 1.
 
 
 ![](https://travis-ci.org/gaelazzo/jsDataQuery.svg?branch=master)     

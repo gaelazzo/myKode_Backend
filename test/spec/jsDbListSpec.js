@@ -214,6 +214,7 @@ describe('table descriptor', function () {
                     expect(_.find(p.columns, {name: 'idcustomerkind'}).type).toEqual('int');
                     expect(_.find(p.columns, {name: 'name'}).type).toEqual('varchar');
                     expect(_.find(p.columns, {name: 'birth'}).type).toEqual('datetime');
+                    //console.log(sqlConn);
                     done();
                 })
                 .fail(function (err) {

@@ -87,9 +87,9 @@ function simpleObjectifier(colNames, row) {
 
 
 /**
- * @private
  * Evaluates parameter to connect to database depending on the open/closed state of the connection.
  * If a connection is open, the handle of the open connection is used. Otherwise, a connectionString is provided.
+ * @private
  * @returns {*}
  */
 EdgeConnection.prototype.getDbConn = function () {
@@ -204,14 +204,15 @@ EdgeConnection.prototype.queryBatch = function (query, raw, timeout) {
 
 	var that=this;
 	process.nextTick(function () {
+		//console.log("queryBatch "+query);
 		nCommand++;
 		let cc = nCommand;
-		if (that.edgeHandler === null) {
-			//console.log("executing command  " + cc + "(" + that.edgeHandler + "):" + query);
-		}
+		// if (that.edgeHandler === null) {
+		// 	console.log("executing command  " + cc + "(" + that.edgeHandler + "):" + query);
+		// }
 		edgeQuery({}, function (error, result) {
-			//console.log("receiving result  "+cc+"("+that.edgeHandler+")");
-			//console.log(result);
+			// console.log("receiving result  "+cc+"("+that.edgeHandler+")");
+			// console.log(result);
 			if (error) {
 				def.reject(error + ' running ' + query);
 				return def.promise();
@@ -308,6 +309,7 @@ EdgeConnection.prototype.queryLines = function (query, raw,timeout) {
 			_.assign({source: query, callback: callback, packetSize: 1,timeout:timeout||this.defaultTimeout},
 				this.getDbConn()));
 	process.nextTick(function() {
+		//console.log("queryLines "+query);
 		edgeQuery({}, function (error, result) {
 			if (error) {
 				def.reject(error + ' running ' + query);
@@ -385,6 +387,7 @@ EdgeConnection.prototype.queryPackets = function (query, raw, packSize, timeout)
 	//  and mysql blocking nature, it starts notifying tables before the promise is actually returned
 	//   causing data to be loss
 	process.nextTick(function () {
+		//console.log("queryPackets "+query);
 		let edge      = require('edge-js'),
 			edgeQuery = edge.func(that.sqlCompiler, _.assign({source: query,
 						callback: callback,

@@ -33,7 +33,7 @@ const _ = require('lodash');
         /**
          * Check if obj is not a real condition, giving true if it is null, undefined or empty string
          * @method isEmptyCondition
-         * @param {string||sqlFun} cond
+         * @param {string|sqlFun} cond
          * @returns {boolean}
          */
         function isEmptyCondition(cond) {
@@ -303,7 +303,7 @@ const _ = require('lodash');
         /**
          * Convert an expression into integer
          * @method convertToString
-         * @param {sqlFun||string||null||undefined} expr
+         * @param {sqlFun|string|null|undefined} expr
          * @param {number} maxLen
          * @param {Environment} context
          * @return {string}
@@ -438,7 +438,7 @@ const _ = require('lodash');
         /**
          * gets the result of the sum of an array of expression
          * @method add
-         * @param {sqlFun|Array|object|null|undefined []} arr
+         * @param {Array.<sqlFun|Array|object|null|undefined>} arr
          * @param {Environment} context
          * @returns {string}
          * @example add(['a','b','c']) would give 'a+b+c'
@@ -452,7 +452,7 @@ const _ = require('lodash');
         /**
          * gets the result of the multiply of an array of expression
          * @method mul
-         * @param {sqlFun|Array|object|null|undefined []} arr
+         * @param {Array.<sqlFun|Array|object|null|undefined> } arr
          * @param {Environment} context
          * @returns {string}
          * @example mul(['a','b','c']) would give 'a*b*c'
@@ -466,7 +466,7 @@ const _ = require('lodash');
         /**
          * gets the result of the sum of an array of expression
          * @method concat
-         * @param {sqlFun|Array|object|null|undefined []} arr
+         * @param {Array.<sqlFun|Array|object|null|undefined>} arr
          * @param {Environment} context
          * @returns {string}
          * @example add(['a','b','c']) would give 'a+b+c'
@@ -516,7 +516,7 @@ const _ = require('lodash');
         /**
          * gets the expression distinct expr1, expr2,..
          * @method sum
-         * @param {sqlFun|object|null|undefined []} exprList
+         * @param {Array.<sqlFun|object|null|undefined>} exprList
          * @param {Environment} context
          * @returns {string}
          */
@@ -530,7 +530,7 @@ const _ = require('lodash');
          * gets the 'elements belongs to list' sql condition
          * @method isIn
          * @param  {sqlFun|object|null|undefined}expr
-         * @param  {sqlFun|object|null|undefined []} list
+         * @param  {Array.<sqlFun|object|null|undefined>} list
          * @param {Environment} context
          * @returns {string}
          * @example isIn('el',[1,2,3,4]) would be compiled into 'el in (1,2,3,4)'

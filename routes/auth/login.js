@@ -8,6 +8,13 @@ let AuthUtils = require("./_autUtils");
 
 // JsApplication is available through req.app.locals.JsApplication, see https://expressjs.com/it/api.html
 
+/**
+ * Login: reads user and password from body, then calls the _doLogin  route
+ * @param req
+ * @param res
+ * @param next
+ * @return {Promise<void>}
+ */
 async function login(req,res,next){
     let ctx = req.app.locals.context;
     if (!req.body.userName){
@@ -25,7 +32,8 @@ async function login(req,res,next){
 
     let dbInfo = DBList.getDbInfo(ctx.dbCode);
     let userkind =  dbInfo.userkindUserPassw;
-    await AuthUtils._doLogin(ctx, req.body.userName, req.body.password, req.body.datacontabile,null, userkind, req,res);
+    await AuthUtils._doLogin(ctx, req.body.userName, req.body.password,
+            req.body.datacontabile,null, userkind, req,res);
 }
 
 

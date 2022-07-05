@@ -72,8 +72,8 @@ async function middleware(req,res,next){
     let /*DataRow*/ dr = drr[0].getRow();
     await ctx.getDataInvoke.doGet(ds, dr, primaryTableName, onlyPeripherals);
 
-    // la risposta non torna le righe delle tab principale  e subentità perchè nel caso di onlyPeripherals non serve
-    // serve in input al backend per il calcolo esatto delle righe nelle tabelle perificheriche , ma al ritorno evito di serializzarle
+    // la risposta non restituisce le righe delle tab principale  e subentità perchè nel caso di onlyPeripherals non serve
+    // serve in input al backend per il calcolo esatto delle righe nelle tabelle periferiche , ma al ritorno evito di serializzarle
     // poichè il client già le ha.
     let visited = new Set();
     let toVisit = new Set();

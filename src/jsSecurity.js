@@ -12,35 +12,49 @@ const Q = require('./../client/components/metadata/jsDataQuery');
 const _ = require("lodash");
 
 /**
+ * if defaultIsDeny the meaning is allow and not deny. If deny is not set then the meaning is allow
+ * Otherwise the meaning is not deny or allow. If allow is not set then the meaning is not deny
+ * @typedef {Object} ConditionRow
+ * @property {object} idcustomgroup id of the user group this condition belongs to
+ * @property {string} tablename
+ * @property {string} op I/U/D/S/P
+ * @property {boolean} defaultIsDeny if true default is deny all, otherwise is allow all
+ * @property {sqlFun} [denyCondition]
+ * @property {sqlFun} [allowCondition]
+ */
+
+
+/**
  *
- * @type function Deferred
+ * @typedef Deferred
  */
 const    Deferred = require("JQDeferred");
 
 
 /**
- * Saves a DataSet using a given DataAccess
+ * Class that manages a set of conditions
  * @class Security
  * @method Security
  * @constructor
  */
-
 function Security(){
  this.groupOperations= [];
- /* {{object[]}} */
+ /* {{sqlFun[]}} */
  this.tableOpConditions = {};
- /* {{jsMetaExpression}}*/
+ /* Dictionary.<string,Array.<sqlFun>>*/
  this.filteredConditions= {};
 }
 
 
 Security.prototype= {
     constructor: Security,
+
     /**
-     *
+     * Adds condition for a specified table/operation combination, merging to existent.
+     * Every condition
      * @param {string}tableName
      * @param {string} op
-     * @param {object} condition
+     * @param {ConditionRow} condition
      */
     addTableOpCondition:function(tableName,op, condition){
         let key = tableName+'#'+op;
@@ -53,11 +67,11 @@ Security.prototype= {
     },
 
     /**
-     *
+     * Get all table/operation conditions for any environment
      * @param {string} tableName
      * @param {string} op
      * @param condition
-     * @return {object[]}
+     * @return {Array.<ConditionRow>}
      */
     getTableOpConditions:function(tableName,op, condition){
         let key = tableName+'#'+op;
@@ -68,15 +82,16 @@ Security.prototype= {
         return  list;
     },
 
-
-
-
     /**
      * Gets security conditions for an operation in the specified environment context.
-     * Those are the ones specifid in customg
+     * Those are filtered basing on usergrouplist of the environment, that has to include
+     *  idcustomgroup property value of the ConditionRow. If environment does not contain idcustomgroup
+     *   field, then all matching table/op conditions are taken
+     *
      * @param tableName
      * @param {string} op
      * @param  {Environment} env
+     * @return {ConditionRow[]}
      */
     getConditions: function (tableName, op,env){
         /*{object []} */
@@ -94,7 +109,8 @@ Security.prototype= {
 
 };
 /**
- * Require environment.sys("idcustomgroup") to have been already evaluated
+ * Evaluates the SecurityCondition about a combination of tableName/opKind in the specified environment
+ * Requires environment.sys("idcustomgroup") to have been already evaluated
  * @param {string} tableName
  * @param {string} opKind
  * @param {Environment} environment
@@ -141,19 +157,22 @@ Security.prototype.securityCondition= function (tableName, opKind, environment){
     if (clauses.length===0){
         return  Q.constant(true);
     }
+    if (clauses.length===1){
+        return  clauses[0];
+    }
     return  Q.or(clauses);
 
 
 };
 
 /**
- *
+ * Reads all data from customgroupoperation and compiles expression strings into sqlFun.
+ * Creates ConditionRow items from rows stored on db, in order to create a Security object
  * @param {DataAccess} conn
- * @param {SqlFormatter} formatter
  * @constructor
  * @returns {Promise<Security>}
  */
-function SecurityProvider(conn, formatter){
+function SecurityProvider(conn){
      return conn.select({
         tableName:"customgroupoperation"
     })

@@ -14,8 +14,8 @@ JsConnectionPool.prototype = {
 
 
     /**
-     *
-     * @returns {Promise <JsPooledConnection>}
+     * Takes a JsPooledConnection from the pool or creates one if none available
+     * @returns {Promise<string>}
      */
     getDataAccess: function (){
         let that= this;
@@ -67,4 +67,4 @@ JsPooledConnection.prototype = {
 module.exports  = {
     JsPooledConnection: JsPooledConnection,
     JsConnectionPool:JsConnectionPool
-}
+};

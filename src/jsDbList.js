@@ -149,8 +149,8 @@ function init(options) {
 function DbDescriptor(sqlConn) {
 
     /**
-     * @private
      * Dictionary of stored TableDescriptor
+     * @private
      * @property tables
      * @type {{TableDescriptor}}
      */
@@ -238,8 +238,8 @@ DbDescriptor.prototype.forgetTable = function (tableName) {
 
 
 /**
- * @private
  * creates a TableDescriptor
+ * @private
  * @method TableDescriptor
  * @private
  * @constructor
@@ -418,7 +418,7 @@ function getDataAccess(dbCode) {
  * Get information about a database
  * @method getDbInfo
  * @param {string} dbCode
- * @returns {driver,useTrustedConnection,user,pwd,database,defaultSchema,connectionString} same data as that
+ * @returns {Object.<driver,useTrustedConnection,user,pwd,database,defaultSchema,connectionString>} same data as that
  *  required for sqlConnection constructor:
  * {string} [driver='SQL Server Native Client 11.0'] Driver name
  * {string} [useTrustedConnection=true] is assumed true if no user name is provided

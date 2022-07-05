@@ -108,7 +108,8 @@
      * @public
      * @description SYNC
      * Given an array of message object returns the json string
-     * @param {[]} messages
+     * @param {string[]} messages
+     * @return {string}
      */
     getDataUtils.getJsonFromMessages = function (messages) {
         if (!messages) return;
@@ -118,9 +119,9 @@
 
     /**
      * @function getJsDataQueryFromJson
-     * @public
      * @description SYNC
      * Given a json representation of the JsDataQuery returns a JsDataQuery
+     * @public
      * @param {string} jsonJsDataQuery Json string
      * @returns {sqlFun} the jsDataQuery representation of the json
      */

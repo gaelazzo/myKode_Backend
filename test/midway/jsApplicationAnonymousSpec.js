@@ -35,7 +35,7 @@ const sqlServerDriver = require('../../src/jsSqlServerDriver'),
         serializable: 'SERIALIZABLE'
     };
 
-describe('rest api',
+describe('API with anonimous connection',
     function () {
 
         const timeout = 500000;
@@ -85,7 +85,7 @@ describe('rest api',
 
         // ANONYMOUS token
 
-        it("getDataSet ws anonymous non permitted",
+        it("getDataSet attach-counter not allowed",
             function (done) {
             const tableName = "attach";
             const editType = "counter";
@@ -112,7 +112,7 @@ describe('rest api',
                 });
             }, timeout);
 
-        it("getDataSet ws anonymous permitted",
+        it("getDataSet attach-anonymous allowed",
             function (done) {
                 const tableName = "attach";
                 const editType = "anonymous";

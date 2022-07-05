@@ -159,8 +159,8 @@
 
 
     /**
-     * @private
      * Adds some useful methods and properties to a function in order to transform it into a sqlFun
+     * @private
      * @method toSqlFun
      * @param {function} f
      * @param {function} toSql
@@ -287,12 +287,12 @@
 
 
     /**
-     * @private
      * transform strings into fields, leaves other things unchanged
      * For example 'a' becomes f(r)-> r['a'],
      *  12 is returned unchanged,
      *  a function is returned  unchanged
      * @method autofield
+     * @private
      * @param {sqlFun|string|object} p
      * @return {sqlFun}
      */
@@ -772,7 +772,7 @@
     /**
      * Finds distinct values of a list of fields
      * @method distinctVal
-     * @param {(sqlFun|object)[]} exprList
+     * @param {Array<(sqlFun|object)>} exprList
      * @returns {sqlFun}
      */
     function distinct(exprList) {
@@ -816,7 +816,7 @@
      * checks if expr1 is in the array list
      * @method isIn
      * @param {sqlFun|string|object} expr1 note: this is autofield-ed, so if you can use a field name for it
-     * @param {(sqlFun|object)[]} list  Array or function that evaluates into an array
+     * @param {Array.<(sqlFun|object)>} list  Array or function that evaluates into an array
      * @returns {sqlFun}
      */
     function isIn(expr1, list) {

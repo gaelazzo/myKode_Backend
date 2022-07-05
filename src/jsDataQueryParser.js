@@ -3,8 +3,8 @@ const q = require('./../client/components/metadata/jsDataQuery');
 const _ = require('lodash');
 
 /**
+ * notFound|constant|fieldName|operator|openPar|closedPar|endOfString|comma|openEnvironment|closeEnvironment
  * @enum TokenKind
- * @type {object} notFound|constant|fieldName|operator|openPar|closedPar|endOfString|comma|openEnvironment|closeEnvironment
  */
 const TokenKind= {
     /**
@@ -167,8 +167,8 @@ BuildingExpression.prototype = {
             child.parent = this;
         }
         return child;
-
     },
+
     createParentExpression: function () {
         let originalParent = this.parent;
         let newExpr= new BuildingExpression(originalParent);
@@ -682,12 +682,19 @@ Token.prototype = {
         return null;
         //return Token.prototype.getDescriptor();
     },
+
     /**
-     *
-     * @param {string} s
-     * @param {int }currPos
-     * @return {{res:string|null, currPos:int}}
+     * @typedef {Object} stringPos
+     * @property {string|null} res
+     * @property {int} currPos
      */
+
+    /**
+     * get next alfanumeric sequene
+     * @param {string} s
+     * @param {int} currPos
+     * @return {stringPos}
+     * */
     getAlfaSequence: function  (s,currPos) {
         let currValue = "";
         let checkAlfaNum = false;
@@ -732,6 +739,7 @@ Token.prototype = {
     /// <param name="currPos"></param>
     /// <returns></returns>
 
+
     /**
      * Gets an alfa operator or a field name. Note that an alfa operator may contain spaces, while an identifier does not.
      * @param {string} s
@@ -768,13 +776,14 @@ Token.prototype = {
         return {res: t, currPos: alfaSeq.currPos};
     },
 
+
     /**
      *
      * @param {string} s
      * @param {int} currPos
      * @param {{OperatorDescriptor}} classElements
      * @param {function} testFun
-     * @return {{res:string|null, currPos:int}}
+     * @return {{res:string, currPos:int}}
      */
     getTokenOfClass: function (s, currPos, classElements, testFun) {
         let myPos = currPos;
@@ -1002,12 +1011,13 @@ JsDataQueryParser.prototype = {
         }
         return  res;
     },
+
     /**
      * @static
      * @param {string} s
      * @param {int} currPos
      * @param {boolean}wantsList
-     * @return {{res:BuildingExpression|null,currPos:int}}
+     * @return {{res:?BuildingExpression,currPos:int}}
      */
     getExpression: function(s, currPos, wantsList) {
         currPos = Token.prototype.skipSpaces(s, currPos);

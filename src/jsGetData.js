@@ -12,8 +12,7 @@ const dsSpace = require('../client/components/metadata/jsDataSet'),
 
 
 /**
- *
- * @type function Deferred
+ * @typedef function Deferred
  */
 const    Deferred = require("JQDeferred");
 
@@ -474,7 +473,7 @@ function scanTables(ctx, ds, toVisit, visited, oneRow) {
  * @param {DataSet} ds
  * @param {ObjectRow} row
  * @param {object} allowed
- * @param {Select []} selList
+ * @param {Array.<Select>} selList
  */
 function getParentRows(ds, row, allowed, selList) {
     const childTable = row.getRow().table,
@@ -517,7 +516,7 @@ function getParentRows(ds, row, allowed, selList) {
  * @param {DataSet} ds
  * @param {ObjectRow} row
  * @param {object} allowed
- * @param {Select []} selList
+ * @param {Array<Select>} selList
  */
 function getChildRows(ds, row, allowed, selList) {
     const parentTable = row.getRow().table,
@@ -556,7 +555,7 @@ function getChildRows(ds, row, allowed, selList) {
  * @param {DataSet} ds
  * @param {DataTable} parentTable
  * @param {object} allowed
- * @param {Select []} selList
+ * @param {Arrray.<Select>} selList
  */
 function getAllChildRows(ds, parentTable, allowed, selList) {
     const that = this;

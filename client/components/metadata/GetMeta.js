@@ -26,18 +26,20 @@ GetMeta.prototype = {
      */
     getMeta: function (name, req){
         try {
-			// todo metti cache 
-            let Meta = require(Path.join(this.metaPath,"meta_"+name)).prototype;
+			// todo metti cache
+            let mPath = Path.join(this.metaPath,"meta_"+name);
+            let Meta = require(mPath).prototype;
             let meta = new Meta.constructor();
             meta.setRequest(req);
             return meta;
-        } catch (e) {
+        }
+        catch (e) {
+            //Crea un metadato generico
             let Meta= require('./MetaData');
             let meta = new Meta.MetaData();
             meta.setRequest(req);
             return  meta;
         }
-
     }
 };
 

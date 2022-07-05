@@ -105,7 +105,7 @@ describe("jsPostData",function() {
                 });
         }
 
-    });
+    },30000);
 
     afterAll(function (done){
         if (!masterConn) {

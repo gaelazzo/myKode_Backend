@@ -15,6 +15,8 @@ const fs = require("fs");
 const q = require('../../client/components/metadata/jsDataQuery');
 const jsDataSet = require("../../client/components/metadata/jsDataSet");
 const configName = path.join('config', 'dbList.json');
+const GetMeta = require("./../../client/components/metadata/GetMeta");
+
 const http = require("http");
 let request = require('request');
 const _ = require("lodash");
@@ -92,7 +94,7 @@ describe('rest api',
         beforeEach(function (done) {
             sqlConn = getConnection('test_sqlServer');
             sqlConn.open().done(function () {
-                console.log("Connection opened");
+                //console.log("Connection opened");
                 done();
             }).fail(function (err) {
                 console.log('Error during opening: ' + err);
@@ -102,7 +104,7 @@ describe('rest api',
 
         afterEach(function (done) {
             if (sqlConn) {
-                console.log("Connection closed");
+                //console.log("Connection closed");
                 sqlConn.destroy()
                     .then(()=>done());
             }
@@ -111,10 +113,10 @@ describe('rest api',
 
         //describe('setup dataBase', function () {
         it('should run the setup script', function (done) {
-                console.log("Running script");
+                //console.log("Running script");
                 sqlConn.run(fs.readFileSync('test/data/jsApplication/setup.sql').toString())
                     .done(function () {
-                        console.log("db created");
+                        //console.log("db created");
                         expect(true).toBeTruthy();
                         done();
                         return;
@@ -124,7 +126,7 @@ describe('rest api',
                         expect(res).toBeUndefined();
                         done();
                     });
-            },timeout);
+            },60000);
 
         //});
 
@@ -872,8 +874,14 @@ describe('rest api',
                 });
             }, timeout);
 
+        it ('getMeta should get Metadata',()=>{
+            GetMeta.setPath('./../../../meta/');
+            let m = GetMeta.getMeta("attach");
+            expect(m.name).toBe("meta_attach");
+        });
+
         // ----> FILE CONTROLLER
-        fit('upload file chunk less 1MB. ok',
+        it('upload file chunk less 1MB. ok',
             function (done) {
 
                 // simulo nome file come atteso dal backend (CONVENZIONE!)
@@ -915,12 +923,15 @@ describe('rest api',
                         done.fail(error);
                         return;
                     }
-                    console.log(body);
+
+                    //console.log(body);
                     expect(response).toBeDefined();
                     const objParsed = JSON.parse(body);
 
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
+                    //console.log(ds.tables.attach);
+                    //console.log(ds.tables.attach.rows);
                     expect(ds.name).toBe('attach_default');
                     expect(ds.tables.attach.rows.length).toBe(1);
                     expect(ds.tables.attach.rows[0].idattach).toBe(1);
@@ -1066,7 +1077,7 @@ describe('rest api',
         });
 
 
-        xit('should delete uploaded files', async function () {
+        it('should delete uploaded files', async function () {
             let allFiles = await readdir(uploadPath);
             const totFileToClear = 2;
             // mi aspetto totFileToClear file caricati durante test. Uno per singolo chunk, il secondo con multipli chunk

@@ -90,6 +90,7 @@ describe('sqlServerDriver ', function () {
 
     beforeAll(function(done){
         masterConn= null;
+        let masterConnTemp= null;
         sqlConn= null;
         canExecute=false;
         let sqlOpen = Deferred();
@@ -97,11 +98,11 @@ describe('sqlServerDriver ', function () {
         if (options) {
             options.database = null;
             options.dbCode = "good";
-            masterConn = new sqlServerDriver.Connection(options);
-            masterConn.open()
+            masterConnTemp = new sqlServerDriver.Connection(options);
+            masterConnTemp.open()
                 .then(function () {
                     console.log("creating db "+dbName);
-                    return masterConn.run("drop database IF EXISTS "+dbName+";\n\rcreate database "+dbName);
+                    return masterConnTemp.run("drop database IF EXISTS "+dbName+";\n\rcreate database "+dbName);
                 })
                 .then(function(){
                     console.log("connecting to db");
@@ -129,32 +130,37 @@ describe('sqlServerDriver ', function () {
                     })
                     .then(()=>{
                         console.log("closed connection 1");
+                        masterConn = masterConnTemp;
                         done();
+                    })
+                    .fail(err=>{
+                        console.log(err);
                     });
             });
         }
-    });
+    },30000);
 
 
 
     afterAll(function (done){
         //console.log("running Afterall");
         if (!masterConn) {
-            //console.log("no masterConn, quitting afterAll");
+            console.log("no masterConn, quitting afterAll");
             done();
+            return;
         }
         console.log("dropping db "+dbName);
         masterConn.run("drop database IF EXISTS "+dbName)
             .then(()=>{
-                //console.log("DB Dropped");
+                console.log("DB Dropped");
                 masterConn.close()
                     .then(()=>{
-                        //console.log("closing connection 0");
+                        console.log("closing connection 0");
                         done();
                     });
             }, (err)=>{
-                //console.log("dropping error");
-                //console.log(err);
+                console.log("dropping error");
+                console.log(err);
             });
 
     },30000);
@@ -164,6 +170,11 @@ describe('sqlServerDriver ', function () {
     beforeEach(function (done) {
         //console.log("running beforeEach");
         canExecute=false;
+        if (!masterConn){
+            console.log("no Master Conn");
+            done();
+            return;
+        }
         sqlConn = getConnection('good');
         sqlConn.open().then(function () {
             //console.log("opened connection 2");

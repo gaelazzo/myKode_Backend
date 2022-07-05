@@ -196,9 +196,18 @@ async function forEachAsync(arr, fn) {
 }
 
 /**
+ * @typedef BusinessMessageData
+ * @property id:string
+ * @property description:string
+ * @property audit:string
+ * @property severity:string
+ * @property table:string
+ * @property canIgnore:bool
+ */
+/**
  *
  * @param {BusinessMessage} msg
- * @return  {id:string, description:string, audit:string, severity:string, table:string,  canIgnore:bool }
+ * @return  {BusinessMessageData}
  */
 function serializeMessage(msg){
     let table= msg.__table;
@@ -239,8 +248,8 @@ function serializeMessage(msg){
 }
 
 /**
- *
- * @param {id:string, description:string, audit:string, severity:string, table:string,  canIgnore:bool } msg
+ * Deserialize a message
+ * @param {BusinessMessageData} msg
  * @return {BusinessMessage}
  */
 function deserializeMessage(msg){

@@ -35,7 +35,6 @@
 
     /**
      * @constructor LocalResource
-     * @description
      */
     function LocalResource() {
         this.dictionary= null;

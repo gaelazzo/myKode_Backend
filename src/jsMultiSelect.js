@@ -317,15 +317,15 @@ Select.prototype = {
 
   /**
    * @property myTop
-   * @protected
    * {string|null}
+   * @protected
    */
   myTop: null,
 
   /**
    * get the partial filter (excluding static filter) associated with this Select
    * @method getPartialFilter
-   * @return {sqlFun|null}
+   * @return {?sqlFun}
    */
   getPartialFilter: function () {
     if (this.filter) {

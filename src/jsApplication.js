@@ -26,6 +26,10 @@ const commonGetDataSet =require("./../client/components/metadata/GetDataSet");
 const jsBusinessLogic = require("../src/jsBusinessLogic");
 let BusinessPostData =jsBusinessLogic.BusinessPostData;
 
+/**
+ * Main Application
+ * @constructor
+ */
 function JsApplication() {
     this.expressApplication = createExpressApplication();
     this.expressApplication.locals.JsApplication= this; //every expressApplication is attached to a JsApplication
@@ -33,7 +37,11 @@ function JsApplication() {
     this.router = Express.Router();
     this.pool=null;
 
-    /**{{ Environment }} */
+
+    /**
+     * Collection of all user environments of the application, the key is the sessionID
+     * @type {Object.<string, Environment>}
+     */
     this.environments={};
 
     /* Security */
@@ -75,6 +83,7 @@ JsApplication.prototype = {
 
 
     /**
+     * Attaches a release event on close/finish of the request (the one which fires first)
      * releases the pool connection after a request has been processed
      * @param req
      * @param ctx

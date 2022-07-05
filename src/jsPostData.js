@@ -39,9 +39,8 @@ const async = require('async');
 function MaxCacher(conn,environment){
   /**
    * Cache of all calculated max
-   * @property allMax
+   * @property {object} allMax
    * @private
-   * {object}
    */
   this.allMax = {};
 
@@ -574,8 +573,8 @@ SinglePostData.prototype.physicalPostBatch = function(conn, optimisticLocking){
  *  consider them.
  * @method  getSelectAllViews
  * @private
- * @param {ObjectRow[]} changedRows
- * @returns {Select []}
+ * @param {Array.<ObjectRow>} changedRows
+ * @returns {Array.<Select>}
  */
 SinglePostData.prototype.getSelectAllViews = function (changedRows) {
   return _.reduce(changedRows, function (list, r) {
@@ -963,7 +962,7 @@ PostData.prototype.getBusinessLogic = function (context, rowChanges){
 
 /**
  * Builds a chained function, chaining each the Deferred function with "then"
- * @param  {Deferred []} tasks each task is a function that returns a deferred. Not the deferred itself!
+ * @param  {Array.<Deferred>} tasks each task is a function that returns a deferred. Not the deferred itself!
  * @return {Promise}
  */
 function promiseWaterfall(tasks) {
@@ -1086,7 +1085,7 @@ PostData.prototype.reselectAllViewsAndAcceptChanges = function(conn){
 };
 
 /**
- * @returns {{ string dataSetName, DataRow [] changes}[]}
+ * @returns {Array.<dataSetName:string,  changes:Array.<DataRow>>}
  */
 PostData.prototype.getAllChanges = function(){
 

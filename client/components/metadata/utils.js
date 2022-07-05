@@ -146,7 +146,7 @@
      * @description SYNC
      * This works like a $.When with optional async functions
      * @param {object} thisObject
-     * @param {object []} funArgs
+     * @param {object[]} funArgs
      * @returns {function}
      */
     utils.sequence = function (thisObject, funArgs) {
@@ -228,7 +228,7 @@
      * @public
      * @description ASYNC
      * Builds a chained function, chaining each the Deferred function with "then"
-     * @param {Function []} allDeferred.It is an array of function that must be return a deferred
+     * @param {Function[]} allDeferred.It is an array of function that must be return a deferred
      * @returns {Deferred}
      */
     utils.thenSequence = function(allDeferred) {

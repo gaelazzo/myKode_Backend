@@ -11,7 +11,7 @@ const jsDataSet = require('./../client/components/metadata/jsDataSet'),
 
 /**
  *
- * @type function Deferred
+ * @typedef  Deferred
  */
 const Deferred = require("JQDeferred");
 const _ = require('lodash');
@@ -53,11 +53,7 @@ const isolationLevels = {
 /**
  * A DataAccess is a rich connection to a database and provides many non-blocking query functions to manage it.
  * Normally a connection is leaved open since it is destroyed. Setting persisting to false changes this
- *  default behaviour
- *@class DataAccess
- */
-
-/**
+ * default behaviour
  * @constructor
  * @param {object} options
  * @param {Connection} [options.sqlConn]
@@ -255,7 +251,7 @@ DataAccess.prototype = {
      *  when the object is destroyed
      * @property {boolean} persisting
      */
-    persisting: 0,
+    persisting: false,
 
 
     /**
@@ -270,7 +266,7 @@ DataAccess.prototype = {
      * Opens the underlying connection.
      * Consecutive calls to this function results in a automatic nesting-opening level to be increased.
      *  the underlying connection is touched only when nesting-opening level goes from 0 to 1
-     *  If persisting is true, calling to open increments nesting-opening level but has no other effect
+     *  If `persisting` is true, calling to open increments nesting-opening level but has no other effect
      * @method open
      * @returns {Promise}
      */
@@ -665,23 +661,16 @@ DataAccess.prototype = {
             return def.promise();
         }
 
-        this.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment)
-            .then(function (filterSec) {
-                    options.filter = filterSec;
-                    const selCmd = that.sqlConn.getSelectCommand(options);
-                    that.runSql(selCmd, raw)
-                        .done(function (dataRead) {
-                            dataRead.tableName = options.alias || options.tableName;
-                            def.resolve(dataRead);
-                        })
-                        .fail(function (err) {
-                            def.reject(err);
-                        });
-                },
-                function (err) {
-                    def.reject(err);
-                }
-            );
+        options.filter = this.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment);
+        const selCmd = that.sqlConn.getSelectCommand(options);
+        that.runSql(selCmd, raw)
+            .done(function (dataRead) {
+                dataRead.tableName = options.alias || options.tableName;
+                def.resolve(dataRead);
+            })
+            .fail(function (err) {
+                def.reject(err);
+            });
         return def.promise();
     },
 
@@ -710,23 +699,20 @@ DataAccess.prototype = {
             return def.promise();
         }
 
-        this.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment)
-            .then(function (filterSec) {
-                    options.filter = filterSec;
-                    const selCmd = that.sqlConn.getPagedTableCommand(options);
-                    that.runSql(selCmd, raw)
-                        .done(function (dataRead) {
-                            dataRead.tableName = options.alias || options.tableName;
-                            def.resolve(dataRead);
-                        })
-                        .fail(function (err) {
-                            def.reject(err);
-                        });
-                },
-                function (err) {
-                    def.reject(err);
-                }
-            );
+        options.filter  =this.getFilterSecured(options.filter,
+                                options.applySecurity,
+                                options.tableName,
+                                options.environment);
+
+        const selCmd = that.sqlConn.getPagedTableCommand(options);
+        that.runSql(selCmd, raw)
+            .done(function (dataRead) {
+                dataRead.tableName = options.alias || options.tableName;
+                def.resolve(dataRead);
+            })
+            .fail(function (err) {
+                def.reject(err);
+            });
         return def.promise();
     },
 
@@ -762,45 +748,32 @@ DataAccess.prototype = {
     selectRows: function (opt, raw) {
         const options = _.defaults(opt, {columns: '*', applySecurity: true, filter: null});
         return ensureOpen(this, function (conn) {
-            return conn.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment)
-                .then(function (filterSec) {
-                        options.filter = filterSec;
-                    const selCmd = conn.sqlConn.getSelectCommand(options);
-                    return conn.sqlConn.queryLines(selCmd, raw);
-                    }
-                );
+            options.filter = conn.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment)
+            const selCmd = conn.sqlConn.getSelectCommand(options);
+            return conn.sqlConn.queryLines(selCmd, raw);
         });
     },
 
 
     /**
-     * Get the filter on a table merging optional security condition
+     * Get the filter on a table merging optional security condition.
      * @private
      * @method getFilterSecured
      * @param {sqlFun} filter
      * @param {boolean} applySecurity
      * @param {string} tableName
      * @param {Environment} [environment]
-     * @returns {Promise<sqlFun>}
+     * @returns sqlFun
      */
     getFilterSecured: function (filter, applySecurity, tableName, environment) {
-        const def = Deferred();
         if (filter && filter.isFalse) {
-            def.resolve(filter);
-            return def.promise();
+            return filter;
         }
         if (applySecurity && this.security) {
-            this.security.securityCondition(tableName, 'S', environment)
-                .done(function (securityCondition) {
-                    def.resolve($dq.and(filter, securityCondition));
-                })
-                .fail(function (err) {
-                    def.reject(err);
-                });
-        } else {
-            def.resolve(filter);
+            let securityCondition = this.security.securityCondition(tableName, 'S', environment);
+            return $dq.and(filter, securityCondition);
         }
-        return def.promise();
+        return filter;
     },
 
 
@@ -955,28 +928,24 @@ DataAccess.prototype.queryPackets = function (opt, packetSize, raw) {
 
     process.nextTick(function() {
         ensureOpen(that, function (conn) {
-            return conn.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment)
-            .then(function (filterSec) {
-                const opt = _.clone(options);
-                opt.filter = filterSec;
-                const selCmd = conn.sqlConn.getSelectCommand(opt);
-                conn.sqlConn.queryPackets(selCmd, raw, packetSize)
-                    .progress(function (r) {
-                        if (r.meta) {
-                            currTableInfo.columns   = r.meta;
-                            currTableInfo.tableName = tableName;
-                        } else {
-                            notifyPacket(r.rows);
-                        }
-                    })
-                    .done(function () {
-                        def.resolve();
-                    })
-                    .fail(function (err) {
-                        def.reject(err);
-                    });
-                }
-            );
+            const opt = _.clone(options);
+            opt.filter = conn.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment);
+            const selCmd = conn.sqlConn.getSelectCommand(opt);
+            conn.sqlConn.queryPackets(selCmd, raw, packetSize)
+                .progress(function (r) {
+                    if (r.meta) {
+                        currTableInfo.columns   = r.meta;
+                        currTableInfo.tableName = tableName;
+                    } else {
+                        notifyPacket(r.rows);
+                    }
+                })
+                .done(function () {
+                    def.resolve();
+                })
+                .fail(function (err) {
+                    def.reject(err);
+                });
         });
     });
     return def.promise();
@@ -1007,20 +976,22 @@ DataAccess.prototype.multiSelect = function (options) {
 
     // gets the security filter for each Select in the list
     async.map(selList, function (select, callback) {
-            that.getFilterSecured(select.getFilter(), opt.applySecurity, select.tableName, opt.environment)
-                .then(function (filterSec) {
-                    callback(null,
-                        {
-                            alias: select.alias,
-                            sql: that.sqlConn.getSelectCommand({
-                                tableName: select.tableName,
-                                columns: select.columns,
-                                filter: select.getFilter(),
-                                top: select.getTop(),
-                                environment: opt.environment
-                            })
-                        });
+            let filterSec = that.getFilterSecured(select.getFilter(),
+                opt.applySecurity,
+                select.tableName,
+                opt.environment);
+            callback(null,
+                {
+                    alias: select.alias,
+                    sql: that.sqlConn.getSelectCommand({
+                        tableName: select.tableName,
+                        columns: select.columns,
+                        filter: filterSec, //select.getFilter(),
+                        top: select.getTop(),
+                        environment: opt.environment
+                    })
                 });
+
         },
         function (err, resultList) {
             // resultList is an array of {alias, sql} couples
@@ -1214,27 +1185,20 @@ DataAccess.prototype.selectCount = function (options) {
     const def = Deferred(),
         that = this,
         opt = _.defaults(options, {applySecurity: true, filter: null});
-    this.getFilterSecured(opt.filter, opt.applySecurity, opt.tableName, opt.environment)
-        .then(function (filterSec) {
-            if (filterSec.isFalse) {
+    let filterSec = this.getFilterSecured(opt.filter, opt.applySecurity, opt.tableName, opt.environment);
+    if (filterSec.isFalse) {
                 def.resolve(0);
-                return;
-            }
-            opt.filter = filterSec;
-                const selCmd = that.sqlConn.getSelectCount(opt);
-                that.runCmd(selCmd)
-                .done(function (count) {
-                    def.resolve(count);
-                })
-                .fail(function (err) {
-                    def.reject(err);
-                });
-        },
-        function (err) {
+                return def.promise();
+    }
+    opt.filter = filterSec;
+        const selCmd = that.sqlConn.getSelectCount(opt);
+        that.runCmd(selCmd)
+        .done(function (count) {
+            def.resolve(count);
+        })
+        .fail(function (err) {
             def.reject(err);
-        }
-    );
-
+        });
     return def.promise();
 };
 

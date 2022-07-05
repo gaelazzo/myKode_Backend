@@ -24,9 +24,9 @@
     /** Detect free variable `global` from Node.js or Browserified code and use it as `root`. (thanks lodash)*/
     let moduleExports = freeModule && freeModule.exports === freeExports;
 
-        /**
+    /**
      * @constructor AutoInfo
-     * @description
+     * @description Information abount an AutoManage or AutoChoose div
      * @param {element} G usually DIV or SPAN
      * @param {string} type
      * @param {jsDataQuery} startFilter
@@ -74,6 +74,7 @@
          * @param {Request} req
          */
         setRequest: function (req){
+            if (!req) return;
             const ctx = req.app.locals.context;
             this.localResource = ctx.localResource;
             this.getData = ctx.getDataInvoke;
@@ -724,7 +725,7 @@
     (typeof appMeta === 'undefined') ? require('./Logger').logTypeEnum : appMeta.logTypeEnum,
     (typeof appMeta === 'undefined') ? undefined : appMeta.getMeta.bind(appMeta),
     (typeof appMeta === 'undefined') ? undefined : appMeta.getData,
-    (typeof jsDataSet === 'undefined') ? require('./jsDataSet').CType : jsDataSet.CType,
+    (typeof jsDataSet === 'undefined') ? require('./../metadata/jsDataSet').CType : jsDataSet.CType,
     (typeof appMeta === 'undefined') ? undefined : appMeta.security,
     )
 );

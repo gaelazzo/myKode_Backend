@@ -31,6 +31,6 @@ It's also possible to delete a row with all its children (with cascading effect)
 
 A full list of available function is available in the auto-generated yui doc.
 
-Full details are available [here](doc/module-DataSet.html)
+Full details are available [here](doc/DataSet.md)
 ![](https://travis-ci.org/gaelazzo/jsDataSet.svg?branch=master)
 

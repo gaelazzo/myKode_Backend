@@ -126,9 +126,20 @@ Token.prototype = {
     setInRequest(req){
         req.headers.authorization = "Bearer "+ this.getToken();
     },
+
+
     /**
-     * Returns the public token structure
-     * @return {{sub: (Identity.name|string), aud: *, guidsession: *, nDetail: (Identity.ndetail|string), roles: (Token.roles|Identity.roles|[]), IsAnonymous: Token.IsAnonymous, title: (Token.title|Identity.title|string), idFlowChart: (Identity.idflowchart|string), email: (Token.email|Identity.email|string)}}
+     * Returns the public token structure:
+     * sub is Identity.name
+     * nDetail is Identity.ndetail
+     * roles is Token.roles or Identity.roles
+     * IsAnonymous is Token.IsAnonymous
+     * title is Token.title or Identity.title
+     * idFlowChart is Identity.idflowchart
+     * email is Identity.email
+     * @return {Object.<sub:string,aud:Object,guidsession:Object,nDetail:string.roles:Array.<string>,
+     *              IsAnonymous:boolean,title:string,idFlowChart:string,email:string>}
+     *
      */
     getObjectToken: function (){
         return {

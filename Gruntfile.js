@@ -9,7 +9,9 @@
 /*globals initConfig, appPath */
 /*jshint camelcase: false */
 
+const glob = require('glob');
 
+const jsdoc2md = require('jsdoc-to-markdown');
 
 const fs = require("fs");
 const path = require("path");
@@ -42,7 +44,7 @@ const rep = JasmineClass.ConsoleReporter;  //require("jasmine.console_reporter.j
 const reporter = new JasmineConsoleReporter({
     colors: 2,           // (0|false)|(1|true)|2
     cleanStack: 1,       // (0|false)|(1|true)|2|3
-    verbosity: 3,        // (0|false)|1|2|(3|true)|4|Object
+    verbosity: 2,        // (0|false)|1|2|(3|true)|4|Object
     listStyle: 'indent', // "flat"|"indent"
     timeUnit: 'ms',      // "ms"|"ns"|"s"
     timeThreshold: { ok: 500, warn: 1000, ouch: 3000 }, // Object|Number
@@ -98,7 +100,7 @@ module.exports = function (grunt) {
 
         open : {
             doc : {
-                path: 'D:/progetti/jsMetaBackend/doc/index.html',
+                path: 'D:/progetti/jsMetaBackend/doc/index.md',
                 app: 'Google Chrome'  //also FireFox
             },
         },
@@ -112,6 +114,9 @@ module.exports = function (grunt) {
             },
             clientTest: {
                 command: 'npx jasmine test/client/*Spec.js'
+            },
+            jsdocToMD:{
+                command: 'jsdoc2md src/*.js'
             }
         },
 
@@ -123,7 +128,6 @@ module.exports = function (grunt) {
                         'client/components/*/*.js',
                         //'client/components/languages/*.js',
                         'routes/*/*.js'
-
                 ],
                 options: {
                     destination: 'doc'
@@ -337,6 +341,41 @@ module.exports = function (grunt) {
     // Set the configuration for all the tasks
     grunt.initConfig(gruntConfig);
 
+    grunt.registerTask("jsDocMD","jsdoc to MD",async function(cfgName){
+        let folders = gruntConfig.jsdoc[cfgName].src;
+        let done = this.async();
+        let processed=0;
+        folders.forEach(folder=>{
+            let folderComplete = path.join(__dirname,folder);
+            console.log(folder);
+
+            glob(folder, {}, (err, files)=>{
+                if (err){
+                    console.log(err);
+                    return;
+                }
+                //console.log(files);
+                files.forEach(file => {
+                    if (path.basename(file)[0]==='_') return;
+                    console.log(file);
+                    try {
+                        let md = jsdoc2md.renderSync({files: file});
+                        const basename = path.basename(file, path.extname(file));
+                        const newName = path.join(path.dirname(file), basename + ".md");
+                        fs.writeFileSync(newName, md);
+                    }
+                    catch (e){
+                        console.log(e);
+                    }
+            });
+                processed+=1;
+                if (processed===folders.length) done();
+            });
+
+
+        });
+    });
+
     grunt.registerTask("jasmine", "jasmine runner", async function (configName) {
         let done = this.async();
         jasmineObj.loadConfig(gruntConfig.jasmine[configName]);
@@ -353,7 +392,9 @@ module.exports = function (grunt) {
         done();
     });
 
-    grunt.registerTask('doc', ['jsdoc','open:doc']);
+    grunt.registerTask('docMD', ['jsDocMD:dist']);
+
+    grunt.registerTask('doc', ['jsdoc','shell:jsdoc', 'open:doc']);
 
     grunt.registerTask('test_Client', ['jasmine:client']);
     grunt.registerTask('test_Server', ['jasmine:server']);

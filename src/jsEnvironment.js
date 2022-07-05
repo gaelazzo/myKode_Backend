@@ -41,9 +41,8 @@ Environment.prototype.getStampFields =function(){
     return ["ct","lt"];
 };
 
-    /**
+/**
  * Get/set a value for an environment sys variable
- * @method field
  * @param {string} key
  * @param {object} [value]
  * @returns {object}
@@ -58,7 +57,6 @@ Environment.prototype.sys = function (key, value) {
 
 /**
  * Get a value for an environment field or a new Date if the field is a stamp field
- * @method field
  * @param {string} key
  * @param {object} [value]
  * @returns {object}
@@ -78,7 +76,6 @@ Environment.prototype.field = function (key, value) {
 
 /**
  * Get/set a value for an environment usr variable
- * @method field
  * @param {string} key
  * @param {object} [value]
  * @returns {object}
@@ -91,11 +88,18 @@ Environment.prototype.usr = function (key, value) {
     return this.myUsr[key];
 };
 
-
+/**
+ * Enumerates all sys keys
+ * @return {string[]}
+ */
 Environment.prototype.enumSys = function () {
     return _.keys(this.mySys);
 };
 
+/**
+ * Enumerates all usr keys
+ * @return {string[]}
+ */
 Environment.prototype.enumUsr = function () {
     return _.keys(this.myUsr);
 };
@@ -150,7 +154,7 @@ Environment.prototype.getCustomUser= function(conn){
  * This is meant to be invoked when environment is created
  * @static
  * @param {DataAccess} conn
- * @return {Promise<object []>}
+ * @return {Promise<Array.<object>>}
  */
 Environment.prototype.getGroupList = function(conn) {
     let d = Deferred();

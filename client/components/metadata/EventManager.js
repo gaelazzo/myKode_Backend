@@ -219,8 +219,8 @@
     };
 
     /**
+     * Class that helps waiting for events stabilization after some action, especially used in tests
      * @constructor Stabilizer
-     * @description
      */
     function Stabilizer() {
         this.nesting = 0;

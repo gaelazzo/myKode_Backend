@@ -1,8 +1,7 @@
 /*globals ObjectRow,DataRelation,define,self,jsDataSet,jsDataQuery,metaModel */
 /**
  * @module localResourceIt
- * @description
- * Collection of the localized strings ITALIAN
+ * @description  Collection of the localized strings ITALIAN
  */
 (function () {
 
@@ -23,6 +22,7 @@
     /**
      * @constructor LocalResourceIt
      * @description
+     * Resources for italian language
      */
     function LocalResourceIt() {
     }

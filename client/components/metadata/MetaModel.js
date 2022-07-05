@@ -36,8 +36,8 @@
 	let q = jsDataQuery;
 
     /**
+	 * Sets of function to manage dataset poroperties
      * @constructor
-     * @description
      */
 	function MetaModel() {
 	}
