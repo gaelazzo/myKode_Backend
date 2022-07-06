@@ -100,7 +100,7 @@ module.exports = function (grunt) {
 
         open : {
             doc : {
-                path: 'D:/progetti/jsMetaBackend/doc/index.md',
+                path: 'D:/progetti/jsMetaBackend/docs/index.md',
                 app: 'Google Chrome'  //also FireFox
             },
         },
@@ -134,7 +134,7 @@ module.exports = function (grunt) {
                         'routes/*/*.js'
                 ],
                 options: {
-                    destination: 'doc'
+                    destination: 'docs'
                 }
             }
         },
@@ -147,7 +147,7 @@ module.exports = function (grunt) {
             url: '<%= pkg.homepage %>',
             options: {
               paths: ['./src'],
-              outdir: 'doc'
+              outdir: 'docs'
             }
           }
         },

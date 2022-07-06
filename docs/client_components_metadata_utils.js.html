@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/components/metadata/utils.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/components/metadata/utils.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*globals ObjectRow,DataRelation,define,self,jsDataSet,jsDataQuery,metaModel,appMeta,_ */
+
+
+/**
+ * @module Utils
+ * @description
+ * Collection of utility functions
+ */
+(function (Deferred,OriginaDeferred) {
+
+
+    /** Detect free variable `global` from Node.js. */
+    let freeGlobal = typeof global === 'object' &amp;&amp; global &amp;&amp; global.Object === Object &amp;&amp; global;
+    /** Detect free variable `self`. */
+    let freeSelf = typeof self === 'object' &amp;&amp; self &amp;&amp; self.Object === Object &amp;&amp; self;
+    /** Used as a reference to the global object. */
+    let root = freeGlobal || freeSelf || Function('return this')();
+    /** Detect free variable `exports`. */
+    let freeExports = typeof exports === 'object' &amp;&amp; exports &amp;&amp; !exports.nodeType &amp;&amp; exports;
+    /** Detect free variable `module`. */
+    let freeModule = freeExports &amp;&amp; typeof module === 'object' &amp;&amp; module &amp;&amp; !module.nodeType &amp;&amp; module;
+    //noinspection JSUnresolvedVariable
+    /** Detect free variable `global` from Node.js or Browserified code and use it as `root`. (thanks lodash)*/
+    let moduleExports = freeModule &amp;&amp; freeModule.exports === freeExports;
+
+    let utils = {};
+
+    /**
+     * @function callOptAsync
+     * @public
+     * @description ASYNC
+     * Calls a function fn that may have a callback parameter and returns a deferred value that will receive the result of fn
+     * If fn has the parameter it is considered a callback that will receive the optional result as first parameter
+     * If fn has no parameter it is considered a sincronous function its result is used  to fullfill the deferred.
+     * If fn returns a deferred, its inner result is used to fullfill the result
+     * The averall result is always a deferred value
+     * @param {function} fn
+     * @returns {Deferred}
+     */
+    utils.callOptAsync = function (fn) {
+        let res = Deferred("utils.callOptAsync");
+        if (fn.length > 0) {
+            //fn has a parameter, it is considered a callback
+            try {
+                fn(function(resValue) {
+                    res.resolve(resValue);
+                });
+            } catch (err) {
+                return res.reject(err);
+            }
+        } else {
+            setTimeout(function () {
+                    try {
+                        let result = fn();
+                        if (result === null || result === undefined) {
+                            res.resolve(result);
+                            return;
+                        }
+                        //check if value is a deferred
+                        if (typeof result.then === "function") {
+                            result.then(function (innerResult) {
+                                res.resolve(innerResult); //fullfill the result with the deferred result
+                            }, function (error) {
+                                res.reject(error);
+                            });
+                            return;
+                        }
+                        res.resolve(result);
+                    } catch (err) {
+                        if (err) console.log(err.message, err.stack);
+                        res.reject(err);
+                    }
+                },
+                0);
+        }
+        return res.promise();
+
+    };
+
+    /**
+     * @function optionalDeferred
+     * @public
+     * @description ASYNC
+     * Optionally executes a Deferred function, otherwise returns a deferred resolved with defaultValue
+     * @param {boolean} condition
+     * @param {function} func
+     * @param {object} defaultValue
+     * @returns {Deferred}
+     */
+    utils.optionalDeferred = function(condition, func, defaultValue) {
+        if (!condition) return Deferred("utils.optionalDeferred").resolve(defaultValue).promise();
+        return func();
+    };
+
+    /**
+     * @function skipRun
+     * @public
+     * @description ASYNC
+     * returns deferred function that accepts a parameter
+     * @param {function} func
+     * @returns {Deferred}
+     */
+    utils.skipRun = function(func) {
+        return function(result) {
+            let res = func(result);
+            if (res.then) {
+                return res.then(utils.fConst(result));
+            }
+            return OriginaDeferred().resolve(result).promise();
+        };
+    };
+
+    /**
+     * @function optBind
+     * @public
+     * @description SYNC
+     * Returns function "fun" binded to "obj" or null if fun is null. Arguments can be provided
+     * @param {function} fun  function to bind
+     * @param {object} obj   object to use as "this"
+     * @param {object} args  optional arguments
+     * @returns {function}
+     */
+    utils.optBind = function(fun, obj, args) {
+        if (!fun) return function() {};
+        let rest = Array.prototype.slice.call(arguments, 1);
+        if (rest.length > 1) return fun.bind.apply(fun, rest);
+        return fun.bind(obj);
+    };
+
+
+
+    /**
+     * @function fConst
+     * @public
+     * @description SYNC
+     * Returns a constant function
+     * @param {type} k
+     */
+    utils.fConst = function(k) {
+        return function() { return k; };
+    };
+
+    /**
+     * @function  sequence
+     * @public
+     * @description SYNC
+     * This works like a $.When with optional async functions
+     * @param {object} thisObject
+     * @param {object[]} funArgs
+     * @returns {function}
+     */
+    utils.sequence = function (thisObject, funArgs) {
+        return OriginaDeferred.when(_.map(arguments,
+            function (f, index) {
+                if (index === 0) return true;
+                return utils.callOptAsync(f);
+            }));
+    };
+
+    /**
+     * @function _if
+     * @public
+     * @description ASYNC
+     * Builds an object chainable with these methods: .then().else().run() and eventually you can call .then() after run()
+     * @param {boolean} condition
+     * @returns {IfThenElse} {_if: function, _then:function, _else:function,run:function  }
+     */
+    utils._if  = function(condition) {
+        let self = this;
+
+        /**
+         * Utility class to chain an if - then - else construct
+         * @class IfThenElse
+         * @constructor
+         */
+        function IfThenElse() {
+            /**
+             * @function _then
+             * @param {function} then_clause
+             * @return {IfThenElse}
+             * @public
+             */
+            this._then = function(then_clause) {
+                this._thenClause = then_clause;
+                return this;
+            };
+
+            /**
+             * @function _else
+             * @param {function} else_clause
+             * @return {Deferred}
+             * @public
+             */
+            this._else = function(else_clause) {
+                this._elseClause = else_clause;
+                return this.run();
+            };
+
+            /**
+             * @function run
+             * @return {Deferred}
+             */
+            this.run = function() {
+                if (condition) {
+                    return self.asDeferred(this._thenClause());
+                } else {
+                    if (this._elseClause) {
+                        return self.asDeferred(this._elseClause());
+                    }
+                }
+                return self.asDeferred(undefined);
+            };
+
+            this.done = function(f) {
+                return this.run().done(f);
+            };
+
+            this.then = function(doneFilter,failFilter,progressFilter) {
+                return this.run().then(doneFilter,failFilter,progressFilter);
+            };
+        }
+
+        return new IfThenElse();
+    };
+
+    /**
+     * @function thenSequence
+     * @public
+     * @description ASYNC
+     * Builds a chained function, chaining each the Deferred function with "then"
+     * @param {Function[]} allDeferred.It is an array of function that must be return a deferred
+     * @returns {Deferred}
+     */
+    utils.thenSequence = function(allDeferred) {
+        // inizializzo primo elemento della catena di then
+        let f = OriginaDeferred().resolve(true).promise();
+
+        // concateno con then ogni deferred dell'array di input
+        _.forEach(
+            allDeferred,
+            function(def) {
+                f = f.then(def);
+            });
+
+        return f;
+    };
+
+    /**
+     * @function filterArrayOnField
+     * @public
+     * @description SYNC
+     * Returns the array of field value, taken from an object array, where field is not null or undefined
+     * @param {object[]} arr
+     * @param {string} field
+     * @returns {object[]}
+     */
+    utils.filterArrayOnField = function(arr, field){
+        return _.map(
+            _.filter(arr, function(o) {
+                return o[field];
+            }), function (o) {
+                return o[field];
+            });
+    };
+
+
+    /**
+     * @function asDeferred
+     * @public
+     * @description ASYNC
+     * Evaluates the expression. if it is a deferred function then returns it, otherwise returns a Deferred
+     * @param {Function} expression
+     * @returns {Deferred}
+     */
+    utils.asDeferred = function(expression) {
+
+        if (expression &amp;&amp; typeof expression.then === "function") {
+            return expression;
+        }
+        if (typeof expression === "function") {
+            return new OriginaDeferred().resolve(expression).promise();
+        }
+        return new OriginaDeferred().resolve(expression).promise();
+    };
+
+    let univoqueId=0;
+
+    /**
+     * @method getUnivoqueId
+     * @private
+     * @description SYNC
+     * Returns a progressive number. This number will be attached eventually to the id of the modal, to assure that each control is univoque.
+     * @returns {number}
+     */
+    utils.getUnivoqueId = function () {
+        univoqueId++;
+        return univoqueId;
+    };
+
+
+
+    /**
+     * @method isBrowserIE, this can only be invoked by frontend
+     * @private
+     * @description SYNC
+     * Returns true if the browser is InternetExplorer
+     * @returns {boolean}
+     */
+    utils.isBrowserIE = function () {
+        try {
+            if (typeof window === "undefined") {
+                return  false;
+            }
+            let ua = window.navigator.userAgent;
+            let msie = ua.indexOf("MSIE ");
+            if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) return true;
+            return false;
+        } catch (e){
+            return false;
+        }
+    };
+
+    /**
+     * Returns true if "str" is a valid url
+     * @param {string} str
+     * @returns {boolean}
+     */
+    utils.validURL = function(str) {
+        let pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+            '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return !!pattern.test(str);
+    };
+
+// Some AMD build optimizers like r.js check for condition patterns like the following:
+    //noinspection JSUnresolvedVariable
+    if (typeof define === 'function' &amp;&amp; typeof define.amd === 'object' &amp;&amp; define.amd) {
+        // Expose lodash to the global object when an AMD loader is present to avoid
+        // errors in cases where lodash is loaded by a script tag and not intended
+        // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
+        // more details.
+        root.utils = utils;
+
+        // Define as an anonymous module so, through path mapping, it can be
+        // referenced as the "underscore" module.
+        //noinspection JSUnresolvedFunction
+        define(function () {
+            return utils;
+        });
+    }
+    // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
+    else if (freeExports &amp;&amp; freeModule) {
+        if (moduleExports) { // Export for Node.js or RingoJS.
+            (freeModule.exports = utils).utils = utils;
+        }
+        else { // Export for Narwhal or Rhino -require.
+            freeExports.utils = utils;
+        }
+    }
+    else {
+        // Export for a browser or Rhino.
+        if (root.appMeta){
+            root.appMeta.utils = utils;
+        }
+        else {
+            root.utils=utils;
+        }
+
+    }
+
+}(  (typeof appMeta === 'undefined') ? require('./EventManager').Deferred : appMeta.Deferred,
+    (typeof $ === 'undefined')? require('JQDeferred'): $.Deferred
+));
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DataAccess.html">DataAccess</a></li><li><a href="module-DataSet.html">DataSet</a></li><li><a href="module-dbList.html">dbList</a></li><li><a href="module-EventManger.html">EventManger</a></li><li><a href="module-GetDataInvoke.html">GetDataInvoke</a></li><li><a href="module-getDataUtils.html">getDataUtils</a></li><li><a href="module-jsBusinessLogic.html">jsBusinessLogic</a></li><li><a href="module-jsDataQuery.html">jsDataQuery</a></li><li><a href="module-LocalResource.html">LocalResource</a></li><li><a href="module-localResourceIt.html">localResourceIt</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-MetaData.html">MetaData</a></li><li><a href="module-MetaModel.html">MetaModel</a></li><li><a href="module-mySqlDriver.html">mySqlDriver</a></li><li><a href="module-optimizeComparing.html">optimizeComparing</a></li><li><a href="module-PostData.html">PostData</a></li><li><a href="module-Security.html">Security</a></li><li><a href="module-sqlFormatter.html">sqlFormatter</a></li><li><a href="module-sqlServerDriver.html">sqlServerDriver</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="BuildingExpression.html">BuildingExpression</a></li><li><a href="ConstantExpression.html">ConstantExpression</a></li><li><a href="Context.html">Context</a></li><li><a href="DataColumn.html">DataColumn</a></li><li><a href="EdgeConnection.html">EdgeConnection</a></li><li><a href="EncryptedFile.html">EncryptedFile</a></li><li><a href="Environment.html">Environment</a></li><li><a href="EnvironmentExpression.html">EnvironmentExpression</a></li><li><a href="FieldExpression.html">FieldExpression</a></li><li><a href="getData.html">getData</a></li><li><a href="Identity.html">Identity</a></li><li><a href="JsApplication.html">JsApplication</a></li><li><a href="JsDataQueryParser_from.html">from</a></li><li><a href="JsPooledConnection.html">JsPooledConnection</a></li><li><a href="module-DataAccess-DataAccess.html">DataAccess</a></li><li><a href="module-DataSet-AutoIncrementColumn.html">AutoIncrementColumn</a></li><li><a href="module-DataSet-DataRelation.html">DataRelation</a></li><li><a href="module-DataSet-DataRow.html">DataRow</a></li><li><a href="module-DataSet-DataSet.html">DataSet</a></li><li><a href="module-DataSet-DataTable.html">DataTable</a></li><li><a href="module-DataSet-ObjectRow.html">ObjectRow</a></li><li><a href="module-DataSet-OptimisticLocking.html">OptimisticLocking</a></li><li><a href="module-dbList-Context.html">Context</a></li><li><a href="module-dbList-DbDescriptor.html">DbDescriptor</a></li><li><a href="module-dbList-dbListFile.html">dbListFile</a></li><li><a href="module-EventManger-Delegate.html">Delegate</a></li><li><a href="module-EventManger-Event.html">Event</a></li><li><a href="module-EventManger-EventManager.html">EventManager</a></li><li><a href="module-EventManger-Stabilizer.html">Stabilizer</a></li><li><a href="module-GetDataInvoke-GetDataInvoke.html">GetDataInvoke</a></li><li><a href="module-GetDataInvoke-utils._if-IfThenElse.html">IfThenElse</a></li><li><a href="module-jsBusinessLogic-BusinessLogic.html">BusinessLogic</a></li><li><a href="module-jsBusinessLogic-BusinessMessage.html">BusinessMessage</a></li><li><a href="module-jsBusinessLogic-OneSubst.html">OneSubst</a></li><li><a href="module-jsBusinessLogic-PostData.html">PostData</a></li><li><a href="module-jsBusinessLogic-RowChange.html">RowChange</a></li><li><a href="module-jsBusinessLogic-SubstGroup.html">SubstGroup</a></li><li><a href="module-localResourceIt-LocalResourceIt.html">LocalResourceIt</a></li><li><a href="module-LocalResource-LocalResource.html">LocalResource</a></li><li><a href="module-Logger-Logger.html">Logger</a></li><li><a href="module-MetaData-AutoInfo.html">AutoInfo</a></li><li><a href="module-MetaData-MetaData.html">MetaData</a></li><li><a href="module-mySqlDriver-Connection.html">Connection</a></li><li><a href="module-mySqlDriver-SqlParameter.html">SqlParameter</a></li><li><a href="module-optimizeComparing-MultiCompare.html">MultiCompare</a></li><li><a href="module-optimizeComparing-OptimizedMultiCompare.html">OptimizedMultiCompare</a></li><li><a href="module-optimizeComparing-Select.html">Select</a></li><li><a href="module-PostData-BasicMessage.html">BasicMessage</a></li><li><a href="module-PostData-MaxCacher.html">MaxCacher</a></li><li><a href="module-PostData-PostData.html">PostData</a></li><li><a href="module-Security-Security.html">Security</a></li><li><a href="module-Security-SecurityProvider.html">SecurityProvider</a></li><li><a href="module-sqlFormatter-sqlFormatter.html">sqlFormatter</a></li><li><a href="module-sqlServerDriver-Connection.html">Connection</a></li><li><a href="module-sqlServerDriver-SqlParameter.html">SqlParameter</a></li><li><a href="MsgParser.html">MsgParser</a></li><li><a href="OperatorDescriptor.html">OperatorDescriptor</a></li><li><a href="SessionInfosSSO.html">SessionInfosSSO</a></li><li><a href="sqlFun.html">sqlFun</a></li><li><a href="Token.html">Token</a></li></ul><h3>Global</h3><ul><li><a href="global.html#as">as</a></li><li><a href="global.html#assureMasterKey">assureMasterKey</a></li><li><a href="global.html#build">build</a></li><li><a href="global.html#checkToken">checkToken</a></li><li><a href="global.html#createExpressApplication">createExpressApplication</a></li><li><a href="global.html#createServicesRoutes">createServicesRoutes</a></li><li><a href="global.html#defer">defer</a></li><li><a href="global.html#Deferred">Deferred</a></li><li><a href="global.html#deserializeMessage">deserializeMessage</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#edgeClose">edgeClose</a></li><li><a href="global.html#fillDataSetByFilter">fillDataSetByFilter</a></li><li><a href="global.html#fillDataSetByKey">fillDataSetByKey</a></li><li><a href="global.html#generateCode">generateCode</a></li><li><a href="global.html#generateHash">generateHash</a></li><li><a href="global.html#generateMasterKey">generateMasterKey</a></li><li><a href="global.html#generatePassword">generatePassword</a></li><li><a href="global.html#generateRandomBytes">generateRandomBytes</a></li><li><a href="global.html#generateSalt">generateSalt</a></li><li><a href="global.html#getByFilter">getByFilter</a></li><li><a href="global.html#GetDataSet">GetDataSet</a></li><li><a href="global.html#getFilterByExample">getFilterByExample</a></li><li><a href="global.html#getIdentityFromRequest">getIdentityFromRequest</a></li><li><a href="global.html#getMappingWebListRedir">getMappingWebListRedir</a></li><li><a href="global.html#GetMeta">GetMeta</a></li><li><a href="global.html#getStartingFrom">getStartingFrom</a></li><li><a href="global.html#getVisited">getVisited</a></li><li><a href="global.html#isNullOrUndefined">isNullOrUndefined</a></li><li><a href="global.html#JsDataQueryParser">JsDataQueryParser</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#queryBatch">queryBatch</a></li><li><a href="global.html#queryLines">queryLines</a></li><li><a href="global.html#queryPackets">queryPackets</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#recursivelyMarkSubEntityAsVisited">recursivelyMarkSubEntityAsVisited</a></li><li><a href="global.html#run">run</a></li><li><a href="global.html#serializeMessage">serializeMessage</a></li><li><a href="global.html#setDefaultSecret">setDefaultSecret</a></li><li><a href="global.html#setMasterKey">setMasterKey</a></li><li><a href="global.html#TokenKind">TokenKind</a></li><li><a href="global.html#toSql">toSql</a></li><li><a href="global.html#updateBatch">updateBatch</a></li><li><a href="global.html#validSessionSSO">validSessionSSO</a></li><li><a href="global.html#verify">verify</a></li><li><a href="global.html#write">write</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Jul 06 2022 16:53:41 GMT+0200 (Ora legale dell’Europa centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
