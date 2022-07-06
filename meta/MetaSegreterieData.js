@@ -202,7 +202,7 @@
 
 	}(  (typeof _ === 'undefined') ? require('lodash') : _,
 		(typeof appMeta === 'undefined') ? require('./MetaEasyData').MetaEasyData : appMeta.MetaEasyData,
-		(typeof jsDataSet === 'undefined') ? require('jsDataSet') : jsDataSet,
+		(typeof jsDataSet === 'undefined') ? require('./../client/components/metadata/jsDataSet') : jsDataSet,
 	)
 );
 

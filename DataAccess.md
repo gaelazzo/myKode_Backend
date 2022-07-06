@@ -48,7 +48,7 @@ Come si può vedere, il codice di un generico metodo che accede al db può essere 
 
 ## Funzioni che leggono una singola espressione
 
-Per i parametri esatti, consultare il jsDoc
+Per l'interfaccia completa, consultare il [jsDoc](doc/module-DataAccess.html)
 - readSingleValue
 
 

@@ -41,11 +41,12 @@
 				}, realParentObjectRow);*/
 
 				// torno la dataRow creata
-				return this.superClass.getNewRow(parentRow, dt, editType)
+				this.superClass.getNewRow(parentRow, dt, editType)
 					.then(function (dtRow) {
 						//$getNewRowDefault$
-						return def.resolve(dtRow);
+						 def.resolve(dtRow);
 					});
+				return def.promise();
 			},
 			
 

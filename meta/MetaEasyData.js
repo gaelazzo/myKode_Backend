@@ -105,8 +105,8 @@
 	}(  (typeof _ === 'undefined') ? require('lodash') : _,
 		(typeof appMeta === 'undefined') ? require('./../client/components/metadata/EventManager').Deferred : appMeta.Deferred,
 		(typeof appMeta === 'undefined') ? require('./../client/components/metadata/MetaData') : appMeta.MetaData,
-		(typeof jsDataSet === 'undefined') ? require('jsDataSet') : jsDataSet,
-		(typeof jsDataQuery === 'undefined') ? require('jsDataQuery') : jsDataQuery
+		(typeof jsDataSet === 'undefined') ? require('./../client/components/metadata/jsDataSet') : jsDataSet,
+		(typeof jsDataQuery === 'undefined') ? require('./../client/components/metadata/jsDataQuery') : jsDataQuery
 	)
 );
 

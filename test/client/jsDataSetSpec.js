@@ -155,7 +155,7 @@ describe('System status', function () {
   }
 
 
-  it ("Throwing exceptions generates a rejected promise ",function(done){
+  it ("Throwing exceptions through def generates a rejected promise ",function(done){
     let DefHelp = function(){
       return Deferred().resolve(null.ciao());
     };
@@ -2367,6 +2367,9 @@ describe('DataRow module test', function () {
       o.a = 1;
       o.c = 'q';
       o.a = 3;
+
+      expect(o.getRow().originalRow().a).toBe(oldA);
+
       o.getRow().rejectChanges();
       expect(o.a).toBe(oldA);
       expect(o.c).toBe(oldC);

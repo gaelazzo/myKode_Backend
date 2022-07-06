@@ -9,7 +9,7 @@
     "test": true,
     "userkindUserPassw":3,
     "userkindSSO": 5,
-    "DBDipartimento": "amministrazione",
+    "defaultSchema": "amministrazione",
     "EnableSSORegistration": true
   },
   "test_sqlServer": {
@@ -22,7 +22,7 @@
     "test": true,
     "userkindUserPassw":3,
     "userkindSSO": 5,
-    "DBDipartimento": "amministrazione",
+    "defaultSchema": "amministrazione",
     "EnableSSORegistration": true
   },
   "test_sqlServer_anonymous": {
@@ -35,7 +35,7 @@
     "test": false,
     "userkindUserPassw":3,
     "userkindSSO": 5,
-    "DBDipartimento": "amministrazione",
+    "defaultSchema": "amministrazione",
     "EnableSSORegistration": true
   },
 

@@ -69,6 +69,14 @@ async function loginSSO(req,res,next){
         null, userkind, req,res);
 }
 
+
+/**
+ * Check that a session SSO exists.
+ * @remarks Should also check the IP request
+ * @param session
+ * @param userName
+ * @return {null|*}
+ */
 function validSessionSSO(session, userName){
     try {
         if (sessionInfosSSO[session]) {

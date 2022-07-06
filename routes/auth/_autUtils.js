@@ -25,7 +25,7 @@ function serializeUsr(env){
             res[k] = Array.isArray(val) ? val.join(',') : val;
         }
         return res;
-    }, {})
+    }, {});
 }
 
 /**
@@ -86,10 +86,8 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
         }
     }
     catch (err){
-        sys_user = userName;
-        ctx.dataAccess.externalUser = userName;
-        env.usr("user",userName);
-        env.usr("usergrouplist",null);
+        res.send(401,"Error processing:"+err);
+        return ;
     }
 
     //evaluates idcustomuser
@@ -99,8 +97,11 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
         return ;
     }
 
-    let registryreference =   await ctx.dataAccess.select({tableName:"registryreference",
-        filter: q.eq("userweb",userName)});
+    //registryreference is a table containing usernames and hashed passwords
+    let registryreference =   await ctx.dataAccess.select(
+        {tableName:"registryreference",
+         filter: q.eq("userweb",userName)}
+    );
 
     if (registryreference.length===0){
         if (dbInfo.EnableSSORegistration && sessionInfoSSO){
@@ -129,7 +130,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
             return ;
         }
         //i bytearray sono convertiti in string da EdgeCompiler.cs tramite Convert.ToBase64String ((byte[])value)
-        // quindi � necessario riconvertirli in buffer come segue
+        // quindi è necessario riconvertirli in buffer come segue
         let salt= new Buffer(referenceRow["saltweb"],"base64");
         let hash = new Buffer(referenceRow["passwordweb"],"base64");
 
@@ -140,7 +141,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
 
 
     let idreg = referenceRow["idreg"];
-    let title = await ctx.dataAccess.doReadValue({
+    let title = await ctx.dataAccess.readSingleValue({
         tableName:"registry",
         filter: q.eq("idreg",idreg),
         expr:"title"
@@ -160,7 +161,7 @@ async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  us
             metadata:"esercizio:"+env.sys("esercizio")+", sys_user = "+sys_user+
                 ", idcustomuser:"+env.sys("idcustomuser")+
                 ", userName: "+userName
-        });
+             },ctx);
         res.send(401,"User not in security");
         return;
     }
@@ -214,7 +215,7 @@ async function getRoles(aDate,idCustomUser, ctx){
     t.key("k");
     _.forEach(roles,r=>{
         let row = t.newRow();
-    })
+    });
     return  t;
 }
 

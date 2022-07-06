@@ -115,6 +115,9 @@ module.exports = function (grunt) {
             clientTest: {
                 command: 'npx jasmine test/client/*Spec.js'
             },
+            jsdoc:{
+                command: 'jsdoc src'
+            },
             jsdocToMD:{
                 command: 'jsdoc2md src/*.js'
             }
@@ -124,6 +127,7 @@ module.exports = function (grunt) {
 
         jsdoc : {
             dist : {
+                plugins: ["markdown","jsdoc-summarize2"],
                 src: ['src/*.js',
                         'client/components/*/*.js',
                         //'client/components/languages/*.js',
@@ -149,7 +153,6 @@ module.exports = function (grunt) {
         },
 
         watch: {
-            plugins: ["plugins/markdown"],
             files: ['src/*.js','client/components/metadata/*.js','client/components/languages/*.js'],
             tasks: ['test'],
             options: {

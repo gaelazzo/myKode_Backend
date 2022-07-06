@@ -59,25 +59,12 @@
         return (f.substr(0, 2) === '$$');
     }
 
-    /**
-     * Provides utility functions to filter data and to create sql condition over database.
-     * Every function returns a function f where:
-     * f ( r, environment )  = true if r matches condition in the given environment
-     * f( r, environment ) = result  evaluated in the given environment if f is a computation function
-     * f.isTrue = true if f is always true
-     * f.isFalse = true if f is always false
-     * f ( r, environment) = undefined if there is no sufficient data to evaluate f
-     * null fields and undefined fields are all considered (and returned) as null values (so they compare equal)
-     * f.toSql(formatter, environment)  = a string representing the underlying condition to be applied to a database.
-     *  formatter is used to obtain details about making the expression, see sqlFormatter for an example
-     *  [environment] is the environment into which the expression have to be evaluated
-     *  @module jsDataQuery
-     */
+
 
     /**
      * Function with ability to be converted to sql. When invoked gives a result depending on the arguments.
      * @function sqlFun
-     * @type function
+     * @class function
      * @public
      * @constructor
      */
@@ -141,13 +128,6 @@
 
 
     /**
-     * Compare function provider to help building conditions that can be applyed both to collections,
-     *  using the returned function as a filter, or to a database, using the toSql() method
-     *  @class jsDataQuery
-     *  @public
-     */
-
-    /**
      * Check if an object is the null or undefined constant
      * @method isNullOrUndefined
      * @param {sqlFun|undefined|null|object} o
@@ -192,6 +172,25 @@
         //noinspection JSValidateTypes
         return f;
     }
+
+    /**
+     * Provides utility functions to filter data and to create sql condition over database.<br>
+     *
+     * Every function returns a function f where:<br>
+     *<ul>
+     * <li>f ( r, environment )  = true if r matches condition in the given environment</li>
+     * <li>f( r, environment ) = result  evaluated in the given environment if f is a computation function</li>
+     * <li>f.isTrue = true if f is always true</li>
+     * <li>f.isFalse = true if f is always false</li>
+     * <li>f ( r, environment) = undefined if there is no sufficient data to evaluate f</li>
+     * </ul>
+     * null fields and undefined fields are all considered (and returned) as null values (so they compare equal).<br/>
+     * f.toSql(formatter, environment)  = a string representing the underlying condition to be applied to a database.
+     *  formatter is used to obtain details about the sql dialect to use, see [sqlFormatter](jsSqlServerFormatter.js)
+     *   for an example <br/>
+     *  [environment] is the environment into which the expression have to be evaluated
+     *  @module jsDataQuery
+     */
 
 
 
@@ -248,7 +247,6 @@
     /**
      * Gets a field from an object. This is a very important function to distinguish between generic strings and
      *  field names.
-     * @method field
      * @param {string} fieldName
      * @param {string} [tableName]
      * @return {sqlFun} f such that
@@ -1890,7 +1888,6 @@
 
     /**
      * returns a functions that evaluates the sum of a list or array of values given when it is CREATED
-     * @method add
      * @param {sqlFun[]|object[]} values
      * @return {sqlFun}
      */
@@ -2152,7 +2149,7 @@
                 return fromObject(arg);
             });
 
-            const f = dataQuery[name];
+            const f = q[name];
             const result = f.apply(this, args);
             result.alias = obj.alias;
             return result;
@@ -2538,8 +2535,12 @@
         return toSqlFun(f, toSql);
     }
 
+    function jsDataQuery(){
 
-    const dataQuery = {
+    }
+
+    jsDataQuery.prototype = {
+        constructor: jsDataQuery,
         context: context,
         calc: calc,
         add: add,
@@ -2597,6 +2598,8 @@
         myLoDash: _ //for testing purposes
     };
 
+    let q = new jsDataQuery();
+
     // Some AMD build optimizers like r.js check for condition patterns like the following:
     //noinspection JSUnresolvedVariable
     if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
@@ -2604,27 +2607,27 @@
         // errors in cases where lodash is loaded by a script tag and not intended
         // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
         // more details.
-        root.jsDataQuery = dataQuery;
+        root.jsDataQuery = q;
 
         // Define as an anonymous module so, through path mapping, it can be
         // referenced as the "underscore" module.
         define(function() {
-            return dataQuery;
+            return q;
         });
     }
     // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
     else if (freeExports && freeModule) {
         // Export for Node.js or RingoJS.
         if (moduleExports) {
-            (freeModule.exports = dataQuery).jsDataQuery = dataQuery;
+            (freeModule.exports = q).jsDataQuery = q;
         }
         // Export for Narwhal or Rhino -require.
         else {
-            freeExports.jsDataQuery = dataQuery;
+            freeExports.jsDataQuery = q;
         }
     } else {
         // Export for a browser or Rhino.
-        root.jsDataQuery = dataQuery;
+        root.jsDataQuery = q;
     }
 }).call(this,
     (typeof _ === 'undefined') ? require('lodash') : _
