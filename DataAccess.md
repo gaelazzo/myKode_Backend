@@ -48,7 +48,8 @@ Come si può vedere, il codice di un generico metodo che accede al db può essere 
 
 ## Funzioni che leggono una singola espressione
 
-Per l'interfaccia completa, consultare il [jsDoc](doc/module-DataAccess.html)
+Per l'interfaccia completa, consultare il 
+<a href="https://temposrl.github.io/myKode_Backend/module-DataAccess.html" target ='_blank'>jsDoc</a>
 - readSingleValue
 
 
