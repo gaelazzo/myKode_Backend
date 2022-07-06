@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: PostData</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Module: PostData</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Manages data storing</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line2">line 2</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-PostData-BasicMessage.html">BasicMessage</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-PostData-MaxCacher.html">MaxCacher</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-PostData-PostData.html">PostData</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-PostData-PostData.html">PostData</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~DataRow"><span class="type-signature">(inner, constant) </span>DataRow<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    {DataRow}
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line14">line 14</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~calcAutoId"><span class="type-signature">(inner) </span>calcAutoId<span class="signature">(r, autoIncrementProperty)</span><span class="type-signature"> &rarr; {promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Calculates an autoincrement column checking that there is no other rows with that key in table
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>r</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">ObjectRow</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>autoIncrementProperty</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">AutoIncrementColumn</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">({DataRow} r, {string} columnName, {DataAccess} conn}</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line628">line 628</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    //resolves true if it was a regular auto increment fields, false if it was a custom one
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~doPost"><span class="type-signature">(inner) </span>doPost<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;{canIgnore:boolean, Array.&lt;checks:BasicMessage>, data:DataSet}>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Saves a dataSet and return empty list if successful or a list of messages if they have to be verified before
+ effectively committing changes. If successfull, also returns saved DataSet
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>isolationLevel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    DataAccess.isolationLevels.readCommitted
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>optimisticLocking</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">OptimisticLocking</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>previousRules</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">BusinessLogicResult</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line1099">line 1099</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;{canIgnore:boolean, Array.&lt;checks:BasicMessage>, data:DataSet}></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~doPost"><span class="type-signature">(inner) </span>doPost<span class="signature">(options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Saves a dataSet and return empty list if successful or a list of messages if they have to be verified before
+ effectively committing changes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>isolationLevel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    DataAccess.isolationLevels.readCommitted
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>optimisticLocking</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">OptimisticLocking</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>previousRules</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">BusinessLogicResult</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line1360">line 1360</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getMax"><span class="type-signature">(inner) </span>getMax<span class="signature">(r, column, selectors, filter, expr)</span><span class="type-signature"> &rarr; {Promise.&lt;int>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the max for an expression eventually getting it from cache or giving null if reasonably there is no row
+ on that match the filter
+ If there is no selector, then the result can be taken from cache if a query with same parameters has already
+  be done.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>r</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">ObjectRow</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">objectRow for which evaluate the max</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>column</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">column to evaluate</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>selectors</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">//selector fields for the calculation</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="sqlFun.html">sqlFun</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">//filter to apply</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>expr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="sqlFun.html">sqlFun</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">//expression to evaluate</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line75">line 75</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;int></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getMessageGetsthemessageoftherule"><span class="type-signature">(inner) </span>getMessage
+Gets the message of the rule<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line809">line 809</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getSqlStatements"><span class="type-signature">(inner) </span>getSqlStatements<span class="signature">(changedRows, optimisticLocking)</span><span class="type-signature"> &rarr; {<a href="global.html#Deferred">Deferred</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets an array of changed rows and returns a sequence of sql command that does the post.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>changedRows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;DataRow></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>optimisticLocking</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">OptimisticLocking</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line395">line 395</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Deferred is notified with n sets of (rows,sql) where sql is the sql command used to
+  save rows. This is useful if some error is returned, to evaluate messages.
+  Saving stops as soon as an error occurs.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#Deferred">Deferred</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~physicalPostBatch"><span class="type-signature">(inner) </span>physicalPostBatch<span class="signature">(conn, optimisticLocking)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Runs a sequence of db commands in order to save an array of rows
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>conn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">DataAccess</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>optimisticLocking</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">OptimisticLocking</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line483">line 483</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resolved promise if all ok, rejected promise if errors
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~promiseParallel"><span class="type-signature">(inner) </span>promiseParallel<span class="signature">(tasks)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tasks</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;function()></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line992">line 992</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~promiseWaterfall"><span class="type-signature">(inner) </span>promiseWaterfall<span class="signature">(tasks)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Builds a chained function, chaining each the Deferred function with "then"
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tasks</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#Deferred">Deferred</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">each task is a function that returns a deferred. Not the deferred itself!</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line968">line 968</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~reselect"><span class="type-signature">(inner) </span>reselect<span class="signature">(row)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Reads again a row from db
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>row</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">ObjectRow</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line466">line 466</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~reselectAllViews"><span class="type-signature">(inner) </span>reselectAllViews<span class="signature">()</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Read all changed view rows from db
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line599">line 599</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~resolve"><span class="type-signature">(inner) </span>resolve<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#Deferred">Deferred</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Resolve the promise with result, and do the necessary cleanup: rollback transaction if a transaction is open,
+ and close connection if the connection is open. If further errors arise, add them to checks as dbErrors
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line1160">line 1160</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#Deferred">Deferred</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~setMessageSetsthemessageoftherule"><span class="type-signature">(inner) </span>setMessage
+Sets the message of the rule<span class="signature">()</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_jsPostData.js.html">src/jsPostData.js</a>, <a href="src_jsPostData.js.html#line800">line 800</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DataAccess.html">DataAccess</a></li><li><a href="module-DataSet.html">DataSet</a></li><li><a href="module-dbList.html">dbList</a></li><li><a href="module-EventManger.html">EventManger</a></li><li><a href="module-GetDataInvoke.html">GetDataInvoke</a></li><li><a href="module-getDataUtils.html">getDataUtils</a></li><li><a href="module-jsBusinessLogic.html">jsBusinessLogic</a></li><li><a href="module-jsDataQuery.html">jsDataQuery</a></li><li><a href="module-LocalResource.html">LocalResource</a></li><li><a href="module-localResourceIt.html">localResourceIt</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-MetaData.html">MetaData</a></li><li><a href="module-MetaModel.html">MetaModel</a></li><li><a href="module-mySqlDriver.html">mySqlDriver</a></li><li><a href="module-optimizeComparing.html">optimizeComparing</a></li><li><a href="module-PostData.html">PostData</a></li><li><a href="module-Security.html">Security</a></li><li><a href="module-sqlFormatter.html">sqlFormatter</a></li><li><a href="module-sqlServerDriver.html">sqlServerDriver</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="BuildingExpression.html">BuildingExpression</a></li><li><a href="ConstantExpression.html">ConstantExpression</a></li><li><a href="Context.html">Context</a></li><li><a href="DataColumn.html">DataColumn</a></li><li><a href="EdgeConnection.html">EdgeConnection</a></li><li><a href="EncryptedFile.html">EncryptedFile</a></li><li><a href="Environment.html">Environment</a></li><li><a href="EnvironmentExpression.html">EnvironmentExpression</a></li><li><a href="FieldExpression.html">FieldExpression</a></li><li><a href="getData.html">getData</a></li><li><a href="Identity.html">Identity</a></li><li><a href="JsApplication.html">JsApplication</a></li><li><a href="JsDataQueryParser_from.html">from</a></li><li><a href="JsPooledConnection.html">JsPooledConnection</a></li><li><a href="module-DataAccess-DataAccess.html">DataAccess</a></li><li><a href="module-DataSet-AutoIncrementColumn.html">AutoIncrementColumn</a></li><li><a href="module-DataSet-DataRelation.html">DataRelation</a></li><li><a href="module-DataSet-DataRow.html">DataRow</a></li><li><a href="module-DataSet-DataSet.html">DataSet</a></li><li><a href="module-DataSet-DataTable.html">DataTable</a></li><li><a href="module-DataSet-ObjectRow.html">ObjectRow</a></li><li><a href="module-DataSet-OptimisticLocking.html">OptimisticLocking</a></li><li><a href="module-dbList-Context.html">Context</a></li><li><a href="module-dbList-DbDescriptor.html">DbDescriptor</a></li><li><a href="module-dbList-dbListFile.html">dbListFile</a></li><li><a href="module-EventManger-Delegate.html">Delegate</a></li><li><a href="module-EventManger-Event.html">Event</a></li><li><a href="module-EventManger-EventManager.html">EventManager</a></li><li><a href="module-EventManger-Stabilizer.html">Stabilizer</a></li><li><a href="module-GetDataInvoke-GetDataInvoke.html">GetDataInvoke</a></li><li><a href="module-GetDataInvoke-utils._if-IfThenElse.html">IfThenElse</a></li><li><a href="module-jsBusinessLogic-BusinessLogic.html">BusinessLogic</a></li><li><a href="module-jsBusinessLogic-BusinessMessage.html">BusinessMessage</a></li><li><a href="module-jsBusinessLogic-OneSubst.html">OneSubst</a></li><li><a href="module-jsBusinessLogic-PostData.html">PostData</a></li><li><a href="module-jsBusinessLogic-RowChange.html">RowChange</a></li><li><a href="module-jsBusinessLogic-SubstGroup.html">SubstGroup</a></li><li><a href="module-localResourceIt-LocalResourceIt.html">LocalResourceIt</a></li><li><a href="module-LocalResource-LocalResource.html">LocalResource</a></li><li><a href="module-Logger-Logger.html">Logger</a></li><li><a href="module-MetaData-AutoInfo.html">AutoInfo</a></li><li><a href="module-MetaData-MetaData.html">MetaData</a></li><li><a href="module-mySqlDriver-Connection.html">Connection</a></li><li><a href="module-mySqlDriver-SqlParameter.html">SqlParameter</a></li><li><a href="module-optimizeComparing-MultiCompare.html">MultiCompare</a></li><li><a href="module-optimizeComparing-OptimizedMultiCompare.html">OptimizedMultiCompare</a></li><li><a href="module-optimizeComparing-Select.html">Select</a></li><li><a href="module-PostData-BasicMessage.html">BasicMessage</a></li><li><a href="module-PostData-MaxCacher.html">MaxCacher</a></li><li><a href="module-PostData-PostData.html">PostData</a></li><li><a href="module-Security-Security.html">Security</a></li><li><a href="module-Security-SecurityProvider.html">SecurityProvider</a></li><li><a href="module-sqlFormatter-sqlFormatter.html">sqlFormatter</a></li><li><a href="module-sqlServerDriver-Connection.html">Connection</a></li><li><a href="module-sqlServerDriver-SqlParameter.html">SqlParameter</a></li><li><a href="MsgParser.html">MsgParser</a></li><li><a href="OperatorDescriptor.html">OperatorDescriptor</a></li><li><a href="SessionInfosSSO.html">SessionInfosSSO</a></li><li><a href="sqlFun.html">sqlFun</a></li><li><a href="Token.html">Token</a></li></ul><h3>Global</h3><ul><li><a href="global.html#as">as</a></li><li><a href="global.html#assureMasterKey">assureMasterKey</a></li><li><a href="global.html#build">build</a></li><li><a href="global.html#checkToken">checkToken</a></li><li><a href="global.html#createExpressApplication">createExpressApplication</a></li><li><a href="global.html#createServicesRoutes">createServicesRoutes</a></li><li><a href="global.html#defer">defer</a></li><li><a href="global.html#Deferred">Deferred</a></li><li><a href="global.html#deserializeMessage">deserializeMessage</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#edgeClose">edgeClose</a></li><li><a href="global.html#fillDataSetByFilter">fillDataSetByFilter</a></li><li><a href="global.html#fillDataSetByKey">fillDataSetByKey</a></li><li><a href="global.html#generateCode">generateCode</a></li><li><a href="global.html#generateHash">generateHash</a></li><li><a href="global.html#generateMasterKey">generateMasterKey</a></li><li><a href="global.html#generatePassword">generatePassword</a></li><li><a href="global.html#generateRandomBytes">generateRandomBytes</a></li><li><a href="global.html#generateSalt">generateSalt</a></li><li><a href="global.html#getByFilter">getByFilter</a></li><li><a href="global.html#GetDataSet">GetDataSet</a></li><li><a href="global.html#getFilterByExample">getFilterByExample</a></li><li><a href="global.html#getIdentityFromRequest">getIdentityFromRequest</a></li><li><a href="global.html#getMappingWebListRedir">getMappingWebListRedir</a></li><li><a href="global.html#GetMeta">GetMeta</a></li><li><a href="global.html#getStartingFrom">getStartingFrom</a></li><li><a href="global.html#getVisited">getVisited</a></li><li><a href="global.html#isNullOrUndefined">isNullOrUndefined</a></li><li><a href="global.html#JsDataQueryParser">JsDataQueryParser</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#queryBatch">queryBatch</a></li><li><a href="global.html#queryLines">queryLines</a></li><li><a href="global.html#queryPackets">queryPackets</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#recursivelyMarkSubEntityAsVisited">recursivelyMarkSubEntityAsVisited</a></li><li><a href="global.html#run">run</a></li><li><a href="global.html#serializeMessage">serializeMessage</a></li><li><a href="global.html#setDefaultSecret">setDefaultSecret</a></li><li><a href="global.html#setMasterKey">setMasterKey</a></li><li><a href="global.html#TokenKind">TokenKind</a></li><li><a href="global.html#toSql">toSql</a></li><li><a href="global.html#updateBatch">updateBatch</a></li><li><a href="global.html#verify">verify</a></li><li><a href="global.html#write">write</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Jul 05 2022 14:58:18 GMT+0200 (Ora legale dell’Europa centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/jsGetData.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/jsGetData.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*globals Context,sqlFun,DataRelation,ObjectRow  */
+
+
+const dsSpace = require('../client/components/metadata/jsDataSet'),
+    dataRowState = dsSpace.dataRowState,
+    _ = require('lodash'),
+    dq = require('../client/components/metadata/jsDataQuery'),
+    dbList = require('./jsDbList'),
+    multiSelect = require('./jsMultiSelect'),
+    Model= require('./../client/components/metadata/MetaModel');
+
+
+
+/**
+ * @typedef function Deferred
+ */
+const    Deferred = require("JQDeferred");
+
+
+/**
+ * Utility class with methods to fill a DataSet starting from a set of rows
+ * @class getData
+ */
+function GetDataSpace() {
+}
+
+GetDataSpace.prototype = {
+    constructor: GetDataSpace,
+    fillDataSetByKey: fillDataSetByKey,
+    fillDataSetByFilter: fillDataSetByFilter,
+    getFilterByExample: getFilterByExample,
+    doGet:doGet,
+    getStartingFrom: getStartingFrom,
+    getFilterKey: getFilterKey, //for testing purposes
+    scanTables: scanTables, //for testing purposes
+    getParentRows: getParentRows, //for testing purposes
+    getChildRows: getChildRows, //for testing purposes
+    getAllChildRows: getAllChildRows, //for testing purposes
+    getRowsByFilter: getRowsByFilter, //for testing purposes
+    getByKey: getByKey,//for testing purposes
+    getByFilter: getByFilter //for testing purposes
+};
+
+/**
+ * Assumes key = object with all key necessary fields
+ * @method getFilterKey
+ * @private
+ * @param {Context} context
+ * @param {string} tableName
+ * @param {object[]|object} keyValues
+ * @returns {sqlFun}
+ */
+function getFilterKey(context, tableName, keyValues) {
+    const def = Deferred();
+    context.dbDescriptor.table(tableName)
+        .then(function (tableDescr) {
+            def.resolve(dq.mcmp(tableDescr.getKey(), keyValues));
+        })
+        .fail(function (err) {
+            def.reject(err);
+        });
+    return def.promise();
+}
+
+/**
+ * Gets a a filter
+ * @method getFilterByExample
+ * @param {Context} context
+ * @param {string} tableName
+ * @param {object} example
+ * @param {boolean}  [useLike=false]  --if true, uses 'like' for any string comparisons
+ * @return {sqlFun} DataRow obtained with the given filter
+ */
+function getFilterByExample(context, tableName, example, useLike) {
+    const def = Deferred();
+    if (useLike) {
+        def.resolve(dq.mcmpLike(example));
+    }
+    else {
+        const fields = _.keys(example);
+        if (fields.length > 0) {
+            def.resolve(dq.mcmp(fields, example));
+        }
+        else {
+            def.resolve(dq.constant(true));
+        }
+    }
+    return def.promise();
+}
+/**
+ * Gets an array of datarow given a filter
+ * @method getByFilter
+ * @param {Context} ctx
+ * @param {DataTable} table
+ * @param {sqlFun} filter
+ * @param {string} [orderBy]
+ * @return {DataRow[]} DataRow obtained with the given filter
+ */
+function getByFilter(ctx,  table, filter, orderBy) {
+    const def = Deferred();
+    let result;
+    ctx.dataAccess.selectIntoTable(
+        { table: table, filter: filter,  environment: ctx.environment, orderBy:orderBy})
+        .then(function () {
+            result = table.select(filter);
+            if (result.length === 0) {
+                def.reject('there was no row in table ' + table.name + ' filtering with ' + filter.toString());
+                return;
+            }
+            def.resolve(result);
+        })
+        .fail(function (err) {
+            def.reject(err);
+        });
+    return def.promise();
+}
+
+
+/**
+ * Gets a single row given its key, that must be contained in key
+ * @method getByKey
+ * @private
+ * @param {Context} ctx
+ * @param {DataTable} table
+ * @param {object[]} keyValues
+ * @return {DataRow}  DataRow obtained with the given key
+ */
+function getByKey(ctx, table, keyValues) {
+    const def = Deferred(),
+        that = this;
+    getFilterKey(ctx, table.name, keyValues)
+        .then(function (sqlFilter) {
+            return that.getByFilter(ctx, table, sqlFilter);
+        })
+        .done(function (r) {
+            def.resolve(r[0]);
+        })
+        .fail(function (err) {
+            def.reject(err);
+        });
+    return def.promise();
+}
+
+/**
+ * Fills a DataSet given the key of a row
+ * @method fillDataSetByKey
+ * @param {Context} ctx
+ * @param {DataSet} ds
+ * @param {DataTable} table
+ * @param {object[]|object} keyValues
+ * @returns {*}
+ */
+function fillDataSetByKey(ctx, ds, table, keyValues) {
+    const def = Deferred(),
+        that = this;
+    let result;
+    that.getByKey(ctx, table, keyValues)
+        .then(function (r) {
+            result = r;
+            return that.getStartingFrom(ctx, table);
+        })
+        .then(function () {
+            def.resolve(result);
+        })
+        .fail(function (err) {
+            def.reject(err);
+        });
+    return def.promise();
+}
+
+/**
+ * Fill a dataset starting with a set of filtered rows in a table
+ * @method fillDataSetByFilter
+ * @param {Context} ctx
+ * @param {DataTable} table
+ * @param {sqlFun} filter
+ * @return {DataRow[]} DataRow obtained with the given filter
+ */
+function fillDataSetByFilter(ctx,  table, filter) {
+    const def = Deferred(),
+        that = this;
+    let result;
+    that.getByFilter(ctx, table, filter)
+        .then(function (arr) {
+            result = arr;
+            return that.getStartingFrom(ctx, table);
+        })
+        .then(function () {
+            def.resolve(result);
+        })
+        .fail(function (err) {
+            def.reject(err);
+        });
+    return def.promise();
+}
+
+/**
+ *
+ * @param {DataTable} table
+ * @param {{DataTable}} visited
+ * @param {{DataTable}} toVisit
+ */
+function recursivelyMarkSubEntityAsVisited(table, visited, toVisit){
+    let ds = table.dataset;
+    _.forEach(table.childRelations(),
+        /**
+         *
+         * @param {DataRelation} rel
+         */
+            rel=>{
+                let childTable = ds.tables[rel.childTable];
+                if ( visited[rel.childTable] || Model.isSubEntityRelation(rel,childTable,table)){
+                    return;
+                }
+                visited[rel.childTable]= childTable;
+                toVisit[rel.childTable]= childTable;
+                recursivelyMarkSubEntityAsVisited(childTable,visited,toVisit);
+        });
+}
+
+/**
+ * Gets all data of the DataSet cascated-related to the primary table.
+ * The first relations considered are child of primary, then
+ *  proper child / parent relations are called in cascade style.
+ * @param {Context} ctx
+ * @param {DataTable} primaryTable
+ * @param {boolean} onlyPeripherals if true, only peripheral (not primary or secondary) tables are refilled
+ * @param {DataRow} [oneRow] The (eventually) only primary table row on which get the entire sub-graph.
+ *  Can be null if PrimaryDataTable already contains rows.  R is not required to belong to PrimaryDataTable.
+ */
+function doGet(ctx, primaryTable, onlyPeripherals, oneRow){
+
+    const /*{{DataTable}}*/ visited = {};
+    const /*{{DataTable}}*/ toVisit = {};
+    let /*DataSet*/ ds = primaryTable.dataset;
+    //Set Fully-Visited and Cached tables as Visited
+    _.forIn(ds.tables, (t,tableName)=>{
+        if (Model.cachedTable(t)||Model.visitedFully(t)|| Model.temporaryTable(t)) {
+            visited[tableName] = t;
+        }
+    });
+    toVisit[primaryTable.name]=primaryTable;
+    visited[primaryTable.name]=primaryTable;
+
+    if (onlyPeripherals){
+        //Marks child tables as ToVisit+Visited
+        recursivelyMarkSubEntityAsVisited(primaryTable, visited,toVisit);
+        _.forIn(ds.tables,(t,tableName)=>{
+           if (!Model.allowClear(t)){
+               visited[tableName]=t;
+               toVisit[tableName]=t;
+           }
+        });
+    }
+
+    //Clears all other tables
+    _.forIn (ds.tables,
+        (t,tableName)=>{
+            if (visited[tableName]) return;
+            if (Model.temporaryTable(t)) return;
+            let realTable= t.realTable();
+            if(realTable){
+                if (visited[realTable]) return;
+            }
+            t.clear();
+        });
+
+    //Set as Visited all child tables linked by autoincrement fields
+    if (oneRow &amp;&amp; oneRow.state === dataRowState.added){
+        _.forEach(primaryTable.childRelations(),
+            /**
+             * @param {DataRelation} rel
+             */
+            rel=>{
+                let toSkip = rel.parentCols.some(c=>primaryTable.autoIncrement(c));
+                if (toSkip){
+                    visited[rel.childTable]= ds.tables[rel.childTable];
+                }
+            });
+    }
+
+    return this.scanTables(ctx, ds, toVisit, visited, oneRow)
+        .then(()=>{
+            if (onlyPeripherals){
+                _.forEach(primaryTable.childRelations(),
+                    rel=>{
+                        let /*DataTable*/ childTable = ds.tables[rel.childTable];
+                        if (Model.allowClear(childTable) &amp;&amp;
+                            !Model.isSubEntityRelation(rel,childTable,primaryTable)
+                        ){
+                            return;
+                        }
+                       Model.getTemporaryValues(childTable);
+                    });
+
+                if (oneRow){
+                    Model.getRowTemporaryValues(oneRow);
+                }
+                else {
+                    Model.getTemporaryValues(primaryTable);
+                }
+            }
+        });
+
+}
+/**
+ * Assuming that primaryTable has ALREADY been filled with data, read all childs and parents starting from
+ *  rows present in primaryTable.
+ * @method getStartingFrom
+ * @param {Context} ctx
+ * @param {DataTable} primaryTable
+ * @return {promise}
+ */
+function getStartingFrom(ctx, primaryTable) {
+    const visited = {},
+        that = this,
+        ds = primaryTable.dataset,
+        toVisit = {};
+    let opened = false;
+    const def = Deferred();
+    visited[primaryTable.name] = primaryTable;
+    toVisit[primaryTable.name] = primaryTable;
+    ctx.dataAccess.open()
+        .then(function () {
+            opened = true;
+            return that.scanTables(ctx, ds, toVisit, visited);
+        })
+        .then(function () {
+            if (opened) {
+                return ctx.dataAccess.close().then(()=>def.resolve());
+            }
+            def.resolve();
+            return def;
+        })
+        .fail(function (err) {
+            if (opened) {
+                return ctx.dataAccess.close().then(()=>def.reject(err));
+            }
+            def.reject(err);
+            return def;
+        });
+
+
+    return def.promise();
+
+
+}
+
+/**
+ * @method scanTables
+ * @private
+ * @param {Context} ctx
+ * @param {DataSet} ds
+ * @param {hash} toVisit
+ * @param {hash} visited
+ * @param {DataRow} oneRow
+ */
+function scanTables(ctx, ds, toVisit, visited, oneRow) {
+    const def = Deferred(),
+        that = this,
+        /*{{DataTable}}*/ nextVisit = {},//table to visit in the next step, i.e. this will be passed recursively as toVisit
+        selList = []; //{Select[]}
+    if (_.keys(toVisit).length === 0) {
+        def.resolve();
+        return;
+    }
+
+    //Every child and parent tables of toVisit that aren't yet visited or toVisit become visited and nextVisit
+    _.forIn(toVisit, function (table, tableName) {
+        if (Model.temporaryTable(table)) {
+            return;
+        }
+
+        //searches child tables of T &amp; pre-set them to visited
+        _.forEach(ds.relationsByParent[tableName],
+            /**
+             * @param {DataRelation} rel
+             */
+            function (rel) {
+                if (visited[rel.childTable] || toVisit[rel.childTable]) {
+                    return;
+                }
+                const /*DataTable*/ childTable = ds.tables[rel.childTable];
+                visited[rel.childTable] = childTable;
+                nextVisit[rel.childTable] = childTable;
+            });
+
+        //searches parent tables of T &amp; pre-set them to visited + NextVisit
+        _.forEach(ds.relationsByChild[tableName],
+            /**
+             * @param {DataRelation} rel
+             */
+            function (rel) {
+                if (visited[rel.parentTable] || toVisit[rel.parentTable]) {
+                    return;
+                }
+                const /*DataTable*/ parentTable = ds.tables[rel.parentTable];
+                visited[rel.parentTable] = parentTable;
+                nextVisit[rel.parentTable] = parentTable;
+            });
+    });
+
+    //load all rows in nextVisit
+    _.forIn(toVisit,
+        /**
+         * @param {DataTable }table
+         */
+        function (table) {
+            if (table.rows.length === 0) {
+                return;
+            }
+            //get parents of table row
+            if (!oneRow || oneRow.table.name !== table.name) {
+                _.forEach(table.rows, function (r) {
+                    that.getParentRows(ds, r, nextVisit, selList);
+                });
+
+                that.getAllChildRows(
+                    ds,
+                    table,
+                    nextVisit,
+                    selList);
+                return;
+            }
+            //(OneRow!=null) &amp;&amp; (OneRow.Table == T)
+            if (oneRow.state=== dataRowState.deleted){
+                return;
+            }
+            that.getParentRows(ds, oneRow.current,nextVisit,selList);
+            that.getChildRows(ds, oneRow.current, nextVisit,selList);
+        });
+
+    if (selList.length === 0) {
+        def.resolve();
+    }
+    else {
+        ctx.dataAccess.multiSelect({
+                selectList: selList,
+                environment: ctx.environment
+            })
+            .progress(function (data) { //data.tableName and data.rows are the read data
+                if (data.rows) {
+                    ds.tables[data.tableName].mergeArray(data.rows, true);
+                }
+            })
+            .done(function () {
+                //Recursion with new parameters
+                that.scanTables(ctx, ds, nextVisit, visited)
+                    .done(function () {
+                        _.forIn(toVisit, function (table) {
+                            Model.getTemporaryValues(table);
+                        });
+                        def.resolve();
+                    })
+                    .fail(function (err) {
+                        def.reject(err);
+                    });
+                }
+            )
+            .fail(function (err) {
+                def.reject(err);
+            });
+
+
+    }
+    return def.promise();
+}
+
+/**
+ * Adds select to parent rows
+ * @private
+ * @method getParentRows
+ * @param {DataSet} ds
+ * @param {ObjectRow} row
+ * @param {object} allowed
+ * @param {Array.&lt;Select>} selList
+ */
+function getParentRows(ds, row, allowed, selList) {
+    const childTable = row.getRow().table,
+        that = this;
+    if (row.getRow().state === dataRowState.deleted) {
+        return;
+    }
+    _.forEach(ds.relationsByChild[childTable.name],
+        /**
+         * @param {DataRelation} parentRel
+         */
+        function (parentRel) {
+            if (!allowed[parentRel.parentTable]) {
+                return;
+            }
+            let parentTable = ds.tables[parentRel.parentTable];
+
+            let parentFilter = parentRel.getParentsFilter(row);
+            if (parentFilter.isFalse) {
+                return;
+            }
+            const multiComp = new multiSelect.MultiCompare(parentRel.parentCols,
+                _.map(parentRel.childCols, function (field) {
+                    return row[field];
+                })
+            );
+
+            that.getRowsByFilter(multiComp, parentTable, selList);
+
+        });
+
+}
+
+
+
+/**
+ * Adds select to child rows
+ * @private
+ * @method getChildRows
+ * @param {DataSet} ds
+ * @param {ObjectRow} row
+ * @param {object} allowed
+ * @param {Array&lt;Select>} selList
+ */
+function getChildRows(ds, row, allowed, selList) {
+    const parentTable = row.getRow().table,
+        that = this;
+    if (row.getRow().state === dataRowState.deleted) {
+        return;
+    }
+    _.forEach(ds.relationsByParent[parentTable.name],
+        /**
+         * @param {DataRelation} childRel
+         */
+        function (childRel) {
+            if (!allowed[childRel.childTable]) {
+                return;
+            }
+            let childTable = ds.tables[childRel.childTable];
+            let childFilter = childRel.getChildFilter(row);
+            if (childFilter.isFalse) {
+                return;
+            }
+            const multiComp = new multiSelect.MultiCompare(childRel.childCols,
+                _.map(childRel.parentCols, function (field) {
+                    return row[field];
+                })
+            );
+            that.getRowsByFilter(multiComp, childTable, selList);
+
+        });
+
+}
+
+/**
+ * Adds select to parent rows
+ * @method getAllChildRows
+ * @private
+ * @param {DataSet} ds
+ * @param {DataTable} parentTable
+ * @param {object} allowed
+ * @param {Arrray.&lt;Select>} selList
+ */
+function getAllChildRows(ds, parentTable, allowed, selList) {
+    const that = this;
+    _.forEach(ds.relationsByParent[parentTable.name],
+        /**
+         * @param {DataRelation} rel
+         */
+        function (rel) {
+            if (!allowed[rel.childTable]) {
+                return;
+            }
+            const childTable = ds.tables[rel.childTable];
+
+            _.forEach(parentTable.select(rel.activationFilter()),
+                /**
+                 * @param {ObjectRow} r
+                 */
+                function (r) {
+                    // if (r.getRow().state === dataRowState.added) {
+                    //     return;
+                    // }
+                    const childFilter = rel.getChildFilter(r);
+                    if (childFilter.isFalse) {
+                        return;
+                    }
+                    const multiComp = new multiSelect.MultiCompare(rel.childCols,
+                        _.map(rel.parentCols, function (field) {
+                            return r[field];
+                        })
+                    );
+                    that.getRowsByFilter(multiComp, childTable, selList);
+                });
+
+        });
+}
+
+/**
+ * Adds a select command to the given SelectList
+ * @method getRowsByFilter
+ * @private
+ * @param {MultiCompare} multiComp
+ * @param {DataTable} table
+ * @param {Select[]} selectList
+ */
+function getRowsByFilter(multiComp, table, selectList) {
+    //var mergedFilter = dq.and(filter, table.staticFilter());
+    selectList.push(new multiSelect.Select(table.columnList())
+        .from(table.tableForReading())
+        .intoTable(table.name)
+        .staticFilter(table.staticFilter())
+        .multiCompare(multiComp)
+        .orderBy(table.orderBy()));
+}
+
+
+// exported as an object in order to do unit tests
+module.exports = new GetDataSpace();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DataAccess.html">DataAccess</a></li><li><a href="module-DataSet.html">DataSet</a></li><li><a href="module-dbList.html">dbList</a></li><li><a href="module-EventManger.html">EventManger</a></li><li><a href="module-GetDataInvoke.html">GetDataInvoke</a></li><li><a href="module-getDataUtils.html">getDataUtils</a></li><li><a href="module-jsBusinessLogic.html">jsBusinessLogic</a></li><li><a href="module-jsDataQuery.html">jsDataQuery</a></li><li><a href="module-LocalResource.html">LocalResource</a></li><li><a href="module-localResourceIt.html">localResourceIt</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-MetaData.html">MetaData</a></li><li><a href="module-MetaModel.html">MetaModel</a></li><li><a href="module-mySqlDriver.html">mySqlDriver</a></li><li><a href="module-optimizeComparing.html">optimizeComparing</a></li><li><a href="module-PostData.html">PostData</a></li><li><a href="module-Security.html">Security</a></li><li><a href="module-sqlFormatter.html">sqlFormatter</a></li><li><a href="module-sqlServerDriver.html">sqlServerDriver</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="BuildingExpression.html">BuildingExpression</a></li><li><a href="ConstantExpression.html">ConstantExpression</a></li><li><a href="Context.html">Context</a></li><li><a href="DataColumn.html">DataColumn</a></li><li><a href="EdgeConnection.html">EdgeConnection</a></li><li><a href="EncryptedFile.html">EncryptedFile</a></li><li><a href="Environment.html">Environment</a></li><li><a href="EnvironmentExpression.html">EnvironmentExpression</a></li><li><a href="FieldExpression.html">FieldExpression</a></li><li><a href="getData.html">getData</a></li><li><a href="Identity.html">Identity</a></li><li><a href="JsApplication.html">JsApplication</a></li><li><a href="JsDataQueryParser_from.html">from</a></li><li><a href="JsPooledConnection.html">JsPooledConnection</a></li><li><a href="module-DataAccess-DataAccess.html">DataAccess</a></li><li><a href="module-DataSet-AutoIncrementColumn.html">AutoIncrementColumn</a></li><li><a href="module-DataSet-DataRelation.html">DataRelation</a></li><li><a href="module-DataSet-DataRow.html">DataRow</a></li><li><a href="module-DataSet-DataSet.html">DataSet</a></li><li><a href="module-DataSet-DataTable.html">DataTable</a></li><li><a href="module-DataSet-ObjectRow.html">ObjectRow</a></li><li><a href="module-DataSet-OptimisticLocking.html">OptimisticLocking</a></li><li><a href="module-dbList-Context.html">Context</a></li><li><a href="module-dbList-DbDescriptor.html">DbDescriptor</a></li><li><a href="module-dbList-dbListFile.html">dbListFile</a></li><li><a href="module-EventManger-Delegate.html">Delegate</a></li><li><a href="module-EventManger-Event.html">Event</a></li><li><a href="module-EventManger-EventManager.html">EventManager</a></li><li><a href="module-EventManger-Stabilizer.html">Stabilizer</a></li><li><a href="module-GetDataInvoke-GetDataInvoke.html">GetDataInvoke</a></li><li><a href="module-GetDataInvoke-utils._if-IfThenElse.html">IfThenElse</a></li><li><a href="module-jsBusinessLogic-BusinessLogic.html">BusinessLogic</a></li><li><a href="module-jsBusinessLogic-BusinessMessage.html">BusinessMessage</a></li><li><a href="module-jsBusinessLogic-OneSubst.html">OneSubst</a></li><li><a href="module-jsBusinessLogic-PostData.html">PostData</a></li><li><a href="module-jsBusinessLogic-RowChange.html">RowChange</a></li><li><a href="module-jsBusinessLogic-SubstGroup.html">SubstGroup</a></li><li><a href="module-localResourceIt-LocalResourceIt.html">LocalResourceIt</a></li><li><a href="module-LocalResource-LocalResource.html">LocalResource</a></li><li><a href="module-Logger-Logger.html">Logger</a></li><li><a href="module-MetaData-AutoInfo.html">AutoInfo</a></li><li><a href="module-MetaData-MetaData.html">MetaData</a></li><li><a href="module-mySqlDriver-Connection.html">Connection</a></li><li><a href="module-mySqlDriver-SqlParameter.html">SqlParameter</a></li><li><a href="module-optimizeComparing-MultiCompare.html">MultiCompare</a></li><li><a href="module-optimizeComparing-OptimizedMultiCompare.html">OptimizedMultiCompare</a></li><li><a href="module-optimizeComparing-Select.html">Select</a></li><li><a href="module-PostData-BasicMessage.html">BasicMessage</a></li><li><a href="module-PostData-MaxCacher.html">MaxCacher</a></li><li><a href="module-PostData-PostData.html">PostData</a></li><li><a href="module-Security-Security.html">Security</a></li><li><a href="module-Security-SecurityProvider.html">SecurityProvider</a></li><li><a href="module-sqlFormatter-sqlFormatter.html">sqlFormatter</a></li><li><a href="module-sqlServerDriver-Connection.html">Connection</a></li><li><a href="module-sqlServerDriver-SqlParameter.html">SqlParameter</a></li><li><a href="MsgParser.html">MsgParser</a></li><li><a href="OperatorDescriptor.html">OperatorDescriptor</a></li><li><a href="SessionInfosSSO.html">SessionInfosSSO</a></li><li><a href="sqlFun.html">sqlFun</a></li><li><a href="Token.html">Token</a></li></ul><h3>Global</h3><ul><li><a href="global.html#as">as</a></li><li><a href="global.html#assureMasterKey">assureMasterKey</a></li><li><a href="global.html#build">build</a></li><li><a href="global.html#checkToken">checkToken</a></li><li><a href="global.html#createExpressApplication">createExpressApplication</a></li><li><a href="global.html#createServicesRoutes">createServicesRoutes</a></li><li><a href="global.html#defer">defer</a></li><li><a href="global.html#Deferred">Deferred</a></li><li><a href="global.html#deserializeMessage">deserializeMessage</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#edgeClose">edgeClose</a></li><li><a href="global.html#fillDataSetByFilter">fillDataSetByFilter</a></li><li><a href="global.html#fillDataSetByKey">fillDataSetByKey</a></li><li><a href="global.html#generateCode">generateCode</a></li><li><a href="global.html#generateHash">generateHash</a></li><li><a href="global.html#generateMasterKey">generateMasterKey</a></li><li><a href="global.html#generatePassword">generatePassword</a></li><li><a href="global.html#generateRandomBytes">generateRandomBytes</a></li><li><a href="global.html#generateSalt">generateSalt</a></li><li><a href="global.html#getByFilter">getByFilter</a></li><li><a href="global.html#GetDataSet">GetDataSet</a></li><li><a href="global.html#getFilterByExample">getFilterByExample</a></li><li><a href="global.html#getIdentityFromRequest">getIdentityFromRequest</a></li><li><a href="global.html#getMappingWebListRedir">getMappingWebListRedir</a></li><li><a href="global.html#GetMeta">GetMeta</a></li><li><a href="global.html#getStartingFrom">getStartingFrom</a></li><li><a href="global.html#getVisited">getVisited</a></li><li><a href="global.html#isNullOrUndefined">isNullOrUndefined</a></li><li><a href="global.html#JsDataQueryParser">JsDataQueryParser</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#queryBatch">queryBatch</a></li><li><a href="global.html#queryLines">queryLines</a></li><li><a href="global.html#queryPackets">queryPackets</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#recursivelyMarkSubEntityAsVisited">recursivelyMarkSubEntityAsVisited</a></li><li><a href="global.html#run">run</a></li><li><a href="global.html#serializeMessage">serializeMessage</a></li><li><a href="global.html#setDefaultSecret">setDefaultSecret</a></li><li><a href="global.html#setMasterKey">setMasterKey</a></li><li><a href="global.html#TokenKind">TokenKind</a></li><li><a href="global.html#toSql">toSql</a></li><li><a href="global.html#updateBatch">updateBatch</a></li><li><a href="global.html#verify">verify</a></li><li><a href="global.html#write">write</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Jul 05 2022 14:58:17 GMT+0200 (Ora legale dell’Europa centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
