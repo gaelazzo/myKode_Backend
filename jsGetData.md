@@ -28,7 +28,7 @@ Questo meccanismo, basato su queste convenzioni, consente di non dover scrivere 
  una delle funzioni adibite alla lettura o aggiornamento dei DataSet della classe GetData.
 
 
-Vediamo i diversi metodi che espone, per i dettagli si veda il [jsdoc](docs/src_jsGetData.js.html) o la 
+Vediamo i diversi metodi che espone, per i dettagli si veda il [jsdoc](https://temposrl.github.io/myKode_Backend/getData.html) o la 
  [conversione in markdown](src/jsGetData.md)
 
 # Calcolo di filtri
