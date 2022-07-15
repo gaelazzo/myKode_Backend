@@ -112,8 +112,8 @@ where $q.field(x) is the function that applied to an object will return the fiel
 
 Here f and g are the function that compare the field named 'a' of the argument with the constant 1.
 
-A sqlFun is requested in order to use many methods of [GetData](src/jsGetData.md), [DataAccess](src/jsDataAccess.md),
- [PostData](src/jsPostData.md). In other words, sqlFun are used in the framework wherever a filter or an expression
+A sqlFun is requested in order to use many methods of [GetData](jsGetData.md), [DataAccess](DataAccess.md),
+ [PostData](PostData.md). In other words, sqlFun are used in the framework wherever a filter or an expression
  is requested.
 
 
