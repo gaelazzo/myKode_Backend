@@ -37,7 +37,7 @@ La classe DbDescriptor gestisce un dictionary di TableDescriptor, che è condivis
  di ricavarlo dalle tabelle di sistema del db (che varieranno in base al db). 
 
 
-Il modulo DbList si inizializa con il metodo init, che legge la configurazione dei db esistenti, in particolare, 
+Il modulo DbList si inizializza con il metodo init, che legge la configurazione dei db esistenti, in particolare, 
  è un file json che memorizza un dictionary del tipo "codice db"=> impostazioni del db, ad esempio:
 
 ```

@@ -12,7 +12,7 @@ const Deferred = require("JQDeferred");
 
 let secret = require('./config/secret');
 
-// inizializza la dblist cosi che poi tutti possano ottenere da essa le connessioni
+// inizializza la dblist con tutte le DbInfo così che poi tutti possano ottenere da essa le connessioni
 DbList.init({
     encrypt: true,
     decrypt: false,

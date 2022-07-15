@@ -53,7 +53,7 @@ JsApplication.prototype = {
     constructor: JsApplication,
 
     /**
-     * Creates the connection pool, it is supposed to be overriden in derived classes
+     * Creates the connection pool, it is supposed to be overridden in derived classes
      * @param {string} dbCode
      * @returns {JsConnectionPool}
      */
@@ -134,6 +134,7 @@ JsApplication.prototype = {
         /// creare il token che simuli l'invio da parte di quella identity
         /// valorizzare l'header con il token
     },
+
     /**
      *
      * @param {string} dbCode
@@ -186,7 +187,7 @@ JsApplication.prototype = {
 
     /**
      * returns an open connection to db
-     * @return {Deferred<JsPooledConnection>}
+     * @return {Promise<JsPooledConnection>}
      */
     getDataAccess: function (){
         return  this.pool.getDataAccess().promise();
@@ -199,7 +200,13 @@ JsApplication.prototype = {
      * @return {Environment}
      */
     createEnvironment: function (identity, conn){
-        return new Environment(identity);
+        let e = new Environment(identity);
+
+        //Sets field for optimistic locking
+        e.field("lu",identity.name);
+        e.field("cu",identity.name);
+
+        return e;
     },
 
     /**
@@ -247,45 +254,53 @@ JsApplication.prototype = {
 
 
     getAnonymousEnvironment:function(identity) {
-        // TODO create an anonymus envoronment
-        return new Environment(identity);
+        // TODO create an anonymous environment
+        let e= new Environment(identity);
+
+
+        return e;
     },
 
     /**
      * Creates a context object in req.app.local.context. If the token is not provided in the header, creates
-     *  an anonymous connection
+     *  an anonymous connection.
      * @param {Request} req
      * @param {Response} res
      * @param {Middleware} next
      */
     getOrCreateContext: function  (req, res, next) {
-        let token = req[tokenConfig.options.requestProperty]; //default is auth
-        //this will create an anonymous identity because req has no token
+        let token = req[tokenConfig.options.requestProperty]; //default is req[auth]
+
+        //Creates an Identity basing on the request token. If no token,
+        //  an anonymous identity is created
         let identity = getIdentityFromRequest(req);
         let sessionID = identity.sessionID();
         if (token) {
             let env;
-            if (identity.isAnonymous) {
-                env = this.getAnonymousEnvironment(identity);
-            }
-            else {
+            if (this.environments[sessionID]){
                 env = this.environments[sessionID];
             }
-
+            else {
+                if (identity.isAnonymous) {
+                        env = this.getAnonymousEnvironment(identity);
+                }
+            }
             return this.getContext(req,res,next, env);
         }
         // return res.status(401).json({
         //     error: 'No token'
         // });
-
+        // identity is an annonymous identity cause there is no token at all
+        //  it is the same as if anonymous token was found in the header
+        //Here a new environment is created
         let env = this.getAnonymousEnvironment(identity); //creates an anonymous environment
-        this.environments[sessionID] = env;
-
+        this.environments[sessionID] = env; //why?? it should not be done
         return this.getContext(req,res,next, env);
     },
 
     /**
      * Creates a context and attach it to req.app.local
+     * Also adds the
      * @param pooledConn
      * @param env
      * @param {Request} req
@@ -330,10 +345,11 @@ JsApplication.prototype = {
     },
 
     /**
-     * Creates a context object in req.app.local.context.
+     * Creates a context object in req.app.local.context, when environment already exists
      * @param {Request} req
      * @param {Response} res
      * @param {Middleware}  next
+     * @param {Environment} env
      */
     getContext: function  (req, res, next, env) {
         try {

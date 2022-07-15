@@ -11,9 +11,10 @@
 <li>f.isFalse = true if f is always false</li>
 <li>f ( r, environment) = undefined if there is no sufficient data to evaluate f</li>
 </ul>
-null fields and undefined fields are all considered (and returned) as null values (so they compare equal)
+null fields and undefined fields are all considered (and returned) as null values (so they compare equal).<br/>
 f.toSql(formatter, environment)  = a string representing the underlying condition to be applied to a database.
- formatter is used to obtain details about making the expression, see sqlFormatter for an example
+ formatter is used to obtain details about the sql dialect to use, see [sqlFormatter](jsSqlServerFormatter.js)
+  for an example <br/>
  [environment] is the environment into which the expression have to be evaluated</dd>
 </dl>
 
@@ -42,7 +43,7 @@ f.toSql(formatter, environment)  = a string representing the underlying conditio
 <a name="module_jsDataQuery"></a>
 
 ## jsDataQuery
-Provides utility functions to filter data and to create sql condition over database.<br>Every function returns a function f where:<br><ul><li>f ( r, environment )  = true if r matches condition in the given environment</li><li>f( r, environment ) = result  evaluated in the given environment if f is a computation function</li><li>f.isTrue = true if f is always true</li><li>f.isFalse = true if f is always false</li><li>f ( r, environment) = undefined if there is no sufficient data to evaluate f</li></ul>null fields and undefined fields are all considered (and returned) as null values (so they compare equal)f.toSql(formatter, environment)  = a string representing the underlying condition to be applied to a database. formatter is used to obtain details about making the expression, see sqlFormatter for an example [environment] is the environment into which the expression have to be evaluated
+Provides utility functions to filter data and to create sql condition over database.<br>Every function returns a function f where:<br><ul><li>f ( r, environment )  = true if r matches condition in the given environment</li><li>f( r, environment ) = result  evaluated in the given environment if f is a computation function</li><li>f.isTrue = true if f is always true</li><li>f.isFalse = true if f is always false</li><li>f ( r, environment) = undefined if there is no sufficient data to evaluate f</li></ul>null fields and undefined fields are all considered (and returned) as null values (so they compare equal).<br/>f.toSql(formatter, environment)  = a string representing the underlying condition to be applied to a database. formatter is used to obtain details about the sql dialect to use, see [sqlFormatter](jsSqlServerFormatter.js)  for an example <br/> [environment] is the environment into which the expression have to be evaluated
 
 
 * [jsDataQuery](#module_jsDataQuery)

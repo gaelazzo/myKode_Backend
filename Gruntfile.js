@@ -44,7 +44,7 @@ const rep = JasmineClass.ConsoleReporter;  //require("jasmine.console_reporter.j
 const reporter = new JasmineConsoleReporter({
     colors: 2,           // (0|false)|(1|true)|2
     cleanStack: 1,       // (0|false)|(1|true)|2|3
-    verbosity: 2,        // (0|false)|1|2|(3|true)|4|Object
+    verbosity: 3,        // (0|false)|1|2|(3|true)|4|Object
     listStyle: 'indent', // "flat"|"indent"
     timeUnit: 'ms',      // "ms"|"ns"|"s"
     timeThreshold: { ok: 500, warn: 1000, ouch: 3000 }, // Object|Number
@@ -198,6 +198,12 @@ module.exports = function (grunt) {
                     random: false
                 }
             },
+
+            corso:{
+                spec_dir: "./test/client",
+                spec_files: ["jsSpec.js"],
+            },
+
             server: {
                 spec_dir: "./test/spec",
                 spec_files: ["*Spec.js"],
@@ -394,6 +400,8 @@ module.exports = function (grunt) {
         // }
         done();
     });
+
+    grunt.registerTask('corso', ['jasmine:corso']);
 
     grunt.registerTask('docMD', ['jsDocMD:dist']);
 

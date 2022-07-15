@@ -14,7 +14,7 @@ const Roles  = {
 };
 
 /**
- * Creates an Identity, or an anonymous identitiy if options parameter is not given
+ * Creates an Identity, or an anonymous identity if options parameter is not given
  * see https://datatracker.ietf.org/doc/html/rfc7519#page-9
  * @param {string} options.title
  * @param {string} options.idflowchart
@@ -48,6 +48,7 @@ function Identity(options){
         this.sessionguid  = uuidv4();
         this.roles = [];
     }
+
 }
 
 Identity.prototype = {
@@ -68,9 +69,10 @@ Identity.prototype = {
  */
 function getIdentityFromRequest(req) {
     let tokenData = req[tokenConfig.options.requestProperty];
-    //let tokenData = Token.prototype.decode(encoded);
+    //let tokenData = Token.prototype.decode(encoded); token is already decoded by jwt library
     return new Identity(tokenData);
 }
+
 /**
  * Creates a token from an identity , taking ip address from request
  * see https://datatracker.ietf.org/doc/html/rfc7519#page-9
@@ -98,7 +100,6 @@ function Token(req, identity){
     this.loggedOn = new Date();
     this.expiresOn = new Date();
     this.expiresOn.setTime(this.expiresOn.getTime() + (60*60*1000));
-
 }
 
 Token.prototype = {
@@ -115,8 +116,6 @@ Token.prototype = {
     getToken: function (){
       return this.encode(this.getObjectToken());
     },
-
-
 
     /**
      *
@@ -244,7 +243,9 @@ function checkToken (req, res, next){
             next();
         }
         else {
+            //token data is taken from req.headers.authorization
             jwtCheck(req,res,next);
+            // The decoded JWT payload is available on the request via the auth property
         }
     }
     catch {

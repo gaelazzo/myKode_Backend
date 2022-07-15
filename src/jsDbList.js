@@ -129,10 +129,10 @@ let dbListFile, dbList;
  * Initializes dbList
  * @method init
  * @param options
- * @param {string} [options.fileName] Name of the clean file to encrypt
- * @param {string} [options.encryptedFileName] name of the file to be created
- * @param {boolean} options.encrypt true if the file has to be encrypted
- * @param {boolean} options.decrypt true if the file has to be decrypted
+ * @param {string} [options.fileName] Name of the clean config file to encrypt
+ * @param {string} [options.encryptedFileName] name of the config file to be created
+ * @param {boolean} options.encrypt true if the config file has to be encrypted
+ * @param {boolean} options.decrypt true if the config file has to be decrypted
  * @param {object} [options.secret] object containing key,iv,pwd to replace the config
 
  */
@@ -141,7 +141,7 @@ function init(options) {
     dbList = dbListFile.read();
 }
 /**
- * Creates a DbDescriptor
+ * Creates a DbDescriptor, given a database Connection
  * @class DbDescriptor
  * @param {Connection} sqlConn
  * @constructor
@@ -418,7 +418,6 @@ function getDataAccess(dbCode) {
  * Get information about a database
  * @method getDbInfo
  * @param {string} dbCode
- * @returns {Object.<driver,useTrustedConnection,user,pwd,database,defaultSchema,connectionString>} same data as that
  *  required for sqlConnection constructor:
  * {string} [driver='SQL Server Native Client 11.0'] Driver name
  * {string} [useTrustedConnection=true] is assumed true if no user name is provided
@@ -428,7 +427,7 @@ function getDataAccess(dbCode) {
  * {string} [defaultSchema=options.user ||'DBO'] default schema associated with user name
  * {string} [connectionString] connection string to connect (can be used instead of all previous listed)
  * {string} sqlModule module name to user for getting connection
-
+ * @return {Object.<driver,useTrustedConnection,user,pwd,database,defaultSchema,connectionString>}
  */
 function getDbInfo(dbCode) {
     if (dbList.hasOwnProperty(dbCode)) {
@@ -442,7 +441,7 @@ function getDbInfo(dbCode) {
  * sets information about a database
  * @method setDbInfo
  * @param {string}dbCode
- * @param {object} dbData
+ * @param {Object.<driver,useTrustedConnection,user,pwd,database,defaultSchema,connectionString>} dbData
  */
 function setDbInfo(dbCode, dbData) {
     dbList[dbCode] = dbData;

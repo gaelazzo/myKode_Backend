@@ -1,7 +1,7 @@
 # jsDataQuery
 Query functions convertable into sql expressions
 
-jsDoc documents available [here](client/components/metadata/jsDataQuery)
+jsDoc documents available [here](client/components/metadata/jsDataQuery.md)
 
 jsDataQuery allow building generic expression {*sqlFun*} that can be applied to javascript objects. 
 Then it is possible to convert that expression into a sql-readable string, simply invoking the toSql method of the object.

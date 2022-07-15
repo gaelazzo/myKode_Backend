@@ -15,7 +15,8 @@ JsConnectionPool.prototype = {
 
     /**
      * Takes a JsPooledConnection from the pool or creates one if none available
-     * @returns {Promise<string>}
+     * It's responsibility of the caller to release the connection calling release()
+     * @returns {Promise<JsPooledConnection>}
      */
     getDataAccess: function (){
         let that= this;

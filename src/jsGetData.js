@@ -42,6 +42,7 @@ GetDataSpace.prototype = {
 };
 
 /**
+ * Evaluates a Filter basing on the key of a table and an object
  * Assumes key = object with all key necessary fields
  * @method getFilterKey
  * @private
@@ -63,12 +64,12 @@ function getFilterKey(context, tableName, keyValues) {
 }
 
 /**
- * Gets a a filter
+ * Gets a a filter comparing all example fields
  * @method getFilterByExample
  * @param {Context} context
  * @param {string} tableName
  * @param {object} example
- * @param {boolean}  [useLike=false]  --if true, uses 'like' for any string comparisons
+ * @param {boolean}  [useLike=false]  --if true, uses 'like' for any string comparisons, otherwise uses equal comparison
  * @return {sqlFun} DataRow obtained with the given filter
  */
 function getFilterByExample(context, tableName, example, useLike) {
@@ -172,7 +173,7 @@ function fillDataSetByKey(ctx, ds, table, keyValues) {
  * Fill a dataset starting with a set of filtered rows in a table
  * @method fillDataSetByFilter
  * @param {Context} ctx
- * @param {DataTable} table
+ * @param {DataTable} table  main table
  * @param {sqlFun} filter
  * @return {DataRow[]} DataRow obtained with the given filter
  */
@@ -219,7 +220,7 @@ function recursivelyMarkSubEntityAsVisited(table, visited, toVisit){
 }
 
 /**
- * Gets all data of the DataSet cascated-related to the primary table.
+ * Gets all data of the DataSet cascate-related to the primary table.
  * The first relations considered are child of primary, then
  *  proper child / parent relations are called in cascade style.
  * @param {Context} ctx
@@ -303,6 +304,7 @@ function doGet(ctx, primaryTable, onlyPeripherals, oneRow){
         });
 
 }
+
 /**
  * Assuming that primaryTable has ALREADY been filled with data, read all childs and parents starting from
  *  rows present in primaryTable.

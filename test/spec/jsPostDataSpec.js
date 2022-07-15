@@ -105,7 +105,7 @@ describe("jsPostData",function() {
                 });
         }
 
-    },30000);
+    },60000);
 
     afterAll(function (done){
         if (!masterConn) {
@@ -151,7 +151,7 @@ describe("jsPostData",function() {
                     expect(res).toBeUndefined();
                     done();
                 });
-        }, 30000);
+        }, 60000);
 
     });
 

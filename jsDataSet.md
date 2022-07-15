@@ -68,5 +68,6 @@ Select:
 
     expect(t.select(q.eq('a', 1)).length).toBe(1);  //select selects a set of rows given a filter
 
+
 ![](https://travis-ci.org/gaelazzo/jsDataSet.svg?branch=master)
 

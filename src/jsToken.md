@@ -33,7 +33,7 @@
 <a name="new_Identity_new"></a>
 
 ### new Identity()
-Creates an Identity, or an anonymous identitiy if options parameter is not givensee https://datatracker.ietf.org/doc/html/rfc7519#page-9
+Creates an Identity, or an anonymous identity if options parameter is not givensee https://datatracker.ietf.org/doc/html/rfc7519#page-9
 
 
 | Param | Type | Description |

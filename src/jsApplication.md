@@ -9,14 +9,14 @@
     * [.createConnectionPool(dbCode)](#JsApplication+createConnectionPool) ⇒ <code>JsConnectionPool</code>
     * [.releaseConnection(req, ctx)](#JsApplication+releaseConnection)
     * [.init(dbCode)](#JsApplication+init) ⇒ <code>Promise</code>
-    * [.getDataAccess()](#JsApplication+getDataAccess) ⇒ <code>Deferred.&lt;JsPooledConnection&gt;</code>
+    * [.getDataAccess()](#JsApplication+getDataAccess) ⇒ <code>Promise.&lt;JsPooledConnection&gt;</code>
     * [.createEnvironment(identity, conn)](#JsApplication+createEnvironment) ⇒ <code>Environment</code>
     * [.createSession(identity, conn)](#JsApplication+createSession) ⇒ <code>Promise.&lt;Environment&gt;</code>
     * [.createPostData(ctx)](#JsApplication+createPostData) ⇒ <code>BusinessPostData</code>
     * [.getDataSet(tableName, editType)](#JsApplication+getDataSet) ⇒ <code>DataSet</code>
     * [.getOrCreateContext(req, res, next)](#JsApplication+getOrCreateContext)
     * [.createContext(pooledConn, env, req, res, next)](#JsApplication+createContext)
-    * [.getContext(req, res, next)](#JsApplication+getContext)
+    * [.getContext(req, res, next, env)](#JsApplication+getContext)
 
 <a name="new_JsApplication_new"></a>
 
@@ -32,7 +32,7 @@ Collection of all user environments of the application, the key is the sessionID
 <a name="JsApplication+createConnectionPool"></a>
 
 ### jsApplication.createConnectionPool(dbCode) ⇒ <code>JsConnectionPool</code>
-Creates the connection pool, it is supposed to be overriden in derived classes
+Creates the connection pool, it is supposed to be overridden in derived classes
 
 **Kind**: instance method of [<code>JsApplication</code>](#JsApplication)  
 
@@ -63,7 +63,7 @@ Attaches a release event on close/finish of the request (the one which fires fir
 
 <a name="JsApplication+getDataAccess"></a>
 
-### jsApplication.getDataAccess() ⇒ <code>Deferred.&lt;JsPooledConnection&gt;</code>
+### jsApplication.getDataAccess() ⇒ <code>Promise.&lt;JsPooledConnection&gt;</code>
 returns an open connection to db
 
 **Kind**: instance method of [<code>JsApplication</code>](#JsApplication)  
@@ -115,7 +115,7 @@ Function that must create a PostData class, this is meant to be overridden in de
 <a name="JsApplication+getOrCreateContext"></a>
 
 ### jsApplication.getOrCreateContext(req, res, next)
-Creates a context object in req.app.local.context. If the token is not provided in the header, creates an anonymous connection
+Creates a context object in req.app.local.context. If the token is not provided in the header, creates an anonymous connection.
 
 **Kind**: instance method of [<code>JsApplication</code>](#JsApplication)  
 
@@ -128,7 +128,7 @@ Creates a context object in req.app.local.context. If the token is not provided 
 <a name="JsApplication+createContext"></a>
 
 ### jsApplication.createContext(pooledConn, env, req, res, next)
-Creates a context and attach it to req.app.local
+Creates a context and attach it to req.app.localAlso adds the
 
 **Kind**: instance method of [<code>JsApplication</code>](#JsApplication)  
 
@@ -142,8 +142,8 @@ Creates a context and attach it to req.app.local
 
 <a name="JsApplication+getContext"></a>
 
-### jsApplication.getContext(req, res, next)
-Creates a context object in req.app.local.context.
+### jsApplication.getContext(req, res, next, env)
+Creates a context object in req.app.local.context, when environment already exists
 
 **Kind**: instance method of [<code>JsApplication</code>](#JsApplication)  
 
@@ -152,4 +152,5 @@ Creates a context object in req.app.local.context.
 | req | <code>Request</code> | 
 | res | <code>Response</code> | 
 | next | <code>Middleware</code> | 
+| env | <code>Environment</code> | 
 

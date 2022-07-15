@@ -20,6 +20,7 @@ function Environment(identity) {
     this.sys("ndetail",identity.ndetail||null);
     this.sys("esercizio",new Date().getFullYear());
     this.sys("ayear",new Date().getFullYear());
+
 }
 
 Environment.prototype = {

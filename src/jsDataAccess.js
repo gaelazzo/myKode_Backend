@@ -336,7 +336,6 @@ DataAccess.prototype = {
      * @param {string} options.tableName  table name
      * @param {sqlFun|string} options.expr  expression to get from table
      * @param {sqlFun} [options.filter]
-     * @param {string} [options.top]
      * @param {string} [options.orderBy]
      * @param {Environment} [options.environment]
      * @returns {Promise<object>}
@@ -675,8 +674,8 @@ DataAccess.prototype = {
     },
 
     /**
-     * Reads data from a table and returns the entire table read
-     * @method select
+     * Reads data from a table and returns a range of rows
+     * @method pagedSelect
      * @param {object} opt
      * @param {string} [opt.tableName] physical table or view to be read
      * @param {string|*} [opt.columns] column names comma separated
@@ -1212,7 +1211,7 @@ DataAccess.prototype.selectCount = function (options) {
  * @private
  * @param {Connection} conn
  * @param {number} packetSize limit to the size of {rows} array, 0 means no limit
- * @param {string}cmd
+ * @param {string} cmd
  * @param {string[]} aliasList
  * @param {boolean} raw
  * @return {Promise}

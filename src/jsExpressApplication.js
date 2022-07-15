@@ -50,8 +50,13 @@ function createExpressApplication(){
  */
 function createServicesRoutes(router, folder,routePrefix){
     fs.readdirSync(folder)
-        .filter(fileName => fs.lstatSync(`${folder}/${fileName}`).isFile() && ! fileName.startsWith("_"))
-        .forEach(fileName => router.use(`/${routePrefix}`,require(Path.join('..',folder,fileName)))
+        .filter(fileName => fs.lstatSync(`${folder}/${fileName}`).isFile() &&
+                        (! fileName.startsWith("_") )&&
+                             fileName.endsWith(".js"))
+        .forEach(fileName => {
+            //console.log(fileName);
+            router.use(`/${routePrefix}`, require(Path.join('..', folder, fileName)))
+        }
     );
 }
 

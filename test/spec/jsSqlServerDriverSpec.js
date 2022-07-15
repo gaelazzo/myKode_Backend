@@ -138,12 +138,12 @@ describe('sqlServerDriver ', function () {
                     });
             });
         }
-    },30000);
+    },60000);
 
 
 
     afterAll(function (done){
-        //console.log("running Afterall");
+        console.log("running Afterall");
         if (!masterConn) {
             console.log("no masterConn, quitting afterAll");
             done();
@@ -168,7 +168,7 @@ describe('sqlServerDriver ', function () {
 
     let canExecute=false;
     beforeEach(function (done) {
-        //console.log("running beforeEach");
+        console.log("running beforeEach");
         canExecute=false;
         if (!masterConn){
             console.log("no Master Conn");
@@ -177,21 +177,21 @@ describe('sqlServerDriver ', function () {
         }
         sqlConn = getConnection('good');
         sqlConn.open().then(function () {
-            //console.log("opened connection 2");
+            console.log("opened connection 2");
             canExecute=true;
             done();
         }).fail(function (err) {
-            //console.log('Error failing '+err);
+            console.log('Error failing '+err);
             done();
         });
     }, 30000);
 
     afterEach(function (done) {
-        //console.log("running afterEach");
+        console.log("running afterEach");
         if (sqlConn) {
             sqlConn.destroy()
                 .then(()=>{
-                    //console.log("closed connection 2");
+                    console.log("closed connection 2");
                     done();
                 });
         }

@@ -67,11 +67,11 @@ Per quanto detto nell'header http di ogni richiesta del client dovrà esserci in 
 
 Dove <token> è o il token "anonimo" oppure un token rilasciato dall'applicazione all'atto dell'autenticazione. 
 
-jsApplication provvede a decodificare il token di ogni richiesta e impostare i dati ricavati nella proprietà 
+jsApplication provvede a decodificare il token di ogni richiesta e impostare i dati ricavati dalla proprietà 
 **req.headers.authorization** della request req. In questo modo tutte le route possono accedervi.
 
-Il token è verificato e decodificato nel campo request.**auth**, (volendo è configurabile in 
-tokenConfig.options.requestProperty). Dunque in generale in request.auth ci sarà un oggetto di tipo [Token](src/jsToken.js)
+Il token è verificato e decodificato nel campo req.**auth** (volendo è configurabile in 
+tokenConfig.options.requestProperty). Dunque in generale in req.auth ci sarà un oggetto di tipo [Token](src/jsToken.js)
 Un semplice esempio di route di autenticazione si può trovare nel module [login](routes/auth/login.md)
 
 Una jsApplication al suo avvio crea una ExpressApplication e un Express.Router.

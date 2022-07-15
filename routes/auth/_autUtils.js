@@ -51,7 +51,9 @@ function serializeSys(env){
  * @return {Promise<void>}
  * @private
  */
-async function _doLogin(ctx, userName, password, accountDate,sessionInfoSSO,  userkind, req, res){
+async function _doLogin(ctx, userName, password,
+                        accountDate,sessionInfoSSO,
+                        userkind, req, res){
     let dbInfo = DBList.getDbInfo(ctx.dbCode);
     let codeDip= dbInfo.defaultSchema; //DBDipartimento;
     let env = ctx.environment;

@@ -33,7 +33,7 @@ provides facilities to access a database without knowing exactly the database ty
         * [~getPostCommand(r, optimisticLocking, environment)](#module_DataAccess..getPostCommand) ⇒ <code>string</code> \| <code>null</code>
         * [~callSP(spName, paramList, [raw], [timeout])](#module_DataAccess..callSP) ⇒ <code>Promise.&lt;Array&gt;</code>
         * [~select(opt, [raw])](#module_DataAccess..select) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
-        * [~select(opt, [raw])](#module_DataAccess..select) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
+        * [~pagedSelect(opt, [raw])](#module_DataAccess..pagedSelect) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
         * [~selectRows(opt, [raw])](#module_DataAccess..selectRows) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
         * [~selectIntoTable()](#module_DataAccess..selectIntoTable) ⇒ <code>Promise</code>
         * [~getFormatter()](#module_DataAccess..getFormatter) ⇒ <code>SqlFormatter</code>
@@ -254,7 +254,6 @@ Read a value from database. If multiple values are returned, the first is taken
 | options.tableName | <code>string</code> | table name |
 | options.expr | <code>sqlFun</code> \| <code>string</code> | expression to get from table |
 | [options.filter] | <code>sqlFun</code> |  |
-| [options.top] | <code>string</code> |  |
 | [options.orderBy] | <code>string</code> |  |
 | [options.environment] | <code>Environment</code> |  |
 
@@ -390,10 +389,10 @@ Reads data from a table and returns the entire table read
 | [opt.environment] | <code>Environment</code> |  | environment for the current user |
 | [raw] | <code>boolean</code> | <code>false</code> | if raw, data returned is not objectified |
 
-<a name="module_DataAccess..select"></a>
+<a name="module_DataAccess..pagedSelect"></a>
 
-### DataAccess~select(opt, [raw]) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
-Reads data from a table and returns the entire table read
+### DataAccess~pagedSelect(opt, [raw]) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
+Reads data from a table and returns a range of rows
 
 **Kind**: inner method of [<code>DataAccess</code>](#module_DataAccess)  
 **Returns**: <code>Promise.&lt;Array.&lt;object&gt;&gt;</code> - Array of objects with tableName set to the table name of data read  
