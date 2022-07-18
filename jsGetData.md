@@ -28,8 +28,8 @@ Questo meccanismo, basato su queste convenzioni, consente di non dover scrivere 
  una delle funzioni adibite alla lettura o aggiornamento dei DataSet della classe GetData.
 
 
-Vediamo i diversi metodi che espone, per i dettagli si veda il [jsdoc](https://temposrl.github.io/myKode_Backend/getData.html) o la 
- [conversione in markdown](src/jsGetData.md)
+Vediamo i diversi metodi che espone, per i dettagli si veda il 
+[jsdoc](https://temposrl.github.io/myKode_Backend/getData.html) o la  [conversione in markdown](src/jsGetData.md)
 
 # Calcolo di filtri
 
@@ -87,11 +87,15 @@ Dato un DataSet, ed eventualmente una riga da cui partire, legge le tabelle del
  a meno che non si specifichi onlyPeriperals, nel qual caso solo le tabelle
  secondarie sono inizialmente azzerate.
 
-doGet dovrebbe essere usata la prima volta con onlyPeripherals=false quando si legge
- un DataSet, ma le volte successive con onlyPeripherals=true se si intende solo aggiornare
+doGet dovrebbe essere usata la prima volta con onlyPeripherals=false, 
+ ma le volte successive con onlyPeripherals=true se si intende solo aggiornare
  le tabelle satellite, altrimenti saranno rilette anche la tabella principale 
  e le subentità, che sono eventualmente state oggetto di modifiche nell'interazione
  dell'utente con la maschera
+
+Si ricorda che per subentità si intendono tabelle child relazionate, con proprio campi chiave,
+ con tutta la chiave primaria della tabella parent dove la tabella padre è la tabella principale o un'altra subentità 
+(la relazione di subentità è transitiva).
 
 
 

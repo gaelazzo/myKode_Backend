@@ -795,6 +795,7 @@ BusinessLogic.prototype.refineMessages_applySubstitutions= function(subs, msgs){
 function fromAsyncToDeferred(f){
 
 }
+
 /**
  * Reads data from db in order to compile messages. Tries to optimize db access performing as little reads as possible
  * @param {DataAccess} conn

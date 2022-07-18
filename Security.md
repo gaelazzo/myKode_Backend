@@ -39,4 +39,9 @@ Il risultato dell'espressione deve essere un valore booleano.
 
 Per dettagli sulle potenzialità delle sqlFun leggere [jsDataQuery]()
 
+La classe Security espone il metodo canPost, che stabilisce se la modifica implicitamente
+ individuata da una riga in base al suo stato e al valore dei suoi campi sia ammissibile 
+ o meno.
+
+
 

@@ -175,8 +175,6 @@ Tuttavia se si intende scrivere le stored procedure in autonomia queste dovranno
 
 
 
-
-
 ## vista auditcheckview
 
 è una semplice join di audit e auditcheck con tutti i campi di auditcheck ed in più title e severity di audit

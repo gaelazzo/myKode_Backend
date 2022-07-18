@@ -1562,7 +1562,7 @@
 
 
         /**
-         * Get/Set a flag indicating that this table is not subjected to security functions in a Jquery fashioned
+         * Get/Set a flag indicating that this table is not subjected to security functions in a jQuery fashioned
          *  style
          * @method skipSecurity
          * @param {boolean} [arg]

@@ -6,6 +6,7 @@
 
 /* jshint -W116 */
 const dsSpace = require('./../client/components/metadata/jsDataSet');
+const DataRowState = dsSpace.dataRowState;
 const DataSet = dsSpace.DataSet;
 const QParser = require('./jsDataQueryParser').JsDataQueryParser;
 const Q = require('./../client/components/metadata/jsDataQuery');
@@ -70,10 +71,9 @@ Security.prototype= {
      * Get all table/operation conditions for any environment
      * @param {string} tableName
      * @param {string} op
-     * @param condition
      * @return {Array.<ConditionRow>}
      */
-    getTableOpConditions:function(tableName,op, condition){
+    getTableOpConditions:function(tableName,op){
         let key = tableName+'#'+op;
         let list=this.tableOpConditions[key];
         if (list===undefined){
@@ -161,8 +161,33 @@ Security.prototype.securityCondition= function (tableName, opKind, environment){
         return  clauses[0];
     }
     return  Q.or(clauses);
+};
 
+/**
+ *
+ * @param {ObjectRow} r
+ * @param {Environment} env
+ */
+Security.prototype.canPost= function(r, env){
+    let opkind=null;
+    let DR = r.getRow();
+    if (DR.table.skipSecurity()){
+      return true;
+    }
 
+    switch (DR.state){
+        case DataRowState.added:
+            opkind= "I";
+            break;
+        case DataRowState.modified:
+            opkind= "U";
+            break;
+        case DataRowState.deleted:
+            opkind="D";
+            break;
+    }
+    let filter = this.securityCondition(DR.table.name, opkind, env);
+    return filter(r,env);
 };
 
 /**

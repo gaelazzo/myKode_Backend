@@ -178,6 +178,7 @@ SinglePostData.prototype.init = function ( ds,context){
   this.ds = ds;
   this.rowChanges = this.getChanges(ds);
   this.conn= context.dataAccess;
+  this.security = context.security;
   this.environment = context.environment;
   if (this.conn) {
     this.sqlConn = this.conn.sqlConn;
@@ -539,6 +540,16 @@ SinglePostData.prototype.physicalPostBatch = function(conn, optimisticLocking){
   //sets optimistic locking fields
   changedRows.forEach(r =>   optimisticLocking.prepareForPosting(r,that.environment));
 
+  if (that.security) {
+    changedRows.forEach(r => {
+      if (that.security.canPost(r.row, that.environment)) {
+        def.reject("Operation on table "+r.table.name+" is forbidden");
+        failed=true;
+      }
+    });
+  }
+  if (failed) return;
+
   that.getSqlStatements(changedRows, optimisticLocking)
       .progress(function(rows, sql){
         if (failed) {
@@ -742,7 +753,10 @@ PostData.prototype.init = function ( ds,context){
       });
 };
 
-
+/**
+ * @private
+ * @return {boolean}
+ */
 PostData.prototype.someChange = function (){
   return this.allPost.some(p => p.rowChanges.length>0);
 };
@@ -919,7 +933,6 @@ BusinessLogicResult.prototype.addDbError = function (message,post){
  */
 BusinessLogicResult.prototype.mergeMessages = function (messages){
   let that=this;  //to avoid eslint messages
-  let anyNewMessage=false;
   let nChecks = this.checks.length;
   messages.checks.forEach(/* {BasicMessage} */  m =>{
     that.addMessage(m);
@@ -952,7 +965,7 @@ IBusinessLogic.prototype = {
  * This is meant to be replaced or overridden in derived classes
  * @param {Context} context
  * @param {ObjectRow[]} rowChanges
- * @return {Promise<BusinessLogicResult>}
+ * @return {Promise<IBusinessLogic>}
  */
 PostData.prototype.getBusinessLogic = function (context, rowChanges){
   let bl= new IBusinessLogic();
@@ -1031,7 +1044,7 @@ PostData.prototype.clearMaxCache = function (conn){
 };
 
 /**
- *
+ * Executes all data posting
  * @param {DataAccess} conn
  * @param {OptimisticLocking} locking
  * @returns {Promise} promise fails on errors
@@ -1043,7 +1056,7 @@ PostData.prototype.doAllPhisicalPostBatch = function (conn, locking){
 
 
 /**
- *
+ * log all operations made
  * @param {DataAccess} conn
  * @returns {Promise} promise fails on errors
  */
@@ -1054,7 +1067,7 @@ PostData.prototype.doAllLog = function (conn){
 
 
 /**
- *
+ * Executes all post-saving updates
  * @param {DataAccess} conn
  * @param {BusinessLogicResult} result
  * @returns {Promise} promise fails on errors
@@ -1066,7 +1079,7 @@ PostData.prototype.doAllUpdate = function (conn, result){
 };
 
 /**
- *
+ * Read again view data from database
  * @param {DataAccess} conn
  * @return {Promise}
  */
