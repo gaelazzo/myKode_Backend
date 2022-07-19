@@ -158,7 +158,7 @@ DbDescriptor
 <a name="new_module_dbList..DbDescriptor_new"></a>
 
 #### new DbDescriptor(sqlConn)
-Creates a DbDescriptor
+Creates a DbDescriptor, given a database Connection
 
 
 | Param | Type |
@@ -186,10 +186,10 @@ Initializes dbList
 | Param | Type | Description |
 | --- | --- | --- |
 | options |  |  |
-| [options.fileName] | <code>string</code> | Name of the clean file to encrypt |
-| [options.encryptedFileName] | <code>string</code> | name of the file to be created |
-| options.encrypt | <code>boolean</code> | true if the file has to be encrypted |
-| options.decrypt | <code>boolean</code> | true if the file has to be decrypted |
+| [options.fileName] | <code>string</code> | Name of the clean config file to encrypt |
+| [options.encryptedFileName] | <code>string</code> | name of the config file to be created |
+| options.encrypt | <code>boolean</code> | true if the config file has to be encrypted |
+| options.decrypt | <code>boolean</code> | true if the config file has to be decrypted |
 | [options.secret] | <code>object</code> | object containing key,iv,pwd to replace the config |
 
 <a name="module_dbList..table"></a>
@@ -278,20 +278,10 @@ Gets  a promise to a DataAccess
 Get information about a database
 
 **Kind**: inner method of [<code>dbList</code>](#module_dbList)  
-**Returns**: <code>Object.&lt;driver, useTrustedConnection, user, pwd, database, defaultSchema, connectionString&gt;</code> - same data as that
- required for sqlConnection constructor:
-{string} [driver='SQL Server Native Client 11.0'] Driver name
-{string} [useTrustedConnection=true] is assumed true if no user name is provided
-{string} [user] user name for connecting to db
-{string} [pwd] user password for connecting to db
-{string} [database] database name
-{string} [defaultSchema=options.user ||'DBO'] default schema associated with user name
-{string} [connectionString] connection string to connect (can be used instead of all previous listed)
-{string} sqlModule module name to user for getting connection  
 
-| Param | Type |
-| --- | --- |
-| dbCode | <code>string</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| dbCode | <code>string</code> | required for sqlConnection constructor: {string} [driver='SQL Server Native Client 11.0'] Driver name {string} [useTrustedConnection=true] is assumed true if no user name is provided {string} [user] user name for connecting to db {string} [pwd] user password for connecting to db {string} [database] database name {string} [defaultSchema=options.user ||'DBO'] default schema associated with user name {string} [connectionString] connection string to connect (can be used instead of all previous listed) {string} sqlModule module name to user for getting connection |
 
 <a name="module_dbList..setDbInfo"></a>
 
@@ -303,7 +293,7 @@ sets information about a database
 | Param | Type |
 | --- | --- |
 | dbCode | <code>string</code> | 
-| dbData | <code>object</code> | 
+| dbData | <code>Object.&lt;driver, useTrustedConnection, user, pwd, database, defaultSchema, connectionString&gt;</code> | 
 
 <a name="module_dbList..delDbInfo"></a>
 

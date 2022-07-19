@@ -163,7 +163,7 @@ Ha i seguenti campi:
 - paramtable: è la tabella da cui prendere il campo. Deve tassativamente coincidere con tablename.
 - paramcolumn: è la colonna di cui si richiede il valore
 
-E' importante capire che il corretto funzionamento della stored procedure dipende dai parametri che le 
+È importante capire che il corretto funzionamento della stored procedure dipende dai parametri che le 
  si passano, che devono corrispondere ai valori nel dataset delle righe di cui si sta richiedendo la 
  verifica. Tali valori non sono ancora stati scritti nel db, quindi vanno presi dal DataSet. 
 

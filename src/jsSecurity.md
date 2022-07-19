@@ -8,9 +8,10 @@ Manages data storing
     * [~Security](#module_Security..Security)
         * [new Security()](#new_module_Security..Security_new)
         * [.addTableOpCondition(tableName, op, condition)](#module_Security..Security+addTableOpCondition)
-        * [.getTableOpConditions(tableName, op, condition)](#module_Security..Security+getTableOpConditions) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
+        * [.getTableOpConditions(tableName, op)](#module_Security..Security+getTableOpConditions) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
         * [.getConditions(tableName, op, env)](#module_Security..Security+getConditions) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
         * [.securityCondition(tableName, opKind, environment)](#module_Security..Security+securityCondition) ⇒ <code>sqlFun</code>
+        * [.canPost(r, env)](#module_Security..Security+canPost)
     * [~SecurityProvider](#module_Security..SecurityProvider)
         * [new SecurityProvider(conn)](#new_module_Security..SecurityProvider_new)
     * [~ConditionRow](#module_Security..ConditionRow) : <code>Object</code>
@@ -26,9 +27,10 @@ Security
 * [~Security](#module_Security..Security)
     * [new Security()](#new_module_Security..Security_new)
     * [.addTableOpCondition(tableName, op, condition)](#module_Security..Security+addTableOpCondition)
-    * [.getTableOpConditions(tableName, op, condition)](#module_Security..Security+getTableOpConditions) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
+    * [.getTableOpConditions(tableName, op)](#module_Security..Security+getTableOpConditions) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
     * [.getConditions(tableName, op, env)](#module_Security..Security+getConditions) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
     * [.securityCondition(tableName, opKind, environment)](#module_Security..Security+securityCondition) ⇒ <code>sqlFun</code>
+    * [.canPost(r, env)](#module_Security..Security+canPost)
 
 <a name="new_module_Security..Security_new"></a>
 
@@ -50,7 +52,7 @@ Adds condition for a specified table/operation combination, merging to existent.
 
 <a name="module_Security..Security+getTableOpConditions"></a>
 
-#### security.getTableOpConditions(tableName, op, condition) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
+#### security.getTableOpConditions(tableName, op) ⇒ <code>Array.&lt;ConditionRow&gt;</code>
 Get all table/operation conditions for any environment
 
 **Kind**: instance method of [<code>Security</code>](#module_Security..Security)  
@@ -59,7 +61,6 @@ Get all table/operation conditions for any environment
 | --- | --- |
 | tableName | <code>string</code> | 
 | op | <code>string</code> | 
-| condition |  | 
 
 <a name="module_Security..Security+getConditions"></a>
 
@@ -86,6 +87,16 @@ Evaluates the SecurityCondition about a combination of tableName/opKind in the s
 | tableName | <code>string</code> | 
 | opKind | <code>string</code> | 
 | environment | <code>Environment</code> | 
+
+<a name="module_Security..Security+canPost"></a>
+
+#### security.canPost(r, env)
+**Kind**: instance method of [<code>Security</code>](#module_Security..Security)  
+
+| Param | Type |
+| --- | --- |
+| r | <code>ObjectRow</code> | 
+| env | <code>Environment</code> | 
 
 <a name="module_Security..SecurityProvider"></a>
 

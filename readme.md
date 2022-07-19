@@ -93,11 +93,11 @@ sia una disponibile.
 ## Accesso ai dati
 
 Per leggere/scrivere dati sul database, invocare stored procedure o qualsiasi altra operazione, ci sono tre principali
-classi: [DataAccess](DataAccess.md), [GetData](GetData.md) e [PostData](PostData.md)
+classi: [DataAccess](DataAccess.md), [GetData](jsGetData.md) e [PostData](PostData.md)
 
 - [DataAccess](DataAccess.md) è usata per operazioni di basso livello, come inviare semplici comandi di lettura 
  o scrittura
-- [GetData](GetData.md) è usata per leggere interi DataSet o parti di esso
+- [GetData](jsGetData.md) è usata per leggere interi DataSet o parti di esso
 - [PostData](PostData.md) è usata per scrivere interi DataSet
 
 ## Logica di Business
@@ -111,5 +111,5 @@ Ove le tabelle di configurazione non contengano righe, non sarà applicato alcun 
 
 ## Sicurezza
 
-La classe [jsSecurity](jsSecurity.md)
+La classe [jsSecurity](Security.md)
 

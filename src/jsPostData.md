@@ -17,7 +17,7 @@ Manages data storing
         * [.setInnerPosting(ds, innerPoster)](#module_PostData..PostData+setInnerPosting) ⇒ <code>boolean</code>
         * [.isInnerPoster()](#module_PostData..PostData+isInnerPoster) ⇒ <code>boolean</code>
         * [.setAsInnerPoster()](#module_PostData..PostData+setAsInnerPoster)
-        * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
+        * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;IBusinessLogic&gt;</code>
         * [.getChecks(conn, post)](#module_PostData..PostData+getChecks) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
         * [.doAllPhisicalPostBatch(conn, locking)](#module_PostData..PostData+doAllPhisicalPostBatch) ⇒ <code>Promise</code>
         * [.doAllLog(conn)](#module_PostData..PostData+doAllLog) ⇒ <code>Promise</code>
@@ -34,7 +34,7 @@ Manages data storing
         * [.setInnerPosting(ds, innerPoster)](#module_PostData..PostData+setInnerPosting) ⇒ <code>boolean</code>
         * [.isInnerPoster()](#module_PostData..PostData+isInnerPoster) ⇒ <code>boolean</code>
         * [.setAsInnerPoster()](#module_PostData..PostData+setAsInnerPoster)
-        * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
+        * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;IBusinessLogic&gt;</code>
         * [.getChecks(conn, post)](#module_PostData..PostData+getChecks) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
         * [.doAllPhisicalPostBatch(conn, locking)](#module_PostData..PostData+doAllPhisicalPostBatch) ⇒ <code>Promise</code>
         * [.doAllLog(conn)](#module_PostData..PostData+doAllLog) ⇒ <code>Promise</code>
@@ -117,7 +117,7 @@ PostData
     * [.setInnerPosting(ds, innerPoster)](#module_PostData..PostData+setInnerPosting) ⇒ <code>boolean</code>
     * [.isInnerPoster()](#module_PostData..PostData+isInnerPoster) ⇒ <code>boolean</code>
     * [.setAsInnerPoster()](#module_PostData..PostData+setAsInnerPoster)
-    * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
+    * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;IBusinessLogic&gt;</code>
     * [.getChecks(conn, post)](#module_PostData..PostData+getChecks) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
     * [.doAllPhisicalPostBatch(conn, locking)](#module_PostData..PostData+doAllPhisicalPostBatch) ⇒ <code>Promise</code>
     * [.doAllLog(conn)](#module_PostData..PostData+doAllLog) ⇒ <code>Promise</code>
@@ -193,7 +193,7 @@ Establish that this PostClass is run-time nested insider another one
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 <a name="module_PostData..PostData+getBusinessLogic"></a>
 
-#### postData.getBusinessLogic(context, rowChanges) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
+#### postData.getBusinessLogic(context, rowChanges) ⇒ <code>Promise.&lt;IBusinessLogic&gt;</code>
 This is meant to be replaced or overridden in derived classes
 
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
@@ -223,6 +223,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+doAllPhisicalPostBatch"></a>
 
 #### postData.doAllPhisicalPostBatch(conn, locking) ⇒ <code>Promise</code>
+Executes all data posting
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 **Returns**: <code>Promise</code> - promise fails on errors  
 
@@ -234,6 +236,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+doAllLog"></a>
 
 #### postData.doAllLog(conn) ⇒ <code>Promise</code>
+log all operations made
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 **Returns**: <code>Promise</code> - promise fails on errors  
 
@@ -244,6 +248,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+doAllUpdate"></a>
 
 #### postData.doAllUpdate(conn, result) ⇒ <code>Promise</code>
+Executes all post-saving updates
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 **Returns**: <code>Promise</code> - promise fails on errors  
 
@@ -255,6 +261,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+reselectAllViewsAndAcceptChanges"></a>
 
 #### postData.reselectAllViewsAndAcceptChanges(conn) ⇒ <code>Promise</code>
+Read again view data from database
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 
 | Param | Type |
@@ -290,7 +298,7 @@ PostData
     * [.setInnerPosting(ds, innerPoster)](#module_PostData..PostData+setInnerPosting) ⇒ <code>boolean</code>
     * [.isInnerPoster()](#module_PostData..PostData+isInnerPoster) ⇒ <code>boolean</code>
     * [.setAsInnerPoster()](#module_PostData..PostData+setAsInnerPoster)
-    * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
+    * [.getBusinessLogic(context, rowChanges)](#module_PostData..PostData+getBusinessLogic) ⇒ <code>Promise.&lt;IBusinessLogic&gt;</code>
     * [.getChecks(conn, post)](#module_PostData..PostData+getChecks) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
     * [.doAllPhisicalPostBatch(conn, locking)](#module_PostData..PostData+doAllPhisicalPostBatch) ⇒ <code>Promise</code>
     * [.doAllLog(conn)](#module_PostData..PostData+doAllLog) ⇒ <code>Promise</code>
@@ -366,7 +374,7 @@ Establish that this PostClass is run-time nested insider another one
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 <a name="module_PostData..PostData+getBusinessLogic"></a>
 
-#### postData.getBusinessLogic(context, rowChanges) ⇒ <code>Promise.&lt;BusinessLogicResult&gt;</code>
+#### postData.getBusinessLogic(context, rowChanges) ⇒ <code>Promise.&lt;IBusinessLogic&gt;</code>
 This is meant to be replaced or overridden in derived classes
 
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
@@ -396,6 +404,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+doAllPhisicalPostBatch"></a>
 
 #### postData.doAllPhisicalPostBatch(conn, locking) ⇒ <code>Promise</code>
+Executes all data posting
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 **Returns**: <code>Promise</code> - promise fails on errors  
 
@@ -407,6 +417,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+doAllLog"></a>
 
 #### postData.doAllLog(conn) ⇒ <code>Promise</code>
+log all operations made
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 **Returns**: <code>Promise</code> - promise fails on errors  
 
@@ -417,6 +429,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+doAllUpdate"></a>
 
 #### postData.doAllUpdate(conn, result) ⇒ <code>Promise</code>
+Executes all post-saving updates
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 **Returns**: <code>Promise</code> - promise fails on errors  
 
@@ -428,6 +442,8 @@ This function  is called before and after applying changes to db.
 <a name="module_PostData..PostData+reselectAllViewsAndAcceptChanges"></a>
 
 #### postData.reselectAllViewsAndAcceptChanges(conn) ⇒ <code>Promise</code>
+Read again view data from database
+
 **Kind**: instance method of [<code>PostData</code>](#module_PostData..PostData)  
 
 | Param | Type |

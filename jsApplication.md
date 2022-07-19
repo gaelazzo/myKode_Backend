@@ -63,7 +63,7 @@ ossia i campi usati per l'optimistic locking saranno rispettivamente:
 - per la modifica: lt, lu
 - per la creazione: ct, cu, lt, lu
 
-I campi stamp dell'environment sono ct e lt, e quando l'environment li calcola
+I campi stamp dell' environment sono ct e lt, e quando l'environment li calcola
 
 Il metodo prepareForPosting della classe OptimisticLocking è usata per calcolare i campi di locking ogni volta che
  si deve salvare un DataRow sul database.

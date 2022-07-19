@@ -1,7 +1,7 @@
 # DataAccess
 
 Il DataAccess è la classe usata per leggere dal DataBase singole tabelle o singole espressioni, mentre usiamo 
- [GetData](GetData.md) per leggere interi DataSet.
+ [GetData](jsGetData.md) per leggere interi DataSet.
 Sebbene sia virtualmente possibile farlo, non usiamo direttamente il DataAccess per salvare dati sul db ma usiamo 
  la classe  [PostData](PostData.md) a tale scopo, che si occupa anche della sicurezza, dei campi ad autoincremento etc.
 

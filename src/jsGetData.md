@@ -9,7 +9,7 @@
 
 <dl>
 <dt><a href="#getFilterByExample">getFilterByExample(context, tableName, example, [useLike])</a> ⇒ <code>sqlFun</code></dt>
-<dd><p>Gets a a filter</p>
+<dd><p>Gets a a filter comparing all example fields</p>
 </dd>
 <dt><a href="#getByFilter">getByFilter(ctx, table, filter, [orderBy])</a> ⇒ <code>Array.&lt;DataRow&gt;</code></dt>
 <dd><p>Gets an array of datarow given a filter</p>
@@ -23,7 +23,7 @@
 <dt><a href="#recursivelyMarkSubEntityAsVisited">recursivelyMarkSubEntityAsVisited(table, visited, toVisit)</a></dt>
 <dd></dd>
 <dt><a href="#doGet">doGet(ctx, primaryTable, onlyPeripherals, [oneRow])</a></dt>
-<dd><p>Gets all data of the DataSet cascated-related to the primary table.
+<dd><p>Gets all data of the DataSet cascate-related to the primary table.
 The first relations considered are child of primary, then
  proper child / parent relations are called in cascade style.</p>
 </dd>
@@ -52,7 +52,7 @@ Utility class with methods to fill a DataSet starting from a set of rows
 <a name="getFilterByExample"></a>
 
 ## getFilterByExample(context, tableName, example, [useLike]) ⇒ <code>sqlFun</code>
-Gets a a filter
+Gets a a filter comparing all example fields
 
 **Kind**: global function  
 **Returns**: <code>sqlFun</code> - DataRow obtained with the given filter  
@@ -62,7 +62,7 @@ Gets a a filter
 | context | <code>Context</code> |  |  |
 | tableName | <code>string</code> |  |  |
 | example | <code>object</code> |  |  |
-| [useLike] | <code>boolean</code> | <code>false</code> | -if true, uses 'like' for any string comparisons |
+| [useLike] | <code>boolean</code> | <code>false</code> | -if true, uses 'like' for any string comparisons, otherwise uses equal comparison |
 
 <a name="getByFilter"></a>
 
@@ -101,11 +101,11 @@ Fill a dataset starting with a set of filtered rows in a table
 **Kind**: global function  
 **Returns**: <code>Array.&lt;DataRow&gt;</code> - DataRow obtained with the given filter  
 
-| Param | Type |
-| --- | --- |
-| ctx | <code>Context</code> | 
-| table | <code>DataTable</code> | 
-| filter | <code>sqlFun</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| ctx | <code>Context</code> |  |
+| table | <code>DataTable</code> | main table |
+| filter | <code>sqlFun</code> |  |
 
 <a name="recursivelyMarkSubEntityAsVisited"></a>
 
@@ -121,7 +121,7 @@ Fill a dataset starting with a set of filtered rows in a table
 <a name="doGet"></a>
 
 ## doGet(ctx, primaryTable, onlyPeripherals, [oneRow])
-Gets all data of the DataSet cascated-related to the primary table.The first relations considered are child of primary, then proper child / parent relations are called in cascade style.
+Gets all data of the DataSet cascate-related to the primary table.The first relations considered are child of primary, then proper child / parent relations are called in cascade style.
 
 **Kind**: global function  
 

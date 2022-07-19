@@ -37,7 +37,7 @@ Ogni condizione denycondition e allowcondition è un'espressione pseudo-sql in cu
 
 Il risultato dell'espressione deve essere un valore booleano.
 
-Per dettagli sulle potenzialità delle sqlFun leggere [jsDataQuery]()
+Per dettagli sulle potenzialità delle sqlFun leggere [jsDataQuery](jsDataQuery.md)
 
 La classe Security espone il metodo canPost, che stabilisce se la modifica implicitamente
  individuata da una riga in base al suo stato e al valore dei suoi campi sia ammissibile 

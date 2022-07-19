@@ -868,7 +868,7 @@ Make childRow child of parentRow if a relation between the two is found
 <a name="module_DataSet..skipSecurity"></a>
 
 ### DataSet~skipSecurity([arg]) ⇒ <code>\*</code> \| <code>boolean</code>
-Get/Set a flag indicating that this table is not subjected to security functions in a Jquery fashioned style
+Get/Set a flag indicating that this table is not subjected to security functions in a jQuery fashioned style
 
 **Kind**: inner method of [<code>DataSet</code>](#module_DataSet)  
 
@@ -2198,7 +2198,7 @@ Make childRow child of parentRow if a relation between the two is found
 <a name="module_DataSet..skipSecurity"></a>
 
 ### DataSet~skipSecurity([arg]) ⇒ <code>\*</code> \| <code>boolean</code>
-Get/Set a flag indicating that this table is not subjected to security functions in a Jquery fashioned style
+Get/Set a flag indicating that this table is not subjected to security functions in a jQuery fashioned style
 
 **Kind**: inner method of [<code>DataSet</code>](#module_DataSet)  
 

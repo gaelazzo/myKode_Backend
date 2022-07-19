@@ -35,7 +35,7 @@ It's also possible to delete a row with all its children (with cascading effect)
 
 A full list of available function is available in the auto-generated yui doc.
 
-Full details are available [here](doc/DataSet.md)
+Full details are available [here](docs/module-DataSet.html)
 
 Let's see some DataSet examples:
     
