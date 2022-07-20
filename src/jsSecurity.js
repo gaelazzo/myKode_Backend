@@ -1,6 +1,6 @@
 /*globals ObjectRow,Environment,sqlFun ,SqlFormatter*/
 /**
- * Manages data storing
+ * Manages data storing authorizations
  * @module Security
  */
 

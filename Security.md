@@ -43,5 +43,8 @@ La classe Security espone il metodo canPost, che stabilisce se la modifica impli
  individuata da una riga in base al suo stato e al valore dei suoi campi sia ammissibile 
  o meno.
 
+Tale metodo è invocato dalla classe [PostData](PostData.md), per ogni riga oggetto di scrittura sul database,
+ che annulla la transazione ove il metodo dovesse restituire false.
+
 
 

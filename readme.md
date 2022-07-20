@@ -111,5 +111,8 @@ Ove le tabelle di configurazione non contengano righe, non sarà applicato alcun 
 
 ## Sicurezza
 
-La classe [jsSecurity](Security.md)
+La classe [jsSecurity](Security.md) è interrogata dalla classe PostData in fase di salvataggio dei dati.
+Le regole sono memorizzate sotto forma di condizioni testuali nella tabella customgroupoperation. 
+
+Per i dettagli consultare il [jsDoc](docs/module-Security.html) e la [sintesi](Security.md)
 

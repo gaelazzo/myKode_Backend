@@ -114,14 +114,11 @@ function SqlParameter(paramValue,paramName,varName, sqlType, forOutput){
     this.out = forOutput;
 }
 
-/**
- * Provides function to interact with a Sql Server database
- * @class Connection
- */
 
 /**
- * Create a connection
- * @method Connection
+ * Provides function to interact with a Sql Server database
+ * @class
+ * @name Connection
  * @param {object} options
  * {string} [options.driver='SQL Server Native Client 11.0'] Driver name
  * {string} [options.useTrustedConnection=true] is assumed true if no user name is provided

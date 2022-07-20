@@ -26,19 +26,16 @@ const {type} = require("JQDeferred/lib/jquery");
 const $dq = require('./../client/components/metadata/jsDataQuery').jsDataQuery;
 
 /**
- *
- * {detached: string, deleted: string, added: string, unchanged: string, modified: string}
+ * @private
  */
-const rowState = jsDataSet.dataRowState;
+const rowState = jsDataSet.dataRowState; //detached, deleted, added, unchanged, modified
 
 
 /**
  * All isolation level possible, may not be present in some db. In that case, the driver for that db will default into
  *  some other similar available level depending on the DBMS capabilities.
- * @enum isolationLevels
- * @static
- * @property isolationLevels
- *
+ * @readonly
+ * @enum {string}
  */
 const isolationLevels = {
     readUncommitted: 'READ_UNCOMMITTED',
@@ -593,7 +590,8 @@ DataAccess.prototype = {
     /**
      * call SP with a list of simple values as parameters. The SP returns a collection of tables.
      * @method callSP
-     * @param {string} spName
+     * @public
+     * @param {string} spName Name of the stored procedure
      * @param {object[]} paramList an array of all sp parameters, in the expected order
      * @param [raw] if true data will be returned as array of simple values, without calling objectify on it
      * @param {int} [timeout]
@@ -613,21 +611,21 @@ DataAccess.prototype = {
 
 
     /**
-     * call SP with a list of parameters each of which is an object of type sqlParameter having:
-     *  value : the value to be passed to the parameter, if it is not an output parameter
-     *  {bool} [out=false]: true if it is an output parameter
-     *  {string} [sqltype] : a type name compatible with the underlying db, necessary if is an output parameter
-     *  {string} [name] necessary if it is an output parameter
-     *  If any output parameter is given, the corresponding outValue will be filled after the SP has runned
+     * call SP with a list of parameters each of which is an object of type sqlParameter having:<br>
+     *  value : the value to be passed to the parameter, if it is not an output parameter <br>
+     *  {bool} [out=false]: true if it is an output parameter <br>
+     *  {string} [sqltype] : a type name compatible with the underlying db, necessary if is an output parameter <br>
+     *  {string} [name] necessary if it is an output parameter<br>
+     *  If any output parameter is given, the corresponding outValue will be filled after the SP has run<br>
      *  After returning all tables given by the stored procedure, this method eventually returns
      *   an object with a property for each output parameter
      * @param {string} spName
      * @param {sqlParameter[]} paramList
      * @param [raw=false] when true data will be returned as array(s) of simple values, without calling objectify on it
      * @returns {Promise<Array>} (a sequence of arrays)
-     * @example var arr = [{name:'idcustomer', value:1}, {name:maxValue, sqlType:int, value:null, out:true}];
-     *  DA.callSPWithNamedParams('getMaxOrder',arr);
-     *  At the end arr will be modified and a outValue added:
+     * @example var arr = [{name:'idcustomer', value:1}, {name:maxValue, sqlType:int, value:null, out:true}];<br>
+     *  DA.callSPWithNamedParams('getMaxOrder',arr);<br>
+     *  At the end arr will be modified and a outValue added:<br>
      *      [{name:'idcustomer', value:1}, {name:maxValue, sqlType:int, value:null, out:true, outValue:12}]
      */
     callSPWithNamedParams: function (spName, paramList, raw) {
@@ -637,12 +635,13 @@ DataAccess.prototype = {
 
     /**
      * Reads data from a table and returns the entire table read
-     * @method select
+     * @method
+     * @name select
      * @param {object} opt
      * @param {string} [opt.tableName] physical table or view to be read
      * @param {string} [opt.alias] table name wanted for the result if different from opt.tableName
      * @param {string|*} [opt.columns] column names comma separated
-     * @param {string} [opt.orderBy=null]
+     * @param {string} [opt.orderBy=null] sorting clause, ex. "name asc, surname asc"
      * @param {sqlFun} [opt.filter=null]
      * @param {string} [opt.top=null]
      * @param {boolean} [opt.applySecurity=true] if true,   security condition is appended to filter
@@ -715,16 +714,7 @@ DataAccess.prototype = {
         return def.promise();
     },
 
-    /**
-     * Get a command to convert a list of variables into a table with a column having a variable for each column
-     * @param options.tableName {string}
-     * @param options.nRowPerPage {int}
-     * @param options.filter {string},
-     * @param options.firstRow {int}
-     * @param options.sorting {string},
-     * @param options.environment {Context}
-     * @return {string}
-     */
+
 
     /**
      * Reads data from a table and returns any row read one by one.

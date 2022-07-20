@@ -4,9 +4,14 @@ const saltLen = 10;       // Numero di byte da generare per il "salt"
 const passwordLen = 12;    // Numero di byte da generare per le password
 const codeLen = 12;        // Numero di byte da generare per i codici di attivazione
 
+/**
+ * Manages password hashing
+ * @module Password
+ */
+
 
 /**
- *
+ * Verifies the hash for a password
  * @param {string} password
  * @param {Buffer} salt
  * @param {Buffer} secureHash
@@ -28,8 +33,8 @@ async function verify(password,salt,secureHash, iterations){
 }
 
 /**
- *
- * @param password
+ * Generates an hash for a password
+ * @param {string} password
  * @param {Buffer} salt
  * @param {int} iterations
  * @return {Buffer}
@@ -44,7 +49,7 @@ function generateHash(password,salt,iterations){
 }
 
 /**
- *
+ * Generates an array of random bytes of the specified size
  * @param {int} len
  * @return {Buffer}
  */
@@ -67,6 +72,7 @@ function generateSalt(){
 }
 
 /**
+ * @generates a random password
  * @return {string}
  */
 function generatePassword(){
@@ -75,6 +81,7 @@ function generatePassword(){
 
 
 /**
+ * Generates a random activation code
  * @return {string}
  */
 function generateCode(){
@@ -90,5 +97,4 @@ module.exports= {
     generateSalt:generateSalt,
     generatePassword:generatePassword,
     generateCode:generateCode
-
-}
+};

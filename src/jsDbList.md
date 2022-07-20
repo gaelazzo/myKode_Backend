@@ -6,13 +6,6 @@
 </dd>
 </dl>
 
-## Classes
-
-<dl>
-<dt><a href="#Context">Context</a></dt>
-<dd></dd>
-</dl>
-
 ## Constants
 
 <dl>
@@ -29,9 +22,11 @@ Maintains a list of db connection information, each identified by a dbCode
 
 * [dbList](#module_dbList)
     * [~Context](#module_dbList..Context)
+        * [new Context()](#new_module_dbList..Context_new)
         * [.dbCode](#module_dbList..Context+dbCode)
         * [.dbDescriptor](#module_dbList..Context+dbDescriptor)
         * [.createPostData](#module_dbList..Context+createPostData)
+        * [.getDataCreator](#module_dbList..Context+getDataCreator)
         * [.formatter](#module_dbList..Context+formatter)
         * [.sqlConn](#module_dbList..Context+sqlConn)
         * [.environment](#module_dbList..Context+environment)
@@ -60,13 +55,20 @@ Maintains a list of db connection information, each identified by a dbCode
 **Kind**: inner class of [<code>dbList</code>](#module_dbList)  
 
 * [~Context](#module_dbList..Context)
+    * [new Context()](#new_module_dbList..Context_new)
     * [.dbCode](#module_dbList..Context+dbCode)
     * [.dbDescriptor](#module_dbList..Context+dbDescriptor)
     * [.createPostData](#module_dbList..Context+createPostData)
+    * [.getDataCreator](#module_dbList..Context+getDataCreator)
     * [.formatter](#module_dbList..Context+formatter)
     * [.sqlConn](#module_dbList..Context+sqlConn)
     * [.environment](#module_dbList..Context+environment)
     * [.dataAccess](#module_dbList..Context+dataAccess)
+
+<a name="new_module_dbList..Context_new"></a>
+
+#### new Context()
+Execution context for a request
 
 <a name="module_dbList..Context+dbCode"></a>
 
@@ -81,6 +83,8 @@ Maintains a list of db connection information, each identified by a dbCode
 <a name="module_dbList..Context+dbDescriptor"></a>
 
 #### context.dbDescriptor
+dbDescriptor for the current context
+
 **Kind**: instance property of [<code>Context</code>](#module_dbList..Context)  
 **Properties**
 
@@ -97,6 +101,16 @@ Maintains a list of db connection information, each identified by a dbCode
 | Name | Type | Description |
 | --- | --- | --- |
 | createPostData | <code>function</code> | createPostData |
+
+<a name="module_dbList..Context+getDataCreator"></a>
+
+#### context.getDataCreator
+**Kind**: instance property of [<code>Context</code>](#module_dbList..Context)  
+**Properties**
+
+| Name |
+| --- |
+| getDataCreator | 
 
 <a name="module_dbList..Context+formatter"></a>
 
@@ -141,7 +155,6 @@ property dataAccess
 DbDescriptor
 A dbDescriptor takes track of the structure of a database. It doesn't manage different schemas.
 The structure of a table is described with a TableDescriptor
-module dbDescriptor
 
 **Kind**: inner class of [<code>dbList</code>](#module_dbList)  
 <a name="module_dbList..DbDescriptor"></a>
@@ -316,15 +329,6 @@ Check if a dbCode is present in the list
 | Param | Type |
 | --- | --- |
 | dbCode | <code>string</code> | 
-
-<a name="Context"></a>
-
-## Context
-**Kind**: global class  
-<a name="new_Context_new"></a>
-
-### new Context()
-Execution context for a request
 
 <a name="Deferred"></a>
 

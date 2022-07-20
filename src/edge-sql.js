@@ -1,5 +1,8 @@
 /*globals require */
 "use strict";
+/*
+
+ */
 
 /**
  * @property defer
@@ -17,7 +20,7 @@ module.exports = {
 };
 
 /**
- * simplified objectifier having an array of column names for first argument
+ * Simplified objectifier having an array of column names for first argument
  * @private
  * @param {Array} colNames
  * @param {Array} rows

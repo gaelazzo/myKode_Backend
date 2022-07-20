@@ -386,7 +386,7 @@
         },
 
         /**
-         * Waits for unstability and then for stability. if the counter of the nested deferred is zero then resolves the stabilize method,
+         * Waits for instability and then for stability. if the counter of the nested deferred is zero then resolves the stabilize method,
          * otherwise instantiates a new DeferredListener
          * @param {bool} dontWaitForInstability  if true waits for stability only
          * @returns {Deferred}

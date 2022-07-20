@@ -36,7 +36,7 @@ GetDataSet.prototype = {
     },*/
 
     /**
-     * Creates a metadata with a specified name
+     * Creates a DataSet with a specified name
      * @param {string} tableName
      * @param {string} editType
      * @return {DataSet|null}
@@ -62,16 +62,14 @@ GetDataSet.prototype = {
     },
 
     /**
-     *
+     * Creates a DataSet with a specified name with all entity tables properties
      * @param {Context} ctx
      * @param {string} tableName
      * @param {string} editType
      * @return {Promise<DataSet>}
      */
     createEmptyDataSet: async function (ctx, tableName, editType){
-
         let ds = this.getDataSet(tableName,editType);
-
         let primaryTable = ds.tables[tableName];
         let /*MetaData*/ meta = ctx.getMeta(tableName);
         meta.describeColumnsStructure(primaryTable);
@@ -84,7 +82,8 @@ GetDataSet.prototype = {
 
 
     /**
-     *
+     * Add properties to DataTable invoking meta.describeColumnsStructure and the
+     *  method describeTable of the table descriptor
      * @param {Context} ctx
      * @param {DataTable} parent
      * @param {string} editType

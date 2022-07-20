@@ -5,63 +5,42 @@ provides facilities to access a database without knowing exactly the database ty
 
 
 * [DataAccess](#module_DataAccess)
-    * _static_
-        * [.isolationLevels](#module_DataAccess.isolationLevels)
-    * _inner_
-        * [~DataAccess](#module_DataAccess..DataAccess)
-            * [new DataAccess(options)](#new_module_DataAccess..DataAccess_new)
-            * [.security](#module_DataAccess..DataAccess+security)
-            * [.externalUser](#module_DataAccess..DataAccess+externalUser)
-            * [.persisting](#module_DataAccess..DataAccess+persisting)
-            * [.sqlConn](#module_DataAccess..DataAccess+sqlConn)
-            * [.callSPWithNamedParams(spName, paramList, [raw])](#module_DataAccess..DataAccess+callSPWithNamedParams) ⇒ <code>Promise.&lt;Array&gt;</code>
-            * [.beginTransaction(isolationLevel)](#module_DataAccess..DataAccess+beginTransaction) ⇒ <code>Promise</code>
-        * [~rowState](#module_DataAccess..rowState)
-        * [~getSecurity(conn)](#module_DataAccess..getSecurity)
-        * [~secureGetLastError()](#module_DataAccess..secureGetLastError) ⇒ <code>string</code> \| <code>null</code>
-        * [~clone()](#module_DataAccess..clone) ⇒ <code>Promise.&lt;DataAccess&gt;</code>
-        * [~open()](#module_DataAccess..open) ⇒ <code>Promise</code>
-        * [~close()](#module_DataAccess..close) ⇒ <code>Promise</code>
-        * [~destroy()](#module_DataAccess..destroy)
-        * [~readSingleValue(options)](#module_DataAccess..readSingleValue) ⇒ <code>Promise.&lt;object&gt;</code>
-        * [~readLastValue(query)](#module_DataAccess..readLastValue) ⇒ <code>Promise.&lt;object&gt;</code>
-        * [~runCmd(cmd)](#module_DataAccess..runCmd) ⇒ <code>Promise.&lt;object&gt;</code>
-        * [~runSql(cmd, [raw])](#module_DataAccess..runSql) ⇒ <code>Promise.&lt;(Array.&lt;object&gt;\|{meta: Array.&lt;string&gt;, Array.&lt;rows:object&gt;})&gt;</code>
-        * [~doSingleDelete(options)](#module_DataAccess..doSingleDelete) ⇒ <code>Promise.&lt;int&gt;</code>
-        * [~doSingleInsert(table, columns, values)](#module_DataAccess..doSingleInsert) ⇒ <code>Promise.&lt;int&gt;</code>
-        * [~doSingleUpdate(options)](#module_DataAccess..doSingleUpdate) ⇒ <code>Promise.&lt;int&gt;</code>
-        * [~getPostCommand(r, optimisticLocking, environment)](#module_DataAccess..getPostCommand) ⇒ <code>string</code> \| <code>null</code>
-        * [~callSP(spName, paramList, [raw], [timeout])](#module_DataAccess..callSP) ⇒ <code>Promise.&lt;Array&gt;</code>
-        * [~select(opt, [raw])](#module_DataAccess..select) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
-        * [~pagedSelect(opt, [raw])](#module_DataAccess..pagedSelect) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
-        * [~selectRows(opt, [raw])](#module_DataAccess..selectRows) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
-        * [~selectIntoTable()](#module_DataAccess..selectIntoTable) ⇒ <code>Promise</code>
-        * [~getFormatter()](#module_DataAccess..getFormatter) ⇒ <code>SqlFormatter</code>
-        * [~queryPackets(opt, packetSize, [raw])](#module_DataAccess..queryPackets) ⇒ <code>Promise</code>
-        * [~multiSelect(options)](#module_DataAccess..multiSelect) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
-        * [~mergeMultiSelect(selectList, ds, [environment])](#module_DataAccess..mergeMultiSelect) ⇒ <code>Promise</code>
-        * [~mergeRowIntoTable(table, r)](#module_DataAccess..mergeRowIntoTable)
-        * [~selectCount(options)](#module_DataAccess..selectCount) ⇒ <code>Promise.&lt;int&gt;</code>
-        * [~objectify(colNames, rows)](#module_DataAccess..objectify) ⇒ <code>Array</code>
-        * [~Deferred](#module_DataAccess..Deferred)
-
-<a name="module_DataAccess.isolationLevels"></a>
-
-### DataAccess.isolationLevels
-All isolation level possible, may not be present in some db. In that case, the driver for that db will default into
- some other similar available level depending on the DBMS capabilities.
-
-**Kind**: static enum of [<code>DataAccess</code>](#module_DataAccess)  
-**Properties**
-
-| Name | Default |
-| --- | --- |
-| isolationLevels |  | 
-| readUncommitted | <code>READ_UNCOMMITTED</code> | 
-| readCommitted | <code>READ_COMMITTED</code> | 
-| repeatableRead | <code>REPEATABLE_READ</code> | 
-| snapshot | <code>SNAPSHOT</code> | 
-| serializable | <code>SERIALIZABLE</code> | 
+    * [~DataAccess](#module_DataAccess..DataAccess)
+        * [new DataAccess(options)](#new_module_DataAccess..DataAccess_new)
+        * [.security](#module_DataAccess..DataAccess+security)
+        * [.externalUser](#module_DataAccess..DataAccess+externalUser)
+        * [.persisting](#module_DataAccess..DataAccess+persisting)
+        * [.sqlConn](#module_DataAccess..DataAccess+sqlConn)
+        * [.callSPWithNamedParams(spName, paramList, [raw])](#module_DataAccess..DataAccess+callSPWithNamedParams) ⇒ <code>Promise.&lt;Array&gt;</code>
+        * [.beginTransaction(isolationLevel)](#module_DataAccess..DataAccess+beginTransaction) ⇒ <code>Promise</code>
+    * [~isolationLevels](#module_DataAccess..isolationLevels) : <code>enum</code>
+    * [~getSecurity(conn)](#module_DataAccess..getSecurity)
+    * [~secureGetLastError()](#module_DataAccess..secureGetLastError) ⇒ <code>string</code> \| <code>null</code>
+    * [~clone()](#module_DataAccess..clone) ⇒ <code>Promise.&lt;DataAccess&gt;</code>
+    * [~open()](#module_DataAccess..open) ⇒ <code>Promise</code>
+    * [~close()](#module_DataAccess..close) ⇒ <code>Promise</code>
+    * [~destroy()](#module_DataAccess..destroy)
+    * [~readSingleValue(options)](#module_DataAccess..readSingleValue) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [~readLastValue(query)](#module_DataAccess..readLastValue) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [~runCmd(cmd)](#module_DataAccess..runCmd) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [~runSql(cmd, [raw])](#module_DataAccess..runSql) ⇒ <code>Promise.&lt;(Array.&lt;object&gt;\|{meta: Array.&lt;string&gt;, Array.&lt;rows:object&gt;})&gt;</code>
+    * [~doSingleDelete(options)](#module_DataAccess..doSingleDelete) ⇒ <code>Promise.&lt;int&gt;</code>
+    * [~doSingleInsert(table, columns, values)](#module_DataAccess..doSingleInsert) ⇒ <code>Promise.&lt;int&gt;</code>
+    * [~doSingleUpdate(options)](#module_DataAccess..doSingleUpdate) ⇒ <code>Promise.&lt;int&gt;</code>
+    * [~getPostCommand(r, optimisticLocking, environment)](#module_DataAccess..getPostCommand) ⇒ <code>string</code> \| <code>null</code>
+    * [~callSP(spName, paramList, [raw], [timeout])](#module_DataAccess..callSP) ⇒ <code>Promise.&lt;Array&gt;</code>
+    * [~select(opt, [raw])](#module_DataAccess..select) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
+    * [~pagedSelect(opt, [raw])](#module_DataAccess..pagedSelect) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
+    * [~selectRows(opt, [raw])](#module_DataAccess..selectRows) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
+    * [~selectIntoTable()](#module_DataAccess..selectIntoTable) ⇒ <code>Promise</code>
+    * [~getFormatter()](#module_DataAccess..getFormatter) ⇒ <code>SqlFormatter</code>
+    * [~queryPackets(opt, packetSize, [raw])](#module_DataAccess..queryPackets) ⇒ <code>Promise</code>
+    * [~multiSelect(options)](#module_DataAccess..multiSelect) ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
+    * [~mergeMultiSelect(selectList, ds, [environment])](#module_DataAccess..mergeMultiSelect) ⇒ <code>Promise</code>
+    * [~mergeRowIntoTable(table, r)](#module_DataAccess..mergeRowIntoTable)
+    * [~selectCount(options)](#module_DataAccess..selectCount) ⇒ <code>Promise.&lt;int&gt;</code>
+    * [~objectify(colNames, rows)](#module_DataAccess..objectify) ⇒ <code>Array</code>
+    * [~Deferred](#module_DataAccess..Deferred)
 
 <a name="module_DataAccess..DataAccess"></a>
 
@@ -149,12 +128,12 @@ underlying DB connection
 <a name="module_DataAccess..DataAccess+callSPWithNamedParams"></a>
 
 #### dataAccess.callSPWithNamedParams(spName, paramList, [raw]) ⇒ <code>Promise.&lt;Array&gt;</code>
-call SP with a list of parameters each of which is an object of type sqlParameter having:
- value : the value to be passed to the parameter, if it is not an output parameter
- {bool} [out=false]: true if it is an output parameter
- {string} [sqltype] : a type name compatible with the underlying db, necessary if is an output parameter
- {string} [name] necessary if it is an output parameter
- If any output parameter is given, the corresponding outValue will be filled after the SP has runned
+call SP with a list of parameters each of which is an object of type sqlParameter having:<br>
+ value : the value to be passed to the parameter, if it is not an output parameter <br>
+ {bool} [out=false]: true if it is an output parameter <br>
+ {string} [sqltype] : a type name compatible with the underlying db, necessary if is an output parameter <br>
+ {string} [name] necessary if it is an output parameter<br>
+ If any output parameter is given, the corresponding outValue will be filled after the SP has run<br>
  After returning all tables given by the stored procedure, this method eventually returns
   an object with a property for each output parameter
 
@@ -169,9 +148,9 @@ call SP with a list of parameters each of which is an object of type sqlParamete
 
 **Example**  
 ```js
-var arr = [{name:'idcustomer', value:1}, {name:maxValue, sqlType:int, value:null, out:true}];
- DA.callSPWithNamedParams('getMaxOrder',arr);
- At the end arr will be modified and a outValue added:
+var arr = [{name:'idcustomer', value:1}, {name:maxValue, sqlType:int, value:null, out:true}];<br>
+ DA.callSPWithNamedParams('getMaxOrder',arr);<br>
+ At the end arr will be modified and a outValue added:<br>
      [{name:'idcustomer', value:1}, {name:maxValue, sqlType:int, value:null, out:true, outValue:12}]
 ```
 <a name="module_DataAccess..DataAccess+beginTransaction"></a>
@@ -185,12 +164,24 @@ Begins a transaction
 | --- | --- | --- |
 | isolationLevel | <code>string</code> | 'READ UNCOMMITTED','READ COMMITTED','REPEATABLE READ','SNAPSHOT','SERIALIZABLE' |
 
-<a name="module_DataAccess..rowState"></a>
+<a name="module_DataAccess..isolationLevels"></a>
 
-### DataAccess~rowState
-{detached: string, deleted: string, added: string, unchanged: string, modified: string}
+### DataAccess~isolationLevels : <code>enum</code>
+All isolation level possible, may not be present in some db. In that case, the driver for that db will default into
+ some other similar available level depending on the DBMS capabilities.
 
-**Kind**: inner constant of [<code>DataAccess</code>](#module_DataAccess)  
+**Kind**: inner enum of [<code>DataAccess</code>](#module_DataAccess)  
+**Read only**: true  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| readUncommitted | <code>string</code> | <code>&quot;READ_UNCOMMITTED&quot;</code> | 
+| readCommitted | <code>string</code> | <code>&quot;READ_COMMITTED&quot;</code> | 
+| repeatableRead | <code>string</code> | <code>&quot;REPEATABLE_READ&quot;</code> | 
+| snapshot | <code>string</code> | <code>&quot;SNAPSHOT&quot;</code> | 
+| serializable | <code>string</code> | <code>&quot;SERIALIZABLE&quot;</code> | 
+
 <a name="module_DataAccess..getSecurity"></a>
 
 ### DataAccess~getSecurity(conn)
@@ -356,10 +347,11 @@ call SP with a list of simple values as parameters. The SP returns a collection 
 
 **Kind**: inner method of [<code>DataAccess</code>](#module_DataAccess)  
 **Returns**: <code>Promise.&lt;Array&gt;</code> - (a sequence of arrays)  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| spName | <code>string</code> |  |
+| spName | <code>string</code> | Name of the stored procedure |
 | paramList | <code>Array.&lt;object&gt;</code> | an array of all sp parameters, in the expected order |
 | [raw] |  | if true data will be returned as array of simple values, without calling objectify on it |
 | [timeout] | <code>int</code> |  |
@@ -382,7 +374,7 @@ Reads data from a table and returns the entire table read
 | [opt.tableName] | <code>string</code> |  | physical table or view to be read |
 | [opt.alias] | <code>string</code> |  | table name wanted for the result if different from opt.tableName |
 | [opt.columns] | <code>string</code> \| <code>\*</code> |  | column names comma separated |
-| [opt.orderBy] | <code>string</code> | <code>null</code> |  |
+| [opt.orderBy] | <code>string</code> | <code>null</code> | sorting clause, ex. "name asc, surname asc" |
 | [opt.filter] | <code>sqlFun</code> | <code></code> |  |
 | [opt.top] | <code>string</code> | <code>null</code> |  |
 | [opt.applySecurity] | <code>boolean</code> | <code>true</code> | if true,   security condition is appended to filter |

@@ -19,47 +19,6 @@ const DataAccess = require("./jsDataAccess").DataAccess;
 const _ = require('lodash');
 
 
-/**
- * Execution context for a request
- * @class Context
- */
-
-/**
- * dbCode for the current context
- * @property {string} dbCode
- */
-
-/**
- * dbDescriptor for the current context
- * @property {DbDescriptor} dbDescriptor
- */
-
-
-/**
- * @property createPostData
- */
-
-/**
- * @property getDataCreator
- */
-
-
-/**
- * @property {sqlFormatter} formatter
- */
-
-/**
- * @property {Connection} sqlConn
- */
-
-/**
- * @property {Environment} environment
- */
-
-/**
- * @property {DataAccess} dataAccess
- */
-
 
 
 
@@ -68,9 +27,20 @@ const _ = require('lodash');
  * @module dbList
  */
 
+
+
+
+
+
+
+
+
+
 /**
+ * Execution context for a request
  * @class Context
  */
+
 function Context(){
     /**
      * @property dbCode
@@ -78,7 +48,9 @@ function Context(){
      */
     this.dbCode=undefined;
 
+
     /**
+     *  dbDescriptor for the current context
      * @property dbDescriptor
      * {DbDescriptor} dbDescriptor
      */
@@ -89,6 +61,13 @@ function Context(){
      * {function} createPostData
      */
     this.createPostData=undefined;
+
+
+
+    /**
+     * @property getDataCreator
+     */
+    this.getDataCreator=undefined;
 
     /**
      * @property formatter
@@ -121,7 +100,6 @@ function Context(){
  * @class DbDescriptor
  * A dbDescriptor takes track of the structure of a database. It doesn't manage different schemas.
  * The structure of a table is described with a TableDescriptor
- * module dbDescriptor
  */
 let dbListFile, dbList;
 

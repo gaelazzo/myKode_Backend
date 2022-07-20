@@ -1,7 +1,7 @@
 <a name="module_Security"></a>
 
 ## Security
-Manages data storing
+Manages data storing authorizations
 
 
 * [Security](#module_Security)

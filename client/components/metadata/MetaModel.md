@@ -5,6 +5,8 @@ Knows how to manipulate DataSet accordingly to MetaData assumptions
 
 
 * [MetaModel](#module_MetaModel)
+    * [~MetaModel](#module_MetaModel..MetaModel)
+        * [new MetaModel()](#new_module_MetaModel..MetaModel_new)
     * [~allowClear(t, [allow])](#module_MetaModel..allowClear) ⇒ <code>boolean</code>
     * [~allowAllClear(ds)](#module_MetaModel..allowAllClear)
     * [~sorting(t, orderBy)](#module_MetaModel..sorting) ⇒ <code>string</code>
@@ -61,6 +63,15 @@ Knows how to manipulate DataSet accordingly to MetaData assumptions
     * [~applyCascadeDelete(rowToDelete)](#module_MetaModel..applyCascadeDelete)
     * [~cascadeDelete(row)](#module_MetaModel..cascadeDelete) ⇒ <code>\*</code>
     * [~columnNameList(table)](#module_MetaModel..columnNameList) ⇒ <code>string</code>
+
+<a name="module_MetaModel..MetaModel"></a>
+
+### MetaModel~MetaModel
+**Kind**: inner class of [<code>MetaModel</code>](#module_MetaModel)  
+<a name="new_module_MetaModel..MetaModel_new"></a>
+
+#### new MetaModel()
+Sets of function to manage dataset properties
 
 <a name="module_MetaModel..allowClear"></a>
 
