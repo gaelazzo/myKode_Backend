@@ -94,8 +94,8 @@ doGet dovrebbe essere usata la prima volta con onlyPeripherals=false,
  dell'utente con la maschera
 
 Si ricorda che per subentità si intendono tabelle child relazionate, con proprio campi chiave,
- con tutta la chiave primaria della tabella parent dove la tabella padre è la tabella principale o un'altra subentità 
-(la relazione di subentità è transitiva).
+ con tutta la chiave primaria della tabella parent, dove la tabella padre è la tabella principale 
+ o un'altra subentità (la relazione di subentità è transitiva).
 
 
 

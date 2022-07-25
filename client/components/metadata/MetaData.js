@@ -111,7 +111,7 @@
             let foundCondition = false;
             const self = this;
 
-            if (!r) return self.getPromiseIsValidObject(noDataSelected, noDataSelected, outCaption, r);
+            if (!r) return self.createIsValidResult(noDataSelected, noDataSelected, outCaption, r);
 
             _.forEach(
                 r.table.key() ,
@@ -164,7 +164,7 @@
                 });
 
             // esco con promise se ho trovato una condizione di uscita
-            if (foundCondition) return self.getPromiseIsValidObject(outMsg, outField, outCaption, r);
+            if (foundCondition) return self.createIsValidResult(outMsg, outField, outCaption, r);
 
 			outCaption = '';
             _.forOwn(
@@ -231,7 +231,7 @@
 
                 });
 
-            return self.getPromiseIsValidObject(outMsg, outField, outCaption, r);
+            return self.createIsValidResult(outMsg, outField, outCaption, r);
         },
 
         /**
@@ -260,10 +260,11 @@
         },
 
         /**
-         * @method getPromiseIsValidObject
+         * @method createIsValidResult
          * @private
          * @description ASYNC
          * Auxiliar function that builds the result of the isValid promise
+         * ex  getPromiseIsValidObject
          * @param {string} errMessage
          * @param {string} colname
          * @param {string} outCaption
@@ -271,12 +272,12 @@
          * @param {string} [warningMessage]
          * @returns {Deferred}
          */
-        getPromiseIsValidObject: function (errMessage, colname, outCaption, row, warningMessage) {
-            let def = Deferred("getPromiseIsValidObject");
-            if(!errMessage && !colname) return def.resolve(null);
+        createIsValidResult: function (errMessage, colname, outCaption, row, warningMessage) {
+            let def = Deferred("createIsValidResult");
+            if(!colname) return def.resolve(null);
             let objRes = {
                 warningMsg: warningMessage,
-                errMsg: errMessage + " (" + outCaption + ")",
+                errMsg: errMessage , //+ " (" + outCaption + ")"
                 errField: colname,
                 outCaption: outCaption,
                 row: row
@@ -297,7 +298,7 @@
         },
 
         /**
-         * @method describeColumnsStructure
+         * @method describeAColumn
          * @public
          * @description SYNC
          * Set some information (useful on visualization) on column "cName"

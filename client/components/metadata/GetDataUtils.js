@@ -3,7 +3,7 @@
 /**
  * @module getDataUtils
  * @description
- * Collection of utility functions for GetData
+ * Collection of utility functions about used by GetData
  */
 (function (q,logger,logType,jsDataSet,_) {
 

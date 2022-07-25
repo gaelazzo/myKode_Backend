@@ -174,11 +174,7 @@ Environment.prototype.getGroupList = function(conn) {
                 filter: Q.eq("idcustomuser", idcustomuser)
             })
                 .then(t => {
-                    let res = _.reduce(t, function (result, r) {
-                        result.push(r.idcustomgroup);
-                        return result;
-                    }, []);
-                    this.usr("usergrouplist", res);
+                    this.usr("usergrouplist", t.map(r=>r.idcustomgroup));
                     d.resolve(res);
                 });
 
