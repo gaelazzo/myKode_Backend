@@ -729,7 +729,7 @@
      * Describe how to evaluate the value of a column before posting it
      * @constructor AutoIncrementColumn
      * @param {string} columnName
-     * @param {object} options same options as AutoIncrement properties
+     * @param {object} options same options as AutoIncrementColumn properties
      **/
     function AutoIncrementColumn(columnName, options) {
         /**
@@ -1768,7 +1768,7 @@
          * Get/Set autoincrement properties of fields
          * @method autoIncrement
          * @param {string} fieldName
-         * @param {object} [autoIncrementInfo] //see AutoIncrementColumn properties for details
+         * @param {AutoIncrementColumn} [autoIncrementInfo] //see AutoIncrementColumn properties for details
          * @returns {*|AutoIncrementColumn}
          */
         autoIncrement: function (fieldName, autoIncrementInfo) {

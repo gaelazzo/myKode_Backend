@@ -24,30 +24,7 @@
     /** Detect free variable `global` from Node.js or Browserified code and use it as `root`. (thanks lodash)*/
     let moduleExports = freeModule && freeModule.exports === freeExports;
 
-    /**
-     * @constructor AutoInfo
-     * @description Information abount an AutoManage or AutoChoose div
-     * @param {element} G usually DIV or SPAN
-     * @param {string} type
-     * @param {jsDataQuery} startFilter
-     * @param {string} startField
-     * @param {string} table
-     * @param {string} kind
 
-     */
-    function AutoInfo( G,
-                       type,
-                       startFilter,
-                       startField,
-                       table,
-                       kind) {
-        this.G = G;
-        this.type = type;
-        this.startfield = startField;
-        this.startFilter = startFilter;
-        this.table = table;
-        this.kind = kind;
-    }
 
 
     /**
@@ -494,7 +471,7 @@
          * @method copyExtraPropertiesTable
          * @public
          * @description SYNC
-         * Copies some useful properties form dtIn to dtOut
+         * Copies some structure properties form dtIn to dtOut
          * @param {DataTable} dtIn
          * @param {DataTable} dtDest
          */
@@ -513,9 +490,6 @@
             // copia i defaults
             dtDest.defaults(dtIn.defaults());
         },
-
-
-
 
 
         /**
@@ -603,8 +577,6 @@
         },
         recusiveNewCopyChilds: recusiveNewCopyChilds
     };
-
-    MetaData.prototype.AutoInfo = AutoInfo;
 
     /**
      *

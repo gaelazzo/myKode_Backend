@@ -56,6 +56,55 @@ lato client, ove vi sia un messaggio ignorabile, di solito è mostrato per confer
 Lato server è possibile inserire un'invocazione del metodo isValid ma di default non è implementato per non creare 
  una potenziale sovrapposizione con i controlli lato client. 
 
+### getNewRow ({objectRow} parentRow, {DataTable} dtDest)
+Crea una riga nella tabella dtDest (che sarà del tipo associato al metadato corrente), avente come riga parent
+(opzionale) la riga parentRow.
+
+In questo metodo è possibile definire tutte le proprietà dei campi ad autoincremento specifiche della tabella.
+
+Le proprietà ad autoincremento sono descritte nel documento [PostData](PostData.md) e si impostano
+tramite il metodo AutoIncrementColumn della classe DataTable.
+
+Tipicamente quindi il metodo getNewRow di un metadato (derivato da MetaData) imposterà alcune proprietà delle colonne 
+ del DataTable dtDest e poi richiamerà il metodo getNewRow della classe base, girando il risultato al chiamante. 
+
+La classe base (MetaData) di suo si occupa di impostare i default sulle colonne ove siano stati definiti, di 
+ richiamare il metodo newRow del DataTable
+
+Volendo impostare ad esempio la colonna idorder come autoincremento, il metodo potrebbe essere ridefinito come:
+
+            getNewRow: function (parentRow, dt, editType){ 
+				dt.autoIncrement('idorder', { });	
+				return this.superClass.getNewRow(parentRow, dt, editType);
+			}
+
+Volendo invece avere anche una colonna nOrder che parte da 1 ogni anno (yOrder) potremmo avere:
+
+            getNewRow: function (parentRow, dt, editType){ 
+				dt.autoIncrement('idorder', { });
+                dt.autoIncrement('nOrder', {selector:['yOrder']});
+				return this.superClass.getNewRow(parentRow, dt, editType);
+			}
+
+Se poi volessimo avere anche che la numerazione varia in base al campo "tipo ordine", idOrderKind, avremmo:
+
+            getNewRow: function (parentRow, dt, editType){ 
+				dt.autoIncrement('idorder', { });
+                dt.autoIncrement('nOrder', {selector:['yOrder','idOrderKind']});
+				return this.superClass.getNewRow(parentRow, dt, editType);
+			}
+
+Se volessimo inserire un certo numero di ordini nella stessa transazione e volessimo essere sicuri che la numerazione
+ ottenuta nel salvataggio non andrà mai in conflitto con quella nelle righe ancora da inserire potremmo impostare
+ un valore minimo per i valori temporanei (in memoria):
+
+           getNewRow: function (parentRow, dt, editType){
+            dt.autoIncrement('idorder', { });
+            dt.autoIncrement('nOrder', {minimum:99990001, selector:['yOrder','idOrderKind']});
+            return this.superClass.getNewRow(parentRow, dt, editType);
+           }
+
+
 ### {string[]} primaryKey
 Restituisce l'elenco dei campi chiave della tabella o vista. Per le viste risulta a volte indispensabile poiché il
  DbDescriptor non è in grado in autonomia di ricavare la chiave di una vista. 
@@ -67,18 +116,20 @@ A ogni modo quando si disegna il DataSet è bene impostare la chiave primaria di 
 Imposta le informazioni su una colonna, quali se ammette null, la caption etc.
 
 
-### insertFilter
+### {[sqlFun](jsDataQuery.md)} insertFilter
 Deve restituire un filtro da usare quando una riga di questa tabella è ricercata nell'ambito di una riga 
  (di un'altra tabella) è in inserimento. Ossia come riferimento esterno di una riga in stato di inserimento.
 
 Ad esempio, è possibile che solo le righe marcate come "attive" di una tabella siano attribuibili ad altre tabelle
- quando si creano in esse nuove righe.
+ quando si creano in esse nuove righe. 
 
-### searchFilter
+In questo caso sarà possibile ridefinire questo metodo per restituire il filtro sul campo attivo.
+
+
+
+### {[sqlFun](jsDataQuery.md)} searchFilter
 Deve restituire un filtro da usare quando una riga di questa tabella è ricercata nell'ambito di una riga
-(di un'altra tabella) è in fase di ricerca.
-
-Ossia come riferimento esterno in fase di ricerca sulle altre tabelle.
+(di un'altra tabella) è in fase di ricerca, ossia come riferimento esterno in fase di ricerca sulle altre tabelle.
 
 
 
@@ -87,7 +138,7 @@ Ossia come riferimento esterno in fase di ricerca sulle altre tabelle.
 Descrive le proprietà di uno o più elenchi, ossia modi di visualizzazione di una tabella o vista.
 Le proprietà sono descritte attraverso le proprietà delle colonne del DataTable.
 
-### {jsDataQuery} getStaticFilter({string} listType)
+### {[sqlFun](jsDataQuery.md)} getStaticFilter({string} listType)
 Restituisce un filtro da applicare sempre quando c'è da effettuare la lettura di un elenco "listType" sulla tabella
  o vista relative al metadato.
 
@@ -100,6 +151,9 @@ Restituisce il nome applicativo della tabella o vista, da usare ad esempio nei m
 Imposta i valori di default per le colonne quando sono create nuove righe della tabella.
 
 Tali valori sono utilizzati quando si richiama il metodo newRow del [DataTable](jsDataSet.md)
+
+La classe MetaPage di myKode invocano questo metodo, per ogni entità e subentità, all'avvio di ogni maschera, 
+ in modo che i default siano applicati nei successivi inserimenti di righe.
 
 
 
