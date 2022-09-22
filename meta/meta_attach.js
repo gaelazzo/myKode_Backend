@@ -63,14 +63,7 @@
         });
 
 
-		if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-			root.meta_attach = meta_attach;
-			define(function () {
-				return meta_attach;
-			});
-		}
-		// Check for `exports` after `define` in case a build optimizer adds an `exports` object.
-		else if (freeExports && freeModule) {
+		if (freeExports && freeModule) {
 			if (moduleExports) { // Export for Node.js or RingoJS.
 				(freeModule.exports = meta_attach).meta_attach = meta_attach;
 			} else { // Export for Narwhal or Rhino -require.
@@ -79,7 +72,7 @@
 		} else {
 			// Export for a browser or Rhino.
 			if (root.appMeta){
-				//root.appMeta.meta = metaattach;
+				//root.appMeta.meta = meta_attach;
 				appMeta.addMeta('attach', new meta_attach('attach'));
 			} else {
 				root.meta_attach = meta_attach;

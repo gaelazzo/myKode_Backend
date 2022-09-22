@@ -30,8 +30,8 @@ A riguardo dei campi ad autoincremento, questi si impostano tramite le proprietà
 - {number[]} selectorMask sono delle maschere da applicare ai campi selettori. La maschera è in AND bitwise con il valore
  del selettore
 - {string} prefixField nome campo prefisso da usare come prefisso dopo aver calcolato il valore del massimo. 
- Ad esempio se il campo prefixField è C  e la riga da inserire è {N:'AAA1', C:'AAA'} sarà effettuata una query del tipo
- SELECT MAX(convert(int,substring(N,4,12) where N like 'AAA%'. 
+ Ad esempio se il campo prefixField è C e la riga da inserire è {N:'AAA1', C:'AAA'} sarà effettuata una query del tipo
+ SELECT MAX(convert(int, substring(N,4,12) where N like 'AAA%'. 
 - {string} middleConst valore costante che si va ad accodare al valore prefisso ottenuto con prefixField
 - {int} idLen dimensione del campo ad autoincremento in caratteri quando consiste in una sottostringa, di default
  è 12
@@ -56,7 +56,7 @@ Basta che una sola riga non risulti inseribile/cancellabile/modificabile in base
 Per quanto PostData sia una classe che effettua una funzione piuttosto complessa, i suoi metodi sono essenzialmente due:
 
 - init({[DataSet](jsDataSet.md)} d, {[Context](Context.md)}c) che istruisce l'istanza della classe a salvare i dati del 
- DataSet d usando il contesto Context. E' possibile salvare diversi DataSet contemporaneamente chiamando questo metodo
+ DataSet d usando il contesto Context. È possibile salvare diversi DataSet contemporaneamente chiamando questo metodo
  più volte prima di invocare il metodo doPost
 - doPost(options): salva tutti i DataSet specificati, restituendo una serie di messaggi ove
  vi siano regole di Business violate oppure errori nella scrittura sul DataBase
@@ -71,7 +71,7 @@ Le opzioni di doPost includono:
 
 
 ## Salvataggi annidati
-E' anche possibile un uso più avanzato, e documentato negli unit test, della classe PostData, ed è  il salvataggio
+E' anche possibile un uso più avanzato, e documentato negli unit test, della classe PostData, ed è il salvataggio
  annidato.
 Può essere utile se uno dei due DataSet da salvare non è disponibile inizialmente ma si può calcolare solo 
  dopo aver scritto i dati del primo sul DataBase (ma prima di aver effettuato il commit della transazione).

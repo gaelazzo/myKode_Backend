@@ -406,14 +406,7 @@
         });
 
 
-		if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-			root.meta_registry = meta_registry;
-			define(function () {
-				return meta_registry;
-			});
-		}
-		// Check for `exports` after `define` in case a build optimizer adds an `exports` object.
-		else if (freeExports && freeModule) {
+		if (freeExports && freeModule) {
 			if (moduleExports) { // Export for Node.js or RingoJS.
 				(freeModule.exports = meta_registry).meta_registry = meta_registry;
 			} else { // Export for Narwhal or Rhino -require.

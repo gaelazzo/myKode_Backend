@@ -98,6 +98,7 @@ GetDataSet.prototype = {
         }
         let /* DataSet */ ds = parent.dataset;
         ctx.getMeta(parent.name).setDefaults(parent);
+        ctx.getMeta(parent.name).setSorting(parent);
         let allChildRel = parent.childRelations()
             .filter(async rel => metaModel.isSubEntityRelation(rel, ds.tables[rel.childTable], parent));
 
@@ -109,7 +110,6 @@ GetDataSet.prototype = {
             tableDescriptor.describeTable(childTable);
             await GetDataSet.prototype.addSubEntityExtProperties(ctx,childTable,editType, scannedTable);
         });
-
     }
 };
 

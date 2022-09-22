@@ -478,22 +478,7 @@
 
     // Some AMD build optimizers like r.js check for condition patterns like the following:
     //noinspection JSUnresolvedVariable
-    if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-        // Expose lodash to the global object when an AMD loader is present to avoid
-        // errors in cases where lodash is loaded by a script tag and not intended
-        // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
-        // more details.
-        root.EventManager = toExport;
-
-        // Define as an anonymous module so, through path mapping, it can be
-        // referenced as the "underscore" module.
-        //noinspection JSUnresolvedFunction
-        define(function () {
-            return toExport;
-        });
-    }
-    // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
-    else if (freeExports && freeModule) {
+    if (freeExports && freeModule) {
         if (moduleExports) { // Export for Node.js or RingoJS.
             (freeModule.exports = toExport).EventManager = toExport;
         }
@@ -513,7 +498,7 @@
     }
 
 }(  (typeof appMeta === 'undefined') ? require('./Logger').logTypeEnum : appMeta.logTypeEnum,
-        (typeof appMeta === 'undefined') ? require('./Logger').logger : appMeta.logger,
+    (typeof appMeta === 'undefined') ? require('./Logger').logger : appMeta.logger,
     (typeof _ === 'undefined') ? require('lodash') : _,
     (typeof $ === 'undefined')? require('JQDeferred'): $.Deferred
 ));

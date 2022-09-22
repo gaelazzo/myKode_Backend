@@ -1724,6 +1724,7 @@
           }
           return this.sortRows(this.select(), sortOrder);
         },
+
         /**
          * Get/set the ordering that have to be user reading from db
          * @param {string} [fieldList] it's like field1  [ASC|DESC] [, field2 [ASC|DESC] ..]
@@ -1941,7 +1942,8 @@
          *  basing on  key
          * @method mergeArray
          * @param {Object[]} arr
-         * @param {boolean} overwrite
+         * @param {boolean} overwrite If ovewrite is true, existing rows are made equals to those in the array,
+         otherwise array's conflicting rows are ignored.
          * @return {*}
          */
         mergeArray: function (arr, overwrite) {
@@ -2225,7 +2227,7 @@
 
         /**
          * merges changes from dataTable t assuming they are unchanged and they are all present in this dataTable.
-         * Rows are updated, but only  fields actually existing in d are modified. Other field are left unchanged.
+         * Rows are updated, but only actually existing rows in d are modified. Other rows are ignored.
          * It is assumed that "this" dataTable is unchanged at the beginning
          * @method mergeAsPatch
          * @param {DataTable} t
@@ -2249,18 +2251,18 @@
         merge: function (t) {
             let that = this;
             _.forEach(t.rows, function (r) {
-                let existingRow = that.select(t.keyFilter(r));
+                let existingRows = that.select(t.keyFilter(r));
                 if (r.getRow().state === DataRowState.deleted) {
-                    if (existingRow.length === 1) {
-                        existingRow[0].makeSameAs(r.getRow());
+                    if (existingRows.length === 1) {
+                        existingRows[0].getRow().makeSameAs(r.getRow());
                     }
                     else {
                         that.add(_.clone(r.getRow())).acceptChanges().del();
                     }
                 }
                 else {
-                    if (existingRow.length === 1) {
-                        existingRow[0].getRow().makeSameAs(r.getRow());
+                    if (existingRows.length === 1) {
+                        existingRows[0].getRow().makeSameAs(r.getRow());
                     }
                     else {
                         that.add({}).makeSameAs(r.getRow());
@@ -2635,6 +2637,7 @@
                 .filter({parentTable: parentName})
                 .value();
         },
+
         /**
          * Clones a DataSet replicating its structure but without copying any ObjectRow
          * @method clone
@@ -2675,11 +2678,8 @@
                 throw ("Table " + tableName + " is already present in dataset");
             }
             let t = new DataTable(tableName);
-            t.dataset = this;
-            this.tables[tableName] = t;
-            this.relationsByChild[tableName] = [];
-            this.relationsByParent[tableName] = [];
-            return t;
+
+            return this.addTable(t);
         },
 
         /**
@@ -2794,7 +2794,7 @@
             return rel;
         },
         /**
-         * Deletes a row with all subentity child
+         * Deletes a row with all subentity children. Children that are not subentity are unlinked.
          * @method cascadeDelete
          * @param {ObjectRow} row
          * @return {*}
@@ -2915,7 +2915,7 @@
         },
 
         /**
-         * merge any row present in dataset d. Rows are merged as unchanged if they are unchanged,
+         * merge any row existent in dataset d. Rows are merged as unchanged if they are unchanged,
          *  otherwise their values are copied into existent dataset
          *  DataSet must have same table structure
          * @param d

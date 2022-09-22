@@ -2600,23 +2600,7 @@
 
     let q = new jsDataQuery();
 
-    // Some AMD build optimizers like r.js check for condition patterns like the following:
-    //noinspection JSUnresolvedVariable
-    if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-        // Expose lodash to the global object when an AMD loader is present to avoid
-        // errors in cases where lodash is loaded by a script tag and not intended
-        // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
-        // more details.
-        root.jsDataQuery = q;
-
-        // Define as an anonymous module so, through path mapping, it can be
-        // referenced as the "underscore" module.
-        define(function() {
-            return q;
-        });
-    }
-    // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
-    else if (freeExports && freeModule) {
+    if (freeExports && freeModule) {
         // Export for Node.js or RingoJS.
         if (moduleExports) {
             (freeModule.exports = q).jsDataQuery = q;

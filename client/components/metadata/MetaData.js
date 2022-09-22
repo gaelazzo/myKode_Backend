@@ -37,9 +37,6 @@
         this.tableName = tableName;
         this.metaPage= null;
         this.listTop = 0;
-        this.localResource = localResource;
-        this.getData = getDataExt;
-        this.security = securityExt;
         return this;
     }
 
@@ -439,6 +436,15 @@
         },
 
         /**
+         * @method setOrderBy
+         * @public
+         * @description SYNC
+         * Sets the static filter
+         */
+        setSorting: function() {
+        },
+
+        /**
          * @method getSorting
          * @public
          * @description SYNC
@@ -578,6 +584,15 @@
         recusiveNewCopyChilds: recusiveNewCopyChilds
     };
 
+    /** Take effect on client side **/
+
+    MetaData.prototype.localResource = localResource;
+    MetaData.prototype.getData = getDataExt;        //this is replaced server side with ctx.getDataInvoke
+    MetaData.prototype.security = securityExt;      //this is replaces server side with ctx.environment;
+    MetaData.prototype.getMeta = getMeta;           //this is replaces server side with ctx.getMeta;
+
+
+
     /**
      *
      * @param {ObjectRow} destRow
@@ -616,6 +631,7 @@
 
                 let metaChild = this.getMeta(childTableName);
                 metaChild.setDefaults(childTable);
+                metaChild.setSorting(childTable);
 
                 // creo catena di deferred iterative, ognuna ha bisogno del risultato precedente. poichè se ci sono più child devo inserire in
                 // self.state.DS.tables[defObj.childTableName] le righe con id momentaneo calcolato diverso. Lui riesce a calcolare
@@ -654,24 +670,7 @@
         return Deferred.when.apply(Deferred, allNewChildRowDeferred);
     }
 
-    // Some AMD build optimizers like r.js check for condition patterns like the following:
-    //noinspection JSUnresolvedVariable
-    if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-        // Expose lodash to the global object when an AMD loader is present to avoid
-        // errors in cases where lodash is loaded by a script tag and not intended
-        // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
-        // more details.
-        root.MetaData = MetaData;
-
-        // Define as an anonymous module so, through path mapping, it can be
-        // referenced as the "underscore" module.
-        //noinspection JSUnresolvedFunction
-        define(function () {
-            return MetaData;
-        });
-    }
-    // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
-    else if (freeExports && freeModule) {
+   if (freeExports && freeModule) {
         if (moduleExports) { // Export for Node.js or RingoJS.
             (freeModule.exports = MetaData).MetaData = MetaData;
         }
