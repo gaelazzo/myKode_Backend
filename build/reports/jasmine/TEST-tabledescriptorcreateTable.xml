@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="table descriptor createTable" errors="0" tests="1" failures="0" time="0.068" timestamp="2021-07-26T16:33:16">
-  <testcase classname="table descriptor createTable" name="should return a Table with all columns created" time="0.068"></testcase>
-</testsuite>

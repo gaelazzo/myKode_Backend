@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="MySqlDriver  transactions" errors="0" tests="6" failures="0" time="0.35" timestamp="2021-09-20T12:08:13">
-  <testcase classname="MySqlDriver  transactions" name="set transaction isolation level should call queryBatch" time="0.063"></testcase>
-  <testcase classname="MySqlDriver  transactions" name="consecutive set transaction with same isolation level should not call queryBatch" time="0.064"></testcase>
-  <testcase classname="MySqlDriver  transactions" name="begin transaction should return success" time="0.07"></testcase>
-  <testcase classname="MySqlDriver  transactions" name="rollback transaction should fail without open conn" time="0.051"></testcase>
-  <testcase classname="MySqlDriver  transactions" name="rollback transaction should fail without begin tran" time="0.046"></testcase>
-  <testcase classname="MySqlDriver  transactions" name="rollback transaction should success with a begin tran" time="0.056"></testcase>
-</testsuite>

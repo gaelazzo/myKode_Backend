@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="RowChange getRelated" errors="0" tests="6" failures="0" time="0.014" timestamp="2021-10-28T15:35:11">
-  <testcase classname="RowChange getRelated" name="Should find same table" time="0.004"></testcase>
-  <testcase classname="RowChange getRelated" name="Should return undefined if no parent present" time="0.001"></testcase>
-  <testcase classname="RowChange getRelated" name="Should find parent table" time="0.007"></testcase>
-  <testcase classname="RowChange getRelated" name="Should find parent table by tableForWriting" time="0.001"></testcase>
-  <testcase classname="RowChange getRelated" name="Should find child table if one child row present " time="0"></testcase>
-  <testcase classname="RowChange getRelated" name="Should not find child table if two child row present " time="0.001"></testcase>
-</testsuite>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="sqlServerDriver  tableDescriptor" errors="0" tests="1" failures="0" time="0.272" timestamp="2021-10-15T13:26:19">
-  <testcase classname="sqlServerDriver  tableDescriptor" name="should return a TableDescriptor" time="0.271"></testcase>
-</testsuite>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="PostData getSelectAllViews" errors="0" tests="5" failures="0" time="0.018" timestamp="2021-09-20T12:08:58">
-  <testcase classname="PostData getSelectAllViews" name="should be a function" time="0.004"></testcase>
-  <testcase classname="PostData getSelectAllViews" name="should return an array" time="0.003"></testcase>
-  <testcase classname="PostData getSelectAllViews" name="should return an array of Select" time="0.004"></testcase>
-  <testcase classname="PostData getSelectAllViews" name="returned Select should be on view table" time="0.004"></testcase>
-  <testcase classname="PostData getSelectAllViews" name="returned Select should read from view table" time="0.003"></testcase>
-</testsuite>

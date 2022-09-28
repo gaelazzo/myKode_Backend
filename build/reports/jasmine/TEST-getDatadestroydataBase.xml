@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="getData destroy dataBase" errors="0" tests="1" failures="0" time="0.294" timestamp="2021-09-20T12:12:23">
-  <testcase classname="getData destroy dataBase" name="should run the destroy script" time="0.294"></testcase>
-</testsuite>

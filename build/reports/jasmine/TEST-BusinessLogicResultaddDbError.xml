@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="BusinessLogicResult addDbError" errors="0" tests="1" failures="0" time="0" timestamp="2021-10-28T15:35:13">
-  <testcase classname="BusinessLogicResult addDbError" name="should add a blocking error" time="0"></testcase>
-</testsuite>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="BusinessLogic refineMessages evaluateQueries" errors="0" tests="4" failures="0" time="0.493" timestamp="2021-10-28T15:35:12">
-  <testcase classname="BusinessLogic refineMessages evaluateQueries" name="should  set queries and columns for table having a key" time="0.223"></testcase>
-  <testcase classname="BusinessLogic refineMessages evaluateQueries" name="should  set queries and columns for views without a key" time="0.098"></testcase>
-  <testcase classname="BusinessLogic refineMessages evaluateQueries" name="should  set error if key column does not exist" time="0.093"></testcase>
-  <testcase classname="BusinessLogic refineMessages evaluateQueries" name="should  set error if message column does not exist" time="0.079"></testcase>
-</testsuite>

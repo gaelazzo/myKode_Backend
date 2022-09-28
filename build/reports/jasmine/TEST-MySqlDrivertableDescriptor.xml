@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="MySqlDriver  tableDescriptor" errors="0" tests="1" failures="0" time="0.054" timestamp="2021-09-20T12:08:13">
-  <testcase classname="MySqlDriver  tableDescriptor" name="should return a TableDescriptor" time="0.054"></testcase>
-</testsuite>

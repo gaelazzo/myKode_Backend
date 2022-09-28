@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="dbList" errors="0" tests="4" failures="0" time="0" timestamp="2021-07-26T16:33:16">
-  <testcase classname="dbList" name="dbList should be defined" time="0"></testcase>
-  <testcase classname="dbList" name="dbList should be a object" time="0"></testcase>
-  <testcase classname="dbList" name="dbList() should define getDbInfo" time="0"></testcase>
-  <testcase classname="dbList" name="dbList() should define setDbInfo" time="0"></testcase>
-</testsuite>

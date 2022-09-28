@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="multiSelect groupSelectStep" errors="0" tests="6" failures="0" time="0.001" timestamp="2021-07-29T16:30:29">
-  <testcase classname="multiSelect groupSelectStep" name="groupSelect test set 1" time="0.001"></testcase>
-  <testcase classname="multiSelect groupSelectStep" name="groupSelect test set 3" time="0"></testcase>
-  <testcase classname="multiSelect groupSelectStep" name="groupSelect test set 3" time="0"></testcase>
-  <testcase classname="multiSelect groupSelectStep" name="groupSelect should call both appendTo and  optimizedAppendTo if there are optimized select" time="0"></testcase>
-  <testcase classname="multiSelect groupSelectStep" name="groupSelect should not call optimizedAppendTo if there is no optimized Select" time="0"></testcase>
-  <testcase classname="multiSelect groupSelectStep" name="groupSelect should call appendTo even if  Select are all optimized" time="0"></testcase>
-</testsuite>

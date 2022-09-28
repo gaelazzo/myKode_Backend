@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="MySqlDriver  setup dataBase" errors="0" tests="1" failures="0" time="5.28" timestamp="2021-09-20T12:08:07">
-  <testcase classname="MySqlDriver  setup dataBase" name="should run the setup script" time="5.28"></testcase>
-</testsuite>

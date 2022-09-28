@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="MsgParser" errors="0" tests="6" failures="0" time="0.006" timestamp="2021-06-21T10:02:07">
-  <testcase classname="MsgParser" name="return same string if no pattern is found" time="0.001"></testcase>
-  <testcase classname="MsgParser" name="return same string if a partial pattern is found" time="0"></testcase>
-  <testcase classname="MsgParser" name="find single occurrence between simple delimiters" time="0"></testcase>
-  <testcase classname="MsgParser" name="find multiple occurrences between simple delimiters" time="0.001"></testcase>
-  <testcase classname="MsgParser" name="find single occurrence between compound delimiters" time="0.001"></testcase>
-  <testcase classname="MsgParser" name="find multiple occurrences between compound delimiters" time="0.002"></testcase>
-</testsuite>

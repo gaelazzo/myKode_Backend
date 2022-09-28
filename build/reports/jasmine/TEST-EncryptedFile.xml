@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="EncryptedFile" errors="0" tests="3" failures="0" time="0.15" timestamp="2021-07-08T15:04:28">
-  <testcase classname="EncryptedFile" name="should be defined" time="0.002"></testcase>
-  <testcase classname="EncryptedFile" name="should be a function" time="0"></testcase>
-  <testcase classname="EncryptedFile" name="should be a constructor" time="0"></testcase>
-</testsuite>

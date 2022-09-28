@@ -289,7 +289,6 @@ TableDescriptor.prototype.column = function (columnName) {
 TableDescriptor.prototype.describeTable = function (t){
     const k = this.getKey();
 
-
     this.columns.forEach(c=>{
         let col = t.setDataColumn(c.name,c.ctype);
         col.allowNull = (c.is_nullable===1);

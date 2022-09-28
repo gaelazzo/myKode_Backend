@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="getProcName" errors="0" tests="3" failures="0" time="0.002" timestamp="2021-04-15T17:46:17">
-  <testcase classname="getProcName" name="inserted row gives check_table_i_pre/post" time="0.001"></testcase>
-  <testcase classname="getProcName" name="modified row gives check_table_i_pre/post" time="0.001"></testcase>
-  <testcase classname="getProcName" name="inserted row gives check_table_i_pre/post" time="0"></testcase>
-</testsuite>

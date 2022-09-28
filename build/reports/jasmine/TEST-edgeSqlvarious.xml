@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="edgeSql  various" errors="0" tests="5" failures="0" time="0.332" timestamp="2021-07-08T15:04:40">
-  <testcase classname="edgeSql  various" name="select now() should give results" time="0.065"></testcase>
-  <testcase classname="edgeSql  various" name="select * from table should give results" time="0.06"></testcase>
-  <testcase classname="edgeSql  various" name="Date should be given as objects" time="0.078"></testcase>
-  <testcase classname="edgeSql  various" name="notify should be called from queryRaw when multiple result got (two select)" time="0.066"></testcase>
-  <testcase classname="edgeSql  various" name="notify should be called from queryRaw when multiple result got (three select)" time="0.062"></testcase>
-</testsuite>

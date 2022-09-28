@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="BusinessLogic ruleFilter" errors="0" tests="1" failures="0" time="0.04" timestamp="2021-10-28T15:35:12">
-  <testcase classname="BusinessLogic ruleFilter" name="should be taken from environment" time="0.04"></testcase>
-</testsuite>

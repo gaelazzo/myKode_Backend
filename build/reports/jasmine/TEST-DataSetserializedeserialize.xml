@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="DataSet serialize/deserialize" errors="0" tests="5" failures="0" time="0.003" timestamp="2022-05-26T14:27:54">
-  <testcase classname="DataSet serialize/deserialize" name="should preserve tables" time="0.001"></testcase>
-  <testcase classname="DataSet serialize/deserialize" name="should preserve row count" time="0.001"></testcase>
-  <testcase classname="DataSet serialize/deserialize" name="should preserve row values" time="0"></testcase>
-  <testcase classname="DataSet serialize/deserialize" name="should preserve original values" time="0.001"></testcase>
-  <testcase classname="DataSet serialize/deserialize" name="should preserve current values" time="0"></testcase>
-</testsuite>

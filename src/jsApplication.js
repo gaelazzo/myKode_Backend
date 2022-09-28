@@ -243,7 +243,7 @@ JsApplication.prototype = {
     },
 
     /**
-     *
+     * SYNC function
      * @param tableName
      * @param editType
      * @return {DataSet}

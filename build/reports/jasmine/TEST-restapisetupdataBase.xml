@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="rest api setup dataBase" errors="0" tests="1" failures="0" time="0.52" timestamp="2021-10-18T18:40:17">
-  <testcase classname="rest api setup dataBase" name="should run the setup script" time="0.52"></testcase>
-</testsuite>

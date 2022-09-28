@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="BusinessLogic filterParameters" errors="0" tests="3" failures="0" time="0.133" timestamp="2021-10-28T15:35:11">
-  <testcase classname="BusinessLogic filterParameters" name="should return a filter using table,op,isprecheck" time="0.041"></testcase>
-  <testcase classname="BusinessLogic filterParameters" name="should return a filter with preCheck true " time="0.054"></testcase>
-  <testcase classname="BusinessLogic filterParameters" name="should use tableForWriting as table name" time="0.038"></testcase>
-</testsuite>

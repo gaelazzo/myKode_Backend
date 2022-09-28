@@ -36,7 +36,7 @@ GetDataSet.prototype = {
     },*/
 
     /**
-     * Creates a DataSet with a specified name
+     * Creates a DataSet with a specified name (SYNC)
      * @param {string} tableName
      * @param {string} editType
      * @return {DataSet|null}
@@ -62,7 +62,7 @@ GetDataSet.prototype = {
     },
 
     /**
-     * Creates a DataSet with a specified name with all entity tables properties
+     * Creates a DataSet with a specified name with all entity tables properties ASYNC
      * @param {Context} ctx
      * @param {string} tableName
      * @param {string} editType

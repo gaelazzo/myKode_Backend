@@ -178,10 +178,10 @@ A questo punto basta aggiungere le relazioni desiderate e la creazione è finita:
 
 ```js
         let d = new DataSet()
-        let tOrder = dbDescriptor.table("order")
+        let tOrder = await dbDescriptor.createTable("order")
         d.addTable(tOrder);
 
-        let tOrderDetail = dbDescriptor.table("orderdetail")
+        let tOrderDetail = await dbDescriptor.createTable("orderdetail")
         d.addTable(tOrderDetail);
 
         d.newRelation("order_orderdetail","order",["idorder"],"orderdetail",["idorder"])

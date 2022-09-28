@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="DataTable module test getSelector" errors="0" tests="4" failures="0" time="0.003" timestamp="2022-05-26T14:27:54">
-  <testcase classname="DataTable module test getSelector" name="should return a function" time="0"></testcase>
-  <testcase classname="DataTable module test getSelector" name="returned function should compare all fields in autoIncrementProperty.selector" time="0.001"></testcase>
-  <testcase classname="DataTable module test getSelector" name="empty selector means no filter" time="0.001"></testcase>
-  <testcase classname="DataTable module test getSelector" name="should use mask when given" time="0.001"></testcase>
-</testsuite>

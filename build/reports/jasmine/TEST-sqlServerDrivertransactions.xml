@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="sqlServerDriver  transactions" errors="0" tests="6" failures="0" time="1.72" timestamp="2021-10-15T13:25:42">
-  <testcase classname="sqlServerDriver  transactions" name="set transaction isolation level should call queryBatch" time="0.258"></testcase>
-  <testcase classname="sqlServerDriver  transactions" name="consecutive set transaction with same isolation level should not call queryBatch" time="0.312"></testcase>
-  <testcase classname="sqlServerDriver  transactions" name="begin transaction should return success" time="0.357"></testcase>
-  <testcase classname="sqlServerDriver  transactions" name="rollback transaction should fail without open conn" time="0.213"></testcase>
-  <testcase classname="sqlServerDriver  transactions" name="rollback transaction should fail without begin tran" time="0.22"></testcase>
-  <testcase classname="sqlServerDriver  transactions" name="rollback transaction should success with a begin tran" time="0.359"></testcase>
-</testsuite>

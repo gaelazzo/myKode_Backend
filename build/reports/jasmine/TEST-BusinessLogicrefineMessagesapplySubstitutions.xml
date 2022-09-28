@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="BusinessLogic refineMessages applySubstitutions" errors="0" tests="1" failures="0" time="0.094" timestamp="2021-10-28T15:35:13">
-  <testcase classname="BusinessLogic refineMessages applySubstitutions" name="should replace placeholders with values obtained from db" time="0.094"></testcase>
-</testsuite>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="BusinessLogic getRules" errors="0" tests="1" failures="0" time="0.04" timestamp="2021-10-28T15:35:11">
-  <testcase classname="BusinessLogic getRules" name="should call getStartingFrom with right arguments" time="0.04"></testcase>
-</testsuite>

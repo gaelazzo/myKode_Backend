@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="System status" errors="0" tests="3" failures="0" time="0.015" timestamp="2022-05-26T14:27:54">
-  <testcase classname="System status" name="dsSpace should be defined" time="0.015"></testcase>
-  <testcase classname="System status" name="$q should be defined" time="0"></testcase>
-  <testcase classname="System status" name="_ should be defined" time="0"></testcase>
-</testsuite>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="setup dataBase" errors="0" tests="1" failures="0" time="32.458" timestamp="2021-10-28T15:34:38">
-  <testcase classname="setup dataBase" name="should run the setup script" time="32.458"></testcase>
-</testsuite>

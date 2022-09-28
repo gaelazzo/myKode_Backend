@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="edgeSql  setup dataBase" errors="0" tests="1" failures="0" time="2.192" timestamp="2021-07-08T15:04:37">
-  <testcase classname="edgeSql  setup dataBase" name="should run the setup script" time="2.192"></testcase>
-</testsuite>

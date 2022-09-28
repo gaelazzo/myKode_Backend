@@ -407,6 +407,7 @@ describe('DataQuery functions', function () {
         it('and of a series of function including one undefined and one dinamically-false gives false', function () {
             const xx = {a: 'AABBCC', q: '1'},
                 f = $q.and($q.like('a', 'AAB_CC'), $q.eq('q', 2), undefined);
+
             expect(f(xx)).toBe(false);
         });
 

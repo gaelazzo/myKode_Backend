@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="PostData getChanges deletes should precede other kind of operations" errors="0" tests="1" failures="0" time="0.001" timestamp="2021-09-20T12:08:57">
-  <testcase classname="PostData getChanges deletes should precede other kind of operations" name="insert on parents should precede insert on child" time="0.001"></testcase>
-</testsuite>

@@ -3,7 +3,8 @@
 /**
  * @module GetDataInvoke
  * @description
- * Fakes client web service invocation of GetDataServices, in order to share metadata classes
+ * Fakes client web service invocation of GetDataServices, in order to share metadata classes.
+ * This is mean to be used in backend execution of code shared between client and server
  */
 
 
@@ -567,10 +568,10 @@ SelectBuilder.prototype = {
          * Returns a deferred resolved with jsDataSet based on "tableName" and "editType" keys
          * @param {string} tableName
          * @param {string} editType
-         * @returns {DataSet})
+         * @returns {Promise<DataSet>}
          */
         getDataSet: function (tableName, editType) {
-            return GetDataSet.getDataSet(tableName, editType);
+            return Deferred().resolve(GetDataSet.getDataSet(tableName, editType));
         },
 
         /**

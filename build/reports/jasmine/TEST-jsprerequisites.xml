@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="js prerequisites" errors="0" tests="5" failures="0" time="0.005" timestamp="2021-10-28T15:34:38">
-  <testcase classname="js prerequisites" name="checking captured values in functions" time="0.003"></testcase>
-  <testcase classname="js prerequisites" name="checking captured values in then sequence" time="0"></testcase>
-  <testcase classname="js prerequisites" name="checking captured values in then sequence with reject" time="0.001"></testcase>
-  <testcase classname="js prerequisites" name="checking sequence of deferred returning functions" time="0"></testcase>
-  <testcase classname="js prerequisites" name="checking sequence of deferred returning functions with some fail" time="0.001"></testcase>
-</testsuite>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="multiSelect MultiCompare" errors="0" tests="3" failures="0" time="0.001" timestamp="2021-07-29T16:30:29">
-  <testcase classname="multiSelect MultiCompare" name="new MultiCompare should return an object" time="0"></testcase>
-  <testcase classname="multiSelect MultiCompare" name="sameFieldsAs should compare keys" time="0.001"></testcase>
-  <testcase classname="multiSelect MultiCompare" name="sameFieldsAs should compare keys" time="0"></testcase>
-</testsuite>

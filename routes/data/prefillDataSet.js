@@ -14,8 +14,6 @@ async function middleware(req,res,next){
     }
 
     let /*DataSet*/ ds = await ctx.getDataInvoke.createEmptyDataSet( tableName,editType);
-    await ctx.getDataInvoke.getDataSet(tableName,editType);
-
     let selList = [];
 
     //array of key/value pairs. key:tableName, value:filter jsDataQuery serialized in json

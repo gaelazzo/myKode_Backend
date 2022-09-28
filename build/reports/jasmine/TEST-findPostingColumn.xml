@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="findPostingColumn" errors="0" tests="6" failures="0" time="0.001" timestamp="2021-04-15T17:46:17">
-  <testcase classname="findPostingColumn" name="findPostingColumn should give the exact column where it exists" time="0"></testcase>
-  <testcase classname="findPostingColumn" name="findPostingColumn should be null when a column is not found" time="0"></testcase>
-  <testcase classname="findPostingColumn" name="findPostingColumn should give the column if has forPosting set with that field name" time="0.001"></testcase>
-  <testcase classname="findPostingColumn" name="findPostingColumn should not give column if Table has no alias for writing" time="0"></testcase>
-  <testcase classname="findPostingColumn" name="findPostingColumn should not give the column if has forPosting set with a different name" time="0"></testcase>
-  <testcase classname="findPostingColumn" name="findPostingColumn should  give the column if has forPosting set with same name" time="0"></testcase>
-</testsuite>

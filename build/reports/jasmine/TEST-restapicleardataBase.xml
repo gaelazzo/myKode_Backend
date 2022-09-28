@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="rest api clear dataBase" errors="0" tests="1" failures="0" time="0.17" timestamp="2021-10-18T18:40:18">
-  <testcase classname="rest api clear dataBase" name="should run the destroy script" time="0.17"></testcase>
-</testsuite>

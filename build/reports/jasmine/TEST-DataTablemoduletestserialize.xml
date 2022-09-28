@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite name="DataTable module test serialize" errors="0" tests="2" failures="0" time="0" timestamp="2022-05-26T14:27:54">
-  <testcase classname="DataTable module test serialize" name="should be a function" time="0"></testcase>
-  <testcase classname="DataTable module test serialize" name="should preserve row number" time="0"></testcase>
-</testsuite>
