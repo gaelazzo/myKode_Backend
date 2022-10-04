@@ -3,21 +3,7 @@
  * @module localResourceIt
  * @description  Collection of the localized strings ITALIAN
  */
-(function () {
-
-    /** Detect free variable `global` from Node.js. */
-    let freeGlobal = typeof global === 'object' && global && global.Object === Object && global;
-    /** Detect free variable `self`. */
-    let freeSelf = typeof self === 'object' && self && self.Object === Object && self;
-    /** Used as a reference to the global object. */
-    let root = freeGlobal || freeSelf || Function('return this')();
-    /** Detect free variable `exports`. */
-    let freeExports = typeof exports === 'object' && exports && !exports.nodeType && exports;
-    /** Detect free variable `module`. */
-    let freeModule = freeExports && typeof module === 'object' && module && !module.nodeType && module;
-    //noinspection JSUnresolvedVariable
-    /** Detect free variable `global` from Node.js or Browserified code and use it as `root`. (thanks lodash)*/
-    let moduleExports = freeModule && freeModule.exports === freeExports;
+(function (localResource) {
 
     /**
      * @constructor LocalResourceIt
@@ -250,48 +236,11 @@
         confirmSelection: "Conferma selezione",
         selectedRows: "righe selezionate"
     };
-
     let resource = new LocalResourceIt();
 
-    // Some AMD build optimizers like r.js check for condition patterns like the following:
-    //noinspection JSUnresolvedVariable
-    if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-        // Expose lodash to the global object when an AMD loader is present to avoid
-        // errors in cases where lodash is loaded by a script tag and not intended
-        // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
-        // more details.
-        root.resource = resource;
+    //era    root.resource = resource; lato server, root.appMeta.localResourceIt = LocalResourceIt; lato client
+    localResource.prototype.registerDictionary("it",resource);
 
-        // Define as an anonymous module so, through path mapping, it can be
-        // referenced as the "underscore" module.
-        //noinspection JSUnresolvedFunction
-        define(function () {
-            return resource;
-        });
-    }
-    // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
-    else if (freeExports && freeModule) {
-        // Export for Node.js or RingoJS.
-        if (moduleExports) {
-            (freeModule.exports = resource).resource = resource;
-        }
-        // Export for Narwhal or Rhino -require.
-        else {
-            freeExports.resource = resource;
-        }
-    }
-    else {
-        // Export for a browser or Rhino.
-        if (root.appMeta){
-            root.appMeta.localResourceIt = LocalResourceIt;
-        }
-        else {
-            root.resource=resource;
-        }
-
-    }
-
-
-}());
+}( (typeof appMeta === 'undefined') ? require('./../metadata/LocalResource') : appMeta.localResource,));
 
 

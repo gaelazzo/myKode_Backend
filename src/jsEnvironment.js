@@ -1,5 +1,6 @@
 const Deferred = require("jQDeferred");
 const _ = require('lodash');
+
 const Q = require('./../client/components/metadata/jsDataQuery');
 
 /**
@@ -175,7 +176,7 @@ Environment.prototype.getGroupList = function(conn) {
             })
                 .then(t => {
                     this.usr("usergrouplist", t.map(r=>r.idcustomgroup));
-                    d.resolve(res);
+                    d.resolve(this.sys("usergrouplist"));
                 });
 
         });

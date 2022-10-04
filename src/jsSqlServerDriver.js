@@ -1024,7 +1024,7 @@ Connection.prototype.run = function(script,timeout){
 Connection.prototype.mapping= mapping;
 
 module.exports = {
-    'Connection': Connection,
+    Connection: Connection,
     cType: CType,
     IsolationLevels:mapIsolationLevels,
     objectify:objectify,

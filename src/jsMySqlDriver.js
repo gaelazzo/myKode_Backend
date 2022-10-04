@@ -984,7 +984,7 @@ Connection.prototype.getFormatter = function () {
 Connection.prototype.mapping= mapping;
 
 module.exports = {
-    'Connection': Connection,
+    Connection: Connection,
     IsolationLevels:mapIsolationLevels,
     cType: CType,
     objectify:objectify

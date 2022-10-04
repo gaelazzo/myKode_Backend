@@ -4,7 +4,7 @@ const fs = require("fs");
 const AuthType = "bearer";
 const AnonymousUser = "Anonymous";
 const { v4: uuidv4 } = require('uuid');
-//const crypto = require("crypto");
+const crypto = require("crypto");
 
 const tokenConfig = require("./../config/tokenConfig");
 /*Enum*/
@@ -120,7 +120,6 @@ Token.prototype = {
     /**
      *
      * @param {Request} req
-     * @param {Token} token
      */
     setInRequest(req){
         req.headers.authorization = "Bearer "+ this.getToken();

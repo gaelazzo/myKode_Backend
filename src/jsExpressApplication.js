@@ -61,16 +61,6 @@ function createServicesRoutes(router, folder,routePrefix){
 }
 
 
-
-
-// now token is available on request.auth
-
-const authRoute = '/auth/';
-// ------> AUTH ROUTES
-const arrayAuthRoutes = [
-    'login'
-];
-
 // **********************************  Routes MANAGEMENT END ********************************
 
 

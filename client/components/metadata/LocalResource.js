@@ -39,7 +39,7 @@
     function LocalResource() {
         this.dictionary= null;
         this.currLng = "it";
-        // default è italiano, il file italiano avrà sicuramente tutte le stringhe, poichè parto sempre da quello
+        // default è italiano, il file italiano avrà sicuramente tutte le stringhe, poiché parto sempre da quello
         // per inserire nuove costanti per le stringhe
         this.setLanguage(this.currLng);
     }
@@ -47,15 +47,40 @@
     LocalResource.prototype = {
         constructor: LocalResource,
 
-        allLocalResources: {}, //shared between all instances of application
+        dictionaries: {}, //shared between all instances of application
 
+        localizedResources:{},
+
+        /**
+         * Assigns a language dictionary to a language code
+         * @param language
+         * @param dictionary
+         */
+        registerDictionary: function(language, dictionary){
+            LocalResource.prototype.dictionaries[language]= dictionary;
+        },
+
+        /**
+         * Gets a registered language dictionary
+         * @param language
+         * @return {*}
+         */
+        getDictionary: function(language){
+            return LocalResource.prototype.dictionaries[language];
+        },
+
+        /**
+         * obtains a language resource by a language code
+         * @param language
+         * @return {LocalResource|*}
+         */
         getLocalResource:function (language){
-            if (this.allLocalResources[language]){
-                return this.allLocalResources[language];
+            if (LocalResource.prototype.localizedResources[language]){
+                return LocalResource.prototype.localizedResources[language];
             }
             let resource = new LocalResource();
             resource.setLanguage(language);
-            this.allLocalResources[language]= resource;
+            LocalResource.prototype.localizedResources[language]= resource;
             return  resource;
         },
 
@@ -74,8 +99,9 @@
                 let lbnSuffix = lng.charAt(0).toUpperCase() + lng.slice(1).toLowerCase();
                 if (appMeta){
                     //executed on client
-                    this.dictionary =  appMeta['localResource'+lbnSuffix]();
-                    _.extend(this, appMeta['localResource'+lbnSuffix].prototype);
+                    this.dict = this.getDictionary(lng); //appMeta['localResource'+lbnSuffix]();
+                    _.extend(this, this.dict.prototype);
+
 
                     // localizza eventuali custom control con localizzazione custom
                     this.localizeCustomControls(lng);
@@ -85,13 +111,13 @@
                     }
                 }
                 else {
-                    //executed on server
-                    this.dictionary =  require("./../languages/LocalResource"+lbnSuffix).resource;
+                    //executed on server, it was require("./../languages/LocalResource"+lbnSuffix).resource;
+                    this.dictionary =  this.getDictionary(lng);
                 }
 
             } catch (e){
                 console.log(e);
-                console.log("Language " + lng + " doesn't exist! Go to i18n folder and create the file localResource" + lng + ".js");
+                console.log("Language " + lng + " doesn't exist! Go to i18n folder and create the file localResource " + lng + ".js");
             }
         },
 

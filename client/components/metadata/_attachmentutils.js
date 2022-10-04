@@ -132,7 +132,7 @@ async function addDeltaToAttachment( attachmentTable,  idattach,delta, ctx) {
 
 /**
  * Creates a DataSet with the updates to attachTableName to do in order to update attachment reference counters
- * @param {DataSet} ds
+ * @param {DataSet} outDS
  * @param {Context} ctx
  * @returns {DataSet|null}
  */
@@ -222,6 +222,7 @@ async function sanitizeDsForAttach(ds,ctx) {
 function intToByte(n){
     var buf = new Buffer(4);
     buf.writeInt32LE(n, 0);
+    return buf;
 }
 
 /**

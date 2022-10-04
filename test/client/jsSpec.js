@@ -63,6 +63,33 @@ describe('Test Corso', function () {
         }
     }
 
+    function classeA(){
+        console.log("constructor executed");
+    }
+    classeA.prototype = {
+        constructor: classeA,
+
+        dictionaries: {}, //shared between all instances of application
+
+        localizedResources: {},
+
+        register:function(code){
+            console.log(this);
+            classeA.prototype.dictionaries[code]=1;
+        },
+        getDict:function (code){
+            console.log(this);
+            return classeA.prototype.dictionaries[code];
+        }
+    };
+
+    it('Methods on prototypes works also without instance', function () {
+
+        classeA.prototype.register("A");
+        expect(classeA.prototype.getDict("A")).toBe(1);
+
+    });
+
 
     it('Deferred should be defined', function () {
 
