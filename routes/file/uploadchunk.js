@@ -108,19 +108,15 @@ async function mergeFile(fileName){
 async function middleware(req,res,next){
     let ctx = req.app.locals.context;
 
-
-
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
-
 
     let resFile = null;
     for (let i=0; i<req.files.length; i++){
         let file = req.files[i];
         resFile = await mergeFile(file.originalname);
     }
-
 
     if (resFile === null){
         return res.send(200,"");

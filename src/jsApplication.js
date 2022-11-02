@@ -170,8 +170,14 @@ JsApplication.prototype = {
                 createServicesRoutes(this.router, Path.join("routes",folderName),folderName);
             });
 
+        //The "metadata" path is mapped into "meta"
+        this.expressApplication.use('/meta', Express.static('metadata'));
+        this.expressApplication.use('/client/pages', Express.static('pages'));
+
         this.expressApplication.use(this.router);
         this.expressApplication.use(this.error.bind(this));
+
+
 
         let connPool;
         let def = Deferred();

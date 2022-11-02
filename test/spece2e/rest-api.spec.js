@@ -3,6 +3,7 @@ const fs = require("fs");
 const q = require('../../client/components/metadata/jsDataQuery');
 const jsDataSet = require("../../client/components/metadata/jsDataSet");
 
+console.log(fs);
 
 const configName = path.join('config',  'dbList.json');
 

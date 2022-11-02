@@ -14,6 +14,7 @@ describe('jsbackend core',
             expect(a).toBe(5);
         });
 
+    //This dummy service is defined in login.js
     it("dummy rest",
         function (done) {
             var options   = {

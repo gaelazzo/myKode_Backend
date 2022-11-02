@@ -101,15 +101,15 @@ describe('sqlServerDriver ', function () {
             masterConnTemp = new sqlServerDriver.Connection(options);
             masterConnTemp.open()
                 .then(function () {
-                    console.log("creating db "+dbName);
+                    // console.log("creating db "+dbName);
                     return masterConnTemp.run("drop database IF EXISTS "+dbName+";\n\rcreate database "+dbName);
                 })
                 .then(function(){
-                    console.log("connecting to db");
+                    // console.log("connecting to db");
                     sqlConn = getConnection('good');
                     sqlConn.open()
                         .then((rr)=> {
-                            console.log("db connected");
+                            // console.log("db connected");
                             sqlOpen.resolve(rr);
                         })
                         .fail(rr=> {
@@ -122,14 +122,14 @@ describe('sqlServerDriver ', function () {
                 });
 
             sqlOpen.then(()=>{
-                console.log("db connected, running setup");
+                // console.log("db connected, running setup");
                 sqlConn.run(fs.readFileSync(path.join('test', 'data', 'sqlServer', 'Setup.sql')).toString())
                     .then(()=>{
-                        console.log("setup runned, closing");
+                        // console.log("setup runned, closing");
                         return sqlConn.close();
                     })
                     .then(()=>{
-                        console.log("closed connection 1");
+                        // console.log("closed connection 1");
                         masterConn = masterConnTemp;
                         done();
                     })
@@ -145,7 +145,7 @@ describe('sqlServerDriver ', function () {
     afterAll(function (done){
         console.log("running Afterall");
         if (!masterConn) {
-            console.log("no masterConn, quitting afterAll");
+            // console.log("no masterConn, quitting afterAll");
             done();
             return;
         }
@@ -155,7 +155,7 @@ describe('sqlServerDriver ', function () {
                 console.log("DB Dropped");
                 masterConn.close()
                     .then(()=>{
-                        console.log("closing connection 0");
+                        // console.log("closing connection 0");
                         done();
                     });
             }, (err)=>{
@@ -177,7 +177,6 @@ describe('sqlServerDriver ', function () {
         }
         sqlConn = getConnection('good');
         sqlConn.open().then(function () {
-            console.log("opened connection 2");
             canExecute=true;
             done();
         }).fail(function (err) {
@@ -187,11 +186,9 @@ describe('sqlServerDriver ', function () {
     }, 30000);
 
     afterEach(function (done) {
-        console.log("running afterEach");
         if (sqlConn) {
             sqlConn.destroy()
                 .then(()=>{
-                    console.log("closed connection 2");
                     done();
                 });
         }

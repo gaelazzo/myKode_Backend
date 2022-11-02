@@ -130,7 +130,7 @@ module.exports = function (grunt) {
                 plugins: ["markdown","jsdoc-summarize2"],
                 src: ['src/*.js',
                         'client/components/*/*.js',
-                        //'client/components/languages/*.js',
+                        //'client/components/i18n/*.js',
                         'routes/*/*.js'
                 ],
                 options: {
@@ -153,7 +153,7 @@ module.exports = function (grunt) {
         },
 
         watch: {
-            files: ['src/*.js','client/components/metadata/*.js','client/components/languages/*.js'],
+            files: ['src/*.js','client/components/metadata/*.js','client/components/i18n/*.js'],
             tasks: ['test'],
             options: {
                 livereload: true
@@ -244,6 +244,7 @@ module.exports = function (grunt) {
         autotest: false
     };
 
+    //Cerca i test sui moduli in  src
     fs.readdirSync(path.join(__dirname, 'src')).forEach(file => {
         let className = file.replace(".js", "");
         if (fs.existsSync(path.join(__dirname, 'test', 'spec', className + 'Spec.js'))) {
@@ -268,9 +269,11 @@ module.exports = function (grunt) {
         }
     });
 
-    //test con jasmine
+    //crea gli unit test con jasmine (sia quelli sotto src che quelli sotto client/components/metadata
+    // questi saranno visibili sotto il task "jasmine"
     classes.forEach(function (className) {
         //console.log("registering "+className+"Spec");
+        //Aggiunge la configurazione sotto "jasmine"
         gruntConfig.jasmine[className + "Spec"] = {
             spec_dir: './test/spec/',
             spec_files: [className + "Spec.js"],
@@ -292,7 +295,7 @@ module.exports = function (grunt) {
 
     classesMidway.push('jsApplicationAnonymous');
 
-
+    //Crea la configurazione per tutti i test Midway
     classesMidway.forEach(function (className) {
         gruntConfig.jasmine[className + "Midway"] = {
             spec_dir: './test/midway/',
@@ -350,6 +353,7 @@ module.exports = function (grunt) {
     // Set the configuration for all the tasks
     grunt.initConfig(gruntConfig);
 
+    // Convert to MD every file under the
     grunt.registerTask("jsDocMD","jsdoc to MD",async function(cfgName){
         let folders = gruntConfig.jsdoc[cfgName].src;
         let done = this.async();
@@ -414,7 +418,7 @@ module.exports = function (grunt) {
         var done = this.async();
         asyncCmd(
             "node",
-            ["server.js"],
+            ["--inspect", "server.js"],
             function (err, res, code, buffer) {
                 if (err) {
                     grunt.log.writeln("NodeStart error");
@@ -537,10 +541,10 @@ module.exports = function (grunt) {
 
 
     classesMidway.forEach(function (className) {
-        grunt.registerTask(className + " Midway", ["NodeStart", 'jasmine:' + className + "Midway"]);//, 'keepalive'
+        grunt.registerTask(className + " Midway", [ 'jasmine:' + className + "Midway"]);//, 'keepalive'
     });
 
-
+    grunt.registerTask("server Midway",["NodeStart","keepalive"]);
     //grunt.registerTask('default', ['test']);
 
     //grunt.registerTask("midway", ["NodeServer", "karma:spece2e"]);

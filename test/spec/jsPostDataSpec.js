@@ -1255,7 +1255,7 @@ describe("jsPostData",function() {
                         expect(DAC.open).toHaveBeenCalled();
                         expect(DAC.beginTransaction).toHaveBeenCalled();
                         expect(postData.allPost[0].physicalPostBatch).not.toHaveBeenCalled();
-                        expect(_.find(res.checks,new BasicMessage("Exception threw on purpose", false))).toBeDefined();
+                        expect(_.find(res.checks, {msg:"Exception threw on purpose",canIgnore: false})).toBeDefined();
                         expect(DAC.rollback).toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.isOpen).toBeFalsy();
@@ -1461,8 +1461,8 @@ describe("jsPostData",function() {
                     .always(function (res) {
                         //console.log(res);
                         expect(postData.getChecks.calls.count()).toBe(2);
-                        expect(res.checks).toContain(_.extend(new BasicMessage("code12", true), {post: false}));
-                        expect(res.checks).toContain(_.extend(new BasicMessage("code13", true), {post: true}));
+                        expect(_.find(res.checks,{msg:"code12",canIgnore:true,post:false})).toBeDefined();
+                        expect(_.find(res.checks, {msg:"code13",canIgnore:true,post:true})).toBeDefined();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
                         expect(DAC.isOpen).toBeFalsy();
@@ -1510,7 +1510,7 @@ describe("jsPostData",function() {
                         expect(_.find(res.checks,_.extend(new BasicMessage("code12", true), {post: true})))
                             .toBeUndefined();
                         //expect(_.find(res.checks,new BasicMessage("code12", true))).toBeUndefined();
-                        expect(_.find(res.checks,new BasicMessage("physicalPostBatch fake error", false))).toBeDefined();
+                        expect(_.find(res.checks, {msg:"physicalPostBatch fake error",canIgnore:false})).toBeDefined();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
                         expect(DAC.isOpen).toBeFalsy();
@@ -2924,7 +2924,7 @@ describe("jsPostData",function() {
                         expect(DAC.beginTransaction.calls.count()).toBe(1);
                         expect(postData.allPost[0].physicalPostBatch).not.toHaveBeenCalled();
                         expect(postData.allPost[1].physicalPostBatch).not.toHaveBeenCalled();
-                        expect(_.find(res.checks,new BasicMessage("Exception threw on purpose 1", false))).toBeDefined();
+                        expect(_.find(res.checks,{msg:"Exception threw on purpose 1", canIgnore:false})).toBeDefined();
                         expect(res.checks.length).toBe(1);
                         expect(DAC.rollback).toHaveBeenCalled();
                         expect(DAC.close).toHaveBeenCalled();
@@ -3263,16 +3263,17 @@ describe("jsPostData",function() {
                     .always(function (res) {
                         //console.log(res);
                         expect(postData.getChecks.calls.count()).toBe(1);
-                        expect(_.find(res.checks,_.extend(new BasicMessage("codeA12", true), {post: false})))
+                        expect(_.find(res.checks,{msg:"codeA12",canIgnore:true,post:false}))
                             .toBeDefined();
-                        expect(_.find(res.checks,_.extend(new BasicMessage("codeA12", true), {post: true})))
-                            .toBeUndefined();
+                        expect(_.find(res.checks,{msg:"codeA12",canIgnore:true,post:true}))
+                        .toBeUndefined();
 
-                        expect(_.find(res.checks,_.extend(new BasicMessage("codeB13", true), {post: false})))
-                            .toBeDefined();
-                        expect(_.find(res.checks,_.extend(new BasicMessage("codeB13", true), {post: true})))
-                            .toBeUndefined();
-                        expect(_.find(res.checks,new BasicMessage("physicalPostBatch fake error", false)))
+                        expect(_.find(res.checks,{msg:"codeB13",canIgnore:true,post:false}))
+                        .toBeDefined();
+                        expect(_.find(res.checks,{msg:"codeB13",canIgnore:true,post:true}))
+                        .toBeUndefined();
+
+                        expect(_.find(res.checks,{msg:"physicalPostBatch fake error",canIgnore:false}))
                             .toBeDefined();
 
                         expect(DAC.close).toHaveBeenCalled();
@@ -3335,7 +3336,7 @@ describe("jsPostData",function() {
                             _.extend(new BasicMessage("codeB13", true), {post: false}))).toBeDefined();
                         expect(_.find(res.checks,_.extend(new BasicMessage("codeB13", true), {post: true})))
                                         .toBeUndefined();
-                        expect(_.find(res.checks,new BasicMessage("DataBase Error threw on purpose", false)))
+                        expect(_.find(res.checks,{msg:"DataBase Error threw on purpose", canIgnore:false}))
                             .toBeDefined();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
@@ -4299,7 +4300,7 @@ describe("jsPostData",function() {
                         expect(DAC.beginTransaction.calls.count()).toBe(1);
                         expect(postData.doAllPhisicalPostBatch).toHaveBeenCalled();
                         expect(postDataInner.doAllPhisicalPostBatch).not.toHaveBeenCalled();
-                        expect(_.find(res.checks,new BasicMessage("Exception threw on purpose 1", false)))
+                        expect(_.find(res.checks,{msg:"Exception threw on purpose 1",canIgnore:false}))
                             .toBeDefined();
                         expect(res.checks.length).toBe(1);
                         expect(DAC.rollback).toHaveBeenCalled();
@@ -4588,10 +4589,8 @@ describe("jsPostData",function() {
                         //console.log(res);
                         expect(postData.getChecks.calls.count()).toBe(2);
                         expect(postDataInner.getChecks.calls.count()).toBe(2);
-                        expect(_.find(res.checks,_.extend(new BasicMessage("codeB12", true), {post: false})))
-                            .toBeDefined();
-                        expect(_.find(res.checks,_.extend(new BasicMessage("codeB13", true), {post: true})))
-                            .toBeDefined();
+                        expect(_.find(res.checks,{msg:"codeB12",canIgnore:true,post:false})).toBeDefined();
+                        expect(_.find(res.checks,{msg:"codeB13",canIgnore:true,post:true})).toBeDefined();
                         expect(DAC.close).toHaveBeenCalled();
                         expect(DAC.rollback).toHaveBeenCalled();
                         expect(DAC.rollback.calls.count()).toBe(1);
