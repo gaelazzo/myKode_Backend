@@ -303,7 +303,7 @@ describe ("jsBusinessLogic",function () {
         it("A Deferred should be awaitable", async function () {
 
             let Def = Deferred();
-            setTimeout(() => Def.resolve(10), 1000);
+            setTimeout(() => Def.resolve(10), 50);
             let res = await Def;
             expect(res).toBe(10);
 
@@ -312,7 +312,7 @@ describe ("jsBusinessLogic",function () {
         it("An async should be then-able", function (done) {
 
             let DefHelp = Deferred();
-            setTimeout(() => DefHelp.resolve(14), 1000);
+            setTimeout(() => DefHelp.resolve(14), 50);
 
             async function f() {
                 return await DefHelp;
@@ -327,9 +327,7 @@ describe ("jsBusinessLogic",function () {
 
         it ("Always is always called (then-always)",function(done){
             let DefHelp = Deferred();
-            setTimeout(() => DefHelp.reject(14), 1000);
-
-
+            setTimeout(() => DefHelp.reject(14), 100);
 
             let res = DefHelp
                 .then((res) => {
@@ -377,7 +375,7 @@ describe ("jsBusinessLogic",function () {
                 });
         });
 
-        it ("Always is always called (throw-done-fail-always)",function(done){
+        it ("Always is always called (reject-done-fail-always)",function(done){
             let DefHelp = Deferred();
             setTimeout(() => DefHelp.reject(14), 1000);
 

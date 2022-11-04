@@ -76,7 +76,7 @@ const good = {
 
 let dbName;
 
-describe("jsPostData",function() {
+fdescribe("jsPostData",function() {
 
     let masterConn;
     beforeAll(function(done){
