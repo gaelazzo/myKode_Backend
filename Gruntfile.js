@@ -186,7 +186,7 @@ module.exports = function (grunt) {
                 // "env" is optional, as are all of its properties.
                 env: {
                     // Whether to fail a spec that ran no expectations
-                    failSpecWithNoExpectations: false,
+                    failSpecWithNoExpectations: true,
 
                     // Stop execution of a spec after the first expectation failure in it
                     stopSpecOnExpectationFailure: false,

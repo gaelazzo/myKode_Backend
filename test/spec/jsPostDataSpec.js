@@ -76,7 +76,7 @@ const good = {
 
 let dbName;
 
-fdescribe("jsPostData",function() {
+describe("jsPostData",function() {
 
     let masterConn;
     beforeAll(function(done){
@@ -151,7 +151,7 @@ fdescribe("jsPostData",function() {
                     expect(res).toBeUndefined();
                     done();
                 });
-        }, 60000);
+        });
 
     });
 
@@ -303,24 +303,17 @@ fdescribe("jsPostData",function() {
                         done();
                     });
             });
-
-
             it('should be a function', function () {
                 expect(SinglePostData.prototype.getChanges).toEqual(jasmine.any(Function));
             });
-
             it('should return an array', function () {
                 expect(SinglePostData.prototype.getChanges(d)).toEqual(jasmine.any(Array));
             });
-
-
             it('should return as many rows as there were modified in d', function () {
                 const p = new SinglePostData(),
                     res = p.getChanges(d);
                 expect(res.length).toBe(50);
             });
-
-
             it('should return as many rows as there were modified in d (2th set)', function () {
                 d.tables.tab1.acceptChanges();
                 d.tables.tab3.clear();
@@ -328,21 +321,18 @@ fdescribe("jsPostData",function() {
                     res = p.getChanges(d);
                 expect(res.length).toBe(40);
             });
-
             it('should return as many rows as there were modified in d (3th set)', function () {
                 d.tables.tab4.rejectChanges();
                 const p = new SinglePostData(),
                     res = p.getChanges(d);
                 expect(res.length).toBe(45);
             });
-
             it('should return as many rows as there were modified in d (4th set)', function () {
                 d.acceptChanges();
                 const p = new SinglePostData(),
                     res = p.getChanges(d);
                 expect(res.length).toBe(0);
             });
-
             it('should return as many rows as there were modified in d (5th set)', function () {
                 d.tables.tab4.acceptChanges();
                 d.tables.tab6.acceptChanges();
@@ -366,7 +356,6 @@ fdescribe("jsPostData",function() {
                     res = p.getChanges(d);
                 expect(res.length).toBe(40);
             });
-
             it('should return as many rows as there were modified in d (6th set)', function () {
                 d.tables.tab4.acceptChanges();
                 d.tables.tab6.acceptChanges();
@@ -391,7 +380,6 @@ fdescribe("jsPostData",function() {
                     res = p.getChanges(d);
                 expect(res.length).toBe(41);
             });
-
             it('checkIsNotParent should return not-parents', function () {
                 d.tables.tab4.acceptChanges();
                 d.tables.tab6.acceptChanges();
@@ -429,7 +417,6 @@ fdescribe("jsPostData",function() {
                 d.tables.tab5.clear();
                 expect(p.checkNotParent(d.tables.tab4, new Set())).toBeTruthy();
             });
-
             it('checkIsNotChild should return not-childs', function () {
                 d.tables['tab4'].acceptChanges();
                 d.tables['tab6'].acceptChanges();
@@ -466,7 +453,6 @@ fdescribe("jsPostData",function() {
                 d.tables.tab3.clear();
                 expect(p.checkNotChild(d.tables.tab4, new Set())).toBeTruthy();
             });
-
             it('sortTables should work called with checkIsNotChild', function () {
                 d.tables.tab4.acceptChanges();
                 d.tables.tab6.acceptChanges();
@@ -496,7 +482,6 @@ fdescribe("jsPostData",function() {
                 expect(_.map(res, 'name')).toEqual(['tab7', 'tab1', 'tab8', 'tab2', 'tab9', 'tab3', 'tab10', 'tab4', 'tab5', 'tab6']);
 
             });
-
             it('sortTables should work called with checkNotParent', function () {
                 d.tables.tab4.acceptChanges();
                 d.tables.tab6.acceptChanges();
@@ -522,7 +507,6 @@ fdescribe("jsPostData",function() {
                 expect(_.map(res, 'name')).toEqual(['tab10', 'tab9', 'tab8', 'tab7', 'tab6', 'tab5', 'tab4', 'tab3', 'tab2', 'tab1']);
 
             });
-
             it('sortTables should work called with checkNotParent (2th set)', function () {
                 d.newRelation('rel000', 'tab6', 'extid6', 'tab3', 'id3');
                 d.newRelation('rel001', 'tab10', 'extid1', 'tab1', 'id1');
@@ -551,7 +535,6 @@ fdescribe("jsPostData",function() {
                 expect(_.map(res, 'name')).toEqual(['tab4', 'tab3', 'tab2', 'tab1', 'tab10', 'tab9', 'tab8', 'tab7', 'tab6', 'tab5']);
 
             });
-
             it('insert on parents should precede insert on child', function () {
                 d.tables.tab4.acceptChanges();
                 d.tables.tab6.acceptChanges();
@@ -595,7 +578,6 @@ fdescribe("jsPostData",function() {
                     }
                 }
             });
-
             it('deletes on child should precede deletes on parent', function () {
                 d.tables.tab4.acceptChanges();
                 d.tables.tab6.acceptChanges();
@@ -655,9 +637,7 @@ fdescribe("jsPostData",function() {
                     }
                 }
             });
-
-            describe('deletes should precede other kind of operations', function () {
-                it('insert on parents should precede insert on child', function () {
+            it('insert on parents should precede insert on child', function () {
                     d.tables.tab4.acceptChanges();
                     d.tables.tab6.acceptChanges();
                     d.tables.tab8.acceptChanges();
@@ -694,8 +674,9 @@ fdescribe("jsPostData",function() {
                             expect(true).toBeFalsy(); //should not reach here
                         }
                     }
+                    expect(true).toBeTrue();
                 });
-            });
+
         });
 
         describe('MaxCacher', function () {
