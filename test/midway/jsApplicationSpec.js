@@ -26,12 +26,12 @@ let dbConfig;
 if (process.env.TRAVIS) {
     dbConfig = {
         "server": "127.0.0.1",
-        "dbName": "test",
+        "database": "test",
         "user": "sa",
         "pwd": "YourStrong!Passw0rd"
     };
 } else {
-    dbConfig = JSON.parse(fs.readFileSync(configName).toString());
+    dbConfig = JSON.parse(fs.readFileSync(configName).toString())['test_sqlServer'];
 }
 
 const uploadPath = 'Uploads/';
@@ -80,10 +80,10 @@ describe('rest api',
 
         let sqlConn;
 
-        function getConnection(dbCode){
-            let options = dbConfig[dbCode];
+        function getConnection(){
+            let options = dbConfig;
             if (options){
-                options.dbCode = dbCode;
+                options.dbCode = "test_sqlServer";
                 return new sqlServerDriver.Connection(options);
             }
             return undefined;
@@ -91,7 +91,7 @@ describe('rest api',
 
 
         beforeEach(function (done){
-            sqlConn = getConnection('test_sqlServer');
+            sqlConn = getConnection();
             sqlConn.open().done(function (){
                 done();
             }).fail(function (err){
@@ -114,14 +114,13 @@ describe('rest api',
         }, timeout);
 
         //describe('setup dataBase', function () {
-        it('should run the setup script', function (done){
+        fit('should run the setup script', function (done){
             //console.log("Running script");
             sqlConn.run(fs.readFileSync('test/data/jsApplication/setup.sql').toString())
             .done(function (){
                 //console.log("db created");
                 expect(true).toBeTruthy();
                 done();
-                return;
             })
             .fail(function (res){
                 console.log(res);
@@ -638,7 +637,6 @@ describe('rest api',
                         editType: editType
                     }
                 }, function (error, response, body){
-                    console.log(error);
                     const objParsed = JSON.parse(body);
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
@@ -889,13 +887,13 @@ describe('rest api',
             }, timeout);
 
         it('getMeta should get Metadata', () => {
-            GetMeta.setPath('./../../../meta/');
+            GetMeta.setPath('./../../meta/');
             let m = GetMeta.getMeta("attach");
             expect(m.name).toBe("meta_attach");
         });
 
         // ----> FILE CONTROLLER
-        it('upload file chunk less 1MB.',
+        fit('upload file chunk less 1MB.',
             function (done){
 
                 // simulo nome file come atteso dal backend (CONVENZIONE!)
@@ -1041,7 +1039,7 @@ describe('rest api',
             });
 
 
-        it('should run the destroy script', function (done) {
+        fit('should run the destroy script', function (done) {
             sqlConn.run(fs.readFileSync('test/data/jsApplication/Destroy.sql').toString())
                 .done(function () {
                     expect(true).toBeTruthy();
@@ -1055,7 +1053,7 @@ describe('rest api',
 
 
 
-        it('should delete uploaded files',  function (done) {
+        fit('should delete uploaded files',  function (done) {
             let allFiles = fs.readdirSync(uploadPath);
             const totFileToClear = 2;
             // mi aspetto totFileToClear file caricati durante test. Uno per singolo chunk, il secondo con multipli chunk

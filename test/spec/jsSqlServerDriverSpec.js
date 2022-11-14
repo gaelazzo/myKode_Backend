@@ -18,7 +18,7 @@ const $dq = require('./../../client/components/metadata/jsDataQuery'),
  * *****************************************************************************************
  * It's necessary, before start running the test, to create a file templated like:
  *  { "server": "db server address",
- *    "dbName": "database name",  //this must be an EMPTY database
+ *    "database": "database name",  //this must be an EMPTY database
  *    "user": "db user",
  *    "pwd": "db password"
  *  }
@@ -26,13 +26,13 @@ const $dq = require('./../../client/components/metadata/jsDataQuery'),
 //PUT THE  FILENAME OF YOUR FILE HERE:
 
 
-const configName = 'test/data/jsSqlServerDriver/db.json';
+const configName = path.join('test', 'dbSqlServer.json');
     //path.join('test','data', 'jsSqlServerDriver', 'dbSqlServer.json');
 
 let dbConfig;
 if (process.env.TRAVIS){
     dbConfig = { "server": "127.0.0.1",
-        "dbName": "test",
+        "database": "test",
         "user": "sa",
         "pwd": "YourStrong!Passw0rd"
     };
@@ -168,7 +168,6 @@ describe('sqlServerDriver ', function () {
 
     let canExecute=false;
     beforeEach(function (done) {
-        console.log("running beforeEach");
         canExecute=false;
         if (!masterConn){
             console.log("no Master Conn");

@@ -81,6 +81,7 @@ async function mergeFile(fileName){
     }
     catch (err){
         //did not exist
+        console.log(err);
     }
     /* SortedFile[] */
     let mergeList = [];
@@ -119,7 +120,7 @@ async function middleware(req,res,next){
     }
 
     if (resFile === null){
-        return res.send(200,"");
+        return res.send(200);
     }
     let attachTable = "attach";
 

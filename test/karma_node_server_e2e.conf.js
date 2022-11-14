@@ -23,7 +23,7 @@ module.exports = function(config) {
         preprocessors: {
             // 'node_modules/jsDataSet/src/jsDataSet.js': [ 'browserify' ],
             // 'node_modules/jsDataQuery/src/jsDataQuery.js': [ 'browserify' ],
-            // 'test/spece2e/*.js': [ 'browserify' ]
+            'test/spece2e/*.js': [ 'browserify' ]
         },
         // list of files / patterns to load in the browser
         files: [
@@ -34,6 +34,11 @@ module.exports = function(config) {
             'test/spece2e/dummy.spec.js',
             'test/spece2e/rest-api.spec.js',
         ],
+
+        browserify: {
+            debug: true,
+            transform: [ 'brfs' ]
+        },
 
         // list of files / patterns to exclude
         exclude: [

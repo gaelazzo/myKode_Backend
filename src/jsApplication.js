@@ -93,6 +93,7 @@ JsApplication.prototype = {
      * Attaches a release event on close/finish of the request (the one which fires first)
      * releases the pool connection after a request has been processed
      * @param req
+     * @param res
      * @param ctx
      */
     releaseConnection: function(req, res, ctx) {
@@ -171,7 +172,7 @@ JsApplication.prototype = {
             });
 
         //The "metadata" path is mapped into "meta"
-        this.expressApplication.use('/meta', Express.static('metadata'));
+        this.expressApplication.use('/client/meta', Express.static('metadata'));
         this.expressApplication.use('/client/pages', Express.static('pages'));
 
         this.expressApplication.use(this.router);

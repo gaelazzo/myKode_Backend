@@ -42,12 +42,12 @@ const mySqlDriver = require("../../src/jsMySqlDriver");
  *    "pwd": "db password"
  *  }
  */
-const configName = path.join('test', 'data','PostData', 'db.json');
+const configName = path.join('test', 'dbMySql.json');
 let dbConfig;
 
 if (process.env.TRAVIS){
     dbConfig = { "server": "127.0.0.1",
-        "dbName": "test",
+        "database": "test",
         "user": "root",
         "pwd": ""
     };
@@ -70,7 +70,7 @@ const good = {
     useTrustedConnection: false,
     user: dbConfig.user,
     pwd: dbConfig.pwd,
-    database: dbConfig.dbName,
+    database: dbConfig.database,
     sqlModule: 'jsMySqlDriver'
 };
 
@@ -142,7 +142,7 @@ describe("jsPostData",function() {
 
 
         it('should run the setup script', function (done) {
-            sqlConn.run(fs.readFileSync(path.join('test', 'data', 'PostData', 'setup.sql')).toString())
+            sqlConn.run(fs.readFileSync(path.join('test', 'data', 'PostData', 'setup.sql')).toString(),6000)
                 .done(function () {
                     expect(true).toBeTruthy();
                     done();
@@ -151,7 +151,7 @@ describe("jsPostData",function() {
                     expect(res).toBeUndefined();
                     done();
                 });
-        });
+        },60000);
 
     });
 

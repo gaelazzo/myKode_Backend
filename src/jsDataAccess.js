@@ -831,7 +831,7 @@ DataAccess.prototype = {
     /**
      * run a command to the db ensuring the connection is open in the while
      *  it is a shortcut to an ensureOpen + updateBatch
-     * @method doGenericUpdate
+     * @method doGenericUpdate\
      * @private
      * @param {string} cmd
      * @returns {Promise}

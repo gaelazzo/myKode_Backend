@@ -1,22 +1,23 @@
-const path = require("path");
-const fs = require("fs");
+var path = require("path");
+var fs = require("fs");
+
 const q = require('../../client/components/metadata/jsDataQuery');
 const jsDataSet = require("../../client/components/metadata/jsDataSet");
 
-console.log(fs);
 
-const configName = path.join('config',  'dbList.json');
+//const configName = path.join('config',  'dbList.json');
 
 let dbConfig;
 if (process.env.TRAVIS){
     dbConfig = { "server": "127.0.0.1",
-        "dbName": "test",
+        "database": "test",
         "user": "sa",
         "pwd": "YourStrong!Passw0rd"
     };
 }
 else {
-    dbConfig = JSON.parse(fs.readFileSync(configName).toString());
+    let content = fs.readFileSync("config/dbList.json","utf-8");
+    dbConfig = JSON.parse(content.toString());
 }
 
 
@@ -48,50 +49,51 @@ describe('rest api',
             return undefined;
         }
 
-        beforeEach(function (done) {
-            sqlConn = getConnection('good');
-            sqlConn.open().done(function () {
-                done();
-            }).fail(function (err) {
-                console.log('Error failing '+err);
-                done();
-            });
-        }, 30000);
+        // beforeEach(function (done) {
+        //     sqlConn = getConnection('good');
+        //     sqlConn.open().done(function () {
+        //         done();
+        //     }).fail(function (err) {
+        //         console.log('Error failing '+err);
+        //         done();
+        //     });
+        // }, 30000);
+        //
+        // afterEach(function () {
+        //     if (sqlConn) {
+        //         sqlConn.destroy();
+        //     }
+        //     sqlConn = null;
+        // });
+        //
+        // describe('setup dataBase', function () {
+        //     it('should run the setup script', function (done) {
+        //         sqlConn.run(fs.readFileSync('test/data/sqlServer/Setup.sql').toString())
+        //             .done(function () {
+        //                 expect(true).toBeTruthy();
+        //                 done();
+        //             })
+        //             .fail(function (res) {
+        //                 expect(res).toBeUndefined();
+        //                 done();
+        //             });
+        //     }, 30000);
+        //
+        // });
 
-        afterEach(function () {
-            if (sqlConn) {
-                sqlConn.destroy();
-            }
-            sqlConn = null;
-        });
-
-        describe('setup dataBase', function () {
-            it('should run the setup script', function (done) {
-                sqlConn.run(fs.readFileSync('test/data/sqlServer/Setup.sql').toString())
-                    .done(function () {
-                        expect(true).toBeTruthy();
-                        done();
-                    })
-                    .fail(function (res) {
-                        expect(res).toBeUndefined();
-                        done();
-                    });
-            }, 30000);
-
-        });
-
-        it("select ws: query on registry returns DataTable",
+        it("select ws: query on customer returns DataTable",
             function (done) {
                 //var q = jsDataQuery;
-                var filter = q.or(q.eq('idreg',1) ,q.eq('idreg',2), q.eq('idreg',3));
+                var filter = q.or(q.eq('idcustomer',1) ,q.eq('idcustomer',2),
+                        q.eq('idcustomer',3));
                 var objser = q.toObject(filter);
                 var filterSerialized =  JSON.stringify(objser);
                 var options   = {
-                    url: 'http://localhost:3000/main/data/select',
+                    url: 'http://localhost:3000/test/data/select',
                     type: 'POST',
                     data: {
-                        tableName: 'registry',
-                        columnList: "idreg,cf",
+                        tableName: 'customer',
+                        columnList: "idcustomer,name",
                         top: 10,
                         filter: filterSerialized
                     },
@@ -101,7 +103,7 @@ describe('rest api',
                         const dtObj = JSON.parse(res);
                         const dt = new jsDataSet.DataTable(dtObj.name);
                         dt.deSerialize(dtObj, true);
-                        expect(dt.name).toBe('registry');
+                        expect(dt.name).toBe('customer');
                         expect(dt.rows.length).toBe(3);
                         done();
                     },
@@ -142,21 +144,21 @@ describe('rest api',
                         done();
                     }
                 };
-                jQuery.ajax(options)
+                jQuery.ajax(options);
 
             }, timeout);
 
-        describe('clear dataBase', function () {
-            it('should run the destroy script', function (done) {
-                sqlConn.run(fs.readFileSync('test/data/sqlServer/Destroy.sql').toString())
-                    .done(function () {
-                        expect(true).toBeTruthy();
-                        done();
-                    })
-                    .fail(function (res) {
-                        expect(res).toBeUndefined();
-                        done();
-                    });
-            }, 30000);
-        });
+        // describe('clear dataBase', function () {
+        //     it('should run the destroy script', function (done) {
+        //         sqlConn.run(fs.readFileSync('test/data/sqlServer/Destroy.sql').toString())
+        //             .done(function () {
+        //                 expect(true).toBeTruthy();
+        //                 done();
+        //             })
+        //             .fail(function (res) {
+        //                 expect(res).toBeUndefined();
+        //                 done();
+        //             });
+        //     }, 30000);
+        // });
 });
