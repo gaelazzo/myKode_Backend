@@ -1,9 +1,8 @@
 'use strict';
 
+//const tokenConfig = require("../../config/tokenConfig");
 describe('jsbackend core',
     function() {
-
-    var timeout = 100000;
 
     beforeEach(function() {
     });
@@ -18,7 +17,11 @@ describe('jsbackend core',
     it("dummy rest",
         function (done) {
             var options   = {
-                url: 'http://localhost:3000/main/auth/dummy',
+                // headers: {
+                //     'authorization': "Bearer AnonymousToken123456789" ,
+                // },
+                url: 'http://localhost:3000/test/auth/dummy',
+                contentType: 'application/json; charset=utf-8',
                 type: 'GET',
                 timeout : 10000,
                 success: (res) => {
@@ -27,6 +30,8 @@ describe('jsbackend core',
                     done();
                 },
                 error: (xhr, ajaxOptions, thrownError) => {
+                    console.log(thrownError);
+                    expect(true).toBe(false);
                     done();
                 }
             };

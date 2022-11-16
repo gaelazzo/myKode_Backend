@@ -22,15 +22,8 @@ DbList.init({
 
 let port = process.argv[2] || process.env.PORT || 3000;
 
-var x=1;
-
-console.log(process.argv);
-
 let GetMeta = require("./client/components/metadata/GetMeta");
 GetMeta.setPath("./../../meta"); //all metadata must be stored here
-
-// let GetDataSet = require("./client/components/metadata/GetDataSet");
-// GetDataSet.setPath("./dataset/"); //all metadata must be stored here
 
 //This must be executed as soon as possible
 JsToken.assureMasterKey();

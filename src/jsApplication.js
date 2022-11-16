@@ -119,7 +119,7 @@ JsApplication.prototype = {
     },
 
     createTestSession: function(req,res,next){
-        let token = req[tokenConfig.options.requestProperty]; //default is auth
+        let token = Token.prototype.getFromRequest(req);
         if (token) {
             return next();
         }
@@ -197,8 +197,6 @@ JsApplication.prototype = {
         return  def.promise();
     },
 
-
-
     /**
      * returns an open connection to db
      * @return {Promise<JsPooledConnection>}
@@ -269,10 +267,7 @@ JsApplication.prototype = {
 
     getAnonymousEnvironment:function(identity) {
         // TODO create an anonymous environment
-        let e= new Environment(identity);
-
-
-        return e;
+        return new Environment(identity);
     },
 
     /**

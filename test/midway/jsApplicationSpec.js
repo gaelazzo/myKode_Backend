@@ -114,7 +114,7 @@ describe('rest api',
         }, timeout);
 
         //describe('setup dataBase', function () {
-        fit('should run the setup script', function (done){
+        it('should run the setup script', function (done){
             //console.log("Running script");
             sqlConn.run(fs.readFileSync('test/data/jsApplication/setup.sql').toString())
             .done(function (){
@@ -893,7 +893,7 @@ describe('rest api',
         });
 
         // ----> FILE CONTROLLER
-        fit('upload file chunk less 1MB.',
+        it('upload file chunk less 1MB.',
             function (done){
 
                 // simulo nome file come atteso dal backend (CONVENZIONE!)
@@ -1039,7 +1039,7 @@ describe('rest api',
             });
 
 
-        fit('should run the destroy script', function (done) {
+        it('should run the destroy script', function (done) {
             sqlConn.run(fs.readFileSync('test/data/jsApplication/Destroy.sql').toString())
                 .done(function () {
                     expect(true).toBeTruthy();
@@ -1053,7 +1053,7 @@ describe('rest api',
 
 
 
-        fit('should delete uploaded files',  function (done) {
+        it('should delete uploaded files',  function (done) {
             let allFiles = fs.readdirSync(uploadPath);
             const totFileToClear = 2;
             // mi aspetto totFileToClear file caricati durante test. Uno per singolo chunk, il secondo con multipli chunk

@@ -1,4 +1,4 @@
-﻿(function(_, metaModel,MetaSegreterieData, Deferred) {
+﻿(function(_, metaModel,MetaData, Deferred) {
 
 	/** Detect free variable `global` from Node.js. */
 	let freeGlobal = typeof global === 'object' && global && global.Object === Object && global;
@@ -17,38 +17,33 @@
 	let moduleExports = freeModule && freeModule.exports === freeExports;
 
     function meta_attach() {
-		MetaSegreterieData.apply(this, ["attach"]);
+		MetaData.apply(this, ["attach"]);
         this.name = 'meta_attach';
     }
 
     meta_attach.prototype = _.extend(
-        new MetaSegreterieData(),
+        new MetaData(),
         {
             constructor: meta_attach,
-			superClass: MetaSegreterieData.prototype,
+			superClass: MetaData.prototype,
 
-			getNewRow: function (parentRow, dt, editType){
-				var def = Deferred("getNewRow-meta_registry");
-				var realParentObjectRow = parentRow ? parentRow.current : undefined;
+			getNewRow: function (parentRow, dt){
+				let def = Deferred("getNewRow-meta_attach");
+				let realParentObjectRow = parentRow ? parentRow.current : undefined;
 
 				//$getNewRowInside$
 
 				dt.autoIncrement('idattach', { minimum: 99990001 });
 
-			/*	// metto i default
-				var objRow = dt.newRow({
-					//$getNewRowDefault$
-				}, realParentObjectRow);*/
-
 				// torno la dataRow creata
-				this.superClass.getNewRow(parentRow, dt, editType)
+				this.superClass.getNewRow(parentRow, dt)
 					.then(function (dtRow) {
 						//$getNewRowDefault$
 						 def.resolve(dtRow);
 					});
 				return def.promise();
 			},
-			
+
 
 			getSorting: function (listType) {
 				switch (listType) {
@@ -81,7 +76,7 @@
 
 	}(  (typeof _ === 'undefined') ? require('lodash') : _,
 		(typeof appMeta === 'undefined') ? require('../components/metadata/MetaModel').metaModel : appMeta.metaModel,
-		(typeof appMeta === 'undefined') ? require('./MetaSegreterieData').MetaSegreterieData : appMeta.MetaSegreterieData,
+		(typeof appMeta === 'undefined') ? require('../components/metadata/MetaData') : appMeta.MetaData,
 		(typeof appMeta === 'undefined') ? require('../components/metadata/EventManager').Deferred : appMeta.Deferred,
 	)
 );

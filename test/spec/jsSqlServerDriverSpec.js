@@ -761,7 +761,7 @@ describe('sqlServerDriver ', function () {
                     expect(r).toBeDefined();
                     if (r.row) {
                         nResp += 1;
-                         let buff = new Buffer(r.row[9],"base64");
+                         let buff = Buffer.from(r.row[9],"base64");
                          //let text = buff.toString('utf-8');
                          fs.writeFileSync('decifraBase64.txt', buff);
                          //if (nResp===1) console.log(buff);
