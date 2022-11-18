@@ -365,7 +365,7 @@ module.exports = function (grunt) {
             "node",
             ["test/runSql",
                 "config\\dbList.json",
-                "test\\data\\sqlServer\\Destroy.sql",
+                "test\\data\\jsApplication\\Destroy.sql",
                 "test_sqlServer"
             ],
             function (err, res, code, buffer) {
