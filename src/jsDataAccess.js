@@ -737,7 +737,7 @@ DataAccess.prototype = {
     selectRows: function (opt, raw) {
         const options = _.defaults(opt, {columns: '*', applySecurity: true, filter: null});
         return ensureOpen(this, function (conn) {
-            options.filter = conn.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment)
+            options.filter = conn.getFilterSecured(options.filter, options.applySecurity, options.tableName, options.environment);
             const selCmd = conn.sqlConn.getSelectCommand(options);
             return conn.sqlConn.queryLines(selCmd, raw);
         });

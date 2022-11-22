@@ -887,7 +887,7 @@ describe('rest api',
             }, timeout);
 
         it('getMeta should get Metadata', () => {
-            GetMeta.setPath('./../../meta/');
+            GetMeta.setPath('./../../metadata/');
             let m = GetMeta.getMeta("attach");
             expect(m.name).toBe("meta_attach");
         });
