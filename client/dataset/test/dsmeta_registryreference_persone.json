@@ -1,0 +1,755 @@
+{
+  "name": "dsmeta_registryreference_persone",
+  "relations": {
+    "registry_registryreference": {
+      "parentTable": "registry",
+      "parentCols": "idreg",
+      "childTable": "registryreference",
+      "childCols": "idreg"
+    }
+  },
+  "tables": {
+    "registryreference": {
+      "name": "registryreference",
+      "key": "idreg,idregistryreference",
+      "columns": {
+        "activeweb": {
+          "caption": "activeweb",
+          "name": "activeweb",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "activeweb"
+        },
+        "ct": {
+          "caption": "ct",
+          "name": "ct",
+          "ctype": "DateTime",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ct"
+        },
+        "cu": {
+          "caption": "cu",
+          "name": "cu",
+          "ctype": "String",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "cu"
+        },
+        "email": {
+          "caption": "email",
+          "name": "email",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "email"
+        },
+        "faxnumber": {
+          "caption": "faxnumber",
+          "name": "faxnumber",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "faxnumber"
+        },
+        "flagdefault": {
+          "caption": "flagdefault",
+          "name": "flagdefault",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "flagdefault"
+        },
+        "idreg": {
+          "caption": "idreg",
+          "name": "idreg",
+          "ctype": "Int32",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idreg"
+        },
+        "idregistryreference": {
+          "caption": "idregistryreference",
+          "name": "idregistryreference",
+          "ctype": "Int32",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idregistryreference"
+        },
+        "iterweb": {
+          "caption": "iterweb",
+          "name": "iterweb",
+          "ctype": "Int32",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "iterweb"
+        },
+        "lt": {
+          "caption": "lt",
+          "name": "lt",
+          "ctype": "DateTime",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lt"
+        },
+        "lu": {
+          "caption": "lu",
+          "name": "lu",
+          "ctype": "String",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lu"
+        },
+        "mobilenumber": {
+          "caption": "mobilenumber",
+          "name": "mobilenumber",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "mobilenumber"
+        },
+        "msnnumber": {
+          "caption": "msnnumber",
+          "name": "msnnumber",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "msnnumber"
+        },
+        "passwordweb": {
+          "caption": "passwordweb",
+          "name": "passwordweb",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "passwordweb"
+        },
+        "pec": {
+          "caption": "pec",
+          "name": "pec",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "pec"
+        },
+        "phonenumber": {
+          "caption": "phonenumber",
+          "name": "phonenumber",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "phonenumber"
+        },
+        "referencename": {
+          "caption": "referencename",
+          "name": "referencename",
+          "ctype": "String",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "referencename"
+        },
+        "registryreferencerole": {
+          "caption": "registryreferencerole",
+          "name": "registryreferencerole",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "registryreferencerole"
+        },
+        "rtf": {
+          "caption": "rtf",
+          "name": "rtf",
+          "ctype": "Byte[]",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "rtf"
+        },
+        "saltweb": {
+          "caption": "saltweb",
+          "name": "saltweb",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "saltweb"
+        },
+        "skypenumber": {
+          "caption": "skypenumber",
+          "name": "skypenumber",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "skypenumber"
+        },
+        "txt": {
+          "caption": "txt",
+          "name": "txt",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "txt"
+        },
+        "userweb": {
+          "caption": "userweb",
+          "name": "userweb",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "userweb"
+        },
+        "website": {
+          "caption": "website",
+          "name": "website",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "website"
+        }
+      },
+      "rows": [],
+      "tableForReading": "",
+      "tableForWriting": "",
+      "isCached": null,
+      "isTemporaryTable": false,
+      "autoIncrementColumns": {},
+      "staticFilter": null,
+      "skipSecurity": true,
+      "skipInsertCopy": false,
+      "realTable": "",
+      "viewTable": "",
+      "denyClear": null,
+      "defaults": {
+        "activeweb": null,
+        "ct": null,
+        "cu": null,
+        "email": null,
+        "faxnumber": null,
+        "flagdefault": null,
+        "idreg": null,
+        "idregistryreference": null,
+        "iterweb": null,
+        "lt": null,
+        "lu": null,
+        "mobilenumber": null,
+        "msnnumber": null,
+        "passwordweb": null,
+        "pec": null,
+        "phonenumber": null,
+        "referencename": null,
+        "registryreferencerole": null,
+        "rtf": null,
+        "saltweb": null,
+        "skypenumber": null,
+        "txt": null,
+        "userweb": null,
+        "website": null
+      },
+      "orderBy": null
+    },
+    "registry": {
+      "name": "registry",
+      "key": "idreg",
+      "columns": {
+        "idreg": {
+          "caption": "idreg",
+          "name": "idreg",
+          "ctype": "Int32",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idreg"
+        },
+        "active": {
+          "caption": "active",
+          "name": "active",
+          "ctype": "String",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "active"
+        },
+        "annotation": {
+          "caption": "annotation",
+          "name": "annotation",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "annotation"
+        },
+        "badgecode": {
+          "caption": "badgecode",
+          "name": "badgecode",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "badgecode"
+        },
+        "birthdate": {
+          "caption": "birthdate",
+          "name": "birthdate",
+          "ctype": "DateTime",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "birthdate"
+        },
+        "cf": {
+          "caption": "cf",
+          "name": "cf",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "cf"
+        },
+        "ct": {
+          "caption": "ct",
+          "name": "ct",
+          "ctype": "DateTime",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ct"
+        },
+        "cu": {
+          "caption": "cu",
+          "name": "cu",
+          "ctype": "String",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "cu"
+        },
+        "extmatricula": {
+          "caption": "extmatricula",
+          "name": "extmatricula",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "extmatricula"
+        },
+        "foreigncf": {
+          "caption": "foreigncf",
+          "name": "foreigncf",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "foreigncf"
+        },
+        "forename": {
+          "caption": "forename",
+          "name": "forename",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "forename"
+        },
+        "gender": {
+          "caption": "gender",
+          "name": "gender",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "gender"
+        },
+        "idcategory": {
+          "caption": "idcategory",
+          "name": "idcategory",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idcategory"
+        },
+        "idcentralizedcategory": {
+          "caption": "idcentralizedcategory",
+          "name": "idcentralizedcategory",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idcentralizedcategory"
+        },
+        "idcity": {
+          "caption": "idcity",
+          "name": "idcity",
+          "ctype": "Int32",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idcity"
+        },
+        "idmaritalstatus": {
+          "caption": "idmaritalstatus",
+          "name": "idmaritalstatus",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idmaritalstatus"
+        },
+        "idnation": {
+          "caption": "idnation",
+          "name": "idnation",
+          "ctype": "Int32",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idnation"
+        },
+        "idregistryclass": {
+          "caption": "idregistryclass",
+          "name": "idregistryclass",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idregistryclass"
+        },
+        "idtitle": {
+          "caption": "idtitle",
+          "name": "idtitle",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idtitle"
+        },
+        "location": {
+          "caption": "location",
+          "name": "location",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "location"
+        },
+        "lt": {
+          "caption": "lt",
+          "name": "lt",
+          "ctype": "DateTime",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lt"
+        },
+        "lu": {
+          "caption": "lu",
+          "name": "lu",
+          "ctype": "String",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "lu"
+        },
+        "maritalsurname": {
+          "caption": "maritalsurname",
+          "name": "maritalsurname",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "maritalsurname"
+        },
+        "p_iva": {
+          "caption": "p_iva",
+          "name": "p_iva",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "p_iva"
+        },
+        "rtf": {
+          "caption": "rtf",
+          "name": "rtf",
+          "ctype": "Byte[]",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "rtf"
+        },
+        "surname": {
+          "caption": "surname",
+          "name": "surname",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "surname"
+        },
+        "title": {
+          "caption": "title",
+          "name": "title",
+          "ctype": "String",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "title"
+        },
+        "txt": {
+          "caption": "txt",
+          "name": "txt",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "txt"
+        },
+        "residence": {
+          "caption": "residence",
+          "name": "residence",
+          "ctype": "Int32",
+          "allowNull": false,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "residence"
+        },
+        "idregistrykind": {
+          "caption": "idregistrykind",
+          "name": "idregistrykind",
+          "ctype": "Int32",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idregistrykind"
+        },
+        "authorization_free": {
+          "caption": "authorization_free",
+          "name": "authorization_free",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "authorization_free"
+        },
+        "multi_cf": {
+          "caption": "multi_cf",
+          "name": "multi_cf",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "multi_cf"
+        },
+        "toredirect": {
+          "caption": "toredirect",
+          "name": "toredirect",
+          "ctype": "Int32",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "toredirect"
+        },
+        "idaccmotivecredit": {
+          "caption": "idaccmotivecredit",
+          "name": "idaccmotivecredit",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idaccmotivecredit"
+        },
+        "idaccmotivedebit": {
+          "caption": "idaccmotivedebit",
+          "name": "idaccmotivedebit",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idaccmotivedebit"
+        },
+        "ccp": {
+          "caption": "ccp",
+          "name": "ccp",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ccp"
+        },
+        "flagbankitaliaproceeds": {
+          "caption": "flagbankitaliaproceeds",
+          "name": "flagbankitaliaproceeds",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "flagbankitaliaproceeds"
+        },
+        "idexternal": {
+          "caption": "idexternal",
+          "name": "idexternal",
+          "ctype": "Int32",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "idexternal"
+        },
+        "ipa_fe": {
+          "caption": "ipa_fe",
+          "name": "ipa_fe",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ipa_fe"
+        },
+        "flag_pa": {
+          "caption": "flag_pa",
+          "name": "flag_pa",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "flag_pa"
+        },
+        "sdi_defrifamm": {
+          "caption": "sdi_defrifamm",
+          "name": "sdi_defrifamm",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "sdi_defrifamm"
+        },
+        "sdi_norifamm": {
+          "caption": "sdi_norifamm",
+          "name": "sdi_norifamm",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "sdi_norifamm"
+        },
+        "email_fe": {
+          "caption": "email_fe",
+          "name": "email_fe",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "email_fe"
+        },
+        "pec_fe": {
+          "caption": "pec_fe",
+          "name": "pec_fe",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "pec_fe"
+        },
+        "extension": {
+          "caption": "extension",
+          "name": "extension",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "extension"
+        },
+        "ipa_perlapa": {
+          "caption": "ipa_perlapa",
+          "name": "ipa_perlapa",
+          "ctype": "String",
+          "allowNull": true,
+          "isDenyNull": false,
+          "isDenyZero": false,
+          "forPosting": "ipa_perlapa"
+        }
+      },
+      "rows": [],
+      "tableForReading": "",
+      "tableForWriting": "",
+      "isCached": null,
+      "isTemporaryTable": false,
+      "autoIncrementColumns": {},
+      "staticFilter": null,
+      "skipSecurity": true,
+      "skipInsertCopy": false,
+      "realTable": "",
+      "viewTable": "",
+      "denyClear": null,
+      "defaults": {
+        "idreg": null,
+        "active": null,
+        "annotation": null,
+        "badgecode": null,
+        "birthdate": null,
+        "cf": null,
+        "ct": null,
+        "cu": null,
+        "extmatricula": null,
+        "foreigncf": null,
+        "forename": null,
+        "gender": null,
+        "idcategory": null,
+        "idcentralizedcategory": null,
+        "idcity": null,
+        "idmaritalstatus": null,
+        "idnation": null,
+        "idregistryclass": null,
+        "idtitle": null,
+        "location": null,
+        "lt": null,
+        "lu": null,
+        "maritalsurname": null,
+        "p_iva": null,
+        "rtf": null,
+        "surname": null,
+        "title": null,
+        "txt": null,
+        "residence": null,
+        "idregistrykind": null,
+        "authorization_free": null,
+        "multi_cf": null,
+        "toredirect": null,
+        "idaccmotivecredit": null,
+        "idaccmotivedebit": null,
+        "ccp": null,
+        "flagbankitaliaproceeds": null,
+        "idexternal": null,
+        "ipa_fe": null,
+        "flag_pa": null,
+        "sdi_defrifamm": null,
+        "sdi_norifamm": null,
+        "email_fe": null,
+        "pec_fe": null,
+        "extension": null,
+        "ipa_perlapa": null
+      },
+      "orderBy": null
+    }
+  }
+}

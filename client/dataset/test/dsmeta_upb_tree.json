@@ -1,0 +1,334 @@
+{
+	"name": "dsmeta_sorting_treeall",
+	"relations": {
+		"upbupb": {
+			"parentTable": "upb",
+			"parentCols": "idupb",
+			"childTable": "upb",
+			"childCols": "paridupb"
+		}
+	},
+	"tables": {
+		"upb": {
+			"name": "upb",
+			"key": "idupb",
+			"columns": {
+				"idupb": {
+					"caption": "idupb",
+					"name": "idupb",
+					"ctype": "String",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idupb"
+				},
+				"codeupb": {
+					"caption": "codeupb",
+					"name": "codeupb",
+					"ctype": "String",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "codeupb"
+				},
+				"title": {
+					"caption": "title",
+					"name": "title",
+					"ctype": "String",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "title"
+				},
+				"paridupb": {
+					"caption": "paridupb",
+					"name": "paridupb",
+					"ctype": "String",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "paridupb"
+				},
+				"idunderwriter": {
+					"caption": "idunderwriter",
+					"name": "idunderwriter",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idunderwriter"
+				},
+				"idman": {
+					"caption": "idman",
+					"name": "idman",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idman"
+				},
+				"requested": {
+					"caption": "requested",
+					"name": "requested",
+					"ctype": "Decimal",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "requested"
+				},
+				"granted": {
+					"caption": "granted",
+					"name": "granted",
+					"ctype": "Decimal",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "granted"
+				},
+				"previousappropriation": {
+					"caption": "previousappropriation",
+					"name": "previousappropriation",
+					"ctype": "Decimal",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "previousappropriation"
+				},
+				"expiration": {
+					"caption": "expiration",
+					"name": "expiration",
+					"ctype": "DateTime",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "expiration"
+				},
+				"txt": {
+					"caption": "txt",
+					"name": "txt",
+					"ctype": "String",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "txt"
+				},
+				"rtf": {
+					"caption": "rtf",
+					"name": "rtf",
+					"ctype": "Byte[]",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "rtf"
+				},
+				"cu": {
+					"caption": "cu",
+					"name": "cu",
+					"ctype": "String",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "cu"
+				},
+				"ct": {
+					"caption": "ct",
+					"name": "ct",
+					"ctype": "DateTime",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "ct"
+				},
+				"lu": {
+					"caption": "lu",
+					"name": "lu",
+					"ctype": "String",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "lu"
+				},
+				"lt": {
+					"caption": "lt",
+					"name": "lt",
+					"ctype": "DateTime",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "lt"
+				},
+				"assured": {
+					"caption": "assured",
+					"name": "assured",
+					"ctype": "String",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "assured"
+				},
+				"printingorder": {
+					"caption": "printingorder",
+					"name": "printingorder",
+					"ctype": "String",
+					"allowNull": false,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "printingorder"
+				},
+				"active": {
+					"caption": "active",
+					"name": "active",
+					"ctype": "String",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "active"
+				},
+				"previousassessment": {
+					"caption": "previousassessment",
+					"name": "previousassessment",
+					"ctype": "Decimal",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "previousassessment"
+				},
+				"cupcode": {
+					"caption": "cupcode",
+					"name": "cupcode",
+					"ctype": "String",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "cupcode"
+				},
+				"flagactivity": {
+					"caption": "flagactivity",
+					"name": "flagactivity",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "flagactivity"
+				},
+				"flagkind": {
+					"caption": "flagkind",
+					"name": "flagkind",
+					"ctype": "Byte",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "flagkind"
+				},
+				"newcodeupb": {
+					"caption": "newcodeupb",
+					"name": "newcodeupb",
+					"ctype": "String",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "newcodeupb"
+				},
+				"idsor01": {
+					"caption": "idsor01",
+					"name": "idsor01",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idsor01"
+				},
+				"idsor02": {
+					"caption": "idsor02",
+					"name": "idsor02",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idsor02"
+				},
+				"idsor03": {
+					"caption": "idsor03",
+					"name": "idsor03",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idsor03"
+				},
+				"idsor04": {
+					"caption": "idsor04",
+					"name": "idsor04",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idsor04"
+				},
+				"idsor05": {
+					"caption": "idsor05",
+					"name": "idsor05",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idsor05"
+				},
+				"idtreasurer": {
+					"caption": "idtreasurer",
+					"name": "idtreasurer",
+					"ctype": "Int32",
+					"allowNull": true,
+					"isDenyNull": false,
+					"isDenyZero": false,
+					"forPosting": "idtreasurer"
+				}
+			},
+			"rows": [],
+			"tableForReading": "",
+			"tableForWriting": "",
+			"isCached": null,
+			"isTemporaryTable": false,
+			"autoIncrementColumns": {},
+			"staticFilter": null,
+			"skipSecurity": true,
+			"skipInsertCopy": false,
+			"realTable": "",
+			"viewTable": "",
+			"denyClear": null,
+			"defaults": {
+				"idupb": null,
+				"codeupb": null,
+				"title": null,
+				"paridupb": null,
+				"idunderwriter": null,
+				"idman": null,
+				"requested": null,
+				"granted": null,
+				"previousappropriation": null,
+				"expiration": null,
+				"txt": null,
+				"rtf": null,
+				"cu": null,
+				"ct": null,
+				"lu": null,
+				"lt": null,
+				"assured": null,
+				"printingorder": null,
+				"active": null,
+				"previousassessment": null,
+				"cupcode": null,
+				"flagactivity": null,
+				"flagkind": null,
+				"newcodeupb": null,
+				"idsor01": null,
+				"idsor02": null,
+				"idsor03": null,
+				"idsor04": null,
+				"idsor05": null,
+				"idtreasurer": null
+			},
+			"orderBy": null
+		}
+	}
+}
