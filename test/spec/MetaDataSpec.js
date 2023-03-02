@@ -1,6 +1,5 @@
 /*globals define,self */
 
-console.log("running MetaDataSpec");
 let LocalResource = require("./../../client/components/metadata/LocalResource");
 let LocalResourceIT = require("./../../client/components/i18n/LocalResourceIt");
 
@@ -63,11 +62,11 @@ describe('MetaData', function () {
                     t.setDataColumn("Born", CType.date);
                     t.setDataColumn("Age", CType.int);
 
-                    t.columns["Code"].allowDbNull = false;
-                    t.columns["Name"].allowDbNull = false;
-                    t.columns["City"].allowDbNull = false;
-                    t.columns["Born"].allowDbNull = false;
-                    t.columns["Age"].allowDbNull = false;
+                    t.columns["Code"].allowNull = false;
+                    t.columns["Name"].allowNull = false;
+                    t.columns["City"].allowNull = false;
+                    t.columns["Born"].allowNull = false;
+                    t.columns["Age"].allowNull = false;
 
                     t.columns["Code"].allowZero = false;
 

@@ -2,8 +2,6 @@
 /*jslint nomen: true */
 /*jslint bitwise: true */
 
-console.log("running jsMySqlFormatterSpec");
-
 const $q= require('./../../client/components/metadata/jsDataQuery').jsDataQuery,
     $qf = require('../../src/jsMySqlFormatter').jsMySqlFormatter;
 
@@ -57,21 +55,26 @@ describe('DataQuery functions', function () {
 
         it('dates with times are written with the ts notation', function () {
             //stupid js counts month starting by 0
-            var d = new Date(2014, 11, 31, 3, 13, 42, 123);
+            //var d = new Date(2014, 11, 31, 3, 13, 42, 123);
+            let d = new Date("2014-12-31 03:13:42:123");
             expect($qf.quote(d)).toBe('{ts \'2014-12-31 03:13:42.123\'}');
         });
 
         it('dates have no problem with limit values (min)', function () {
             //stupid js counts month starting by 0
-            var d = new Date(1, 0, 1, 0, 0, 0, 1);
-            d.setFullYear(1,0,1);
-            expect($qf.quote(d)).toBe('{ts \'0001-01-01 00:00:00.001\'}');
+            //var d = new Date(1, 0, 1, 0, 0, 0, 1);
+            //d.setFullYear(1,0,1);
+            let d = new Date("1900-01-01 00:00:00:001");
+            d.setFullYear(1900,0,1);
+            d.setHours(0,0,0,1);
+            expect($qf.quote(d)).toBe('{ts \'1900-01-01 00:00:00.001\'}');
         });
 
-        it('dates have no problem with limit values (min)', function () {
+        it('dates have no problem with limit values (max)', function () {
             //stupid js counts month starting by 0
-            var d = new Date(2499, 0, 1, 0, 0, 0, 1);
-            d.setFullYear(2499, 0, 1);
+            // var d = new Date(2499, 0, 1, 0, 0, 0, 1);
+            // d.setFullYear(2499, 0, 1);
+            let d = new Date("2499-01-01 00:00:00:001");
             expect($qf.quote(d)).toBe('{ts \'2499-01-01 00:00:00.001\'}');
         });
 

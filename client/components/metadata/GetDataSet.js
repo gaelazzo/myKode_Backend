@@ -39,16 +39,21 @@ GetDataSet.prototype = {
      * Creates a DataSet with a specified name (SYNC)
      * @param {string} tableName
      * @param {string} editType
+     * @param {Context} ctx
      * @return {DataSet|null}
      */
-    getDataSet: function (tableName, editType){
+    getDataSet: function (tableName, editType, ctx){
         let dsName= tableName+"_"+editType;
         let data;
+        let dsPathToUse= this.dsPath;
+        if (ctx && ctx.dsPath){
+            dsPathToUse= ctx.dsPath;
+        }
         try {
             if (this.cache[dsName]) {
                 data = this.cache[dsName];
             } else {
-                data = fs.readFileSync(Path.join(this.dsPath, 'dsmeta_' + dsName + ".json"), 'utf8');
+                data = fs.readFileSync(Path.join(dsPathToUse, 'dsmeta_' + dsName + ".json"), 'utf8');
             }
         }
         catch {
@@ -69,7 +74,7 @@ GetDataSet.prototype = {
      * @return {Promise<DataSet>}
      */
     createEmptyDataSet: async function (ctx, tableName, editType){
-        let ds = this.getDataSet(tableName,editType);
+        let ds = this.getDataSet(tableName,editType, ctx);
         let primaryTable = ds.tables[tableName];
         let /*MetaData*/ meta = ctx.getMeta(tableName);
         meta.describeColumnsStructure(primaryTable);
@@ -97,17 +102,27 @@ GetDataSet.prototype = {
             scannedTable = new Set([parent.tableForReading()]);
         }
         let /* DataSet */ ds = parent.dataset;
-        ctx.getMeta(parent.name).setDefaults(parent);
-        ctx.getMeta(parent.name).setSorting(parent);
+        let metaParent = ctx.getMeta(parent.name);
+        metaParent.setDefaults(parent);
+        metaParent.setSorting(parent);
         let allChildRel = parent.childRelations()
             .filter(async rel => metaModel.isSubEntityRelation(rel, ds.tables[rel.childTable], parent));
 
         await forEachAsync(allChildRel,async (rel) => {
             let childTable = ds.tables[rel.childTable];
+            if (scannedTable.has(childTable.name)) {
+                return;
+            }
+            scannedTable.add(childTable.name);
             let meta = ctx.getMeta(childTable.tableForReading());
             meta.describeColumnsStructure(childTable);
-            let tableDescriptor = await ctx.dbDescriptor.table(childTable.name);
-            tableDescriptor.describeTable(childTable);
+            try{
+                let tableDescriptor = await ctx.dbDescriptor.table(childTable.name);
+                tableDescriptor.describeTable(childTable);
+            }
+            catch (e){
+                console.log("table "+ childTable.name+" does not exists in database");
+            }
             await GetDataSet.prototype.addSubEntityExtProperties(ctx,childTable,editType, scannedTable);
         });
     }

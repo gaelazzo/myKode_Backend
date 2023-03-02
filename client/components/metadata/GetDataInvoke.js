@@ -464,10 +464,13 @@ SelectBuilder.prototype = {
                     }
                     else {
                         let firstRow = (nPage - 1) * nRowPerPage + 1;
-                        sql = this.conn.sqlConn.getPagedTableCommand(newTableName,
-                            this.conn.getFormatter().toSql(filter, this.env),
-                            firstRow,
-                            nRowPerPage);
+                        sql = this.conn.sqlConn.getPagedTableCommand(
+                            {tableName:newTableName,
+                                top:nRowPerPage,
+                                filter:filter,
+                                firstRow:firstRow,
+                                orderBy:sortBy
+                            });
                     }
                     return this.conn.runSql(sql);
                 })
@@ -568,10 +571,11 @@ SelectBuilder.prototype = {
          * Returns a deferred resolved with jsDataSet based on "tableName" and "editType" keys
          * @param {string} tableName
          * @param {string} editType
+         * @param {Context} ctx
          * @returns {Promise<DataSet>}
          */
-        getDataSet: function (tableName, editType) {
-            return Deferred().resolve(GetDataSet.getDataSet(tableName, editType));
+        getDataSet: function (tableName, editType,ctx) {
+            return Deferred().resolve(GetDataSet.getDataSet(tableName, editType,ctx));
         },
 
         /**

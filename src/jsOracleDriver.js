@@ -7,7 +7,6 @@ const Deferred = require("JQDeferred");
 const _ = require('lodash');
 const formatter = require('./jsOracleFormatter').jsOracleFormatter;
 const CType = require("./../client/components/metadata/jsDataSet").CType;
-//const edge = require('edge-js');
 const {tableName} = require("../config/anonymousPermissions");
 const EdgeConnection = require("./edge-sql").EdgeConnection;
 
@@ -19,7 +18,7 @@ const EdgeConnection = require("./edge-sql").EdgeConnection;
 /**
  * Maps Standard isolation levels to DBMS-level isolation levels.
  * @property allIsolationLevels
- * @type {{READ_COMMITTED: string, REPEATABLE_READ: string, SNAPSHOT: string, SERIALIZABLE: string}}
+ * @type {{READONLY: string, READ_COMMITTED: string, SERIALIZABLE: string}}
  */
 
 //TODO: check how it's used
@@ -27,27 +26,26 @@ const mapIsolationLevels = {
     //'READ_UNCOMMITTED': 'READ UNCOMMITTED',
     //'REPEATABLE_READ': 'REPEATABLE READ',
     //'SNAPSHOT': 'SNAPSHOT',
-    'READONLY' : 'READONLY',
+    'READ_ONLY': 'READ ONLY',
     'READ_COMMITTED': 'READ COMMITTED',
     'SERIALIZABLE': 'SERIALIZABLE'
 };
 
-//TODO : check the usage
+// https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/oracle-data-type-mappings
 const mapping = {
-    'CHAR':CType.string,
-    'NCHAR':CType.string,
-    'VARCHAR':CType.string,
-    'VARCHAR2':CType.string,
-    'NVARCHAR2':CType.string,
-    'TINYTEXT':CType.string,
-    "TEXT":CType.string,
-    'MEDIUMTEXT':CType.string,
-    'LONGTEXT':CType.string,
-    'CBLOB':CType.string,
-    'NBLOB':CType.string,
-    'LONG':CType.string,
+    'CHAR':CType.String,
+    'NCHAR':CType.String,
+    'VARCHAR':CType.String,
+    'VARCHAR2':CType.String,
+    'NVARCHAR2':CType.String,
+    'TINYTEXT':CType.String,
+    "TEXT":CType.String,
+    'MEDIUMTEXT':CType.String,
+    'LONGTEXT':CType.String,
+    'CBLOB':CType.String,
+    'NBLOB':CType.String,
+    'LONG':CType.String,
 
-    // TODO: equivalent for Oracle?
     //'UNIQUEIDENTIFIER':CType.string,
 
     /*
@@ -64,17 +62,17 @@ const mapping = {
     'SHORTINTEGER':CType.int,
     'LONGINTEGER':CType.int,
 
-    'DECIMAL':CType.number,
-    'SHORTDECIMAL':CType.number,
+    'DECIMAL':CType.Decimal,
+    'SHORTDECIMAL':CType.Decimal,
     'NUMBER':CType.number,
+    'FLOAT':CType.Decimal,
 
     'DATE':CType.date,
     'DATETIME':CType.date,
 
-    // TODO: check if they should be treated as date
-    'TIMESTAMP':CType.date,
-    'TIMESTAMP WITH TIME ZONE':CType.date,
-    'TIMESTAMP WITH LOCAL TIME ZONE':CType.date,
+    'TIMESTAMP':CType.DateTime,
+    'TIMESTAMP WITH TIME ZONE':CType.DateTime,
+    'TIMESTAMP WITH LOCAL TIME ZONE':CType.DateTime,
     'INTERVAL YEAR TO MONTH':CType.date,
     'INTERVAL DAY TO SECOND':CType.date,
 
@@ -141,9 +139,11 @@ function SqlParameter(paramValue,paramName, varName,sqlType, forOutput){
  * {string} [options.user] user name for connecting to db
  * {string} [options.pwd] user password for connecting to db
  * {string} [options.timeOut] time out to connect default 600
- * {string} [options.database] database name
+ * {string} [options.database] used to specify the SID or the service name for the connection
  * {string} [options.sqlCompiler] Edge Compiler
  * {string} [options.defaultSchema=options.user ||'DBO'] default schema associated with user name
+ * {string} [options.serviceName || options.sid] service name to use for the connection, defaults to options.sid
+ * {string} [options.sid] unique name of the istance/database
  * {string} [options.connectionString] connection string to connect (can be used instead of all previous listed)
  * @constructor
  */
@@ -163,10 +163,9 @@ function Connection(options) {
      */
     this.isOpen = false;
 
-    ////DBO is the default used for trusted connections
-    // TODO : the default shouldn't be dbo
-    this.defaultSchema = this.opt.defaultSchema || this.opt.user || 'DBO';
-
+    // The default schema has the same name as the user
+    this.defaultSchema = this.opt.defaultSchema || this.opt.user;
+    
     /**
      * Current schema in use for this connection
      * @property schema
@@ -206,19 +205,18 @@ function Connection(options) {
     //     ";Pooling=false" +
     //     ";Connection Timeout="+this.timeOut+";";
 
-/*
-    this.adoString = 'Data Source=' + this.opt.server +
-    (this.opt.database? ";Initial Catalog=" + this.opt.database : "")+
-    (this.opt.useTrustedConnection ?
-        ";Integrated Security=True" :
-    ";User Id=" + this.opt.user + ";Password=" + this.opt.pwd) +
-    ";Pooling=false" +
-    ";Connection Timeout="+this.timeOut+";";
-*/
-    let port = '1521';
-    this.adoString = 'Data Source=(DESCRIPTION=(ADDRESS='+this.opt.server+'(PROTOCOL=TCP)(HOST='+this.opt.server+
-    ')(PORT='+port+'))(CONNECT_DATA=(SERVICE_NAME='+this.opt.database+')));User Id='+this.opt.user+';Password=' + this.opt.pwd + ';';
-
+    this.adoString =
+        "Data Source=" + this.opt.server +
+        (this.opt.port ? (":"+this.opt.port) : "")+
+        "/"+
+        this.opt.database+
+        (this.opt.useTrustedConnection ?
+                ";Integrated Security=true" :
+                ";User Id=" + this.opt.user + ";Password=" + this.opt.pwd
+        )+
+        (this.opt.dbaPrivilege ? ";DBA Privilege=SYSDBA" : "")  +
+        ";Pooling=False" +
+        ";Connection Timeout="+this.timeOut+";";
 
     /**
      *
@@ -238,14 +236,8 @@ Connection.prototype = {
  * @returns {*}
  */
 Connection.prototype.useSchema = function (schema) {
-    let cmd = 'ALTER SESSION SET CURRENT_SCHEMA=\'' + schema + '\'';
-    // TODO : check if needed
-    /*
-    if (this.schema !== this.defaultSchema) {
-        cmd = 'revert;' + cmd;
-    }
-    */
-    const res = this.queryBatch(cmd),
+    let cmd = 'ALTER SESSION SET CURRENT_SCHEMA=\'' + schema + '\'';  
+   const res = this.edgeConnection.queryBatch(cmd),
         that = this;
     res.done(function () {
         that.schema = schema;
@@ -271,27 +263,66 @@ Connection.prototype.clone = function () {
     return new Connection({connectionString: this.connectionString});
 };
 
+/* tables and columns name must be quoted otherwise they are converted to uppercase */
+function quoteStringIfLowerCase(str){
+    if (typeof str !== "string")  {
+        return str;
+    }
+    if (/[a-z]/.test(str)){
+        //has lower cases
+        return "\""+str.trim()+"\"";
+    }
+    return str.trim();
+}
+
+function quoteColumnList(col){
+    if (typeof col !== "string")  {
+        return col;
+    }
+    return col.split(",").map(s=>quoteStringIfLowerCase(s)).join();
+}
+
+function quoteOrderBy(col){
+    if (typeof col !== "string")  {
+        return col;
+    }
+    return col.split(",").map(s=>{
+        let ss = s.split(' ');
+        ss[0]= quoteStringIfLowerCase(ss[0]);
+        return ss.join(' ');
+        }
+        ).join();
+}
+
+function quoteArrayIfLowerCase(arr){
+    return arr.map(s=>quoteStringIfLowerCase(s));
+}
+
 /**
  * Sets the Transaction isolation level for current connection
  * @method setTransactionIsolationLevel
- * @param {string} isolationLevel one of 'READ_UNCOMMITTED','READ_COMMITTED','REPEATABLE_READ','SNAPSHOT','SERIALIZABLE'
- * @returns {promise}
+ * @param {string} isolationLevel one of 'READ_COMMITTED','SERIALIZABLE','READ_ONLY' * @returns {promise}
  */
 Connection.prototype.setTransactionIsolationLevel = function (isolationLevel) {
     const that = this;
-    let res;
-    const mappedIsolationLevels = mapIsolationLevels[isolationLevel];
+    let res, qry;
+    const mappedIsolationLevel = mapIsolationLevels[isolationLevel];
     if (this.isolationLevel === isolationLevel) {
         return Deferred().resolve().promise();
     }
-    if (mappedIsolationLevels === undefined) {
+    if (mappedIsolationLevel === undefined) {
         return Deferred().reject(isolationLevel + " is not an allowed isolation level").promise();
     }
 
-    res = this.queryBatch('SET TRANSACTION ISOLATION LEVEL ' + mappedIsolationLevels);
+    qry = isolationLevel === 'READ_ONLY' ? 'SET TRANSACTION ' : 'SET TRANSACTION ISOLATION LEVEL ';
+    res = this.queryBatch(qry + mappedIsolationLevel + ";");
     res.done(function () {
         that.isolationLevel = isolationLevel;
     });
+    res.fail(function(err){
+        res.reject(err);
+    });
+
     return res.promise();
 };
 
@@ -351,6 +382,22 @@ Connection.prototype.open = function () {
     return connDef.promise();
 };
 
+/**
+ * Encloses the sql in a BEGIN - END block and adds the declaration of a cursor internalCur to return the record set/s
+ *
+ * @private
+ * @method encloseInBegin
+ * @param {string} query
+ * @param {boolean} addCommit when true a COMMIT is put before END
+ * @returns {string}
+ */
+Connection.prototype.encloseInBegin = function(query, addCommit) {
+    return 'DECLARE internalCur SYS_REFCURSOR; '+
+        'BEGIN '+
+         query+
+        (addCommit ? ' COMMIT;' : '')+
+        ' END;';
+}
 
 /**
  * the "edgeQuery" function is written in c#, and executes a series of select.
@@ -372,7 +419,8 @@ Connection.prototype.open = function () {
  * @returns {*}
  */
 Connection.prototype.queryPackets = function (query, raw, packSize, timeout) {
-   return this.edgeConnection.queryPackets(query,raw,packSize,timeout);
+    query = this.encloseInBegin(query, (this.transAnnidationLevel <= 0));
+    return this.edgeConnection.queryPackets(query,raw,packSize,timeout);
 };
 
 
@@ -396,9 +444,9 @@ Connection.prototype.close = function () {
 };
 
 /**
- * Begins a  transaction
+ * Begins a  transaction - equivalent to setTransactionIsolationLevel - the transaction is implicity opened in Oracle
  * @method beginTransaction
- * @param {string} isolationLevel one of 'READ_UNCOMMITTED','READ_COMMITTED','REPEATABLE_READ','SNAPSHOT','SERIALIZABLE'
+ * @param {string} isolationLevel 'READ_COMMITTED' or 'SERIALIZABLE'
  * @returns {*}
  */
 Connection.prototype.beginTransaction = function (isolationLevel) {
@@ -410,16 +458,11 @@ Connection.prototype.beginTransaction = function (isolationLevel) {
         this.transAnnidationLevel += 1;
         return Deferred().resolve().promise();
     }
-    return this.setTransactionIsolationLevel(isolationLevel)
-        .then(function () {
-            //const res = that.queryBatch('BEGIN TRAN;');
-            const res = that.queryBatch('BEGIN;'); //BEGIN or START TRANSACTION
-            res.done(function () {
-                that.transAnnidationLevel += 1;
-                that.transError = false;
-            });
-            return res;
-        });
+
+    return this.setTransactionIsolationLevel(isolationLevel).then(function () {
+        that.transAnnidationLevel += 1;
+        that.transError = false;
+    });
 };
 
 /**
@@ -438,15 +481,15 @@ Connection.prototype.commit = function () {
         return Deferred().resolve().promise();
     }
     if (this.transAnnidationLevel===0){
-        return Deferred().reject("Trting to commit but no transaction has been open").promise();
+        return Deferred().reject("Trying to commit but no transaction has been open").promise();
     }
     if (this.transError) {
         return this.rollBack();
     }
-    //res = this.queryBatch('COMMIT TRAN;');
     res = this.queryBatch('COMMIT;');
     res.done(function () {
         that.transAnnidationLevel = 0;
+        that.isolationLevel = null;
     });
     return res.promise();
 };
@@ -471,10 +514,10 @@ Connection.prototype.rollBack = function () {
         return Deferred().reject("Trting to rollBack but no transaction has been open").promise();
     }
 
-    //res = this.queryBatch('ROLLBACK TRAN;');
     res = this.queryBatch('ROLLBACK;');
     res.done(function () {
         that.transAnnidationLevel = 0;
+        that.isolationLevel = null;
     });
     return res.promise();
 };
@@ -492,17 +535,19 @@ Connection.prototype.rollBack = function () {
  * @returns {string}
  */
 Connection.prototype.getSelectCommand = function (options) {
-    let selCmd = 'SELECT ' + options.columns + ' FROM ' + options.tableName;
+    let selCmd = 'OPEN internalCur FOR ' +
+        'SELECT ' + quoteColumnList(options.columns) + ' FROM ' + quoteStringIfLowerCase(options.tableName);
     if (options.filter && !options.filter.isTrue) {
         selCmd += " WHERE " + formatter.conditionToSql(options.filter, options.environment);
     }
     if (options.orderBy) {
-        selCmd += " ORDER BY " + options.orderBy;
+        selCmd += " ORDER BY " + quoteOrderBy(options.orderBy);
     }
     if (options.top) {
-        selCmd += ' FETCH NEXT ' + options.top + ' ROWS ONLY;';
-        // Alternative (all in a sub query): ) WHERE ROWNUM <= options.top
+        selCmd += ' FETCH NEXT ' + options.top + ' ROWS ONLY';
+        // Alternative (everything in a sub query): ) WHERE ROWNUM <= options.top
     }
+    selCmd += '; DBMS_SQL.RETURN_RESULT(internalCur);';
     return selCmd;
 };
 
@@ -516,10 +561,11 @@ Connection.prototype.getSelectCommand = function (options) {
  * @returns {string}
  */
 Connection.prototype.getSelectCount = function (options) {
-    let selCmd = 'SELECT count(*) FROM ' + options.tableName;
+    let selCmd = 'OPEN internalCur FOR SELECT COUNT(*) FROM ' + options.tableName;
     if (options.filter) {
         selCmd += " WHERE " + formatter.conditionToSql(options.filter, options.environment);
     }
+    selCmd += '; DBMS_SQL.RETURN_RESULT(internalCur);';
     return selCmd;
 };
 
@@ -531,7 +577,10 @@ Connection.prototype.getSelectCount = function (options) {
  * @returns {*}
  */
 Connection.prototype.updateBatch = function (query,timeout) {
+    const that = this;
+    query = this.encloseInBegin(query, (this.transAnnidationLevel <= 0));
     return this.edgeConnection.updateBatch(query, timeout);
+
 };
 
 /**
@@ -544,12 +593,13 @@ Connection.prototype.updateBatch = function (query,timeout) {
  * @returns {string}
  */
 Connection.prototype.getDeleteCommand = function (options) {
-    let cmd = 'DELETE FROM ' + options.tableName;
+    let cmd = 'DELETE FROM ' + quoteStringIfLowerCase(options.tableName);
     if (options.filter) {
         cmd += ' WHERE ' + formatter.toSql(options.filter, options.environment);
     } else {
         cmd += ' this command is invalid';
     }
+    cmd += ';';
     return cmd;
 };
 
@@ -562,11 +612,11 @@ Connection.prototype.getDeleteCommand = function (options) {
  * @returns {string}
  */
 Connection.prototype.getInsertCommand = function (table, columns, values) {
-    return 'INSERT INTO ' + table + '(' + columns.join(',') + ')VALUES(' +
+    return 'INSERT INTO ' + table + '(' + quoteArrayIfLowerCase(columns).join() + ')VALUES(' +
         _.map(values, function (val) {
             return formatter.quote(val, false);
         }).join(',') +
-        ')';
+        ');';
 };
 
 /**
@@ -582,16 +632,17 @@ Connection.prototype.getInsertCommand = function (table, columns, values) {
  */
 Connection.prototype.getUpdateCommand = function (options) {
     let cmd = 'UPDATE ' + options.table + ' SET ' +
-        _.map(_.zip(options.columns,
-            _.map(options.values, function (val) {
-                return formatter.quote(val, false);
-            })),
+        _.map(_.zip(quoteArrayIfLowerCase(options.columns),
+                _.map(options.values, function (val) {
+                    return formatter.quote(val, false);
+                })),
             function (cv) {
                 return cv[0] + '=' + cv[1];
             }).join();
     if (options.filter) {
         cmd += ' WHERE ' + formatter.conditionToSql(options.filter, options.environment);
     }
+    cmd += ';';
     return cmd;
 };
 
@@ -615,7 +666,6 @@ Connection.prototype.getUpdateCommand = function (options) {
  * @returns {String}
  */
 Connection.prototype.getSqlCallSPWithNamedParams  = function(options){
-    let i = 0;
     let cmd = '';
     const outList = _.map(
         _.filter(options.paramList, {out: true}),
@@ -624,29 +674,36 @@ Connection.prototype.getSqlCallSPWithNamedParams  = function(options){
         }
     ).join(',');
     if (outList) {
-        cmd = 'DECLARE ' + outList + ';';
+        cmd = 'DECLARE ' + outList + '; ';
+        if (options.skipSelect!==true) { //Declaring the cursor to return the value of the returned param/s
+            cmd += 'c1 SYS_REFCURSOR; ';
+        }
     }
-    cmd += 'EXEC ' + options.spName + ' ' +
+    cmd += 'BEGIN ';
+    cmd += options.spName + '(' +
         _.map(options.paramList, function (p) {
             if (p.name) {
                 if (p.out) {
-                    return p.name + '=' + p.varName + ' OUTPUT';
+                    return p.name + '=>' + p.varName;
                 }
-                return p.name + '=' + formatter.quote(p.value);
+                return p.name + ' => ' + formatter.quote(p.value);
             }
             return formatter.quote(p.value);
         }).join(',');
 
+    cmd += '); ';
     let that=this;
     if (outList && options.skipSelect!==true) {
-        cmd += ';SELECT ' +
+        cmd += 'OPEN c1 for SELECT ' +
             _.map(
                 _.filter(options.paramList, {out: true}),
                 function (p) {
-                    return p.varName + ' AS ' + that.colNameFromVarName(p.varName);
+                    return p.varName + ' AS "' + that.colNameFromVarName(p.varName)+'"';
                 }
-            ).join(',');
+            ).join(',') + ' FROM DUAL CONNECT BY level <= 1; ';
+        cmd += 'DBMS_SQL.RETURN_RESULT(c1); '; //Returning the param/s returned
     }
+    cmd += 'END;'
     return cmd;
 };
 
@@ -755,61 +812,72 @@ function objectify(colNames, rows) {
 Connection.prototype.tableDescriptor = function (tableName) {
     const res = Deferred(),
         that = this;
-    // TODO: fix xtype
-    this.queryBatch(
-        ' select'+
-        '    \'U\' as xtype,'+
-        '    column_name as name,'+
-        '    data_type as type,'+
-        '    char_length as max_length,'+
-        '    data_precision as precision,    '+
-        '    nvl(data_scale,0)  as scale,'+
-        '    decode(nullable, \'N\', 1, 0) as is_nullable,'+
-        '    0 as pk'+
-        ' from user_tab_columns'+
-        ' where table_name = \''+tableName+'\';'
-    )
-        .then(function (result) {
-                if (result.length === 0) {
-                    res.reject('Table named ' + tableName + ' does not exist in ' + that.server + ' - ' + that.database);
-                    return;
-                }
-                const isDbo = (result[0].dbo !== 0);
-                let xtype;
+
+    this.edgeConnection.queryBatch(
+        `select
+            1 as "dbo",
+            'T' as "xtype",
+            c.column_name as "name",
+            c.data_type as "type",
+            c.char_length as "max_length",
+            c.data_precision as "precision",    
+            nvl(c.data_scale,0) as "scale",
+            decode(c.nullable, 'N', 1, 0) as "is_nullable",
+            decode(c.identity_column, 'YES', 1, 0) as "pk"
+        from user_tab_columns c, user_tables t
+        WHERE c.table_name = t.table_name
+            AND
+        c.table_name = '${tableName}'
+        UNION ALL
+        select
+            1 as "dbo",
+           'V' as "xtype",
+           c.column_name as "name",
+           c.data_type as "type",
+           c.char_length as "max_length",
+           c.data_precision as "precision",    
+           nvl(c.data_scale,0) as "scale",
+           decode(c.nullable, 'N', 1, 0) as "is_nullable",
+           decode(c.identity_column, 'YES', 1, 0) as "pk"
+        from user_tab_columns c, sys.all_views t
+        WHERE c.table_name = t.view_name
+            AND
+        c.table_name = '${tableName}'`
+    ).then(function (result) {
+            if (result.length === 0) {
+                res.reject('Table named ' + tableName + ' does not exist in ' + that.server + ' - ' + that.database);
+                return;
+            }
+            const isDbo = (result[0].dbo !== 0);
+            let xtype = result[0].xtype.trim(); //The query already returns the value we expect: T = table, V = view
 
 
-                result.forEach(c=>{
-                    c.ctype = mapping[c.type.toUpperCase()]||CType.unknown;
-                });
+            result.forEach(c=>{
+                c.ctype = mapping[c.type.toUpperCase()]||CType.unknown;
+            });
 
-                if (result[0].xtype.trim() === 'U') {
-                    xtype = 'T';
-                }
-                else {
-                    xtype = 'V';
-                }
-
-                _.forEach(result, function (col) {
-                    delete col.dbo;
-                    delete col.xtype;
-                });
-                res.resolve({name: tableName, xtype: xtype, isDbo: isDbo, columns: result});
-            },
+            _.forEach(result, function (col) {
+                delete col.dbo;
+                delete col.xtype;
+            });
+            res.resolve({name: tableName, xtype: xtype, isDbo: isDbo, columns: result});
+        },
         function (err) {
             res.reject(err);
         }
-        );
+    );
     return res.promise();
 };
 
 /**
  * get a sql command given by a sequence of specified sql commands
+ * N.B.: only adds the new line character in Oracle, the semi-colon is expected after every command
  * @method appendCommands
  * @param {string[]} cmd
  * @returns {string}
  */
 Connection.prototype.appendCommands = function (cmd) {
-    return cmd.join(';\r\n');
+    return cmd.join('\r\n');
 };
 
 
@@ -826,7 +894,10 @@ Connection.prototype.appendCommands = function (cmd) {
  * @returns {*}
  */
 Connection.prototype.queryLines = function (query, raw,timeout) {
+    const that = this;
+    query = this.encloseInBegin(query, (this.transAnnidationLevel <= 0));
     return this.edgeConnection.queryLines(query,raw,timeout);
+
 };
 
 
@@ -839,7 +910,10 @@ Connection.prototype.queryLines = function (query, raw,timeout) {
  * @returns {Promise}  a sequence of {[array of plain objects]} or {meta:[column names],rows:[arrays of raw data]}
  */
 Connection.prototype.queryBatch = function (query, raw,timeout) {
+    const that = this;
+    query = this.encloseInBegin(query, (this.transAnnidationLevel <= 0));
     return this.edgeConnection.queryBatch(query,raw,timeout);
+
 };
 
 /**
@@ -849,9 +923,11 @@ Connection.prototype.queryBatch = function (query, raw,timeout) {
  * @param {number} errNumber
  * @return string
  */
-// TODO: check
 Connection.prototype.giveErrorNumberDataWasNotWritten = function (errNumber) {
-    return 'if (@@ROWCOUNT=0) BEGIN select ' + formatter.quote(errNumber) + '; RETURN; END';
+    return `IF (COALESCE(SQL%rowcount,0) = 0) THEN
+                OPEN internalCur for SELECT ${errNumber} FROM DUAL CONNECT BY level <= 1;
+                DBMS_SQL.RETURN_RESULT(internalCur);
+            END IF;`;
 };
 
 /**
@@ -863,16 +939,16 @@ Connection.prototype.giveErrorNumberDataWasNotWritten = function (errNumber) {
 // TODO: check
 Connection.prototype.sqlTypeForNBits = function(nbits){
     if (nbits <= 14) {
-        return "smallint";
+        return "short";
     }
     if (nbits <= 30) {
         return "int";
     }
     if (nbits <= 62) {
-        return "bigint";
+        return "long";
     }
 
-    return `varchar(${nbits})`;
+    return `VARCHAR2(${nbits})`;
 };
 //
 //
@@ -936,7 +1012,13 @@ Connection.prototype.variableNameForNBits = function(num,nbits){
  * @return string
  */
 Connection.prototype.giveConstant = function (c) {
-    return 'select ' + formatter.quote(c) + ';';
+    let selCmd = " OPEN internalCur FOR SELECT "
+    selCmd += formatter.quote(c);
+    selCmd += ' FROM DUAL; '
+
+    selCmd += 'DBMS_SQL.RETURN_RESULT(internalCur);';
+
+    return selCmd;
 };
 
 
@@ -957,7 +1039,7 @@ Connection.prototype.getFormatter = function () {
  * @return {string}
  */
 Connection.prototype.colNameFromVarName = function(varName) {
-    return varName.substr(1);
+    return varName.substring(1);
 };
 
 
@@ -971,7 +1053,13 @@ Connection.prototype.getSelectListOfVariables = function(vars) {
     if (vars.length===0){
         return  null;
     }
-    return "SELECT "+ vars.map(c=>c.varName+" AS "+c.colName).join(", ");
+    let selCmd = " OPEN internalCur FOR SELECT "
+    selCmd += vars.map(c=>c.varName+" AS "+quoteStringIfLowerCase(c.colName)).join(", ");
+    selCmd += ' FROM DUAL; '
+
+    selCmd += 'DBMS_SQL.RETURN_RESULT(internalCur);';
+
+    return selCmd;
 };
 
 
@@ -979,34 +1067,33 @@ Connection.prototype.getSelectListOfVariables = function(vars) {
 /**
  * Get a command to select a bunch of rows
  * @param options.tableName {string}
- * @param options.nRows {int}
- * @param options.filter {string},
+ * @param options.columns {string} list of columns or expressions, this is taken "as is" to compose the command
+ * @param options.top {int}
+ * @param options.filter {sqlFun},
  * @param options.firstRow {int}
- * @param options.sorting {string},
+ * @param options.orderBy {string},
  * @param options.environment {Context}
  * @return {string}
  */
 Connection.prototype.getPagedTableCommand = function(options) {
-    if (!options.sorting || !options.nRows){
-        return Connection.prototype.getSelectCommand({
-            tableName: options.tableName,
-            filter: options.filter,
-            environment: options.environment,
-            orderBy: options.sorting
-        });
+    if (!options.orderBy || !options.top){
+        return Connection.prototype.getSelectCommand(options);
     }
 
-    //TODO: check
-    return  "select * from "+options.tableName+" FETCH NEXT "+options.sorting+ " ROWS ONLY;";/*+
-    (options.firstRow-1)+","+options.nRows;
-
-
-    return  "select top " + options.nRows + " "+
-                options.columns+"  from ( SELECT ROW_NUMBER() OVER (ORDER BY " + options.sorting +
-        ") row_num, * FROM " + options.tableName + options.filter + " ) x where row_num >= " +
-          options.firstRow;
-
-    */
+    let internalWhere = '';
+    if (options.filter){
+        internalWhere = " WHERE "+formatter.conditionToSql(options.filter, options.environment);
+    }
+    let tabName = quoteStringIfLowerCase(options.tableName);
+    let cols = quoteColumnList(options.columns);
+    return `OPEN internalCur FOR SELECT * FROM (
+                SELECT 
+                    ROW_NUMBER() OVER (ORDER BY ${quoteOrderBy(options.orderBy)}) as "row_num",
+                    ${cols}
+                FROM ${tabName + internalWhere}
+            ) x
+            WHERE "row_num" >= ${options.firstRow} FETCH NEXT ${options.top} ROWS ONLY;
+            DBMS_SQL.RETURN_RESULT(internalCur);`;
 
 };
 
@@ -1041,7 +1128,7 @@ Connection.prototype.getBitArray = function(value,nbits){
 * @param {string} sqlType
 * @param {boolean} forOutput
 */
-Connection.prototype.createSqlParameter=function(paramValue,paramName, varName,sqlType, forOutput){
+Connection.prototype.createSqlParameter = function(paramValue,paramName, varName,sqlType, forOutput){
     return new  SqlParameter(paramValue,paramName,varName,sqlType, forOutput);
 };
 
@@ -1056,7 +1143,17 @@ Connection.prototype.createSqlParameter=function(paramValue,paramName, varName,s
  * @returns {*}
  */
 Connection.prototype.run = function(script,timeout){
-    return this.edgeConnection.run(script,timeout);
+    const that = this;
+    let result = this.edgeConnection.run(script,timeout);
+
+    return result.then((res) => {
+        if (this.transAnnidationLevel === 0){
+            return that.edgeConnection.queryBatch('COMMIT');
+        }
+        else{
+            return res;
+        }
+    });
 };
 
 Connection.prototype.mapping= mapping;

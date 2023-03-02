@@ -2,10 +2,6 @@
 /*jshint -W069 */
 
 
-console.log("running jsDataQueryParserSpec");
-
-
-
 const qParser = require('../../src/jsDataQueryParser').JsDataQueryParser,
         EnvExpr = require('../../src/jsDataQueryParser').EnvironmentExpression,
         BuildingExpr =  require('../../src/jsDataQueryParser').BuildingExpression,

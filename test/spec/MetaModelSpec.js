@@ -3,8 +3,6 @@ const jsDataSet = require('../../client/components/metadata/jsDataSet');
 const metaModel = require('../../client/components/metadata/MetaModel');
 const _ = require('lodash');
 
-console.log("running ModelSpec");
-
 describe("MetaModel", function () {
 
 
@@ -1249,10 +1247,10 @@ describe("MetaModel", function () {
                     table1.setDataColumn("k2", "Decimal");
                     table1.setDataColumn("f1", "String");
                     table1.setDataColumn("f2", "Decimal");
-                    metaModel.allowDbNull(table1.columns.k1, false);
-                    metaModel.allowDbNull(table1.columns.k2, false);
-                    metaModel.allowDbNull(table1.columns.f1, true);
-                    metaModel.allowDbNull(table1.columns.f2, true);
+                    metaModel.allowNull(table1.columns.k1, false);
+                    metaModel.allowNull(table1.columns.k2, false);
+                    metaModel.allowNull(table1.columns.f1, true);
+                    metaModel.allowNull(table1.columns.f2, true);
                     const r1 = {k1: "key1", k2: "ke2", f1: "f1", f2: "f1"};
                     table1.add(r1);
                     table1.acceptChanges();

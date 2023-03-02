@@ -96,10 +96,9 @@
                         const col = r.table.columns[colName];
 
                         outCaption = colName;
-                        if (col.caption && col.caption !== "") outCaption = col.caption;
+                        if (col && col.caption && col.caption !== "") outCaption = col.caption;
 
                         val =  r.current[colName];
-                        if (col.caption && col.caption !== "" && col.caption !== colName) outCaption = col.caption;
 
                         if ((val === null)) {
                             outMsg = emptyKeyMsg;
@@ -107,7 +106,7 @@
                             foundCondition = true;
                             return false;
                         }
-                        if (col.ctype === CType.date){ //( typeof val === "object" && val.constructor === Date) {
+                        if (col && col.ctype === CType.date){ //( typeof val === "object" && val.constructor === Date) {
 
                             if (!val) {
                                 outMsg = emptyKeyMsg;
@@ -122,7 +121,7 @@
                                 return false;
                             }
                         }
-                        if ( col.ctype === CType.string  &&
+                        if ( col && col.ctype === CType.string  &&
                             (val.replace(/\s*$/,"") === "")) { //Esegue il trimEnd
                             outMsg = emptyKeyMsg;
                             outField = colName;
@@ -130,7 +129,7 @@
                             return false;
                         }
 
-                        if (!metaModel.allowZero(col) && metaModel.isColumnNumeric(col) && val === 0) {
+                        if (col && !metaModel.allowZero(col) && metaModel.isColumnNumeric(col) && val === 0) {
                             outMsg = emptyKeyMsg;
                             outField = colName;
                             foundCondition = true;
@@ -167,11 +166,12 @@
                             }
                         }
 
-                        if (metaModel.allowDbNull(c) && !metaModel.denyNull(c)) {
+                        if (metaModel.allowNull(c) && !metaModel.denyNull(c)) {
                             return true; // Continua
                         }
 
                         if ((val === null) || (val === undefined)) {
+                            //console.log("emptyFieldMsg is "+colname);
                             outMsg = emptyFieldMsg;
                             outField = colname;
                             return false;
@@ -184,6 +184,7 @@
                                 return false;
                             }
                             if (val.getTime && val.getTime() === new Date(emptyDate).getTime()) {
+                                //console.log("emptyFieldMsg date is "+colname);
                                 outMsg = emptyFieldMsg;
                                 outField = colname;
                                 return false;
@@ -192,6 +193,7 @@
 
                         // E' passato il   if ((val === null) || (val === undefined))  ma devo fare attenzione a stringa vuota o a zero
                         if ((c.ctype === CType.string) && (val.replace(/\s*$/, "") === "")) {
+                            //console.log("emptyFieldMsg string is "+colname);
                             outMsg = emptyFieldMsg;
                             outField = colname;
                             return false;
@@ -199,6 +201,7 @@
 
                         if (!metaModel.allowZero(c) && metaModel.isColumnNumeric(c) && metaModel.denyZero(c) && val === 0) {
                             outMsg = emptyFieldMsg;
+                            //console.log("emptyFieldMsg numeric is "+colname);
                             outField = colname;
                             return false;
                         }
@@ -371,7 +374,7 @@
              * @returns {{rootCondition: sqlFun, nodeDispatcher: TreeNode_Dispatcher, maxDepth: int}}
              */
             describeTree:function (table, listType) {
-                return Deferred.resolve(true).promise();
+                return Deferred().resolve(true).promise();
             },
 
             /**
@@ -435,6 +438,7 @@
             setDefaults: function(table) {
                 // si intende che il datatable sia già corredato dai defaults per come è stato deserializzato dal server
                 // questo metodo può contenere al massimo delle personalizzazioni
+                return null;
             },
 
             /**
@@ -444,6 +448,7 @@
              * Sets the static filter
              */
             setSorting: function() {
+                return null;
             },
 
             /**

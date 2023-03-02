@@ -7,6 +7,7 @@ const Deferred = require("JQDeferred");
 const express = require('express');
 const Path = require("path");
 const fs = require("fs");
+const cors = require("cors");
 
 
 function CorsManagement(req, res, next) {
@@ -32,7 +33,8 @@ function createExpressApplication(){
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
     app.use(bodyParser.raw());
-    app.use(CorsManagement);
+    //app.use(CorsManagement);
+    app.use(cors());
 
     // Logging rest api --> npm install --save morgan
     app.use(morgan('dev'));

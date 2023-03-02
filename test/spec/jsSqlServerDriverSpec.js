@@ -3,9 +3,6 @@
 
 const { v4: uuidv4 } = require('uuid');
 
-console.log("running jsSqlServerDriverSpec");
-
-
 const $dq = require('./../../client/components/metadata/jsDataQuery'),
      _ = require('lodash'),
     fs = require("fs"),
@@ -145,7 +142,6 @@ describe('sqlServerDriver ', function () {
 
 
     afterAll(function (done){
-        console.log("running Afterall");
         if (!masterConn) {
             // console.log("no masterConn, quitting afterAll");
             done();
@@ -300,6 +296,64 @@ describe('sqlServerDriver ', function () {
                 });
         });
 
+
+
+        let conversioneMs = [0, -1, 1, 0, -1, 2, 1,0,-1, 1];
+        it('select constant date should give same date', function (done) {
+            expect(canExecute).toBeTruthy();
+            let d = new Date();
+            let cv = conversioneMs[d.getMilliseconds()%10];
+            if ( cv !=0){
+                d = new Date(d.valueOf()+cv);
+            }
+
+            let v1 = JSON.stringify(d)
+            let cmd = sqlConn.giveConstant(d);
+            sqlConn.queryBatch(cmd)
+            .done(function (result) {
+                expect(result).toBeDefined();
+                expect( result[0]).toBeDefined();
+                let res =Object.values(result[0])[0];
+                expect(res.valueOf()).toEqual(d.valueOf());
+                expect(v1).toEqual(JSON.stringify(d));
+                expect(JSON.stringify(res)).toEqual(JSON.stringify(d));
+                expect(res.valueOf()-d.valueOf()).toEqual(0);
+                done();
+            })
+            .fail(function (err) {
+                expect(err).toBeUndefined();
+                done();
+            });
+        });
+
+
+        it('select constant exact date should give same date', function (done) {
+            expect(canExecute).toBeTruthy();
+            let d = new Date();
+            d.setHours(0,0,0,0);
+            let cv = conversioneMs[d.getMilliseconds()%10];
+            if ( cv !=0){
+                d = new Date(d.valueOf()+cv);
+            }
+
+            let v1 = JSON.stringify(d)
+            let cmd = sqlConn.giveConstant(d);
+            sqlConn.queryBatch(cmd)
+            .done(function (result) {
+                expect(result).toBeDefined();
+                expect( result[0]).toBeDefined();
+                let res =Object.values(result[0])[0];
+                expect(res.valueOf()).toEqual(d.valueOf());
+                expect(v1).toEqual(JSON.stringify(d));
+                expect(JSON.stringify(res)).toEqual(JSON.stringify(d));
+                expect(res.valueOf()-d.valueOf()).toEqual(0);
+                done();
+            })
+            .fail(function (err) {
+                expect(err).toBeUndefined();
+                done();
+            });
+        });
 
         it('select * from table should give results', function (done) {
             expect(canExecute).toBeTruthy();
@@ -855,6 +909,114 @@ describe('sqlServerDriver ', function () {
                     done();
                 })
                 .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('giveErrorNumberDataWasNotWritten should return a dataset if no row has been affected', function(done){
+            expect(canExecute).toBeTruthy();
+            const sqlCmd = 'UPDATE TOP(0) customer SET random = RAND()*1000',
+                errCmd = sqlConn.giveErrorNumberDataWasNotWritten(3);
+            let sql = '';
+
+            sql = sqlConn.appendCommands([sqlCmd, errCmd]);
+
+            sqlConn.queryBatch(sql, false)
+                .done(function (result) {
+                    expect(result.length).toBeGreaterThan(0);
+
+                    let res = result[0], i;
+                    for (i in res) {
+                        if (res.hasOwnProperty(i)) {
+                            result = res[i];
+                            break;
+                        }
+                    }
+                    expect(result).toBe(3);
+                    done();
+                })
+                .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('giveErrorNumberDataWasNotWritten should NOT return anything if one or more rows have been affected', function(done){
+            expect(canExecute).toBeTruthy();
+            const sqlCmd = 'UPDATE TOP(1) customer SET random = RAND()*1000',
+                errCmd = sqlConn.giveErrorNumberDataWasNotWritten(3);
+            let sql = '';
+
+            sql = sqlConn.appendCommands([sqlCmd, errCmd]);
+
+            sqlConn.queryBatch(sql, false)
+                .done(function (result) {
+                    expect(result.length).toBe(0);
+                    done();
+                })
+                .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('getSelectListOfVariables should be able to select variables', function (done) {
+            expect(canExecute).toBeTruthy();
+        
+            const sqlSet = 
+                "DECLARE @name VARCHAR(50), @surname VARCHAR(50), @year int; "+
+                "SET @name = 'john'; SET @surname = 'doe'; SET @year = 2023";
+
+            const sqlSelect = sqlConn.getSelectListOfVariables([
+                { varName: '@name', colName: 'nome'},
+                { varName: '@surname', colName: 'cognome'},
+                { varName: '@year', colName: 'anno'}
+            ]);
+        
+            let sql = sqlConn.appendCommands([sqlSet, sqlSelect]);
+        
+            sqlConn.queryBatch(sql, false)
+                .done(function (result){
+                    expect(result.length).toBe(1);
+                    expect(result[0]).toBeDefined();
+
+                    expect(result[0].nome).toBe('john');
+                    expect(result[0].cognome).toBe('doe');
+                    expect(result[0].anno).toBe(2023);
+
+                    done();
+                }).fail(function (err){
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('getPagedTableCommand should be able to offset the first 5 rows and return the next 10', function (done) {
+            expect(canExecute).toBeTruthy();
+
+            const options = {
+                tableName : 'customer',
+                top : 10,
+                columns : 'idcustomer, name, age',
+                orderBy : 'idcustomer',
+                firstRow : 5,
+                filter : ''
+            };
+        
+            let sql = sqlConn.getPagedTableCommand(options);
+        
+            sqlConn.queryBatch(sql, false)
+                .done(function (result){
+                    expect(result).toBeDefined();
+                    expect(result.length).toBe(10); // Must return 10 rows
+
+                    // Ordered by idcustomer (ASC)
+                    expect(result[0].idcustomer).toBe(5); // Offset by 5
+                    expect(result[result.length - 1].idcustomer).toBe(14);
+
+                    done();
+                }).fail(function (err){
                     expect(err).toBeUndefined();
                     done();
                 });

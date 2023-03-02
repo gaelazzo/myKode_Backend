@@ -14,6 +14,7 @@ function Environment(identity) {
     this.fields = {};
     this.stampFields = this.getStampFields();
     this.sys("user",identity.name||this.getAnonymousName());
+
     if (identity.isAnonymous){ //just to be sure
         this.sys("user",this.getAnonymousName());
     }
@@ -37,10 +38,10 @@ Environment.prototype = {
 /**
  *  Returns an array of fields used as stamp in evaluating field function for optimistic locking
  *  This function means to be redefined in derived classes
- * @return {string[]}
+ * @return {{string}}
  */
 Environment.prototype.getStampFields =function(){
-    return ["ct","lt"];
+    return  {ct:true,lt:true};
 };
 
 /**
@@ -200,15 +201,14 @@ function quote(s){
  */
 Environment.prototype.calcUserEnvironment = function(conn) {
 
-    return  conn.callSP("compute_environment",
-        [this.sys("esercizio"),this.sys("idcustomuser"),
-                    this.sys("idflowchart")||null,this.sys("ndetail")||null])
+    let par=[this.sys("esercizio"),this.sys("idcustomuser"),
+        this.sys("idflowchart")||null,this.sys("ndetail")||null];
+    return  conn.callSP("compute_environment ",par)
         .then(res=>{
             if (!res){
                 return Deferred().reject("No environment");
             }
             if (res.length !== 2){
-                console.log(res);
                 return Deferred().reject("Bad environment");
             }
             let sysVars= res[0][0];
@@ -225,7 +225,6 @@ Environment.prototype.calcUserEnvironment = function(conn) {
                     this.usr(rUsr.variablename, this.compile(rUsr.value));
                 }
             });
-
             return Deferred().resolve(true);
         });
 };

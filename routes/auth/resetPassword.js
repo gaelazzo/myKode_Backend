@@ -48,7 +48,7 @@ async function resetPassword(req,res,next) {
 
     let d = new jsDataSet.DataSet("d");
 
-    let /* DataSet */ dsResetPassword = ctx.getDataSet("resetpassword","admin");
+    let /* DataSet */ dsResetPassword = ctx.getDataSet("resetpassword","admin",ctx);
     let metaAttach= ctx.getMeta("resetpassword");
     let rRP = await metaAttach.getNewRow(null,dsResetPassword.tables["resetpassword"]);
     rRP["idregistryreference"]= idregistryreference;

@@ -9,6 +9,7 @@ const fs = require('fs'),
     JsToken= require('./src/jsToken');
 const Deferred = require("JQDeferred");
 
+
 let secret = require('./config/secret');
 
 // inizializza la dblist con tutte le DbInfo così che poi tutti possano ottenere da essa le connessioni
@@ -27,14 +28,14 @@ GetMeta.setPath("./../../meta"); //all metadata must be stored here
 
 //This must be executed as soon as possible
 JsToken.assureMasterKey();
-
 let expressApplication = jsExpressApplication.createExpressApplication();
 //adds all applications
 return Deferred.when(appList.map(appCfg=>{
             //for every app configured creates a JsApplication running under "route" path  configured
             let application = new JsApplication();
-            return application.init(appCfg.dbCode)
+            return application.init(appCfg)
                 .then(()=>{
+                    console.log("using route "+appCfg.route);
                   return expressApplication.use(appCfg.route,application.getApp());
                 });
         }))
@@ -42,6 +43,7 @@ return Deferred.when(appList.map(appCfg=>{
         //runs the overall application
         const server = http.createServer(expressApplication);
         server.listen(port); //port is applied to external Application
+        console.log("server listening on port "+port);
     });
 
 

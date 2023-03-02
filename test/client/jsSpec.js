@@ -1,4 +1,4 @@
-console.log("running jsSpec");
+
 // https://docs.microsoft.com/en-us/dotnet/csharp/iterators
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators
 

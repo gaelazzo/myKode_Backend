@@ -40,28 +40,28 @@ const mapIsolationLevels = {
 
 
 const mapping = {
-    'CHAR':CType.string,
-    'VARCHAR':CType.string,
-    'TINYTEXT':CType.string,
-    'MEDIUMTEXT':CType.string,
-    'MEDIUMBLOB':CType.string,
-    'LONGTEXT':CType.string,
+    'CHAR':CType.String,
+    'VARCHAR':CType.String,
+    'TINYTEXT':CType.String,
+    'MEDIUMTEXT':CType.String,
+    'MEDIUMBLOB':CType.String,
+    'LONGTEXT':CType.String,
 
-    'TINYINT':CType.int,
+    'TINYINT':CType.Byte,
     'SMALLINT':CType.int,
     'MEDIUMINT':CType.int,
     'INT':CType.int,
     'BIGINT':CType.int,
     'YEAR':CType.int,
 
-    'DECIMAL':CType.number,
-    'FLOAT':CType.number,
-    'DOUBLE':CType.number,
+    'DECIMAL':CType.Decimal,
+    'FLOAT':CType.Float,
+    'DOUBLE':CType.Double,
 
     'DATE':CType.date,
-    'DATETIME':CType.date,
-    'TIMESTAMP':CType.date,
-    'TIME':CType.date,
+    'DATETIME':CType.DateTime,
+    'TIMESTAMP':CType.DateTime,
+    'TIME':CType.DateTime,
 
     'BOOLEAN':CType.bool
 };
@@ -739,7 +739,8 @@ Connection.prototype.tableDescriptor = function (tableName) {
     )
         .then(function (result) {
             if (result.length === 0) {
-                res.reject('Table named ' + tableName + ' does not exist in ' + that.opt.server + ' - ' + that.opt.database);
+                res.reject('Table named ' + tableName + ' does not exist in ' +
+                        that.opt.server + ' - ' + that.opt.database);
                 return;
             }
 
@@ -866,27 +867,29 @@ Connection.prototype.variableNameForNBits = function(num,nbits){
 /**
  * Get a command to select a bunch of rows
  * @param options.tableName {string}
- * @param options.nRows {int}
- * @param options.filter {string},
+ * @param options.top {int}
+ * @param options.filter {sqlFun},
  * @param options.firstRow {int}
- * @param options.sorting {string},
+ * @param options.orderBy {string},
  * @param options.environment {Context}
  * @return {string}
  */
 Connection.prototype.getPagedTableCommand = function(options) {
-    if (!options.sorting || !options.nRows){
-        return Connection.prototype.getSelectCommand({
-            tableName:options.tableName,filter:options.filter,environment:options.environment,
-            orderBy:options.sorting
-        });
+    //https://www.mysqltutorial.org/mysql-limit.aspx
+    if (!options.orderBy || !options.top){
+        return Connection.prototype.getSelectCommand(options);
     }
-    return  "select  * from "+options.tableName+" ORDER BY "+options.sorting+ " LIMIT "+
-        (options.firstRow-1)+","+options.nRows;
+
+    let internalWhere = '';
+    if (options.filter){
+        internalWhere = " WHERE "+formatter.conditionToSql(options.filter, options.environment);
+    }
+
+    return  "select * from "+options.tableName+ internalWhere +
+            " ORDER BY "+options.orderBy+ " LIMIT "+
+        (options.firstRow-1)+","+options.top;
 
 };
-
-
-
 
 /**
  * Type of value depends on nbits
@@ -945,19 +948,6 @@ Connection.prototype.createSqlParameter=function(paramValue,paramName,varName, s
 };
 
 
-/**
- * Gets the sql command to read from a table nRowPerPage rows starting from firstRow
- * @param {string} tableName
- * @param {string} filter
- * @param {number} firstRow
- * @param {number} nRowPerPage
- * @param {string} sortBy
- * @return {string}
- */
-Connection.prototype.getPagedTableCommand= function(tableName, filter, firstRow, nRowPerPage, sortBy){
-    return "select top " + nRowPerPage + " * from ( SELECT ROW_NUMBER() OVER (ORDER BY " + sortBy +
-        ") row_num, * FROM " + tableName +" WHERE " + filter + " ) x where row_num >= " +  firstRow;
-};
 
 /**
  * Returns a command that should return a constant number

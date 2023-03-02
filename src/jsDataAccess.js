@@ -682,7 +682,7 @@ DataAccess.prototype = {
      * @param {string|*} [opt.columns] column names comma separated
      * @param {string} [opt.orderBy=null]
      * @param {int} [opt.firstRow=1]
-     * @param {int} opt.nRows
+     * @param {int} opt.top
      * @param {sqlFun} [opt.filter=null]
      * @param {boolean} [opt.applySecurity=true] if true,   security condition is appended to filter
      * @param {Environment} [opt.environment] environment for the current user
@@ -1037,12 +1037,6 @@ DataAccess.prototype.mergeMultiSelect = function (selectList, ds, environment) {
 
 
 
-
-
-
-
-
-
 /**
  * Execute a command ensuring that the underlying connection is open, then closes the connection.
  * It manages the open - do command - close cycle
@@ -1140,13 +1134,6 @@ function getAProperty(obj) {
     }
     return undefined;
 }
-
-
-
-
-
-
-
 
 
 /**

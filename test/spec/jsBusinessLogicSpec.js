@@ -2,7 +2,6 @@
 'use strict';
 /*jshint -W069*/
 /*jshint -W083*/
-console.log("running BusinessLogicSpec");
 
 const BusinessLogic = require('../../src/jsBusinessLogic').BusinessLogic,
     BusinessMessage = require('../../src/jsBusinessLogic').BusinessMessage,

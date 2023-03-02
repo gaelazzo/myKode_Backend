@@ -1,12 +1,13 @@
 const express = require('express');
 const q = require('./../../client/components/metadata/jsDataQuery');
 const asyncHandler = require("express-async-handler");
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
 
 async function doReadValue(req,res,next){
     let ctx = req.app.locals.context;
     let getDataInvoke = ctx.getDataInvoke;
 
-    let jsonFilter= JSON.parse(req.body.filter);
+    let jsonFilter= getDataUtils.getJsObjectFromJson(req.body.filter);
     let filter = q.fromObject(jsonFilter);
     let table = req.body.table;
     let expr = req.body.expr;

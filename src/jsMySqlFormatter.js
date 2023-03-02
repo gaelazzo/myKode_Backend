@@ -78,6 +78,7 @@ function quote(v, noSurroundQuotes) {
                 leftPad(v.getMonth() + 1, 2, '0') +'-'+ //javascripts counts months starting from 0!!!
                 leftPad(v.getDate(), 2, '0') + '\'}';
         }
+        //v = new Date(Math.round(v.valueOf() + (v.getTimezoneOffset() * 60000)));
         return '{ts \'' +
             leftPad(v.getFullYear(), 4, '0') + '-' +
             leftPad(v.getMonth() + 1, 2, '0') + '-' + //javascripts counts months starting from 0!!!

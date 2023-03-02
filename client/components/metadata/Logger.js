@@ -14,33 +14,13 @@
 
 (function (localResource) {
     'use strict';
-
     //noinspection JSUnresolvedVariable
 
-    /** Detect free variable `global` from Node.js. */
     let freeGlobal = typeof global === 'object' && global && global.Object === Object && global;
-
-    //const freeGlobal = freeExports && freeModule && typeof global === 'object' && global;
-
-
-    /** Detect free variable `self`. */
     let freeSelf = typeof self === 'object' && self && self.Object === Object && self;
-
-    /** Used as a reference to the global object. */
     let root = freeGlobal || freeSelf || Function('return this')();
-
-
-
-    /** Detect free variable `exports`. */
     let freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-
-    /** Detect free variable `module`. */
     let freeModule = freeExports && typeof module === 'object' && module && !module.nodeType && module;
-
-
-    //noinspection JSUnresolvedVariable
-    /** Detect free variable `global` from Node.js or Browserified code and use it as `root`. (thanks lodash)*/
     let moduleExports = freeModule && freeModule.exports === freeExports;
 
     /**

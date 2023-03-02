@@ -6,7 +6,7 @@ var path = require("path");
 var edgeSql = require('../../src/edge-sql');
 const {v4: uuidv4} = require("uuid");
 const mySqlDriver = require("../../src/jsMySqlDriver");
-console.log("running edge-sqlSpec");
+
 /**
  * *****************************************************************************************
  * VERY IMPORTANT VERY IMPORTANT VERY IMPORTANT VERY IMPORTANT VERY IMPORTANT VERY IMPORTANT

@@ -67,7 +67,7 @@
                         }
                         res.resolve(result);
                     } catch (err) {
-                        if (err) console.log(err.message, err.stack);
+                        //if (err && err.message) console.log(err.message, err.stack);
                         res.reject(err);
                     }
                 },

@@ -2,7 +2,6 @@
 /*globals beforeEach,jsDataSet,afterEach,describe,jasmine,it,expect,inject */
 const _ = require("lodash");
 const $q = require("./../../client/components/metadata/jsDataQuery.js");
-console.log("running jsDataQuerySpec!");
 
 describe('DataQuery functions', function () {
     let ds;

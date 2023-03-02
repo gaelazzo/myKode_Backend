@@ -5,12 +5,13 @@ const isAnonymousAllowed = require("../data/_AnonymousAllowed");
 const express = require("express");
 const asyncHandler = require("express-async-handler");
 const q = require("./../../client/components/metadata/jsDataQuery");
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
 
 async function middleware(req,res,next){
     let ctx = req.app.locals.context;
     let tableName = req.query.tableName;
     let editType = req.query.editType;
-    let jsonFilter= JSON.parse(req.query.filter);
+    let jsonFilter= getDataUtils.getJsObjectFromJson(req.query.filter);
     let filter = q.fromObject(jsonFilter);
 
     if (!isAnonymousAllowed(req, tableName,editType)){
@@ -18,9 +19,9 @@ async function middleware(req,res,next){
         return;
     }
     let /*DataSet*/ ds = await ctx.getDataInvoke.createEmptyDataSet( tableName,editType);
-    await ctx.getDataInvoke.getDataSet(tableName,editType);
+    await ctx.getDataInvoke.fillDataSet(ds,tableName,editType,filter);
 
-    res.json(ds.serialize());
+    res.json(getDataUtils.getJsonFromJsDataSet(ds,false));
 }
 
 let router = express.Router();

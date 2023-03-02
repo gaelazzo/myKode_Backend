@@ -1,6 +1,4 @@
 
-console.log("running jsHeapSpec");
-
 const Heap = require('../../src/jsHeap');
 const {MsgParser: Parser} = require("../../src/jsMsgParser");
 

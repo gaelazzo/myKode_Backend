@@ -1,7 +1,6 @@
 /*jslint  nomen:true*/
 /*jslint  nomen:true*/
 /*globals _ ,  jasmine, beforeEach, expect, module, it,  describe, spyOn, afterEach  */
-console.log("running jsDataSetSpec");
 
 'use strict';
 // const helper = require ("jasmine-uti");
@@ -649,7 +648,7 @@ describe('DataSet',
     });
 
     describe('serialize/deserialize', function () {
-      let t, t2, r, r1, r2, s, s1, s2, s3;
+      let t, t2, r, r1, r2, s, s1, s2, s3, s4;
       beforeEach(function () {
         t = ds.newTable('a');
           r = t.newRow({id: 10, a: 1, b: 2, ct: 'ct', lt: 'lt', cu: 'cu', lu: 'lu'});
@@ -660,10 +659,13 @@ describe('DataSet',
           s1 = t2.newRow({id: 14, a: 1, b: 2, ct: 'ct', lt: 'lt', cu: 'cu', lu: 'lu'});
           s2 = t2.newRow({id: 15, a: 1, b: 2, ct: 'ct', lt: 'lt', cu: 'cu', lu: 'lu'});
           s3 = t2.newRow({id: 16, a: 2, b: 2, ct: 'ct', lt: 'lt', cu: 'cu', lu: 'lu'});
+          s4= t2.newRow({id: 17, a: 21, b: 2, ct: 'ct', lt: 'lt', cu: 'cu', lu: 'lu'});
+
         s2.getRow().acceptChanges();
         s2.getRow().del();
         r1.getRow().acceptChanges();
         r1.a = 21;
+        s4.getRow().acceptChanges();
       });
       it('should preserve tables', function () {
         const sData = JSON.parse(JSON.stringify(ds.serialize()));
@@ -677,7 +679,7 @@ describe('DataSet',
         const ds2 = new dsSpace.DataSet('dd');
         ds2.deSerialize(sData);
         expect(ds2.tables.a.rows.length).toBe(3);
-        expect(ds2.tables.b.rows.length).toBe(4);
+        expect(ds2.tables.b.rows.length).toBe(5);
       });
 
       it('should preserve row values', function () {
@@ -692,7 +694,16 @@ describe('DataSet',
         const sData = JSON.parse(JSON.stringify(ds.serialize()));
         const ds2 = new dsSpace.DataSet('dd');
         ds2.deSerialize(sData);
-        expect(ds2.tables.a.select($q.eq('id',11))[0].getRow().getValue('a', dsSpace.dataRowVersion.original)).toBe(123);
+        let r = ds2.tables.a.select($q.eq('id',11))[0];
+        expect(r.getRow().getValue('a', dsSpace.dataRowVersion.original)).toBe(123);
+        expect(r.getRow().state).toBe(dsSpace.dataRowState.modified);
+
+        let s4 = ds2.tables.b.select($q.eq('id',17))[0];
+        expect(s4.getRow().getValue('a', dsSpace.dataRowVersion.original)).toBe(21);
+        expect(s4.getRow().state).toBe(dsSpace.dataRowState.unchanged);
+        s4.a = 99;
+
+        expect(s4.getRow().state).toBe(dsSpace.dataRowState.modified);
       });
 
       it('should preserve current values', function () {
@@ -2149,10 +2160,13 @@ describe('DataTable module test', function () {
           t2 = ds2.newTable('a');
       let sData;
       t.acceptChanges();
-      r1.a = 4;
-      r2.b = 5;
-      r3.c = 6;
+      r1.a = 4; //r1: modifying an existing property
+      r2.b = 5; //r2: adding a new property
+      r3.c = 6; //r3: adding a new property
       sData = JSON.parse(JSON.stringify(t.serialize()));
+      expect(r1.getRow().state).toBe(dsSpace.dataRowState.modified);
+      expect(r2.getRow().state).toBe(dsSpace.dataRowState.modified);
+      expect(r3.getRow().state).toBe(dsSpace.dataRowState.modified);
       expect(sData.rows.length).toBe(3);
       t2.deSerialize(sData);
       expect(t2.rows[0].getRow().state).toBe(dsSpace.dataRowState.modified);
@@ -2164,12 +2178,14 @@ describe('DataTable module test', function () {
       expect(t2.rows[0].getRow().getValue('a', dsSpace.dataRowVersion.original)).toBe(1);
       expect(t2.rows[1].getRow().getValue('a', dsSpace.dataRowVersion.original)).toBe(2);
       expect(t2.rows[2].getRow().getValue('a', dsSpace.dataRowVersion.original)).toBe(3);
-      expect(t2.rows[0].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBeUndefined();
-      expect(t2.rows[1].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBeUndefined();
-      expect(t2.rows[2].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBeUndefined();
-      expect(t2.rows[0].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeUndefined();
-      expect(t2.rows[1].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeUndefined();
-      expect(t2.rows[2].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeUndefined();
+      expect(t2.rows[0].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBeNull();
+      //if we change value previous is assumed null
+      expect(t2.rows[1].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBeNull();
+      expect(t2.rows[2].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBeNull();
+      expect(t2.rows[0].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeNull();
+      expect(t2.rows[1].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeNull();
+      //if we change value previous is assumed null
+      expect(t2.rows[2].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeNull();
     });
 
     it('should preserve field deletion for modified rows', function () {
@@ -2206,9 +2222,10 @@ describe('DataTable module test', function () {
       expect(t2.rows[0].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBe(4);
       expect(t2.rows[1].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBe(5);
       expect(t2.rows[2].getRow().getValue('b', dsSpace.dataRowVersion.original)).toBe(6);
-      expect(t2.rows[0].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeUndefined();
-      expect(t2.rows[1].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeUndefined();
-      expect(t2.rows[2].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeUndefined();
+      expect(t2.rows[0].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeNull();
+      expect(t2.rows[1].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeNull();
+      //if we change value previous is assumed null
+      expect(t2.rows[2].getRow().getValue('c', dsSpace.dataRowVersion.original)).toBeNull();
     });
 
 
@@ -2380,7 +2397,7 @@ describe('DataRow module test', function () {
       o.d = 2;
       expect(o.d).toBeDefined();
       o.getRow().rejectChanges();
-      expect(o.d).toBeUndefined();
+      expect(o.d).toBeNull(); //if we revert value setting, current value becomes null
     });
 
 

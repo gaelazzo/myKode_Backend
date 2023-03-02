@@ -1,7 +1,6 @@
 /*globals describe,beforeEach,it,expect,jasmine,spyOn,afterEach,xit,progress*/
 
 
-console.log("running jsMySqlDriverSpec");
 
 
 const  $dq = require("../../client/components/metadata/jsDataQuery");
@@ -56,14 +55,16 @@ describe('MySqlDriver ', function () {
                 useTrustedConnection: false,
                 user: dbConfig.user,
                 pwd: dbConfig.pwd,
-                database: dbConfig.database
+                database: dbConfig.database,
+                port: dbConfig.port
             },
             bad: {
                 server: dbConfig.server,
                 useTrustedConnection: false,
                 user: dbConfig.user,
                 pwd: dbConfig.pwd + 'AA',
-                database: dbConfig.database
+                database: dbConfig.database,
+                port: dbConfig.port
             }
         };
 
@@ -559,6 +560,112 @@ describe('MySqlDriver ', function () {
                     done();
                 })
                 .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        xit('giveErrorNumberDataWasNotWritten should return a dataset if no row has been affected', function(done){
+            expect(canExecute).toBeTruthy();
+            const sqlCmd = 'UPDATE customer SET random = RAND()*1000 LIMIT 0',
+                errCmd = sqlConn.giveErrorNumberDataWasNotWritten(3);
+            let sql = '';
+
+            sql = sqlConn.appendCommands([sqlCmd, errCmd]);
+
+            sqlConn.queryBatch(sql, false)
+                .done(function (result) {
+                    expect(result.length).toBeGreaterThan(0);
+
+                    let res = result[0], i;
+                    for (i in res) {
+                        if (res.hasOwnProperty(i)) {
+                            result = res[i];
+                            break;
+                        }
+                    }
+                    expect(result).toBe(3);
+                    done();
+                })
+                .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        xit('giveErrorNumberDataWasNotWritten should NOT return anything if one or more rows have been affected', function(done){
+            expect(canExecute).toBeTruthy();
+            const sqlCmd = 'UPDATE customer SET random = RAND()*1000 LIMIT 1',
+                errCmd = sqlConn.giveErrorNumberDataWasNotWritten(3);
+            let sql = '';
+
+            sql = sqlConn.appendCommands([sqlCmd, errCmd]);
+
+            sqlConn.queryBatch(sql, false)
+                .done(function (result) {
+                    expect(result.length).toBe(0);
+                    done();
+                })
+                .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('getSelectListOfVariables should be able to select variables', function (done) {
+            expect(canExecute).toBeTruthy();
+        
+            const sqlSet = "SET @name = 'john', @surname = 'doe', @year = 2023";
+
+            const sqlSelect = sqlConn.getSelectListOfVariables([
+                { varName: '@name', colName: 'nome'},
+                { varName: '@surname', colName: 'cognome'},
+                { varName: '@year', colName: 'anno'}
+            ]);
+        
+            let sql = sqlConn.appendCommands([sqlSet, sqlSelect]);
+        
+            sqlConn.queryBatch(sql, false)
+                .done(function (result){
+                    expect(result.length).toBe(1);
+                    expect(result[0]).toBeDefined();
+
+                    expect(result[0].nome).toBe('john');
+                    expect(result[0].cognome).toBe('doe');
+                    expect(result[0].anno).toBe(2023);
+
+                    done();
+                }).fail(function (err){
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('getPagedTableCommand should be able to offset the first 5 rows and return the next 10', function (done) {
+            expect(canExecute).toBeTruthy();
+
+            const options = {
+                tableName : 'customer',
+                top : 10,
+                columns : 'idcustomer, name, age',
+                orderBy : 'idcustomer',
+                firstRow : 5,
+                filter : ''
+            };
+        
+            let sql = sqlConn.getPagedTableCommand(options);
+        
+            sqlConn.queryBatch(sql, false)
+                .done(function (result){
+                    expect(result).toBeDefined();
+                    expect(result.length).toBe(10); // Must return 10 rows
+
+                    // Ordered by idcustomer (ASC)
+                    expect(result[0].idcustomer).toBe(5); // Offset by 5
+                    expect(result[result.length - 1].idcustomer).toBe(14);
+
+                    done();
+                }).fail(function (err){
                     expect(err).toBeUndefined();
                     done();
                 });

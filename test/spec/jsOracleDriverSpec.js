@@ -23,9 +23,7 @@ const $dq = require('./../../client/components/metadata/jsDataQuery'),
  *    "pwd": "db password"
  *  }
  */
-//PUT THE  FILENAME OF YOUR FILE HERE:
-
-
+//PUT THE FILENAME OF YOUR FILE HERE:
 const configName = 'test/data/jsOracleDriver/db.json';
 
 let dbConfig;
@@ -42,35 +40,36 @@ else {
 
 const oracleDriver = require('../../src/jsOracleDriver'),
     IsolationLevel = {
-        readUncommitted: 'READ_UNCOMMITTED',
         readCommitted: 'READ_COMMITTED',
-        repeatableRead: 'REPEATABLE_READ',
-        snapshot: 'SNAPSHOT',
-        serializable: 'SERIALIZABLE'
+        serializable: 'SERIALIZABLE',
+        readOnly: 'READ_ONLY',
     };
 const dbList = require("../../src/jsDbList");
 const Deferred = require("JQDeferred");
-const mySqlDriver = require("../../src/jsMySqlDriver");
 
 
 
 let dbName = "sqldrv_"+ uuidv4().replace(/\-/g, '_');
 
-xdescribe('oracleDriver ', function () {
+describe('oracleDriver ', function () {
     let dbInfo = {
             good: {
                 server: dbConfig.server,
                 useTrustedConnection: false,
                 user: dbConfig.user,
                 pwd: dbConfig.pwd,
-                database: dbName,
+                port: dbConfig.port,
+                database: dbConfig.dbName,
+                dbaPrivilege : dbConfig.dbaPrivilege
             },
             bad: {
                 server: dbConfig.server,
                 useTrustedConnection: false,
                 user: dbConfig.user,
                 pwd: dbConfig.pwd + 'AA',
-                database: dbName
+                port: dbConfig.port,
+                database: dbConfig.dbName,
+                dbaPrivilege : dbConfig.dbaPrivilege
             }
         };
 
@@ -88,6 +87,7 @@ xdescribe('oracleDriver ', function () {
     let sqlConn;
 
     beforeAll(function(done){
+        //console.log("running beforeAll");
         masterConn= null;
         let masterConnTemp= null;
         sqlConn= null;
@@ -95,14 +95,10 @@ xdescribe('oracleDriver ', function () {
         let sqlOpen = Deferred();
         let options =  _.extend({},dbInfo["good"]);
         if (options) {
-            options.database = null;
+            //options.database = null;
             options.dbCode = "good";
             masterConnTemp = new oracleDriver.Connection(options);
             masterConnTemp.open()
-                .then(function () {
-                    console.log("creating db "+dbName);
-                    return masterConnTemp.run("drop database IF EXISTS "+dbName+";\n\rcreate database "+dbName);
-                })
                 .then(function(){
                     console.log("connecting to db");
                     sqlConn = getConnection('good');
@@ -112,8 +108,8 @@ xdescribe('oracleDriver ', function () {
                             sqlOpen.resolve(rr);
                         })
                         .fail(rr=> {
-                                sqlOpen.reject(rr);
-                            });
+                            sqlOpen.reject(rr);
+                        });
                 })
                 .fail((err)=>{
                     console.log(err);
@@ -121,10 +117,9 @@ xdescribe('oracleDriver ', function () {
                 });
 
             sqlOpen.then(()=>{
-                console.log("db connected, running setup");
-                sqlConn.run(fs.readFileSync(path.join('test', 'data', 'oracle', 'Setup.sql')).toString())
+                sqlConn.run(fs.readFileSync(path.join('test', 'data', 'jsOracleDriver', 'setup.sql')).toString())
                     .then(()=>{
-                        console.log("setup runned, closing");
+                        console.log("setup run, closing");
                         return sqlConn.close();
                     })
                     .then(()=>{
@@ -138,36 +133,10 @@ xdescribe('oracleDriver ', function () {
             });
         }
     },60000);
-
-
-
-    afterAll(function (done){
-        console.log("running Afterall");
-        if (!masterConn) {
-            console.log("no masterConn, quitting afterAll");
-            done();
-            return;
-        }
-        console.log("dropping db "+dbName);
-        masterConn.run("drop database IF EXISTS "+dbName)
-            .then(()=>{
-                console.log("DB Dropped");
-                masterConn.close()
-                    .then(()=>{
-                        console.log("closing connection 0");
-                        done();
-                    });
-            }, (err)=>{
-                console.log("dropping error");
-                console.log(err);
-            });
-
-    },30000);
-
-
+    
     let canExecute=false;
     beforeEach(function (done) {
-        console.log("running beforeEach");
+        //console.log("running beforeEach");
         canExecute=false;
         if (!masterConn){
             console.log("no Master Conn");
@@ -176,7 +145,7 @@ xdescribe('oracleDriver ', function () {
         }
         sqlConn = getConnection('good');
         sqlConn.open().then(function () {
-            console.log("opened connection 2");
+            //console.log("opened connection 2");
             canExecute=true;
             done();
         }).fail(function (err) {
@@ -186,17 +155,16 @@ xdescribe('oracleDriver ', function () {
     }, 30000);
 
     afterEach(function (done) {
-        console.log("running afterEach");
+        //console.log("running afterEach");
         if (sqlConn) {
             sqlConn.destroy()
                 .then(()=>{
-                    console.log("closed connection 2");
+                    //console.log("closed connection 2");
                     done();
                 });
         }
         sqlConn = null;
     });
-
 
 
 
@@ -250,12 +218,9 @@ xdescribe('oracleDriver ', function () {
 
         });
 
-
-
-
         it('open with  right credential should return a success', function (done) {
             expect(canExecute).toBeTruthy();
-            var goodSqlConn = getConnection('good');
+            let goodSqlConn = getConnection('good');
             goodSqlConn.open()
                 .done(function () {
                     expect(true).toBe(true);
@@ -271,7 +236,7 @@ xdescribe('oracleDriver ', function () {
 
         it('open with bad credential should return an error', function (done) {
             expect(canExecute).toBeTruthy();
-            var badSqlConn = getConnection('bad');
+            let badSqlConn = getConnection('bad');
             badSqlConn.open()
                 .done(function (res) {
                     expect(res).toBe(undefined);
@@ -290,7 +255,12 @@ xdescribe('oracleDriver ', function () {
 
         it('select getdate() should give results', function (done) {
             expect(canExecute).toBeTruthy();
-            sqlConn.queryBatch('SELECT getdate() as currtime')
+            let query = sqlConn.getSelectCommand({
+                tableName : 'DUAL',
+                columns: 'CURRENT_DATE'
+            });
+            //sqlConn.queryBatch('SELECT CURRENT_DATE as currtime FROM dual')
+            sqlConn.queryBatch(query)
                 .done(function (result) {
                     expect(result).toBeDefined();
                     done();
@@ -304,7 +274,12 @@ xdescribe('oracleDriver ', function () {
 
         it('select * from table should give results', function (done) {
             expect(canExecute).toBeTruthy();
-            sqlConn.queryBatch('select * from customer')
+            let query = sqlConn.getSelectCommand({
+                tableName : 'customer',
+                columns: '*'
+            });
+            //sqlConn.queryBatch('select * from "customer"')
+            sqlConn.queryBatch(query)
                 .done(function (result) {
                     expect(result).toBeDefined();
                     done();
@@ -317,7 +292,12 @@ xdescribe('oracleDriver ', function () {
 
         it('Date should be given as objects', function (done) {
             expect(canExecute).toBeTruthy();
-            sqlConn.queryBatch('SELECT * from customer')
+            let query = sqlConn.getSelectCommand({
+                tableName : 'customer',
+                columns: '*'
+            });
+            //sqlConn.queryBatch('SELECT * from "customer"')
+            sqlConn.queryBatch(query)
                 .done(function (result) {
                     _(result).forEach(function (r) {
                         if (r.idcustomer) {
@@ -337,9 +317,17 @@ xdescribe('oracleDriver ', function () {
 
         it('notify should be called from queryRaw when multiple result got (two select)', function (done) {
             expect(canExecute).toBeTruthy();
-            var progressCalled, nResult = 0;
-            sqlConn.queryBatch('select top 5 * from customer ; select top 10 * from seller; ')
-            .progress(function (result) {
+            let progressCalled, nResult = 0;
+            sqlConn.queryBatch(
+                'DECLARE c1 SYS_REFCURSOR;'+
+                'c2 SYS_REFCURSOR;'+
+                'BEGIN'+
+                ' open c1 for select * from "customer" FETCH NEXT 5 ROWS ONLY;'+
+                ' open c2 for select * from "seller" FETCH NEXT 10 ROWS ONLY;'+
+                ' DBMS_SQL.RETURN_RESULT(c1);'+
+                ' DBMS_SQL.RETURN_RESULT(c2);'+
+                'END;'
+            ).progress(function (result) {
                 expect(result).toBeDefined();
                 expect(result.length).toBe(5);
                 nResult += 1;
@@ -359,10 +347,26 @@ xdescribe('oracleDriver ', function () {
 
         it('notify should be called from queryRaw when multiple result got (three select)', function (done) {
             expect(canExecute).toBeTruthy();
-            var len            = [];
-            sqlConn.queryBatch('select top 1 * from seller;select top 3 * from seller;select top 5 * from customer;'+
-                'select top 10 * from seller;select top  2 * from customer;')
-            .progress(function (result) {
+            let len = [];
+            sqlConn.queryBatch(
+                'DECLARE c1 SYS_REFCURSOR;'+
+                'c2 SYS_REFCURSOR;'+
+                'c3 SYS_REFCURSOR;'+
+                'c4 SYS_REFCURSOR;'+
+                'c5 SYS_REFCURSOR;'+
+                'BEGIN'+
+                ' open c1 for select * from "seller" FETCH NEXT 1 ROWS ONLY;'+
+                ' open c2 for select * from "seller" FETCH NEXT 3 ROWS ONLY;'+
+                ' open c3 for select * from "customer" FETCH NEXT 5 ROWS ONLY;'+
+                ' open c4 for select * from "seller" FETCH NEXT 10 ROWS ONLY;'+
+                ' open c5 for select * from "customer" FETCH NEXT 2 ROWS ONLY;'+
+                ' DBMS_SQL.RETURN_RESULT(c1);'+
+                ' DBMS_SQL.RETURN_RESULT(c2);'+
+                ' DBMS_SQL.RETURN_RESULT(c3);'+
+                ' DBMS_SQL.RETURN_RESULT(c4);'+
+                ' DBMS_SQL.RETURN_RESULT(c5);'+
+                'END;'
+            ).progress(function (result) {
                 len.push(result.length);
                 return true;
             })
@@ -407,11 +411,11 @@ xdescribe('oracleDriver ', function () {
                 })
                 .then(function () {
                     expect(sqlConn.queryBatch.calls.count()).toEqual(1);
-                    return sqlConn.setTransactionIsolationLevel(IsolationLevel.repeatableRead);
+                    return sqlConn.setTransactionIsolationLevel(IsolationLevel.readOnly);
                 })
                 .then(function () {
                     expect(sqlConn.queryBatch.calls.count()).toEqual(2);
-                    return sqlConn.setTransactionIsolationLevel(IsolationLevel.repeatableRead);
+                    return sqlConn.setTransactionIsolationLevel(IsolationLevel.readOnly);
                 })
                 .then(function () {
                     expect(sqlConn.queryBatch.calls.count()).toEqual(2);
@@ -420,12 +424,14 @@ xdescribe('oracleDriver ', function () {
                 .fail(function (err) {
                     expect(err).toBeUndefined();
                     done();
+                    //if(err && err.indexOf('ORA-08178'))
+                        //console.error('\n\n'+ "Errore ORA-08178 : L'utente (INTERNAL) non supporta l'isolation level SERIALIZABLE , utilizzare un altro utente per eseguire il test\n\n");
                 });
         });
 
         it('begin transaction should return success', function (done) {
             expect(canExecute).toBeTruthy();
-            sqlConn.beginTransaction(IsolationLevel.repeatableRead)
+            sqlConn.beginTransaction(IsolationLevel.readCommitted)
                 .done(function () {
                     expect(true).toBe(true);
                     sqlConn.rollBack();
@@ -440,7 +446,7 @@ xdescribe('oracleDriver ', function () {
 
         it('rollback transaction should fail without open conn', function (done) {
             expect(canExecute).toBeTruthy();
-            var closedSqlConn = getConnection('good');
+            let closedSqlConn = getConnection('good');
             closedSqlConn.rollBack()
                 .done(function () {
                     expect(true).toBe(false);
@@ -451,7 +457,7 @@ xdescribe('oracleDriver ', function () {
                     done();
                 });
         });
-
+        
         it('rollback transaction should fail without begin tran', function (done) {
             expect(canExecute).toBeTruthy();
             sqlConn.open()
@@ -469,10 +475,26 @@ xdescribe('oracleDriver ', function () {
                         });
                 });
         });
+        
+        it('commit transaction should success with a begin tran', function (done) {
+            expect(canExecute).toBeTruthy();
+            sqlConn.beginTransaction(IsolationLevel.readCommitted)
+                .then(function () {
+                    sqlConn.commit()
+                        .done(function () {
+                            expect(true).toBe(true);
+                            done();
+                        })
+                        .fail(function (err) {
+                            expect(err).toBeUndefined();
+                            done();
+                        });
+                });
+        });
 
         it('rollback transaction should success with a begin tran', function (done) {
             expect(canExecute).toBeTruthy();
-            sqlConn.beginTransaction(IsolationLevel.repeatableRead)
+            sqlConn.beginTransaction(IsolationLevel.readCommitted)
                 .then(function () {
                     sqlConn.rollBack()
                         .done(function () {
@@ -485,7 +507,6 @@ xdescribe('oracleDriver ', function () {
                         });
                 });
         });
-
     });
 
     describe('commands', function () {
@@ -498,7 +519,7 @@ xdescribe('oracleDriver ', function () {
                     tableName: 'customer',
                     filter: $dq.eq('idcustomer', 2)
                 }
-            )).toEqual('DELETE FROM customer WHERE (idcustomer=2)');
+            )).toEqual('DELETE FROM "customer" WHERE ("idcustomer"=2);');
         });
 
         it('getInsertCommand should compose an insert', function () {
@@ -506,7 +527,7 @@ xdescribe('oracleDriver ', function () {
             expect(sqlConn.getInsertCommand('ticket',
                 ['col1', 'col2', 'col3'],
                 ['a', 'b', 'c']
-            )).toEqual('INSERT INTO ticket(col1,col2,col3)VALUES(\'a\',\'b\',\'c\')');
+            )).toEqual('INSERT INTO ticket("col1","col2","col3")VALUES(\'a\',\'b\',\'c\');');
         });
 
         it('getUpdateCommand should compose an update', function () {
@@ -517,27 +538,18 @@ xdescribe('oracleDriver ', function () {
                     columns: ['col1', 'col2', 'col3'],
                     values: ['a', 'b', 'c']
                 }
-            )).toEqual('UPDATE ticket SET col1=\'a\',col2=\'b\',col3=\'c\' WHERE (idticket=1)');
+            )).toEqual('UPDATE ticket SET "col1"=\'a\',"col2"=\'b\',"col3"=\'c\' WHERE ("idticket"=1);');
         });
 
-        /*
-         CREATE PROCEDURE testSP2
-         @esercizio int,   @meseinizio int,   @mess varchar(200),   @defparam decimal(19,2) =  2
-         AS
-         BEGIN
-         select 'aa' as colA, 'bb' as colB, 12 as colC , @esercizio as original_esercizio,
-         replace(@mess,'a','z') as newmess,   @defparam*2 as newparam
-         END
-         */
         it('callSPWithNamedParams should have success', function (done) {
             expect(canExecute).toBeTruthy();
             sqlConn.callSPWithNamedParams({
                     spName: 'testSP2',
                     paramList: [
-                        {name: '@esercizio', value: 2013},
-                        {name: '@meseinizio', value: 1},
-                        {name: '@mess', value: 'ciao JS'},
-                        {name: '@defparam', value: 10}
+                        {name: 'esercizio', value: 2013},
+                        {name: 'meseinizio', value: 1},
+                        {name: 'mess', value: 'ciao JS'},
+                        {name: 'defparam', value: 10}
                     ]
                 })
                 .progress(function (x) {
@@ -547,11 +559,11 @@ xdescribe('oracleDriver ', function () {
                     expect(_.isArray(res)).toBeTruthy();
                     expect(res.length).toBe(1);
 
-                    var res0 = res[0];
+                    let res0 = res[0];
                     expect(_.isArray(res0)).toBeTruthy();
                     expect(res0.length).toBe(1);
 
-                    var o = res0[0];
+                    let o = res0[0];
                     //noinspection JSUnresolvedVariable
                     expect(o.colA).toBe('aa');
                     /*jshint camelcase: false */
@@ -572,10 +584,10 @@ xdescribe('oracleDriver ', function () {
         it('callSPWithNamedParams with unsorted params should have success - param order does not matter', function (done) {
             expect(canExecute).toBeTruthy();
             let paramList=[
-                {name: '@defparam', value: 10},
-                {name: '@mess', value: 'ciao JS'},
-                {name: '@esercizio', value: 2013},
-                {name: '@meseinizio', value: 1}
+                {name: 'defparam', value: 10},
+                {name: 'mess', value: 'ciao JS'},
+                {name: 'esercizio', value: 2013},
+                {name: 'meseinizio', value: 1}
             ];
             sqlConn.callSPWithNamedParams({
                     spName: 'testSP2',
@@ -611,27 +623,15 @@ xdescribe('oracleDriver ', function () {
                 });
         });
 
-
-        /*
-         CREATE PROCEDURE testSP1
-         @esercizio int, @meseinizio int, @mesefine int out, @mess varchar(200), @defparam decimal(19,2) =  2
-         AS
-         BEGIN
-         set @meseinizio= 12
-         select 'a' as colA, 'b' as colB, 12 as colC , @esercizio as original_esercizio,
-         replace(@mess,'a','z') as newmess,  @defparam*2 as newparam
-         END
-
-         */
         it('callSPWithNamedParams with output params should have success', function (done) {
             expect(canExecute).toBeTruthy();
             var table;
             let paramList=[
-                {name: '@esercizio', value: 2013},
-                {name: '@meseinizio', value: 2},
-                {name: '@mesefine', varName:'@mese', out: true, sqltype: 'int'},
-                {name: '@mess', value: 'ciao JS'},
-                {name: '@defparam', value: 10}
+                {name: 'esercizio', value: 2013},
+                {name: 'meseinizio', value: 2},
+                {name: 'mesefine', varName:'mese', out: true, sqltype: 'NUMBER(10)'},
+                {name: 'mess', value: 'ciao JS'},
+                {name: 'defparam', value: 10}
             ];
 
             sqlConn.callSPWithNamedParams({
@@ -670,20 +670,11 @@ xdescribe('oracleDriver ', function () {
                 });
         });
 
-        /*
-        CREATE  PROCEDURE  testSP3 (@esercizio int=0) AS
-        BEGIN
-            select top 100 * from customer ;
-            select top 100 * from seller ;
-            select top 10 * from customerkind as c2 ;
-            select top 10 * from sellerkind as s2 ;
-        END
-         */
         it('callSPWithNamedParams should return multiple tables', function (done) {
             expect(canExecute).toBeTruthy();
             var table;
             let paramList=[
-                {name: '@esercizio', value: 2013}
+                {name: 'esercizio', value: 2013}
             ];
             let nProgress=0;
             sqlConn.callSPWithNamedParams({
@@ -709,6 +700,70 @@ xdescribe('oracleDriver ', function () {
                 });
         });
 
+        it('getSelectListOfVariables should be able to select variables', function (done) {
+            expect(canExecute).toBeTruthy();
+
+            const sqlSet = 
+                "DECLARE " +
+                "name VARCHAR2(50) := 'john'; " +
+                "surname VARCHAR2(50) := 'doe'; " +
+                "year NUMBER(6) := 2023; " +
+                "BEGIN ";
+
+            const sqlSelect = sqlConn.getSelectListOfVariables([
+                { varName: 'name', colName: 'nome'}, // N.B.: wrapped in double quotes ("") because Oracle implicity converts the alias to uppercase otherwise
+                { varName: 'surname', colName: 'cognome'},
+                { varName: 'year', colName: 'anno'}
+            ]);
+        
+            let sql = sqlConn.appendCommands([sqlSet, sqlSelect, 'END;']);
+        
+            sqlConn.queryBatch(sql, false)
+                .done(function (result){
+                    expect(result.length).toBe(1);
+                    expect(result[0]).toBeDefined();
+
+                    expect(result[0].nome).toBe('john');
+                    expect(result[0].cognome).toBe('doe');
+                    expect(result[0].anno).toBe(2023);
+
+                    done();
+                }).fail(function (err){
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('getPagedTableCommand should be able to offset the first 5 rows and return the next 10', function (done) {
+            expect(canExecute).toBeTruthy();
+
+            const options = {
+                tableName : 'customer',
+                top : 10,
+                columns : 'idcustomer,name,age',
+                orderBy : 'idcustomer',
+                firstRow : 5,
+                filter : ''
+            };
+        
+            let sql = sqlConn.getPagedTableCommand(options);
+        
+            sqlConn.queryBatch(sql, false)
+                .done(function (result){
+                    expect(result).toBeDefined();
+                    expect(result.length).toBe(10); // Must return 10 rows
+
+                    // Ordered by idcustomer (ASC)
+                    expect(result[0].idcustomer).toBe(5); // Offset by 5
+                    expect(result[result.length - 1].idcustomer).toBe(14);
+
+                    done();
+                }).fail(function (err){
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
     });
 
     describe('querylines', function () {
@@ -716,9 +771,26 @@ xdescribe('oracleDriver ', function () {
 
         it('queryLines should return as many meta as read tables ', function (done) {
             expect(canExecute).toBeTruthy();
-            var nResp = 0;
-            sqlConn.queryLines(
-                'select top 10 * from customer; select top 20 * from seller; select top 2 * from customerkind', true)
+            let nResp = 0;
+/*            
+            let query = `DECLARE c1 SYS_REFCURSOR;
+                        c2 SYS_REFCURSOR;
+                        c3 SYS_REFCURSOR;
+                    BEGIN
+                        open c1 for select * from "customer";
+                        open c2 for select * from "seller" FETCH NEXT 20 ROWS ONLY;
+                        open c3 for select * from "customerkind" FETCH NEXT 2 ROWS ONLY;
+                        DBMS_SQL.RETURN_RESULT(c1);
+                        DBMS_SQL.RETURN_RESULT(c2);
+                        DBMS_SQL.RETURN_RESULT(c3);
+                    END;`
+*/
+            let query = 
+                sqlConn.getSelectCommand({ tableName : 'customer', columns: '*' })+
+               sqlConn.getSelectCommand({ tableName : 'seller', columns: '*', top: 20 })+
+               sqlConn.getSelectCommand({ tableName : 'customerkind', columns: '*', top: 2 });
+        
+            sqlConn.queryLines(query, true)
                 .progress(function (r) {
                     expect(r).toBeDefined();
                     if (r.meta) {
@@ -738,10 +810,13 @@ xdescribe('oracleDriver ', function () {
 
         it('meta returned from queryLines should be arrays ', function (done) {
             expect(canExecute).toBeTruthy();
-            sqlConn.queryLines(
-                'select top 10 * from sellerkind; select top 20 * from seller; select top 2 * from customerkind', true)
+            let query = 
+                sqlConn.getSelectCommand({ tableName : 'sellerkind', columns: '*' })+
+               sqlConn.getSelectCommand({ tableName : 'seller', columns: '*', top: 20 })+
+               sqlConn.getSelectCommand({ tableName : 'customerkind', columns: '*', top: 2 });
+
+            sqlConn.queryLines(query, true)
                 .progress(function (r) {
-                    //console.log('GOT:'+JSON.stringify(r))
                     if (r.meta) {
                         expect(r.meta).toEqual(jasmine.any(Array));
                     }
@@ -759,15 +834,15 @@ xdescribe('oracleDriver ', function () {
         it('queryLines should return all rows one at a time', function (done) {
             expect(canExecute).toBeTruthy();
             var nResp = 0;
-            sqlConn.queryLines('select top 5 * from seller', true)
+            //sqlConn.queryLines('select * from "seller" FETCH NEXT 5 ROWS ONLY', true)
+            sqlConn.queryLines(sqlConn.getSelectCommand({ tableName : 'seller', columns: '*', top: 5 }), true)
                 .progress(function (r) {
                     expect(r).toBeDefined();
                     if (r.row) {
                         nResp += 1;
-                         let buff = new Buffer(r.row[9],"base64");
-                         //let text = buff.toString('utf-8');
-                         fs.writeFileSync('decifraBase64.txt', buff);
-                         //if (nResp===1) console.log(buff);
+                        let buff = Buffer.from(r.row[9],"base64");
+
+                        fs.writeFileSync('decifraBase64.txt', buff);
                     }
                 })
                 .done(function () {
@@ -784,7 +859,7 @@ xdescribe('oracleDriver ', function () {
         it('queryLines should return row as arrays ', function (done) {
             expect(canExecute).toBeTruthy();
             var nResp = 0;
-            sqlConn.queryLines('select top 5 * from customerkind', true)
+            sqlConn.queryLines(sqlConn.getSelectCommand({ tableName : 'customerkind', columns: '*', top: 5 }), true)
                 .progress(function (r) {
                     if (r.row) {
                         nResp += 1;
@@ -804,12 +879,13 @@ xdescribe('oracleDriver ', function () {
         it('queryLines should return row as objects when raw=false ', function (done) {
             expect(canExecute).toBeTruthy();
             var nResp = 0;
-            sqlConn.queryLines('select top 5 * from customerkind', false)
+            sqlConn.queryLines(sqlConn.getSelectCommand({ tableName : 'customerkind', columns: '*', top: 5 }), false)
                 .progress(function (r) {
                     if (r.row) {
                         nResp += 1;
                         expect(r.row).toEqual(jasmine.any(Object));
                         //noinspection JSUnresolvedVariable
+                        
                         expect(r.row.idcustomerkind).toEqual(jasmine.any(Number));
                         //noinspection JSUnresolvedVariable
                         expect(r.row.name).toEqual(jasmine.any(String));
@@ -827,8 +903,12 @@ xdescribe('oracleDriver ', function () {
 
         it('queryLines should work with multiple results ', function (done) {
             expect(canExecute).toBeTruthy();
-            var nResp = 0;
-            sqlConn.queryLines('select top 5 * from customerkind; select top 10 * from customer', false)
+            let nResp = 0;    
+            let query = 
+                    sqlConn.getSelectCommand({ tableName : 'customerkind', columns: '*', top: 5 })+
+                   sqlConn.getSelectCommand({ tableName : 'customer', columns: '*', top: 10 });
+
+            sqlConn.queryLines(query, false)
                 .progress(function (r) {
                     if (r.row) {
                         nResp += 1;
@@ -860,6 +940,49 @@ xdescribe('oracleDriver ', function () {
                     done();
                 });
         });
+
+        it('giveErrorNumberDataWasNotWritten should return the provided value (3) if no row has been affected', function(done){
+            expect(canExecute).toBeTruthy();
+            const sqlCmd = 'UPDATE "customer" SET "random" = dbms_random.value()*1000 WHERE ROWNUM <= 0;',
+                errCmd = sqlConn.giveErrorNumberDataWasNotWritten(3);
+            let sql = sqlConn.appendCommands([sqlCmd, errCmd]);
+
+            sqlConn.queryBatch(sql, false)
+                .done(function (result) {
+                    expect(result.length).toBeGreaterThan(0);
+
+                    let res = result[0], i;
+                    for (i in res) {
+                        if (res.hasOwnProperty(i)) {
+                            result = res[i];
+                            break;
+                        }
+                    }
+                    expect(result).toBe(3);
+                    done();
+                })
+                .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
+
+        it('giveErrorNumberDataWasNotWritten should NOT return anything if one or more rows have been affected', function(done){
+            expect(canExecute).toBeTruthy();
+            const sqlCmd = 'UPDATE "customer" SET "random" = dbms_random.value()*1000 WHERE ROWNUM <= 1;',
+                errCmd = sqlConn.giveErrorNumberDataWasNotWritten(3);
+            let sql = sqlConn.appendCommands([sqlCmd, errCmd]);
+
+            sqlConn.queryBatch(sql, false)
+                .done(function (result) {
+                    expect(result.length).toBe(0);
+                    done();
+                })
+                .fail(function (err) {
+                    expect(err).toBeUndefined();
+                    done();
+                });
+        });
     });
 
 
@@ -883,18 +1006,18 @@ xdescribe('oracleDriver ', function () {
     });
 
 
-    // describe('clear dataBase', function () {
-    //     it('should run the destroy script', function (done) {
-    //         expect(canExecute).toBeTruthy();
-    //         sqlConn.run(fs.readFileSync('test/data/sqlServer/Destroy.sql').toString())
-    //             .done(function () {
-    //                 expect(true).toBeTruthy();
-    //                 done();
-    //             })
-    //             .fail(function (res) {
-    //                 expect(res).toBeUndefined();
-    //                 done();
-    //             });
-    //     }, 30000);
-    // });
+    describe('clear dataBase', function () {
+        it('should run the destroy script', function (done) {
+            expect(canExecute).toBeTruthy();
+            sqlConn.run(fs.readFileSync(path.join('test', 'data', 'jsOracleDriver', 'destroy.sql')).toString())
+                .done(function () {
+                    expect(true).toBeTruthy();
+                    done();
+                })
+                .fail(function (res) {
+                    expect(res).toBeUndefined();
+                    done();
+                });
+        }, 30000);
+    });
 });

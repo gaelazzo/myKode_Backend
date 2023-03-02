@@ -692,9 +692,9 @@
          */
 		denyNull: function (c, value) {
 			if (value === undefined) {
-				return !MetaModel.prototype.allowDbNull(c);
+				return !MetaModel.prototype.allowNull(c);
 			}
-			return !MetaModel.prototype.allowDbNull(c,!value);
+			return !MetaModel.prototype.allowNull(c,!value);
 		},
 
         /**
@@ -714,22 +714,22 @@
 		},
 
         /**
-         * @method allowDbNull
+         * @method allowNull
          * @public
          * @description SYNC
-         * Gets/sets "allowDbNull"  property on DataColumn "c" property (False if data is not nullable in the database)
+         * Gets/sets "allowNull"  property on DataColumn "c" property (False if data is not nullable in the database)
          * @param {DataColumn} c
          * @param {boolean} [value]
          * @returns {boolean}
          */
-		allowDbNull: function (c, value) {
+		allowNull: function (c, value) {
 			if (value === undefined) {
-				if (c.allowDbNull === undefined) {
+				if (c.allowNull === undefined) {
 					return true;
 				}
-				return c.allowDbNull;
+				return c.allowNull;
 			}
-			c.allowDbNull = value;
+			c.allowNull = value;
 			return this;
 		},
 
@@ -932,7 +932,15 @@
 				if (!d1 && !d2) {
 					return true;
 				}
-				return d1.getTime() === d2.getTime();
+				try {
+					return d1.getTime() === d2.getTime();
+				}
+				catch(e){
+					console.log("error with column "+column.name+"value1:"+d1+"("+typeof (d1)+"), value2:"+d2+
+						"("+typeof d2+")")
+					throw e
+				}
+
 			}
 
 			return dRow.getValue(column.name, dataRowVersion.current) === dRow.getValue(column.name, dataRowVersion.original);
@@ -1096,6 +1104,7 @@
 			MetaModel.prototype.copyDataRow(dsDest.tables[source_unaliased], rowSource);
 			MetaModel.prototype.allowClear(dsDest.tables[source_unaliased], false);
 			const self = this;
+
 			_.forEach(t.childRelations(), function (rel) {
 				if (dsDest.tables[rel.childTable]) {
 					if (self.checkChildRel(rel)) {
@@ -1251,7 +1260,8 @@
 			}
 
 			// Vedo se nella tab. di dest. c'è una riga cancellata che matcha
-			const filter = MetaModel.prototype.getWhereKeyClause(toCopy, toCopy.table, toCopy.table, false);
+			const filter =  destTable.keyFilter(toCopy.current);
+				//MetaModel.prototype.getWhereKeyClause(toCopy, toCopy.table, toCopy.table, false);
 			const deletedFound = _.filter(destTable.select(filter), function (r) {
 				return r.getRow().state === dataRowState.deleted;
 			});
@@ -1389,7 +1399,6 @@
          * @returns {boolean}
          */
 		checkChildRel: function (rel) {
-
 			if (MetaModel.prototype.notEntityChildFilter(rel.dataset.tables[rel.childTable])) {
 				return true;
 			}
@@ -1403,7 +1412,6 @@
 
 			_.forEach(rel.parentCols, function (parentCol, index) {
 				const childCol = rel.childCols[index];
-
 				if (rel.dataset.tables[rel.parentTable].columns[parentCol].isPrimaryKey &&
 					rel.dataset.tables[rel.childTable].columns[childCol].isPrimaryKey) {
 					linkparentkey = true;
@@ -1602,7 +1610,7 @@
          * @returns {Object}
          */
 		clearValue: function (col) {
-			if (MetaModel.prototype.allowDbNull(col)) {
+			if (MetaModel.prototype.allowNull(col)) {
 				return null;
 			}
 			if (this.isColumnNumeric(col)){

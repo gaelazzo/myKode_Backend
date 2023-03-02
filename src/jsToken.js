@@ -232,6 +232,12 @@ async function setMasterKey (key){
  */
 function checkToken (req, res, next){
     try {
+        if (!req.headers.authorization){
+            res.status(401).json({
+                error: 'No Authorization header found in the request'
+            });
+            return;
+        }
         let headersAuthParts = req.headers.authorization.split(' ');
         if (headersAuthParts.length < 2){
             res.status(401).json({
@@ -247,16 +253,19 @@ function checkToken (req, res, next){
         }
         const token = headersAuthParts[1];
         if (token === tokenConfig.AnonymousToken){
+            //console.log("standard anonymous token found, creating empty token");
             req[tokenConfig.options.requestProperty] = new Token(req); //sets auth as anonymous token
             next();
         }
         else {
             //token data is taken from req.headers.authorization
-            jwtCheck(req,res,next);
+            //console.log("standard token found");
+            jwtCheck(req,res,next); //jwtCheck is a middleware
             // The decoded JWT payload is available on the request via the auth property
         }
     }
-    catch {
+    catch (e){
+        //console.log(e)
         res.status(401).json({
             error: 'Invalid request!'
         });

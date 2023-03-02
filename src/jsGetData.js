@@ -210,7 +210,9 @@ function recursivelyMarkSubEntityAsVisited(table, visited, toVisit){
          */
             rel=>{
                 let childTable = ds.tables[rel.childTable];
-                if ( visited[rel.childTable] || Model.isSubEntityRelation(rel,childTable,table)){
+                if ( visited[rel.childTable] ||
+                    (!Model.isSubEntityRelation(rel,childTable,table) && Model.allowClear(childTable))
+                        ){
                     return;
                 }
                 visited[rel.childTable]= childTable;
@@ -268,7 +270,7 @@ function doGet(ctx, primaryTable, onlyPeripherals, oneRow){
 
     //Set as Visited all child tables linked by autoincrement fields
     if (oneRow && oneRow.state === dataRowState.added){
-        _.forEach(primaryTable.childRelations(),
+        _.forEach(primaryTable.childRelations(), //relation where primaryTable table is the parent
             /**
              * @param {DataRelation} rel
              */

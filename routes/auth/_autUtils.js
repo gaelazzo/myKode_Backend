@@ -6,6 +6,8 @@ const dblogger = require("./_dbLogger");
 const jsToken = require("./../../src/jsToken");
 const jsDataSet = require("./../../client/components/metadata/jsDataSet");
 const {CType} = require("./../../client/components/metadata/jsDataSet");
+const _ = require('lodash');
+const Environment = require("../../src/jsEnvironment");
 
 /**
  *
@@ -34,7 +36,7 @@ function serializeUsr(env){
  */
 function serializeSys(env){
     return ["idflowchart","user","idcustomuser","ndetail","usergrouplist","ayear","esercizio"]
-        .reduce((res, k) => {
+    .reduce((res, k) => {
         let val = env.sys(k);
         res[k] = Array.isArray(val) ? val.join(',') : val;
         return res;
@@ -90,17 +92,18 @@ async function _doLogin(ctx, userName, password,
             // it was not linked to a virtual user
             env.sys("user",userName);
             env.sys("usergrouplist",null);
+
         }
     }
     catch (err){
-        res.send(401,"Error processing:"+err);
+        res.status(401).send("Error processing:"+err);
         return ;
     }
 
     //evaluates idcustomuser
     await env.getCustomUser(ctx.dataAccess);
     if (!await dataAllowed(ctx, accountDate)){
-        res.send(401,"Date Not Allowed");
+        res.status(401).send("Date Not Allowed");
         return ;
     }
 
@@ -122,7 +125,7 @@ async function _doLogin(ctx, userName, password,
             });
             return;
         }
-        res.send(401,"Bad credentials");
+        res.status(401).send("Bad credentials for "+userName);
         return ;
     }
 
@@ -133,16 +136,16 @@ async function _doLogin(ctx, userName, password,
     if (!sessionInfoSSO){
         let iterations = referenceRow["iterweb"];
         if (!iterations){
-            res.send(401,"Bad Credential");
+            res.status(401).send("Bad Credential (configuration) ");
             return ;
         }
         //i bytearray sono convertiti in string da EdgeCompiler.cs tramite Convert.ToBase64String ((byte[])value)
         // quindi è necessario riconvertirli in buffer come segue
-        let salt= new Buffer(referenceRow["saltweb"],"hex");
-        let hash = new Buffer(referenceRow["passwordweb"],"hex");
+        let salt= new Buffer.from(referenceRow["saltweb"],"hex");
+        let hash = new Buffer.from(referenceRow["passwordweb"],"hex");
 
         if (! await  jsPassword.verify(password, salt, hash, iterations)){
-            return res.send(401,"Bad credentials");
+            return res.status(401).send("Bad credentials");
         }
     }
 
@@ -166,15 +169,15 @@ async function _doLogin(ctx, userName, password,
                 ", idcustomuser:"+env.sys("idcustomuser")+
                 ", userName: "+userName
              },ctx);
-        res.send(401,"User not in security");
+        res.status(401).send("User not in security");
         return;
     }
 
     env.usr("userweb", userName);
     env.usr("idreg",idreg);
-
-    let roles = await getRoles(accountDate,env.sys("idcustomuser"));
-
+    let roles = await getRoles(today(),env.sys("idcustomuser"),ctx);
+    //let roles = await getRoles(accountDate,env.sys("idcustomuser"));
+    
     //modify temporary identity
     let identity = ctx.identity;
     identity.title = title;
@@ -243,7 +246,7 @@ async function dataAllowed(ctx, newDate) {
 
 
     let filterDateYear = q.and(q.eq("idcustomuser",idcustomuser),
-        q.like(ayearStr.substr(2)+"%"),
+        q.like("idflowchart",ayearStr.substr(2)+"%"),
         q.isNullOrLe("start",newDate),
         q.isNullOrGe("stop",newDate)
     );
@@ -255,7 +258,7 @@ async function dataAllowed(ctx, newDate) {
 
 
     let filterDateToday = q.and(q.eq("idcustomuser",idcustomuser),
-        q.like(ayearStr.substr(2)+"%"),
+        q.like("idflowchart",ayearStr.substr(2)+"%"),
         q.isNullOrLe("start",today()),
         q.isNullOrGe("stop",today())
     );

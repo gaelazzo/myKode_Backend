@@ -30,6 +30,7 @@ const jsBusinessLogic = require("../src/jsBusinessLogic");
 let BusinessPostData =jsBusinessLogic.BusinessPostData;
 const Environment = require('./jsEnvironment');
 
+
 const Context = require('./jsDbList').Context;
 
 
@@ -39,6 +40,7 @@ const Context = require('./jsDbList').Context;
  */
 function JsApplication() {
     this.expressApplication = createExpressApplication();
+
     this.expressApplication.locals.JsApplication= this; //every expressApplication is attached to a JsApplication
 
     this.router = Express.Router();
@@ -84,6 +86,7 @@ JsApplication.prototype = {
 
     error: function (err,req,res,next){
         res.status(401).json({
+            err:err,
             error: err.stack
         });
     },
@@ -96,7 +99,7 @@ JsApplication.prototype = {
      * @param res
      * @param ctx
      */
-    assureReleaseConnection: function(req, res, ctx) {
+    releaseConnection: function(req, res, ctx) {
         let released=false;
         res.on('close', () => {
             if (released){
@@ -145,16 +148,18 @@ JsApplication.prototype = {
 
     /**
      *
-     * @param {string} dbCode
+     * @param {object} appConfig
      * @return {Promise}
      */
-    init: function (dbCode){
-        this.dbCode= dbCode;
-        this.pool = this.createConnectionPool(dbCode);
+    init: function (appConfig){
+        this.dbCode= appConfig.dbCode;
+        this.dsPath = appConfig.dsPath;
+        this.metaPath = appConfig.metaPath;
+        this.pool = this.createConnectionPool(this.dbCode);
         let noTokenFolders = this.getNoTokenFolders();
-        let dbInfo = DBList.getDbInfo(dbCode);
+        let dbInfo = DBList.getDbInfo(this.dbCode);
         if (dbInfo.test){
-            this.expressApplication.use(this.createTestSession.bind(this));
+            this.expressApplication.use(this.createTestSession.bind(this));//used for some unit test
         }
 
         //adds all routers of directory routes
@@ -175,6 +180,7 @@ JsApplication.prototype = {
         this.expressApplication.use('/client/meta', Express.static('metadata'));
         this.expressApplication.use('/client/pages', Express.static('pages'));
         this.expressApplication.use(Express.static("client"));
+        this.expressApplication.use(Express.static('test/client'));
 
         this.expressApplication.use(this.router);
         this.expressApplication.use(this.error.bind(this));
@@ -212,6 +218,7 @@ JsApplication.prototype = {
      * @param {DataAccess} conn
      * @return {Environment}
      */
+
     createEnvironment: function (identity, conn){
         let e = new Environment(identity);
 
@@ -261,14 +268,17 @@ JsApplication.prototype = {
      * @param editType
      * @return {DataSet}
      */
-    getDataSet: function(tableName,editType){
-        return commonGetDataSet.getDataSet(tableName,editType);
+    getDataSet: function(ctx,tableName,editType){
+        return commonGetDataSet.getDataSet(tableName,editType,ctx);
     },
 
 
     getAnonymousEnvironment:function(identity) {
         // TODO create an anonymous environment
-        return new Environment(identity);
+        let e= new Environment(identity);
+        e.field("lu",identity.name);
+        e.field("cu",identity.name);
+        return e;
     },
 
     /**
@@ -300,7 +310,7 @@ JsApplication.prototype = {
         // return res.status(401).json({
         //     error: 'No token'
         // });
-        // identity is an annonymous identity cause there is no token at all
+        // identity is an anonymous identity cause there is no token at all
         //  it is the same as if anonymous token was found in the header
         //Here a new environment is created
         let env = this.getAnonymousEnvironment(identity); //creates an anonymous environment
@@ -320,6 +330,8 @@ JsApplication.prototype = {
     createContext: function(pooledConn,env,req,res, next){
         let ctx = new Context();
         ctx.dbCode = this.dbCode;
+        ctx.dsPath = this.dsPath;
+        ctx.metaPath = this.metaPath;
         ctx.pooledConn = pooledConn;
         ctx.dataAccess = pooledConn.getDataAccess();
         ctx.security = ctx.dataAccess.security;
@@ -334,7 +346,7 @@ JsApplication.prototype = {
         .then((security)=>{
             ctx.security = security;
             ctx.createPostData = this.createPostData.bind(this, ctx);  //to override
-            ctx.getDataSet = this.getDataSet.bind(this); //to override
+            ctx.getDataSet = this.getDataSet.bind(this,ctx); //to override
             ctx.localResource = LocalResource.prototype.getLocalResource(this.getLanguageFromRequest(req));
             ctx.getMeta= function (tableName){
                 return GetMeta.getMeta(tableName,req);
@@ -342,7 +354,7 @@ JsApplication.prototype = {
             ctx.environmentSet = this.environmentSet.bind(this,ctx);
             ctx.getDataInvoke = new GetDataInvoke(ctx);
             req.app.locals.context = ctx;
-            this.assureReleaseConnection(req, res, ctx);
+            this.releaseConnection(req, res, ctx);
             next();
         })
         .fail(err=>{
@@ -356,7 +368,6 @@ JsApplication.prototype = {
         let sessionID = ctx.identity.sessionID();
         this.environments[sessionID] = env;
     },
-
     getSecurityProvider: function(){
         return require("./jsSecurity");
     },
@@ -384,6 +395,8 @@ JsApplication.prototype = {
             //If a token is not present, evaluates an anonymous identity
             let identity = getIdentityFromRequest(req);
             //let sessionID = identity.sessionID();
+
+
             //let env = this.environments[sessionID];
             if (!env) {
                 res.status(401).json({

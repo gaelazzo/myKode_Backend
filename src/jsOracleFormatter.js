@@ -73,19 +73,22 @@ const _ = require('lodash');
             }
             if (_.isDate(v)) {
                 if (v.getHours() === 0 && v.getMinutes() === 0 && v.getSeconds() === 0 && v.getMilliseconds() === 0) {
-                    return '{d \'' +
-                        leftPad(v.getFullYear(), 4, '0') +'-'+
-                        leftPad(v.getMonth() + 1, 2, '0') +'-'+ //javascripts counts months starting from 0!!!
-                        leftPad(v.getDate(), 2, '0') + '\'}';
+                    return "TO_DATE('" +
+                        leftPad(v.getDate(), 2, '0') + '-' +
+                        leftPad(v.getMonth() + 1, 2, '0') + '-' + //javascripts counts months starting from 0!!!
+                        leftPad(v.getFullYear(), 4, '0')
+                        + "', 'DD-MM-YYYY')";
                 }
-                return '{ts \'' +
-                    leftPad(v.getFullYear(), 4, '0') + '-' +
+
+                return "TO_TIMESTAMP('" +
+                    leftPad(v.getDate(), 2, '0') + '-' +
                     leftPad(v.getMonth() + 1, 2, '0') + '-' + //javascripts counts months starting from 0!!!
-                    leftPad(v.getDate(), 2, '0') + ' ' +
+                    leftPad(v.getFullYear(), 4, '0') + '-' +
                     leftPad(v.getHours(), 2, '0') + ':' +
                     leftPad(v.getMinutes(), 2, '0') + ':' +
-                    leftPad(v.getSeconds(), 2, '0') + '.' +
-                    leftPad(v.getMilliseconds(), 3, '0') + '\'}';
+                    leftPad(v.getSeconds(), 2, '0') +
+                    leftPad(v.getMilliseconds(), 3, '0')+
+                    "', 'DD-MM-YYYY HH24:MI:SSFF3')";
             }
             if (isNullOrUndefined(v)) {
                 return 'null';
@@ -192,11 +195,22 @@ const _ = require('lodash');
          */
         $sqlf.field = function (field, alias) {
             if (alias) {
-                return alias + '.' + field;
+                return alias + '.' + quoteStringIfLowerCase(field);
             }
-            return field;
+            return quoteStringIfLowerCase(field);
         };
 
+        /* tables and columns name must be quoted otherwise they are converted to uppercase */
+        function quoteStringIfLowerCase(str){
+            if (typeof str !== "string")  {
+                return str;
+            }
+            if (/[a-z]/.test(str)){
+                //has lower cases
+                return "\""+str.trim()+"\"";
+            }
+            return str.trim();
+        }
         /**
          * gets the 'object are equal' representation for the db
          * @method eq
@@ -282,9 +296,6 @@ const _ = require('lodash');
          * @returns {string}
          */
         $sqlf.coalesce = function (arr,context) {
-            if (arr.length===2){
-                return 'ISNULL' + doPar(toSql(arr, context));
-            }
             return 'COALESCE' + doPar(toSql(arr, context));
         };
 
@@ -297,7 +308,6 @@ const _ = require('lodash');
          * @return {string}
          */
         $sqlf.convertToInt = function (expr, context) {
-            // TODO: rivedere, vedere se da fare CAST e poi convertire
             return 'CONVERT(int,' + toSql(expr, context) + ')';
         };
 
@@ -310,7 +320,6 @@ const _ = require('lodash');
          * @return {string}
          */
         $sqlf.convertToString = function (expr, maxLen, context) {
-            // TODO: rivedere, vedere se da fare CAST e poi convertire
             return 'CONVERT(varchar(' + maxLen + '),' + toSql(expr, context) + ')';
         };
 
@@ -364,7 +373,6 @@ const _ = require('lodash');
          * @example bitSet('a','3') would be converted into '(a&(1<<3))<>0'
          */
         $sqlf.bitSet = function (a, b, context) {
-            // TODO: to check, should use BitSet() ?
             return "((" + toSql(a, context) + "&(1<<" + toSql(b, context) + "))<>0";
         };
 
@@ -379,7 +387,6 @@ const _ = require('lodash');
          * @example bitClear('a','3') would be converted into '(a&(1<<3))=0'
          */
         $sqlf.bitClear = function (a, b, context) {
-            // TODO: to check
             return "((" + toSql(a, context) + "&(1<<" + toSql(b, context) + "))=0";
         };
 
@@ -398,7 +405,7 @@ const _ = require('lodash');
 
 
         /**
-         * gets the 'not expression' representation for the db
+         * gets the 'minus expression' representation for the db
          * @method minus
          * @param {sqlFun|Array|object|null|undefined} a
          * @param {Environment} context
@@ -406,7 +413,6 @@ const _ = require('lodash');
          * @example -('a') would be converted into '-a'
          */
         $sqlf.minus = function (a, context) {
-            // TODO: to check
             return "-" + doPar(toSql(a, context));
         };
 
@@ -477,7 +483,6 @@ const _ = require('lodash');
          * @example add(['a','b','c']) would give 'a+b+c'
          */
         $sqlf.concat = function (arr, context) {
-            // TODO : remove this function or add() , duplicated (also no difference in mySQL and SQL Server)
             return doPar(_.map(arr, function (a) {
                 return toSql(a, context);
             }).join("+"));
@@ -592,7 +597,7 @@ const _ = require('lodash');
         $sqlf.conditionToSql = conditionToSql;
         $sqlf.isEmptyCondition = isEmptyCondition;
 
-        const charTypes = { // TODO: to check again
+        const charTypes = { 
             'text': true,
             'ntext': true,
             'varchar': true,

@@ -1,7 +1,6 @@
 /*globals describe,beforeEach,it,expect,jasmine,spyOn,afterEach,xit */
 /* jshint node:true */
 
-console.log("running jsDbListSpec");
 
 const path = require("path");
 const DataAccess = require('../../src/jsDataAccess').DataAccess;

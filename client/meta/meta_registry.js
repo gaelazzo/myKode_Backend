@@ -1,4 +1,4 @@
-﻿(function(_, metaModel,MetaSegreterieData, Deferred) {
+﻿(function(_, metaModel,MetaData, Deferred) {
 
 	/** Detect free variable `global` from Node.js. */
 	let freeGlobal = typeof global === 'object' && global && global.Object === Object && global;
@@ -17,15 +17,15 @@
 	let moduleExports = freeModule && freeModule.exports === freeExports;
 
     function meta_registry() {
-		MetaSegreterieData.apply(this, ["registry"]);
+		MetaData.apply(this, ["registry"]);
         this.name = 'meta_registry';
     }
 
     meta_registry.prototype = _.extend(
-        new MetaSegreterieData(),
+        new MetaData(),
         {
             constructor: meta_registry,
-			superClass: MetaSegreterieData.prototype,
+			superClass: MetaData.prototype,
 
 			describeColumns: function (table, listType) {
 				var nPos=1;
@@ -424,7 +424,7 @@
 
 	}(  (typeof _ === 'undefined') ? require('lodash') : _,
 		(typeof appMeta === 'undefined') ? require('../components/metadata/MetaModel').metaModel : appMeta.metaModel,
-		(typeof appMeta === 'undefined') ? require('./MetaSegreterieData').MetaSegreterieData : appMeta.MetaSegreterieData,
+		(typeof appMeta === 'undefined') ? require('../components/metadata/metadata').MetaData : appMeta.MetaGoldData,
 		(typeof appMeta === 'undefined') ? require('../components/metadata/EventManager').Deferred : appMeta.Deferred,
 	)
 );

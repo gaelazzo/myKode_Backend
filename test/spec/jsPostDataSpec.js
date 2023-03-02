@@ -2,8 +2,6 @@
 /*jshint -W069 */
 
 
-console.log("running jsPostDataSpec");
-
 const PostData = require('../../src/jsPostData').PostData,
     SinglePostData=require('../../src/jsPostData').SinglePostData,
     BusinessLogicResult = require('../../src/jsPostData').BusinessLogicResult,

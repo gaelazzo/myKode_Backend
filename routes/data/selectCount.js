@@ -2,6 +2,7 @@ const express = require('express');
 const q = require('./../../client/components/metadata/jsDataQuery');
 const asyncHandler = require("express-async-handler");
 //const {unlink,readDir,readFile,stat} = require("fs/promises");
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
 
 
 async function selectCount(req,res,next){
@@ -9,7 +10,7 @@ async function selectCount(req,res,next){
     //console.log(req);
     let ctx = req.app.locals.context;
     let getDataInvoke = ctx.getDataInvoke;
-    let jsonFilter= JSON.parse(req.body.filter);
+    let jsonFilter= getDataUtils.getJsObjectFromJson(req.body.filter);
     let filter = q.fromObject(jsonFilter);
     let tableName = req.body.tableName;
     try {

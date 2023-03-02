@@ -1,7 +1,6 @@
 /*globals expect  */
 'use strict';
 
-console.log("running jsDataAccessSpec");
 
 const DA = require('../../src/jsDataAccess');
 

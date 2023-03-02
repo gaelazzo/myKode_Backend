@@ -298,6 +298,10 @@ EdgeConnection.prototype.queryLines = function (query, raw,timeout) {
 				lastMeta = data.meta;
 				if (!data.rows) def.notify(data);
 			}
+			if (data.error) {
+				def.reject(data.error + ' running ' + query);
+				return;
+			}
 			if (data.rows) {
 				if (raw) {
 					def.notify({row: data.rows[0]});
@@ -319,10 +323,6 @@ EdgeConnection.prototype.queryLines = function (query, raw,timeout) {
 			if (error) {
 				def.reject(error + ' running ' + query);
 				return;
-			}
-			if (result.length === 0) {
-				//def.resolve();
-				return {};
 			}
 			return {};
 		});
@@ -378,11 +378,11 @@ EdgeConnection.prototype.queryPackets = function (query, raw, packSize, timeout)
 			else {
 				if (data.meta) { //meta when present is a list of column names
 					lastMeta = data.meta;
+
 				}
 				if (data.rows) {
 					def.notify({rows: simpleObjectify(lastMeta, data.rows), set: currentSet});
 				}
-
 			}
 			if (extCallback) extCallback();
 			return {};

@@ -1,5 +1,7 @@
-{ "server": "localhost",
-  "database": "test",
-  "user": "user1",
-  "pwd": "user1user1"
+{
+    "server": "localhost",
+    "database": "test",
+    "user": "user1",
+    "pwd": "user1user1",
+    "sqlModule": "jsMySqlDriver"
 }

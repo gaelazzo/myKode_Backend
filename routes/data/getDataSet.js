@@ -5,6 +5,7 @@ let DataSetPath = "./../../datasets";
 const asyncHandler = require('express-async-handler'); //https://zellwk.com/blog/async-await-express/
 const metaModel = require("../../client/components/metadata/MetaModel.js");
 const {readFile} = require("fs/promises");
+const getDataUtils = require("../../client/components/metadata/GetDataUtils");
 
 const path = require('path');
 
@@ -12,13 +13,13 @@ async function middleware(req,res,next){
     let ctx = req.app.locals.context;
     let tableName = req.body.tableName;
     let editType = req.body.editType;
-
     if (!isAnonymousAllowed(req, tableName,editType)){
         res.status(400).send("Anonymous not permitted, dataset "+tableName+" "+editType);
         return;
     }
     let /*DataSet*/ ds = await ctx.getDataInvoke.createEmptyDataSet(tableName,editType);
-    res.send(JSON.stringify(ds.serialize(true)));
+    res.status(200).send(getDataUtils.getJsonFromJsDataSet(ds,true));
+
 }
 
 

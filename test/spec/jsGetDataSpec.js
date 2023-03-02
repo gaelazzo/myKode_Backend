@@ -4,7 +4,6 @@
 //admit object[field]
 /* jshint -W069 */
 
-console.log("running jsGetDataSpec");
 
 const getData = require('../../src/jsGetData'),
     getContext = require('../data/GetData/fakeContext').getContext,

@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const q = require("./../../client/components/metadata/jsDataQuery");
 const GetData = require("../../src/jsGetData");
 const attachUtils = require("./../../client/components/metadata/_attachmentutils");
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
 
 
 async function middleware(req,res,next){
@@ -16,11 +17,10 @@ async function middleware(req,res,next){
         return;
     }
 
-    let jsonFilter= JSON.parse(req.body.filter);
+    let jsonFilter= getDataUtils.getJsObjectFromJson(req.body.filter);
     let filter = q.fromObject(jsonFilter);
 
     let /*DataSet*/ ds = await ctx.getDataInvoke.createEmptyDataSet(tableName, editType);
-
 
     await ctx.getDataInvoke.readCached(ds);
 
@@ -34,7 +34,7 @@ async function middleware(req,res,next){
 
     await attachUtils.sanitizeDsForAttach(ds, ctx);
 
-    res.json(ds.serialize(true));
+    res.status(200).send( getDataUtils.getJsonFromJsDataSet(ds,false)); //JSON.stringify(ds.serialize(true)));
 
 }
 

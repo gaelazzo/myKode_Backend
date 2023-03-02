@@ -1,5 +1,6 @@
 const Path = require("path");
 const DataSet = require("./../../client/components/metadata/jsDataSet").DataSet;
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
 const fs = require('fs');
 const isAnonymousAllowed = require("./_AnonymousAllowed");
 const express = require("express");
@@ -55,25 +56,29 @@ async function middleware(req,res,next){
     let ctx = req.app.locals.context;
     let primaryTableName = req.body.primaryTableName;
     let onlyPeripherals = req.body.onlyPeripherals === "true";
-    let jsonFilter= JSON.parse(req.body.filter);
-    let filter = q.fromObject(jsonFilter);
-    let ds = new DataSet();
-    ds.deSerialize(JSON.parse(req.body.ds), true);
-
+    let filter= getDataUtils.getJsDataQueryFromJson(req.body.filter);
+    let ds = getDataUtils.getJsDataSetFromJson(req.body.ds);
     if (!isAnonymousAllowed(req, primaryTableName,"default")){
         res.status(400).send("Anonymous not permitted, dataset "+primaryTableName+" "+"default");
         return;
     }
     let /*DataTable*/ dt = ds.tables[primaryTableName];
     let drr = dt.select(filter);
-    if (drr.length === 0){
-        return res.status(400).send("No rows found");
+    let /*DataRow*/ dr = null;
+    // if (drr.length === 0){
+    //     return res.status(400).send("No rows found in table "+primaryTableName+" with filter "+filter);
+    // }
+    if (drr.length>0){
+        dr = drr[0].getRow();
     }
-    let /*DataRow*/ dr = drr[0].getRow();
-    await ctx.getDataInvoke.doGet(ds, dr, primaryTableName, onlyPeripherals);
-
-    // la risposta non restituisce le righe delle tab principale  e subentità perchè nel caso di onlyPeripherals non serve
-    // serve in input al backend per il calcolo esatto delle righe nelle tabelle periferiche , ma al ritorno evito di serializzarle
+    try{
+        await ctx.getDataInvoke.doGet(ds, dr, primaryTableName, onlyPeripherals);
+    }
+    catch (e){
+        return res.status(500).send("Errore interno "+e);
+    }
+    // la risposta non restituisce le righe delle tab principale  e subentità perchè nel caso di onlyPeripherals non serve.
+    // Serve in input al backend per il calcolo esatto delle righe nelle tabelle periferiche, ma al ritorno evito di serializzarle
     // poichè il client già le ha.
     let visited = new Set();
     let toVisit = new Set();
@@ -83,8 +88,8 @@ async function middleware(req,res,next){
             ds.tables[s].clear();
         });
     }
-    res.json(ds.serialize(true));
-
+    res.status(200).send(getDataUtils.getJsonFromJsDataSet(ds,false));
+    //res.json(ds.serialize(true));
 }
 
 

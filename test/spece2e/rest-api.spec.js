@@ -32,7 +32,7 @@ describe('rest api',
                     timeout : 20000,
                     success: (res) => {
                         expect(res).toBeDefined();
-                        const dtObj = JSON.parse(res);
+                        const dtObj = res; //JSON.parse(res);
                         const dt = new jsDataSet.DataTable(dtObj.name);
                         dt.deSerialize(dtObj, true);
                         expect(dt.name).toBe('customer');

@@ -50,12 +50,16 @@ function middleware(req,res,next){
                     });
                     _.forOwn(t.columns,(col,colName)=>{
                         if (! set.has(colName)){
-                            if (t.isKey(colName))return;
+                            if (t.isKey(colName)){
+                                return;
+                            }
                             delete t.columns[colName];
                         }
                     });
                 }
-                res.json(t.serialize(true));
+                let tt = t.serialize(true);
+                tt.name =tableName;
+                res.json(tt);
             },
             err=>{
                 res.err(err);

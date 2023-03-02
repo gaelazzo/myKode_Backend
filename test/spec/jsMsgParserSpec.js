@@ -1,7 +1,5 @@
 
 
-console.log("running jsMsgParserSpec");
-
 const Parser = require('../../src/jsMsgParser').MsgParser;
 
 describe('MsgParser', function () {

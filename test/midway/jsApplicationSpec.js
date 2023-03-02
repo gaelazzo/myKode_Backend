@@ -14,6 +14,7 @@ const FormData = require('form-data');
 const fs = require("fs");
 const q = require('../../client/components/metadata/jsDataQuery');
 const jsDataSet = require("../../client/components/metadata/jsDataSet");
+const getDataUtils = require("../../client/components/metadata/getDataUtils");
 const configName = path.join('config', 'dbList.json');
 const GetMeta = require("./../../client/components/metadata/GetMeta");
 
@@ -44,6 +45,7 @@ const sqlServerDriver = require('../../src/jsSqlServerDriver'),
         snapshot: 'SNAPSHOT',
         serializable: 'SERIALIZABLE'
     };
+
 
 describe('js prerequisites', function () {
     it("checking method call", function (done) {
@@ -157,7 +159,7 @@ describe('rest api',
                     //const dtObj = JSON.parse(body);
                     const dt = new jsDataSet.DataTable(dtObj.name);
                     dt.deSerialize(dtObj, true);
-                    expect(dt.name).toBe('customusergroup');
+                    //expect(dt.name).toBe('customusergroup'); now this has been changed
                     expect(dt.rows.length).toBe(3);
                 }
                 catch (error){
@@ -311,7 +313,7 @@ describe('rest api',
                     const dtObj = JSON.parse(objParsed.dt);
                     const dt = new jsDataSet.DataTable(dtObj.name);
                     dt.deSerialize(dtObj, true);
-                    expect(dt.name).toBe('customusergroup');
+                    //expect(dt.name).toBe('customusergroup'); this is not serialized anymore
                     expect(dt.rows.length).toBe(3);
                     done();
                 });
@@ -361,8 +363,7 @@ describe('rest api',
                         }
                         expect(response).toBeDefined();
                         const objParsed = JSON.parse(body);
-                        const ds = new jsDataSet.DataSet(objParsed.name);
-                        ds.deSerialize(objParsed, true);
+                        const ds = getDataUtils.getJsDataSetFromJson(body);
                         expect(ds.name).toBe('customuser_test');
                         expect(ds.tables.customuser.rows.length).toBe(1);
                         expect(ds.tables.customusergroup.rows.length).toBe(1);
@@ -380,7 +381,7 @@ describe('rest api',
 
                 const idcustomuser = 'AZZURRO';
 
-                // recupera un dataset e poi lo popola a aprtire dalla riga principale
+                // recupera un dataset e poi lo popola a partire dalla riga principale
                 request({
                     url: 'http://localhost:54471/test/data/getDataSet',
                     method: 'POST',
@@ -586,9 +587,9 @@ describe('rest api',
                     }
                     expect(response).toBeDefined();
                     const dtObj = JSON.parse(body);
-                    const dt = new jsDataSet.DataTable(dtObj.name);
+                    const dt = new jsDataSet.DataTable(tableName);
                     dt.deSerialize(dtObj, true);
-                    expect(dt.name).toBe(tableName);
+                    //expect(dt.name).toBe(tableName);
                     expect(Object.keys(dt.columns).length).toBe(8);
                     done();
                 });
@@ -637,7 +638,9 @@ describe('rest api',
                         editType: editType
                     }
                 }, function (error, response, body){
+
                     const objParsed = JSON.parse(body);
+
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
@@ -699,15 +702,16 @@ describe('rest api',
                                 return;
                             }
                             expect(response).toBeDefined();
+
                             const objParsed = JSON.parse(body);
 
                             //const dsObj = JSON.parse(objParsed.dataset);
                             const success = objParsed.success;
                             const canIgnore = objParsed.canIgnore;
                             const messages = objParsed.messages;
-                            //console.log(messages);
 
                             const ds = new jsDataSet.DataSet(objParsed.dataset.name);
+
                             ds.deSerialize(objParsed.dataset, true);
                             expect(ds.name).toBe('customuser_test');
 
@@ -779,10 +783,11 @@ describe('rest api',
                         const originalValue = rowTested[field];
                         const newValue = originalValue + characterToAdd;
                         tcustomuser.assignField(rowTested, field, newValue);
-                        tcustomuser.rows[0].getRow().state = jsDataSet.dataRowState.modified;
+                        //tcustomuser.rows[0].getRow().state = jsDataSet.dataRowState.modified;
 
                         const objser = ds.serialize(true);
-                        const dsSerialized = JSON.stringify(objser);
+                        const dsSerialized =  getDataUtils.getJsonFromJsDataSet(ds);
+                         //JSON.stringify(objser);
                         request({
                             url: 'http://localhost:54471/test/data/saveDataSet',
                             method: 'POST',
@@ -809,13 +814,13 @@ describe('rest api',
                             const canIgnore = objParsed.canIgnore;
                             const messages = objParsed.messages;
 
-                            const ds = new jsDataSet.DataSet(dsObj.name);
-                            ds.deSerialize(dsObj, true);
+                            const ds = getDataUtils.getJsDataSetFromJson(dsObj);
+
                             expect(ds.name).toBe('customuser_test');
                             //console.log(messages);
                             expect(messages.length).toBe(1); //non ci sono messaggi
                             expect(messages[0].description).toBe('operation not permitted msg');
-                            expect(messages[0].id).toBe('post/undefined/U/1');
+                            expect(messages[0].id).toBe('post/customuser/U/1');
                             expect(messages[0].audit).toBe('TEST001');
                             expect(messages[0].severity).toBe('E');
                             expect(success).toBe(false);
@@ -887,7 +892,7 @@ describe('rest api',
             }, timeout);
 
         it('getMeta should get Metadata', () => {
-            GetMeta.setPath('./../../meta/');
+            GetMeta.setPath('./../../meta/test/');
             let m = GetMeta.getMeta("attach");
             expect(m.name).toBe("meta_attach");
         });

@@ -32,13 +32,13 @@ const mapIsolationLevels = {
 
 const mapping = {
     'CHAR':CType.Char,
-    'VARCHAR':CType.string,
-    "TEXT":CType.string,
-    'NCHAR':CType.string,
-    'NVARCHAR':CType.string,
-    'NTEXT':CType.string,
+    'VARCHAR':CType.String,
+    "TEXT":CType.String,
+    'NCHAR':CType.String,
+    'NVARCHAR':CType.String,
+    'NTEXT':CType.String,
 
-    'UNIQUEIDENTIFIER':CType.string,
+    'UNIQUEIDENTIFIER':CType.String,
 
     'BINARY':CType.byteArray,
     'VARBINARY':CType.byteArray,
@@ -50,8 +50,8 @@ const mapping = {
     'TINYINT':CType.Byte,
     'SMALLINT':CType.Int16,
     'MEDIUMINT':CType.int,
-    'INT':CType.int,
-    'BIGINT':CType.int,
+    'INT':CType.Int32,
+    'BIGINT':CType.Int64,
 
     'NUMERIC':CType.number,
     'FLOAT':CType.Float,
@@ -221,6 +221,7 @@ Connection.prototype.useSchema = function (schema) {
     if (this.schema !== this.defaultSchema) {
         cmd = 'revert;' + cmd;
     }
+
     const res = this.queryBatch(cmd),
         that = this;
     res.done(function () {
@@ -249,6 +250,7 @@ Connection.prototype.clone = function () {
 
 /**
  * Sets the Transaction isolation level for current connection
+ * @private
  * @method setTransactionIsolationLevel
  * @param {string} isolationLevel one of 'READ_UNCOMMITTED','READ_COMMITTED','REPEATABLE_READ','SNAPSHOT','SERIALIZABLE'
  * @returns {promise}
@@ -311,7 +313,7 @@ Connection.prototype.open = function () {
             if (that.schema === that.defaultSchema) {
                 connDef.resolve(that);
                 return;
-            }      
+            }
             that.useSchema(that.schema)
                 .done(function () {
                     connDef.resolve(that);
@@ -413,7 +415,7 @@ Connection.prototype.commit = function () {
         return Deferred().resolve().promise();
     }
     if (this.transAnnidationLevel===0){
-        return Deferred().reject("Trting to commit but no transaction has been open").promise();
+        return Deferred().reject("Trying to commit but no transaction has been open").promise();
     }
     if (this.transError) {
         return this.rollBack();
@@ -442,7 +444,7 @@ Connection.prototype.rollBack = function () {
         return Deferred().resolve().promise();
     }
     if (this.transAnnidationLevel===0){
-        return Deferred().reject("Trting to rollBack but no transaction has been open").promise();
+        return Deferred().reject("Trying to rollBack but no transaction has been open").promise();
     }
 
     res = this.queryBatch('ROLLBACK TRAN;');
@@ -743,8 +745,10 @@ Connection.prototype.tableDescriptor = function (tableName) {
         'WHERE    c.object_id = OBJECT_ID(\'' + tableName + '\')'
     )
         .then(function (result) {
+
                 if (result.length === 0) {
-                    res.reject('Table named ' + tableName + ' does not exist in ' + that.server + ' - ' + that.database);
+                    res.reject('Table named ' + tableName + ' does not exist in ' +
+                             that.opt.server + ' - ' + that.opt.database);
                     return;
                 }
                 const isDbo = (result[0].dbo !== 0);
@@ -952,24 +956,26 @@ Connection.prototype.getSelectListOfVariables = function(vars) {
 /**
  * Get a command to select a bunch of rows
  * @param options.tableName {string}
- * @param options.nRows {int}
- * @param options.filter {string},
+ * @param options.top {int}
+ * @param options.filter {sqlFun},
  * @param options.firstRow {int}
- * @param options.sorting {string},
+ * @param options.orderBy {string},
  * @param options.environment {Context}
  * @return {string}
  */
 Connection.prototype.getPagedTableCommand = function(options) {
-    if (!options.sorting || !options.nRows){
-        return Connection.prototype.getSelectCommand({
-            tableName:options.tableName,filter:options.filter,environment:options.environment,
-                orderBy:options.sorting
-        });
+    if (!options.orderBy || !options.top){
+        return Connection.prototype.getSelectCommand(options);
     }
 
-    return  "select top " + options.nRows + " "+
-                options.columns+"  from ( SELECT ROW_NUMBER() OVER (ORDER BY " + options.sorting +
-        ") row_num, * FROM " + options.tableName + options.filter + " ) x where row_num >= " +
+    let internalWhere = '';
+    if (options.filter){
+        internalWhere = " WHERE "+formatter.conditionToSql(options.filter, options.environment);
+    }
+
+    return  "select top " + options.top + " "+
+                options.columns+"  from ( SELECT ROW_NUMBER() OVER (ORDER BY " + options.orderBy +
+        ") row_num, * FROM " + options.tableName + internalWhere + " ) x where row_num >= " +
           options.firstRow;
 
 };

@@ -8,15 +8,35 @@ const attachUtils = require("./../../client/components/metadata/_attachmentutils
 const {DataSet} = require("./../../client/components/metadata/jsDataSet");
 const jsBusinessLogic =require("../../src/jsBusinessLogic");
 const {BusinessMessage} = require("../../src/jsBusinessLogic");
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
 
 
 async function saveDataSet(req,res,next) {
     let ctx = req.app.locals.context;
-    let ds = new DataSet();
-    ds.deSerialize(JSON.parse(req.body.ds), true);
-
     let tableName = req.body.tableName;
     let editType = req.body.editType;
+    let ds = getDataUtils.getJsDataSetFromJson(req.body.ds);
+
+    let outDs = await ctx.getDataInvoke.createEmptyDataSet(tableName, editType);
+    if (!outDs) {
+        res.status(400).send("DataSet non esistente");
+        return;
+    }
+
+    _.forEach(outDs.tables, (table) => {
+        let dtInput = ds.tables[table.name];
+        if (dtInput) {
+            table.merge(dtInput);
+            // copio le prop di autoincremento
+            table.autoIncrementColumns = _.cloneDeep(dtInput.autoIncrementColumns);
+        }
+        else {
+            //cancella le tabelle non oggetto di modifica, non cancello la tabella principale però
+            outDs.removeTable(outDs.tables[table.name]);
+        }
+    });
+
+
 
     try {
         let messagesJson = req.body.messages; //id, description, audit, severity, table, bool canIgnore
@@ -32,7 +52,7 @@ async function saveDataSet(req,res,next) {
 
         meta.editType = editType;
 
-        if (!isAnonymousAllowed(req, tableName, editType, ds)) {
+        if (!isAnonymousAllowed(req, tableName, editType, outDs)) {
             res.status(400).send("Anonymous access not allowed");
         }
 
@@ -45,9 +65,9 @@ async function saveDataSet(req,res,next) {
             }
         }
         let isValid = true;
-         await forEachAsync(Object.keys(ds.tables), async (t) => {
-            const table = ds.tables[t];
-            if (t !== tableName && !metaModel.isSubEntity(table, ds.tables[tableName])) return true;
+         await forEachAsync(Object.keys(outDs.tables), async (t) => {
+            const table = outDs.tables[t];
+            //if (t !== tableName && !metaModel.isSubEntity(table, outDs.tables[tableName])) return true;
             let tName = table.tableForReading();
             let currMeta = ctx.getMeta(tName);
             if (!currMeta) {
@@ -111,7 +131,7 @@ async function saveDataSet(req,res,next) {
         });
 
         if (!isValid) {
-            let dsJson = JSON.stringify(ds.serialize(true));
+            let dsJson = getDataUtils.getJsonFromJsDataSet(outDs,false); //JSON.stringify(ds.serialize(true));
             res.json({
                 dataset: dsJson,
                 messages: prevResult.checks.map(m => serializeMessage(m)),
@@ -121,20 +141,7 @@ async function saveDataSet(req,res,next) {
             return;
         }
 
-        let outDs = await ctx.getDataInvoke.createEmptyDataSet(tableName, editType);
-        if (!outDs) {
-            res.send(400, "DataSet non esistente");
-            return;
-        }
 
-        _.forEach(outDs.tables, (table) => {
-            let dtInput = ds.tables[table.name];
-            if (dtInput) {
-                table.merge(dtInput);
-                // copio le prop di autoincremento
-                table.autoIncrementColumns = _.cloneDeep(dtInput.autoIncrementColumns);
-            }
-        });
 
 
 
@@ -172,10 +179,8 @@ async function saveDataSet(req,res,next) {
             await attachUtils.sanitizeDsForAttach(outDs, ctx);
         }
 
-        let dsSerialized = outDs.serialize(true);
-
         res.json({
-            dataset: dsSerialized,
+            dataset: outDs.serialize(false),
             messages: postResult.checks.map(m => serializeMessage(m)),
             success: success,
             canIgnore: postResult.canIgnore
@@ -183,7 +188,7 @@ async function saveDataSet(req,res,next) {
 
     }
     catch(ex){
-        res.status(500).send("saveDatSet(tableName="+tableName+",editType="+editType + ' ' + ex.stack );
+        res.status(500).send("saveDataSet(tableName="+tableName+",editType="+editType + ' ' + ex );
     }
 }
 
@@ -221,7 +226,7 @@ function serializeMessage(msg){
     if (msg.idDetail && msg.rowChange){
         let operation = "D";
         let /*RowChange*/ DR = msg.rowChange.r;
-        table= DR.tableName;
+        table= msg.rowChange.tableName;
         if (DR.state ===jsDataSet.dataRowState.added) operation="I";
         if (DR.state ===jsDataSet.dataRowState.modified) operation="U";
         return {
@@ -257,13 +262,14 @@ function deserializeMessage(msg){
     let operation="X";
     let post = false;
     let bm;
+    let table="-";
     if (msg.id !== "dberror") {
         let id_parts = msg.id.split("/");
         if (id_parts[0] === "post") {
             post = true;
         }
-        operation = msg[1];
-
+        operation = id_parts[2];
+        table = id_parts[1];
         bm = new BusinessMessage({
             post: post,
             shortMsg: msg.audit,

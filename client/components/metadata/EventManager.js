@@ -107,7 +107,7 @@
          * @method register
          * @public
          * @description SYNC
-         * Adds a listener to the event. Id adds ea new Delegate object to the subscribers collection
+         * Adds a listener to the event. It adds a new Delegate object to the subscribers collection
          * @param {function} callBack
          * @param {object} context
          */
@@ -139,7 +139,11 @@
          * @param {object[]} [args]
          */
         trigger: function (sender, args) {
-            if (this.subscribers.length === 0) return Deferred().resolve(true);
+            //console.log("trigger("+sender+","+args)
+            if (this.subscribers.length === 0) {
+                // console.log("no subscribers")
+                return Deferred().resolve(true);
+            }
 
             let chain = when();
 
@@ -179,7 +183,9 @@
         subscribe: function(eventType, callback, context) {
             if (!this.events[eventType]) {
                 this.events[eventType] = new Event(eventType);
+                // console.log("event queue created for "+eventType)
             }
+            // console.log("new listener to "+eventType)
             this.events[eventType].register(callback, context);
         },
 
@@ -210,8 +216,13 @@
         trigger: function(type, sender) {
             // recupera la lista dei sottoscrittori a questo evento type
             let event = this.events[type];
-            if (!event) return Deferred().resolve(true);
-            //console.log("trigger arguments sliced:", Array.prototype.slice.call(arguments,2));
+            if (!event) {
+                if (type !== "increase" && type!="decrease"){
+                    //console.log("No one was subscribing "+type)
+                }
+                return Deferred().resolve(true);
+            }
+            //console.log("triggering:", Array.prototype.slice.call(arguments,2));
             return event.trigger(sender, Array.prototype.slice.call(arguments, 2));
         }
 

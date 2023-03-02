@@ -4,8 +4,6 @@
 'use strict';
 
 
-console.log("running jsMultiSelectSpec");
-
 var $q = require('../../client/components/metadata/jsDataQuery');
 var mSel = require('../../src/jsMultiSelect');
 var Select = mSel.Select;

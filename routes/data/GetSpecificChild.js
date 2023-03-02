@@ -6,6 +6,7 @@ const asyncHandler = require('express-async-handler'); //https://zellwk.com/blog
 const metaModel = require("./../../client/components/metadata/MetaModel");
 const {readFile} = require("fs/promises");
 const q = require("./../../client/components/metadata/jsDataQuery");
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
 
 
 async function getSpecificChild(req,res,next){
@@ -14,11 +15,12 @@ async function getSpecificChild(req,res,next){
     let startfield = req.body.startfield;
     let startval = req.body.startval;
 
-    let jsonFilter= JSON.parse(req.body.startconditionfilter);
+    let jsonFilter= getDataUtils.getJsDataQueryFromJson(req.body.startconditionfilter);
+
     let startCondition = q.fromObject(jsonFilter);
 
     let  t = new jsDataSet.DataTable("dummy");
-    let jSonTable = JSON.parse(req.body.dt);
+    let jSonTable = getDataUtils.getJsDataTableFromJson(req.body.dt);
     t.deSerialize(jSonTable);
 
     await ctx.dataAccess.selectIntoTable({

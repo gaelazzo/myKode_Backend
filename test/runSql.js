@@ -27,10 +27,8 @@ dbConn.open().done(function (){
         "("+driverKind+")");
     dbConn.run(fs.readFileSync(scriptName).toString()).then((res,err)=>{
         if (err) console.log(err);
-        console.log("script runned");
         stop=true;
     }).fail((err)=>{
-        console.log("script failed");
         stop=true;
     });
 
@@ -38,7 +36,6 @@ dbConn.open().done(function (){
     let intvl = setInterval(function() {
         if (stop) {
             clearInterval(intvl);
-            console.log("script runned received");
         }
     }, 100);
 });

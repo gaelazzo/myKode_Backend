@@ -1,6 +1,8 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler'); //https://zellwk.com/blog/async-await-express/
 const q = require("./../../client/components/metadata/jsDataQuery");
+const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
+
 
 /**
  *
@@ -28,25 +30,30 @@ async function getPagedTable(req,res,next){
     let nRowPerPage = req.body.nRowPerPage;
     let listType = req.body.listType;
     let sort = req.body.sortby;
-
     let filter = null;
     if (req.body.filter){
-        let jsonFilter= JSON.parse(req.body.filter);
+        let jsonFilter = getDataUtils.getJsObjectFromJson(req.body.filter);
         filter = q.fromObject(jsonFilter);
     }
 
     let /*{newTableName:string,  newListType:string}*/ map = await getMappingWebListRedir(ctx, tableName, listType);
 
     let columnList = req.body.columnList;
-    let top = req.body.top;
-    let meta = ctx.getMeta(map.newTableName,req);
+    if (!columnList) columnList = "*";
+
+    let meta = ctx.getMeta(map.newTableName, req);
     let sortMeta = meta.getSorting(listType);
 
-    let dtOriginal = await ctx.dbDescriptor.createTable(map.newTableName);
+    let dtOriginal = null;
+    try{
+        dtOriginal = await ctx.dbDescriptor.createTable(map.newTableName);
+    }
+    catch (e){
+        return res.send(401,"La tabella/vista "+map.newTableName+" non esiste sul server (getPagedTable)");
+    }
     let colList = Object.keys(dtOriginal.columns);
     if (!colList.length){
-        res.send(401,"La tabella/vista "+map.newTableName+" non esiste sul server (getPagedTable)");
-        return;
+        return res.send(401,"La tabella/vista "+map.newTableName+" non esiste sul server (getPagedTable)");
     }
     let sortBy = sort;
     if (!sortBy){
@@ -71,38 +78,64 @@ async function getPagedTable(req,res,next){
         filter: overallFilter,
         environment: ctx.environment
     });
+
     let totPages = Math.floor(totRows/nRowPerPage);
     if (totRows % nRowPerPage !== 0){
         totPages+=1;
     }
     let data;
     try {
+
         if (totPages < 2) {
             data = await ctx.dataAccess.select({
-                    tableName: tableName,
+                    tableName: map.newTableName,
                     filter: filter,
                     columns: columnList,
                     orderBy:sortBy});
         }
         else {
+           let firstRow = (nPage - 1) * nRowPerPage + 1;
            data = await ctx.pooledConn.conn.pagedSelect({
-                tableName: tableName,
+                tableName: map.newTableName,
                 filter: filter,
                 orderBy: sortBy,
                 columns: columnList,
-                nRows: top
+                top: nRowPerPage,
+                firstRow: firstRow
             });
         }
     }
     catch (err){
-        res.status(410).send("Error selecting rows from table: " + tableName);
+        return res.status(410).send("Error selecting rows from table: " + tableName+", error:"+err);
     }
     //let t = new jsDataSet.DataTable(map.newTableName);
     dtOriginal.loadArray(data, true);
     dtOriginal.orderBy(sortBy);
     await meta.describeColumns(dtOriginal, map.newListType);
 
-    const dtSer = JSON.stringify(dtOriginal.serialize(true));
+    if (dtOriginal.key().length===0){
+        let k = meta.primaryKey();
+        if (k.length===0){
+            let metaBase = ctx.getMeta(tableName, req);
+            k = metaBase.primaryKey();
+            let errMess=null;
+            k.forEach(f=>{
+               if (!dtOriginal.columns[f]){
+                   errMess="Key Field "+f+" of "+tableName+" is not a field of "+tableName+
+                       ". It's necessary to define the key in metadata of "+tableName;
+               }
+            });
+            if (k.length===0){
+                errMess="It's necessary to define the key in metadata of "+tableName+
+                    " or "+map.newTableName;
+            }
+            if (errMess) {
+                return res.status(410).send(errMess);
+            }
+        }
+        dtOriginal.key(k);
+    }
+    const dtSer =getDataUtils.getJsonFromJsDataSet(dtOriginal,false);
     res.json({
         dt:dtSer,
         totpage:totPages,

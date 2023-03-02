@@ -1,8 +1,6 @@
 'use strict';
 /*globals it,expect,describe,jasmine,beforeEach,afterEach */
 
-console.log("running jsEncryptedFileSpec");
-
 const fs = require('fs');
 
 const EncryptedFile = require('../../src/jsEncryptedFile');
