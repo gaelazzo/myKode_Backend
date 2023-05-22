@@ -5,7 +5,7 @@ const q = require("./../../client/components/metadata/jsDataQuery");
 const GetData = require("../../src/jsGetData");
 const attachUtils = require("./../../client/components/metadata/_attachmentutils");
 const getDataUtils = require("./../../client/components/metadata/GetDataUtils");
-
+const _ = require("lodash");
 
 async function middleware(req,res,next){
     let ctx = req.app.locals.context;
@@ -27,13 +27,14 @@ async function middleware(req,res,next){
     await  ctx.getDataInvoke.runSelectIntoTable(ds.tables[tableName],filter,null);
 
     if (!ds.tables[tableName].rows.length){
-        res.send(200,"No rows found in table "+tableName+" with filter "+filter);
+        res.status(200).send("No rows found in table "+tableName+" with filter "+filter);
     }
 
     await GetData.doGet(ctx, ds.tables[tableName], false,null);
 
-    await attachUtils.sanitizeDsForAttach(ds, ctx);
 
+    await attachUtils.sanitizeDsForAttach(ds, ctx);
+    _.forOwn(ds.tables, t=> {if (t.rows.length===0){ ds.removeTable(t);}});
     res.status(200).send( getDataUtils.getJsonFromJsDataSet(ds,false)); //JSON.stringify(ds.serialize(true)));
 
 }

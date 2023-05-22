@@ -240,7 +240,7 @@
 
         f.myName = 'context';
         f.myArguments = arguments;
-
+        f.minArguments = 1;
         return f;
     }
 
@@ -279,6 +279,7 @@
 
         f.myName = 'field';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         return toSqlFun(f, toSql);
     }
@@ -527,6 +528,7 @@
 
         f.myName = 'not';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             return formatter.not(expr, environment);
@@ -563,6 +565,7 @@
 
         f.myName = 'bitSet';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -601,6 +604,7 @@
 
         f.myName = 'bitClear';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -651,6 +655,7 @@
 
         f.myName = 'testMask';
         f.myArguments = arguments;
+        f.minArguments = 3;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -701,6 +706,7 @@
 
         f.myName = 'between';
         f.myArguments = arguments;
+        f.minArguments = 3;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -744,6 +750,7 @@
 
         f.myName = 'like';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -803,6 +810,7 @@
 
         f.myName = 'distinct';
         f.myArguments = arguments;
+        f.minArguments = 0;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -847,6 +855,7 @@
 
         f.myName = 'isIn';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -890,6 +899,7 @@
 
         f.myName = 'isNotIn';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -917,7 +927,7 @@
      */
     function eq(expr1, expr2) {
         const expr = autofield(expr1),
-            f = function (r, environment) {
+        f = function (r, environment) {
                 const v1 = calc(expr, r, environment);
                 let v2;
                 if (v1 === undefined) {
@@ -933,14 +943,14 @@
                 return v1 === v2;
             };
 
-
         f.toString = function() {
-            return  toString(expr) + '==' + toString(expr2) ;
+            return  '('+ toString(expr) + '==' + toString(expr2) +')';
             //return '(' + toString(expr) + '==' + toString(expr2) + ')';
         };
 
         f.myName = 'eq';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             return formatter.eq(expr, expr2, environment);
@@ -974,11 +984,12 @@
                 return v1 !== v2;
             };
         f.toString = function() {
-            return  expr.toString() + '!=' + expr2.toString() + ')';
+            return  '('+ expr.toString() + '!=' + expr2.toString() + ')';
         };
 
         f.myName = 'ne';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             return formatter.ne(expr, expr2, environment);
@@ -1018,11 +1029,12 @@
                 return v1 < v2;
             };
         f.toString = function() {
-            return expr.toString() + '<' + expr2.toString() ;
+            return '('+ expr.toString() + '<' + expr2.toString() +')';
         };
 
         f.myName = 'lt';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             return formatter.lt(expr, expr2, environment);
@@ -1063,11 +1075,12 @@
                 return v1 <= v2;
             };
         f.toString = function() {
-            return expr.toString() + '<=' + expr2.toString() ;
+            return '('+expr.toString() + '<=' + expr2.toString() +')';
         };
 
         f.myName = 'le';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1108,11 +1121,12 @@
                 return v1 > v2;
             };
         f.toString = function() {
-            return   expr.toString() + '>' + expr2.toString() ;
+            return   '('+expr.toString() + '>' + expr2.toString() +')';
         };
 
         f.myName = 'gt';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             return formatter.gt(expr, expr2, environment);
@@ -1157,6 +1171,7 @@
 
         f.myName = 'ge';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1233,6 +1248,7 @@
 
         f.myName = 'or';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1280,6 +1296,7 @@
 
         f.myName = 'coalesce';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1392,6 +1409,7 @@
 
         f.myName = 'max';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         f.grouping = true;
         const toSql = function (formatter, environment) {
@@ -1440,6 +1458,7 @@
 
         f.myName = 'min';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         f.grouping = true;
         const toSql = function (formatter, environment) {
@@ -1496,6 +1515,7 @@
 
         f.myName = 'substring';
         f.myArguments = arguments;
+        f.minArguments = 3;
 
         const toSql = function (formatter, environment) {
             return formatter.substring(expr, start, len, environment);
@@ -1530,6 +1550,7 @@
 
         f.myName = 'convertToInt';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1566,6 +1587,7 @@
 
         f.myName = 'convertToString';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1642,6 +1664,7 @@
 
         f.myName = 'and';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1670,7 +1693,7 @@
         if (keys.length === 0) {
             return constant(true);
         }
-        const myValues = _.clone(values);
+
         let //stabilizes input!!
             picked;
 
@@ -1681,6 +1704,7 @@
                 return values[k];
             });
         }
+        const myValues = picked; //_.clone(values);
 
         if (_.includes(picked, null)) {
             return constant(false);
@@ -1721,7 +1745,10 @@
         };
 
         f.myName = 'mcmp';
-        f.myArguments = arguments;
+        f.myArguments = [keys, myValues]; //arguments;
+        if (alias) f.myArguments.push(alias);
+        f.minArguments = 2;
+
 
         const toSql = function (formatter, environment) {
             let k, v;
@@ -1836,6 +1863,7 @@
 
         f.myName = 'sub';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             return formatter.sub(expr, expr2, environment);
@@ -1880,6 +1908,7 @@
 
         f.myName = 'div';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -1929,6 +1958,7 @@
 
         f.myName = 'add';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             return formatter.add(a, environment);
@@ -1972,6 +2002,7 @@
 
         f.myName = 'concat';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             return formatter.concat(a, environment);
@@ -2024,6 +2055,7 @@
 
         f.myName = 'sum';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         f.grouping = true;
         const toSql = function (formatter, environment) {
@@ -2077,6 +2109,7 @@
 
         f.myName = 'mul';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             return formatter.mul(_.map(a, function (v) {
@@ -2204,6 +2237,7 @@
         f.paramList = a;
         f.myName = 'list';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             return formatter.list(_.map(a, function (v) {
@@ -2237,6 +2271,7 @@
 
         f.myName = 'bitwiseNot';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             return formatter.bitwiseNot(expr, environment);
@@ -2300,6 +2335,7 @@
 
         f.myName = 'bitwiseAnd';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -2367,6 +2403,7 @@
 
         f.myName = 'bitwiseOr';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -2434,6 +2471,7 @@
 
         f.myName = 'bitwiseXor';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -2477,6 +2515,7 @@
 
         f.myName = 'modulus';
         f.myArguments = arguments;
+        f.minArguments = 2;
 
         const toSql = function (formatter, environment) {
             //noinspection JSUnresolvedFunction
@@ -2526,16 +2565,50 @@
             return calc(optimizedArgs[0], r, environment);
         };
         f.toString = function(){
-            return '(' + joinString(a,'+') + ')';
-        }
+            return '(' + a.toString() + ')';
+        };
 
         f.myName = 'doPar';
         f.myArguments = arguments;
+        f.minArguments = 1;
 
         const toSql = function (formatter, environment) {
-            return formatter.doPar(a, environment);
+            return formatter.doPar(
+                _.map(a,x=>x.toSql(formatter)).join(','),
+                environment);
         };
         return toSqlFun(f, toSql);
+    }
+
+    /**
+     * @method checkForUndefined
+     * @param {sqlFun} f
+     * @param {string[]} result
+     */
+    function checkForUndefined(f, result){
+        if (f ===null) return;
+
+        if (!f.myArguments) return;
+        let name='operator '+f.myName;
+        if (f.myArguments.length>0){
+            let op0 = f.myArguments[0];
+            if (op0.myName==="field"){
+                name = "la colonna "+op0.myArguments[0];
+            }
+        }
+        let errmess= name+" ha un valore indefinito nella condizione di filtro.";
+        if (f.myArguments.length < f.minArguments){
+            result.push(errmess);
+        }
+        for (let i=1;i< f.myArguments.length; i++){
+            if (f.myArguments[i]===null) {
+                result.push(errmess);
+            }
+        }
+        for(let i= 0; i< f.myArguments.length; i++){
+            checkForUndefined(f.myArguments[i],result);
+        }
+        return  null;
     }
 
     function jsDataQuery(){
@@ -2598,12 +2671,30 @@
         bitwiseXor : bitwiseXor,
         modulus : modulus,
         doPar:doPar,
+        checkForUndefined:checkForUndefined,
         myLoDash: _ //for testing purposes
     };
 
     let q = new jsDataQuery();
 
-    if (freeExports && freeModule) {
+    // Some AMD build optimizers like r.js check for condition patterns like the following:
+    //noinspection JSUnresolvedVariable
+    if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+        // Expose lodash to the global object when an AMD loader is present to avoid
+        // errors in cases where lodash is loaded by a script tag and not intended
+        // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
+        // more details.
+        root.jsDataQuery = q;
+
+        // Define as an anonymous module so, through path mapping, it can be
+        // referenced as the "underscore" module.
+        //noinspection JSUnresolvedFunction
+        define(function () {
+            return jsDataQuery;
+        });
+    }
+    // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
+    else if (freeExports && freeModule) {
         // Export for Node.js or RingoJS.
         if (moduleExports) {
             (freeModule.exports = q).jsDataQuery = q;

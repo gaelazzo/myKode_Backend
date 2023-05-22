@@ -104,10 +104,10 @@ function getByFilter(ctx,  table, filter, orderBy) {
         { table: table, filter: filter,  environment: ctx.environment, orderBy:orderBy})
         .then(function () {
             result = table.select(filter);
-            if (result.length === 0) {
-                def.reject('there was no row in table ' + table.name + ' filtering with ' + filter.toString());
-                return;
-            }
+            // if (result.length === 0) {
+            //     def.reject('jsGetData.getByFilter: there was no row in table ' + table.name + ' filtering with ' + filter.toString());
+            //     return;
+            // }
             def.resolve(result);
         })
         .fail(function (err) {

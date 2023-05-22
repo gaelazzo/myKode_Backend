@@ -800,8 +800,14 @@ PostData.prototype.setAsInnerPoster = function (){
  * @param {boolean} canIgnore
  */
 function BasicMessage(msg,canIgnore){
-  msg = msg.stack || msg.message || msg;
-
+  if (msg && msg.stack) {
+    msg = msg.stack;
+  }
+  else {
+    if (msg && msg.message){
+      msg = msg.message;
+    }
+  }
   /**
    * @property {boolean} canIgnore
    */

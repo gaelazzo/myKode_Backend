@@ -42,7 +42,7 @@ async function saveDataSet(req,res,next) {
         let messagesJson = req.body.messages; //id, description, audit, severity, table, bool canIgnore
         let messages = null;
         if (messagesJson) {
-            messages = JSON.parse(messagesJson);
+            messages = messagesJson;
         }
         let meta = ctx.getMeta(tableName);
         if (!meta) {
@@ -100,12 +100,12 @@ async function saveDataSet(req,res,next) {
                        shortMsg: resValid.errMsg,    //errore breve, per le business rule
 
                        //Serialized as description
-                       longMsg: `Tabella: ${tName} campo: ${resValid.errField}  err: ${resValid.errMsg}`,
+                       longMsg: `Tabella: ${currMeta.name} campo: ${resValid.errField}  err: ${resValid.errMsg}`,
                        canIgnore: false,
-                       idDetail: "validazione",
+                       idDetail: "Validazione",
 
                        //serialized as audit
-                       idRule: "validazione",
+                       idRule: "Validazione",
                        environment: this.environment
                    }));
                } catch (e) {
@@ -116,9 +116,9 @@ async function saveDataSet(req,res,next) {
                        shortMsg: "Exception",    //errore breve, per le business rule
 
                        //Serialized as description
-                       longMsg: `Bisogna rivedere il metodo isValid della tabella: ${tName}  err: ${e} ctx: ${JSON.stringify(ctx.localResource.dictionary)}`,
+                       longMsg: `Bisogna rivedere il metodo isValid della tabella: ${currMeta.name}  err: ${e} ctx: ${JSON.stringify(ctx.localResource.dictionary)}`,
                        canIgnore: false,
-                       idDetail: "validazione",
+                       idDetail: "Validazione",
 
                        //serialized as audit
                        idRule: "Errore Metadato",
@@ -141,10 +141,6 @@ async function saveDataSet(req,res,next) {
             return;
         }
 
-
-
-
-
         await postData.init(outDs, ctx);
 
         // 7. valuto se ci sono tabelle con allegati, cioè colonna idattach per convenzione
@@ -166,7 +162,7 @@ async function saveDataSet(req,res,next) {
         let success = true;
 
         // sarà true se tutti i messaggi sono ignorabili, false se almeno 1 messaggio  non è ignorabile
-        // se ci sono messaggi , significa che la transazione non è stata eseguita, e devo amndare messaggi opportuni al client.
+        // se ci sono messaggi, significa che la transazione non è stata eseguita, e devo mandare messaggi opportuni al client.
         let canIgnore = true;
 
         if (postResult.checks.length > 0) {
@@ -178,6 +174,7 @@ async function saveDataSet(req,res,next) {
             await attachUtils.removeAttachmentAfterSuccess(dataRowAttachModified, ctx);
             await attachUtils.sanitizeDsForAttach(outDs, ctx);
         }
+
 
         res.json({
             dataset: outDs.serialize(false),
@@ -223,17 +220,18 @@ function serializeMessage(msg){
     let id="dberror";
 
     //new messages
-    if (msg.idDetail && msg.rowChange){
+    if (msg.idDetail && (msg.rowChange || msg.r)){
         let operation = "D";
-        let /*RowChange*/ DR = msg.rowChange.r;
-        table= msg.rowChange.tableName;
+        let /*RowChange*/ DR = msg.r || msg.rowChange.r;
+        table= DR.table.name;
         if (DR.state ===jsDataSet.dataRowState.added) operation="I";
         if (DR.state ===jsDataSet.dataRowState.modified) operation="U";
+        if (msg.idRule==="Validazione") operation="A";
         return {
             id:pre_post+"/"+table+"/"+operation+"/"+msg.idDetail,
             description: msg.getMessage(),
             audit:msg.idRule,
-            severity: msg.canIgnore? "W":"E",
+            severity: msg.canIgnore? "Warning":"Errore",
             table: table,
             canIgnore: msg.canIgnore
         };
@@ -245,7 +243,7 @@ function serializeMessage(msg){
         id:msg.__id, //
         description: msg.getMessage(),
         audit:msg.idRule,
-        severity: msg.canIgnore? "W":"E",
+        severity: msg.canIgnore? "Warning":"Errore",
         table: msg.__table,
         canIgnore: msg.canIgnore
     };

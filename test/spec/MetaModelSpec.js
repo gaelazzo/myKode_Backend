@@ -1,3 +1,4 @@
+/*globals it,describe,beforeEach*/
 
 const jsDataSet = require('../../client/components/metadata/jsDataSet');
 const metaModel = require('../../client/components/metadata/MetaModel');
@@ -631,7 +632,9 @@ describe("MetaModel", function () {
                     expect(table1.rows.length).toBe(3);
                     expect(table2.rows.length).toBe(4);
 
-                    const rRes = metaModel.moveDataRow(table2, r1.getRow(), false);
+                    //const rRes = metaModel.moveDataRow(table2, r1.getRow(), false);
+                    //copyDataRowNoCheck: function (destTable, toCopy, forceAddState)
+                    const rRes = metaModel.copyDataRowNoCheck(table2, r1.getRow(), false).current;
                     expect(table1.rows.length).toBe(3);
                     expect(table2.rows.length).toBe(5);
                     expect(rRes.key).toBe("key1");
@@ -701,12 +704,13 @@ describe("MetaModel", function () {
                     expect(table2Rel.rows.length).toBe(0);
                     expect(table2.rows.length).toBe(4);
 
-                    metaModel.xMoveChilds(dsDest, table2, dsRif, r1.getRow(), false);
+                    //Copia i dati da t1 di dsRif a table2 di dsDest
+                    metaModel.xCopyChildTables(dsDest, table2, dsRif, r1.getRow().table, false);
 
-                    // dopo la xMoveChilds, le righe con chiave nelle rel vengono spostate
-                    expect(table1.rows.length).toBe(2);
-                    expect(table2.rows.length).toBe(5);
-                    expect(table1Rel.rows.length).toBe(0);
+                    // dopo la xCopyChildTables, le righe con chiave nelle rel vengono copiate
+                    expect(table1.rows.length).toBe(3); //immutati
+                    expect(table2.rows.length).toBe(4+3); // 4+3
+                    expect(table1Rel.rows.length).toBe(3);
                     expect(table2Rel.rows.length).toBe(3);
 
                 });
@@ -724,16 +728,14 @@ describe("MetaModel", function () {
                     const table2Rel = dsSource.newTable("table1Rel");
 
                     table1.setDataColumn("key", "String");
-                    table1.setDataColumn("field1", "String");
-
-                    table1Rel.setDataColumn("key", "String");
-                    table1Rel.setDataColumn("field1_table1Rel", "String");
-
                     table2.setDataColumn("key", "String");
+                    table1.setDataColumn("field1", "String");
                     table2.setDataColumn("other_field", "String");
 
+                    table1Rel.setDataColumn("key", "String");
                     table2Rel.setDataColumn("key", "String");
                     table2Rel.setDataColumn("field1_table1Rel", "String");
+                    table1Rel.setDataColumn("field1_table1Rel", "String");
 
 
                     const r1 = {key: "key1", field1: "f1"};
@@ -744,36 +746,37 @@ describe("MetaModel", function () {
                     table1.add(r3);
                     table1.acceptChanges();
 
+
                     const r1Tab2 = {key: "key1", other_field: "f1"}; // COPIO QUESTA da table2 a table1
-                    const r2Tab2 = {key: "key2", other_field: "f2"};
-                    const r3Tab2 = {key: "key3", other_field: "f3"};
+                    const r2Tab2 = {key: "key4", other_field: "f2"};
+                    const r3Tab2 = {key: "key5", other_field: "f3"};
                     table2.add(r1Tab2);
                     table2.add(r2Tab2);
                     table2.add(r3Tab2);
                     table2.acceptChanges();
 
                     const r1Rel1 = {key: "key1", field1_table1Rel: "o1"};
-                    const r2Rel1 = {key: "key2", field1_table1Rel: "o2"};
-                    const r3Rel1 = {key: "key4", field1_table1Rel: "v1"};
-                    const r4Rel1 = {key: "key5", field1_table1Rel: "v2"};
+                    const r2Rel1 = {key: "key4", field1_table1Rel: "o2"};
+                    const r3Rel1 = {key: "key5", field1_table1Rel: "v1"};
+                    const r4Rel1 = {key: "key6", field1_table1Rel: "v2"};
                     table1Rel.add(r1Rel1);
                     table1Rel.add(r2Rel1);
                     table1Rel.add(r3Rel1);
                     table1Rel.add(r4Rel1);
                     table1Rel.acceptChanges();
 
-                    const r1Rel2 = {key: "key11", field1_table1Rel: "o1"};
-                    const r2Rel2 = {key: "key7", field1_table1Rel: "o3"};
+                    const r1Rel2 = {key: "key1", field1_table1Rel: "o1"};
+                    const r2Rel2 = {key: "key1", field1_table1Rel: "o3"};
                     table2Rel.add(r1Rel2);
                     table2Rel.add(r2Rel2);
                     table2Rel.acceptChanges();
 
                     // imposto la chiave
                     table1.key("key");
-                    table1Rel.key("key");
+                    table1Rel.key(["key","field1_table1Rel"]);
 
                     table2.key("key");
-                    table2Rel.key("key");
+                    table2Rel.key(["key","field1_table1Rel"]);
 
                     table1.lastSelectedRow = r1;
 
@@ -782,17 +785,23 @@ describe("MetaModel", function () {
                     dsSource.newRelation("r2", "table1", ["key"], "table1Rel", ["key"]); // relazione tra table1 e table1Rel su keydel dsDest
                     // osservo le righe prima
                     expect(table1.rows.length).toBe(3);
+                    expect(table2.rows.length).toBe(3);
                     expect(table1Rel.rows.length).toBe(4);
                     expect(table2Rel.rows.length).toBe(2);
-                    expect(table2.rows.length).toBe(3);
-                    // source           rdest
+
+                        //table1: 1,2 3
+                        //table1Rel: 1,4,5,6
+                        //table2: 1,4,5
+                        //table2Rel: 1,1
+
+                        // copies from table2 to table1 and from table1Rel to table2Rel
                     metaModel.xCopy(dsSource, dsDest, r1Tab2.getRow(), r1.getRow());
 
-                    // dopo la xCopy, le righe con chiave nelle rel vengono copaite
-                    expect(table1.rows.length).toBe(3);
-                    expect(table1Rel.rows.length).toBe(5);
-                    expect(table2Rel.rows.length).toBe(0);
-                    expect(table2.rows.length).toBe(2);
+                    // dopo la xCopy, le righe con chiave nelle rel vengono copiate
+                     expect(table2.rows.length).toBe(3);
+                     expect(table2Rel.rows.length).toBe(2);
+                    expect(table1.rows.length).toBe(3+3-1);
+                    expect(table1Rel.rows.length).toBe(4+2-1);
 
                 });
 
@@ -1073,7 +1082,8 @@ describe("MetaModel", function () {
                     parent.key(["key"]);
                     child.key("key");
 
-                    dsRif.newRelation("r1", "parent", ["key","field1"], "child", ["key", "field1_table1Rel"]); // relazione tra parent e child su key
+                    dsRif.newRelation("r1", "parent", ["key","field1"],
+                        "child", ["key", "field1_table1Rel"]); // relazione tra parent e child su key
 
                     const res = metaModel.isParentTableByKey(dsRif, parent, child);
 

@@ -6,7 +6,7 @@
  * @constructor
  */
 function MsgParser(message,startToken,stopToken){
-    this.msg=message;
+    this.msg=message||"";
     this.startToken=startToken;
     this.stopToken=stopToken;
     this.reset();

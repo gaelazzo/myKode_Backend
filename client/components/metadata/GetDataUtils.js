@@ -8,6 +8,7 @@
 
 (function (q,logger,logType,jsDataSet,_) {
 
+
     /** Detect free variable `global` from Node.js. */
     let freeGlobal = typeof global === 'object' && global && global.Object === Object && global;
     /** Detect free variable `self`. */
@@ -29,34 +30,57 @@
     const dateFormat =  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
     // vecchio formato senza millisecondi /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 
-    function dataTransform(key, value) {
+    function dataTransformFromJSON(key, value) {
         if (typeof value === "string" && dateFormat.test(value)) {
+             // console.log("date found:"+value);
             return  new Date(value);
-            //Node side is not necessary to normalize date
-            console.log("date found:"+value);
-            //value =  getDataUtils.normalizeDataWithoutOffsetTimezone(new Date(value), false);
-                //) new Date(new Date(value).getTime() + (new Date().getTimezoneOffset() * 60000));
         }
         return value;
     }
+    function dataTransformToJSON(key, value) {
+         // console.log("executing  dataTransformToJSON BASE of " + value);
+        return value;
+    }
 
-    /**
-     * @method normalizeDataWithoutOffsetTimezone
-     * @public
-     * @description SYNC
-     * When js convert to JSON, JSON uses Date.prototype.toISOString that doesn't represent local hour but the UTC +offset.
-     * So the string will be modified with a new date. In this function we avoid this behaviour, it adds the offset to the date.
-     * succesive stringfy() doesn't change the date
-     * @param {Date} date
-     */
-    getDataUtils.normalizeDataWithoutOffsetTimezone = function (date, normalize) {
-        if (normalize){
-            return new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-        } else{
-            return new Date(date.getTime() + (date.getTimezoneOffset() * 60000));
+    getDataUtils.dataTransformFromJSON = dataTransformFromJSON;
+    getDataUtils.dataTransformToJSON = dataTransformToJSON;
+
+    const adjustInputJson = (obj) => {
+        // console.log("adjustInputJson BASE calling adjustJson with obj of type ", typeof obj);
+
+        if (obj && typeof obj === 'string') {
+            console.log("converting string in object, should not happen");
+            return getDataUtils.dataTransformFromJSON(null, obj);
         }
-        return date;
-    };
+
+        for (let k in obj) {
+            let val = obj[k];
+            //console.log("converting property:", k);
+            if (val && typeof val === 'string') {
+                //console.log("converting string in property ",k,":",val);
+                obj[k] = getDataUtils.dataTransformFromJSON(k, val);
+                //console.log("new value: ", obj[k], " of type " + typeof (obj[k]));
+                continue;
+            }
+            if (Array.isArray(val)) {
+                //console.log("converting array: ",k);
+                val.forEach((el, index) => {
+                    if (el && typeof el === 'string') {
+                        //console.log("converting string in array ",k,":",el);
+                        val[index] = getDataUtils.dataTransformFromJSON(null, el);
+                        //console.log("new value: ", val[index], " of type " + typeof (val[index]));
+                    }
+                    else {
+                        adjustInputJson(el);
+                    }
+                });
+                continue;
+            }
+            if (val && typeof val === 'object') {
+                adjustInputJson(val)
+            }
+        }
+    }
 
     /**
      * @function getJsObjectFromJson
@@ -68,12 +92,15 @@
      * @returns {object} an object (DataTable or DataSet)
      */
     getDataUtils.getJsObjectFromJson = function (json) {
-        //console.log("the method getJsObjectFromJson is BASE")
+        // console.log("getDataUtils.getJsObjectFromJson BASE");
         // riconverto la stringa json proveniente dal server
         if (typeof json === 'string') {
-            return JSON.parse(json, dataTransform);
+            //console.log("json is a string");
+            //console.log("getJsObjectFromJson:",json.substring(0,100));
+            return JSON.parse(json, getDataUtils.dataTransformFromJSON);
         }
-
+        //console.log("getJsObjectFromJson BASE: json is an object - adjusting from JSON");
+        adjustInputJson(json);
         return json;
         //return JSON.parse(json);
     };
@@ -104,16 +131,20 @@
      * @public
      * @description SYNC
      * Given a json representation of the DataSet returns a JsDataSet
-     * @param {string} jsonJsDataSet JSon string
+     * @param {object} jsonJsDataSet JSon object
      * @returns {DataSet} the dataset
      */
     getDataUtils.getJsDataSetFromJson = function (jsonJsDataSet) {
+        //console.log("getDataUtils.getJsDataSetFromJson BASE")
         // riconverto la stringa json proveniente dal server
+        //console.log("getJsDataSetFromJson, typeof(jsonJsDataSet) is:", typeof (jsonJsDataSet));
         let objParsed = getDataUtils.getJsObjectFromJson(jsonJsDataSet);
+
         // creo nuovo jsDataSet da popolare
         let ds = new jsDataSet.DataSet(objParsed.name);
         // deserializzo il json proveniente dal server e popolo ds
         ds.deSerialize(objParsed, true);
+        
         //ds.displayData();
         return ds;
     };
@@ -125,7 +156,7 @@
      * Given a jsDataSet returns the json string. First it calls the methods serialize() of jsDataSet and then returns the json representation of the dataset object
      * @param {DataSet} ds
      * @param {boolean} serializeStructure. If true it serialize data and structure
-     * @returns {string} the json string
+     * @returns {object} the json 
      */
     getDataUtils.getJsonFromJsDataSet = function (ds, serializeStructure) {
         //return JSON.stringify(ds.serialize(serializeStructure));
@@ -134,8 +165,8 @@
         // _.forEach(objser.tables, function (objdt) {
         //     getDataUtils.convertDateTimeToUTC(objdt, false);
         // });
-        var jsonToSend = JSON.stringify(objser);
-        return jsonToSend;
+        //var jsonToSend = JSON.stringify(objser);
+        return objser; // jsonToSend;
 
     };
 
@@ -146,12 +177,13 @@
      * @description SYNC
      * Serializes a DataTable with the data and structure
      * @param {DataTable} dt
-     * @returns {string} the json string
+     * @returns {object} the json string
      */
     getDataUtils.getJsonFromDataTable = function (dt) {
         let objser = dt.serialize(true);
         objser.name = dt.name;
-        return JSON.stringify(objser);
+        //return JSON.stringify(objser);
+        return objser;
     };
 
     /**
@@ -160,12 +192,12 @@
      * @description SYNC
      * Given an array of message object returns the json string
      * @param {string[]} messages
-     * @return {string}
+     * @return {object}
      */
     getDataUtils.getJsonFromMessages = function (messages) {
         if (!messages) return;
         if (messages.length === 0) return;
-        return JSON.stringify(messages);
+        return messages; // JSON.stringify(messages);
     };
 
     /**
@@ -178,7 +210,7 @@
      */
     getDataUtils.getJsDataQueryFromJson = function (jsonJsDataQuery) {
         // riconverto la stringa json proveniente dal server
-        let objParsed = getDataUtils.getJsObjectFromJson(jsonJsDataQuery);
+        let objParsed = getDataUtils.getJsObjectFromJson(jsonJsDataQuery);        
         return q.fromObject(objParsed);
     };
 
@@ -188,10 +220,10 @@
      * @description SYNC
      * Given jsDataQuery returns the json string. first it converts jsDataQuery into js object and to a json string
      * @param {jsDataQuery} dataQuery
-     * @returns {string} the json string
+     * @returns {object} the json object
      */
     getDataUtils.getJsonFromJsDataQuery = function (dataQuery) {
-        return JSON.stringify(q.toObject(dataQuery));
+        return q.toObject(dataQuery);// JSON.stringify(q.toObject(dataQuery));
     };
 
     /**
@@ -204,7 +236,7 @@
      */
     getDataUtils.getDataRelationSerialized = function (rel) {
         if (!rel) return "";
-        return JSON.stringify(rel.serialize());
+        return rel.serialize(); // JSON.stringify(rel.serialize());
     };
 
     /**
@@ -217,9 +249,10 @@
      */
     getDataUtils.cloneDataTable = function (dt) {
         let dsClone = getDataUtils.cloneDataSet(dt.dataset);
-        let t =  getDataUtils.getJsDataTableFromJson(getDataUtils.getJsonFromDataTable(dt));
-        dt.dataset = dsClone;
-        return t;
+        return dsClone.tables[dt.name];
+        //let t =  getDataUtils.getJsDataTableFromJson(getDataUtils.getJsonFromDataTable(dt));
+        //dt.dataset = dsClone;
+        //return t;
     };
 
     /**
@@ -335,12 +368,17 @@
                                 }
                             }
                         }
-                    } catch (e){
+                    } catch (e) {
+                        console.log("Dataset disallineati dopo il salvataggio " + e.message);
                         logger.log(logType.ERROR, "Dataset disallineati dopo il salvataggio " + e.message);
                     }
 
-                } else {
-                    logger.log(logType.ERROR, "La tabella " + tSource.name + " non esiste sul dataset " + dsDest.name);
+                }
+                else {
+                    if (tSource.rows.length > 0) {
+                        console.log("La tabella " + tSource.name + " non esiste sul dataset di destinazione " + dsDest.name);
+                        logger.log(logType.ERROR, "La tabella " + tSource.name + " non esiste sul dataset di destinazione " + dsDest.name);
+                    }
                 }
             });
     };
@@ -497,7 +535,7 @@
 }((typeof jsDataQuery === 'undefined') ? require('./jsDataQuery') : jsDataQuery,
     (typeof appMeta === 'undefined') ? require('./Logger').logger : appMeta.logger,
     (typeof appMeta === 'undefined') ? require('./Logger').logTypeEnum : appMeta.logTypeEnum,
-    (typeof jsDataSet === 'undefined') ? require('./jsDataSet') : jsDataSet,
+    (typeof appMeta === 'undefined') ? require('./jsDataSet') : jsDataSet,
     (typeof _ === 'undefined') ? require('lodash') : _
 ));
 

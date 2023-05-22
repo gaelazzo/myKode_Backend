@@ -17,11 +17,9 @@ async function getSpecificChild(req,res,next){
 
     let jsonFilter= getDataUtils.getJsDataQueryFromJson(req.body.startconditionfilter);
 
-    let startCondition = q.fromObject(jsonFilter);
+    let startCondition = jsonFilter;
 
-    let  t = new jsDataSet.DataTable("dummy");
-    let jSonTable = getDataUtils.getJsDataTableFromJson(req.body.dt);
-    t.deSerialize(jSonTable);
+    let t = getDataUtils.getJsDataTableFromJson(req.body.dt);
 
     await ctx.dataAccess.selectIntoTable({
         table:t,
@@ -33,10 +31,10 @@ async function getSpecificChild(req,res,next){
     let strFilterOut = null;
     if (t.rows.length!==0){
         drOut = t.rows[0];
-        strFilterOut = JSON.stringify(q.toObject(t.keyFilter(drOut)));
+        strFilterOut = q.toObject(t.keyFilter(drOut));
     }
 
-    res.json({dt: JSON.stringify(t.serialize(true)),
+    res.json({dt: t.serialize(true),
         filter:strFilterOut
             });
 

@@ -30,7 +30,8 @@ function CorsManagement(req, res, next) {
  */
 function createExpressApplication(){
     let app= express();
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.urlencoded({ extended: true,limit: '1mb' }));
+    app.use(bodyParser({limit: '1mb'}));
     app.use(bodyParser.json());
     app.use(bodyParser.raw());
     //app.use(CorsManagement);

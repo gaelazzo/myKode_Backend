@@ -1,5 +1,5 @@
 {
-	"name": "dsmeta_sorting_treeall",
+	"name": "dsmeta_upb_tree",
 	"relations": {
 		"upbupb": {
 			"parentTable": "upb",

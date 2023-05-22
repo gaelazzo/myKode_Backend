@@ -176,8 +176,7 @@ async function _doLogin(ctx, userName, password,
     env.usr("userweb", userName);
     env.usr("idreg",idreg);
     let roles = await getRoles(today(),env.sys("idcustomuser"),ctx);
-    //let roles = await getRoles(accountDate,env.sys("idcustomuser"));
-    
+
     //modify temporary identity
     let identity = ctx.identity;
     identity.title = title;
@@ -187,6 +186,10 @@ async function _doLogin(ctx, userName, password,
     identity.ndetail = ndetail;
     identity.isAnonymous = false;
     //identity.sessionguid = ctx.identity.sessionID() already set
+
+    //Those are necessary for optimistic locking in transactions
+    env.field("lu",identity.name);
+    env.field("cu",identity.name);
 
     let token = new jsToken.Token(req,identity);
 
@@ -198,7 +201,7 @@ async function _doLogin(ctx, userName, password,
         sys: serializeSys(env),
         token: token.getToken(),
         dtRoles:roles.serialize(),
-        expiresOn:identity.expiresOn
+        expiresOn:token.expiresOn
     };
     res.json(result);
 

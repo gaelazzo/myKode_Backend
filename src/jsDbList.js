@@ -16,6 +16,7 @@ const Deferred = require("JQDeferred");
 const DataColumn = require("./../client/components/metadata/jsDataSet").DataColumn;
 const DataTable = require("./../client/components/metadata/jsDataSet").DataTable;
 const DataAccess = require("./jsDataAccess").DataAccess;
+const CType = require("./../client/components/metadata/jsDataSet").CType;
 const _ = require('lodash');
 
 
@@ -286,13 +287,21 @@ TableDescriptor.prototype.column = function (columnName) {
  * Add key anc column information to a datatable
  * @param {DataTable} t
  */
-TableDescriptor.prototype.describeTable = function (t){
+TableDescriptor.prototype.describeTable = function (t, onlyExistingColumns){
     const k = this.getKey();
 
     this.columns.forEach(c=>{
+        if (onlyExistingColumns && !t.columns[c.name]) {
+            return;
+        }
         let col = t.setDataColumn(c.name,c.ctype);
-        col.allowNull = (c.is_nullable===1);
-        col.maxLength = c.max_length;
+        if (col.allowNull===undefined) {
+            col.allowNull = (c.is_nullable===1);
+        }
+        if (c.ctype === CType.String || c.ctype === CType.Char){
+            col.maxLength = c.max_length;
+        }
+        col.sqlType = c.type;
     });
     if (k.length>0) {
         t.key(k);

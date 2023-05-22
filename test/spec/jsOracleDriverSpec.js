@@ -3,11 +3,9 @@
 
 const { v4: uuidv4 } = require('uuid');
 
-console.log("running jsOracleDriverSpec");
-
 
 const $dq = require('./../../client/components/metadata/jsDataQuery'),
-     _ = require('lodash'),
+    _ = require('lodash'),
     fs = require("fs"),
     path = require("path");
 
@@ -53,25 +51,25 @@ let dbName = "sqldrv_"+ uuidv4().replace(/\-/g, '_');
 
 describe('oracleDriver ', function () {
     let dbInfo = {
-            good: {
-                server: dbConfig.server,
-                useTrustedConnection: false,
-                user: dbConfig.user,
-                pwd: dbConfig.pwd,
-                port: dbConfig.port,
-                database: dbConfig.dbName,
-                dbaPrivilege : dbConfig.dbaPrivilege
-            },
-            bad: {
-                server: dbConfig.server,
-                useTrustedConnection: false,
-                user: dbConfig.user,
-                pwd: dbConfig.pwd + 'AA',
-                port: dbConfig.port,
-                database: dbConfig.dbName,
-                dbaPrivilege : dbConfig.dbaPrivilege
-            }
-        };
+        good: {
+            server: dbConfig.server,
+            useTrustedConnection: false,
+            user: dbConfig.user,
+            pwd: dbConfig.pwd,
+            port: dbConfig.port,
+            database: dbConfig.dbName,
+            dbaPrivilege : dbConfig.dbaPrivilege
+        },
+        bad: {
+            server: dbConfig.server,
+            useTrustedConnection: false,
+            user: dbConfig.user,
+            pwd: dbConfig.pwd + 'AA',
+            port: dbConfig.port,
+            database: dbConfig.dbName,
+            dbaPrivilege : dbConfig.dbaPrivilege
+        }
+    };
 
 
     function getConnection(dbCode) {
@@ -99,47 +97,42 @@ describe('oracleDriver ', function () {
             options.dbCode = "good";
             masterConnTemp = new oracleDriver.Connection(options);
             masterConnTemp.open()
-                .then(function(){
-                    console.log("connecting to db");
-                    sqlConn = getConnection('good');
-                    sqlConn.open()
-                        .then((rr)=> {
-                            console.log("db connected");
-                            sqlOpen.resolve(rr);
-                        })
-                        .fail(rr=> {
-                            sqlOpen.reject(rr);
-                        });
+            .then(function(){
+                sqlConn = getConnection('good');
+                sqlConn.open()
+                .then((rr)=> {
+                    sqlOpen.resolve(rr);
                 })
-                .fail((err)=>{
-                    console.log(err);
-                    sqlOpen.reject(err);
+                .fail(rr=> {
+                    sqlOpen.reject(rr);
                 });
+            })
+            .fail((err)=>{
+                console.log(err);
+                sqlOpen.reject(err);
+            });
 
             sqlOpen.then(()=>{
                 sqlConn.run(fs.readFileSync(path.join('test', 'data', 'jsOracleDriver', 'setup.sql')).toString())
-                    .then(()=>{
-                        console.log("setup run, closing");
-                        return sqlConn.close();
-                    })
-                    .then(()=>{
-                        console.log("closed connection 1");
-                        masterConn = masterConnTemp;
-                        done();
-                    })
-                    .fail(err=>{
-                        console.log(err);
-                    });
+                .then(()=>{
+                    return sqlConn.close();
+                })
+                .then(()=>{
+                    masterConn = masterConnTemp;
+                    done();
+                })
+                .fail(err=>{
+                    console.log(err);
+                });
             });
         }
     },60000);
-    
+
     let canExecute=false;
     beforeEach(function (done) {
         //console.log("running beforeEach");
         canExecute=false;
         if (!masterConn){
-            console.log("no Master Conn");
             done();
             return;
         }
@@ -158,10 +151,10 @@ describe('oracleDriver ', function () {
         //console.log("running afterEach");
         if (sqlConn) {
             sqlConn.destroy()
-                .then(()=>{
-                    //console.log("closed connection 2");
-                    done();
-                });
+            .then(()=>{
+                //console.log("closed connection 2");
+                done();
+            });
         }
         sqlConn = null;
     });

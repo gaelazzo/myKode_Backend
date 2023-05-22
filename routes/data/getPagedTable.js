@@ -109,7 +109,7 @@ async function getPagedTable(req,res,next){
         return res.status(410).send("Error selecting rows from table: " + tableName+", error:"+err);
     }
     //let t = new jsDataSet.DataTable(map.newTableName);
-    dtOriginal.loadArray(data, true);
+    dtOriginal.loadArray(data, false);
     dtOriginal.orderBy(sortBy);
     await meta.describeColumns(dtOriginal, map.newListType);
 
@@ -135,10 +135,10 @@ async function getPagedTable(req,res,next){
         }
         dtOriginal.key(k);
     }
-    const dtSer =getDataUtils.getJsonFromJsDataSet(dtOriginal,false);
+    const dtSer =getDataUtils.getJsonFromDataTable(dtOriginal);
     res.json({
         dt:dtSer,
-        totpage:totPages,
+        totpage:Number(totPages.toFixed(0)),
         totrows:totRows
     });
 

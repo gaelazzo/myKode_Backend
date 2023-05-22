@@ -157,7 +157,7 @@ const _ = require('lodash');
         function doPar(expr) {
             return "(" + expr + ")";
         }
-
+        $sqlf.doPar = doPar;
 
         /**
          * get the 'is null' condition over object o

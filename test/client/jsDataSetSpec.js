@@ -857,6 +857,7 @@ describe('DataTable module test', function () {
       t.acceptChanges();
       const dr = o1.getRow();
       dr.del();
+      expect(dr.state).toBe(dsSpace.dataRowState.deleted);
       t.acceptChanges();
       expect(dr.state).toBe(dsSpace.dataRowState.detached);
     });
@@ -891,7 +892,7 @@ describe('DataTable module test', function () {
     });
 
 
-    it('multiple addition of same object should be ignored', function () {
+    it('multiple addition of same object should NOT be ignored', function () {
       const o1 = {a: 1, b: 2};
       const o2 = {a: 1, b: 3};
       const o3 = {a: 1, b: 3};
@@ -900,7 +901,7 @@ describe('DataTable module test', function () {
       t.add(o3);
       t.add(o1);
       t.add(o1);
-      expect(t.rows.length).toBe(3);
+      expect(t.rows.length).toBe(5);
     });
 
 

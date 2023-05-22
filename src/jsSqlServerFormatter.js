@@ -146,17 +146,150 @@ const _ = require('lodash');
             throw 'Illegal parameter passed to conditionToSql:' + JSON.stringify(cond);
         }
 
+    function nextNonComment(S, start){
+        let index = start;
+        while ((index < S.length) && (index >= 0)){
+            let C = S[index];
+
+            //Salta i commenti normali
+            if (C === '/'){
+                try{
+                    //vede se è un commento normale ossia /* asas */
+                    if (S[index + 1] === '*'){
+                        index = closedComment(S, index + 2);
+                        continue;
+                    }
+                    if (S[index + 1] === '/'){
+                        let next1 = S.IndexOf("\n", index);
+                        let next2 = S.IndexOf("\r", index);
+                        if ((next1 === -1) && (next2 === -1)){
+                            return S.length;
+                        }
+                        if (next1 === -1){
+                            index = next2 + 1;
+                            continue;
+                        }
+                        if (next2 === -1){
+                            index = next1 + 1;
+                            continue;
+                        }
+                        if (next1 < next2){
+                            index = next1 + 1;
+                        }
+                        else{
+                            index = next2 + 1;
+                        }
+                        continue;
+
+                    }
+                } catch (e){
+                    return -1;
+                }
+            }
+            if ((C === ' ') || (C === '\n') || (C === '\r') || (C === '\t')){
+                index++;
+                continue;
+            }
+            return index;
+        }
+
+        return -1;
+    }
+
+    function closedString(S, start, stop){
+        let index = start;
+        while (index < S.length){
+            if (S[index] === '\\'){// carattere di escape
+                index++;
+                index++;    //salta anche il carattere successivo al carattere di escape
+                continue;
+            }
+            if (S[index] === stop){
+                return index + 1;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    function closedComment(S, start){
+        let nextClose = S.indexOf("*/", start);
+        if (nextClose < 0){
+            return -1;
+        }
+        return nextClose + 2;
+    }
+
+
         /**
-         * Surround expression in parenthesis
+        *
+        * @param S
+        * @param start
+        * @param BEGIN
+        * @param END
+        * @returns {number|*}
+        */
+        function closeBlock(S, start, BEGIN,END){
+            let index = start;
+            let level = 1;
+            while ((index >= 0) && (index < S.length)){
+                index = nextNonComment(S, index);
+                if (index < 0){
+                    return -1;
+                }
+                let C = S[index];
+                if (C === '"'){
+                    index = closedString(S, index + 1, '"');
+                    continue;
+                }
+                if (C === '\''){
+                    index = closedString(S, index + 1, '\'');
+                    continue;
+                }
+                if (C === BEGIN){
+                    level++;
+                    index++;
+                    continue;
+                }
+                if (C === END){
+                    level--;
+                    index++;
+                    if (level === 0){
+                        return index;
+                    }
+                    continue;
+                }
+                index++;
+            }
+            return -1;
+        }
+
+        function isABlock(s){
+            if (!s.startsWith("(")){
+                return false;
+            }
+            if (!s.endsWith(")")){
+                return false;
+            }
+            return closeBlock(s,1,'(',')')===s.length;
+        }
+        /**
+         * Surround expression in parentheses
          * @method doPar
          * @public
          * @param {string} expr
          * @returns {string}
          */
         function doPar(expr) {
+            if (expr === null) return expr;
+            if (expr === '') return  expr;
+            if (isABlock(expr)){
+                return  expr;
+            }
             return "(" + expr + ")";
         }
 
+        $sqlf.doPar = doPar;
 
         /**
          * get the 'is null' condition over object o
@@ -416,10 +549,10 @@ const _ = require('lodash');
          * @example joinAnd(['a','b','c']) would give 'a and b and c'
          */
         $sqlf.joinAnd = function (arr) {
-            return doPar(_.filter(arr, function (cond) {
+            return _.filter(arr, function (cond) {
                 return !isEmptyCondition(cond);
             }).
-                join(" and "));
+                join("AND");
         };
 
         /**
@@ -430,10 +563,13 @@ const _ = require('lodash');
          * @example joinOr(['a','b','c']) would give 'a or b or c'
          */
         $sqlf.joinOr = function (arr) {
-            return doPar(_.filter(arr, function (cond) {
+            let toConsider = _.filter(arr, function (cond) {
                 return !isEmptyCondition(cond);
-            })
-                .join(" or "));
+            });
+            if(toConsider.length===1) {
+                return toConsider[0];
+            }
+            return doPar(toConsider.join("OR"));
         };
 
 
@@ -538,9 +674,21 @@ const _ = require('lodash');
          * @example isIn('el',[1,2,3,4]) would be compiled into 'el in (1,2,3,4)'
          */
         $sqlf.isIn = function (expr, list, context) {
-            return doPar(toSql(expr, context) + " in " + toSql(list, context));
+            return doPar(toSql(expr, context) + " IN " + toSql(list, context));
         };
 
+        /**
+         * gets the 'elements belongs to list' sql condition
+         * @method isIn
+         * @param  {sqlFun|object|null|undefined}expr
+         * @param  {Array.<sqlFun|object|null|undefined>} list
+         * @param {Environment} context
+         * @returns {string}
+         * @example isIn('el',[1,2,3,4]) would be compiled into 'el in (1,2,3,4)'
+         */
+        $sqlf.isNotIn = function (expr, list, context) {
+            return doPar(toSql(expr, context) + " NOT IN " + toSql(list, context));
+        };
 
         /**
          * get the '(expr (bitwise and) testMask) equal to val ' sql condition

@@ -87,7 +87,7 @@ JsApplication.prototype = {
     error: function (err,req,res,next){
         res.status(401).json({
             err:err,
-            error: err.stack
+            error: err? err.stack:undefined
         });
     },
 
@@ -155,6 +155,7 @@ JsApplication.prototype = {
         this.dbCode= appConfig.dbCode;
         this.dsPath = appConfig.dsPath;
         this.metaPath = appConfig.metaPath;
+        this.config = appConfig;
         this.pool = this.createConnectionPool(this.dbCode);
         let noTokenFolders = this.getNoTokenFolders();
         let dbInfo = DBList.getDbInfo(this.dbCode);
@@ -332,13 +333,14 @@ JsApplication.prototype = {
         ctx.dbCode = this.dbCode;
         ctx.dsPath = this.dsPath;
         ctx.metaPath = this.metaPath;
+        ctx.config = this.config;
         ctx.pooledConn = pooledConn;
         ctx.dataAccess = pooledConn.getDataAccess();
         ctx.security = ctx.dataAccess.security;
         ctx.sqlConn = ctx.dataAccess.sqlConn;
         ctx.environment = env;
         ctx.dataAccess.externalUser = env.usr("externalUser");
-        ctx.formatter = ctx.sqlConn.formatter;
+        ctx.formatter = ctx.dataAccess.sqlFormatter;
         ctx.dbDescriptor = DBList.getDescriptor(ctx.dbCode);
         ctx.securityProvider = this.getSecurityProvider;
         ctx.identity = getIdentityFromRequest(req);

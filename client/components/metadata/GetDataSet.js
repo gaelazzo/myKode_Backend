@@ -63,6 +63,7 @@ GetDataSet.prototype = {
 
         let ds= new DataSet(dsName);
         ds.deSerialize(dsData,true);
+        ds.name = dsName; //a volte sovrascrive quello nel json
         return  ds;
     },
 
@@ -80,7 +81,7 @@ GetDataSet.prototype = {
         meta.describeColumnsStructure(primaryTable);
         let scannedTable = new Set();
         let tableDescriptor = await ctx.dbDescriptor.table(tableName);
-        tableDescriptor.describeTable(primaryTable);
+        tableDescriptor.describeTable(primaryTable,true);
         await GetDataSet.prototype.addSubEntityExtProperties(ctx,primaryTable,editType);
         return ds;
     },
@@ -118,7 +119,7 @@ GetDataSet.prototype = {
             meta.describeColumnsStructure(childTable);
             try{
                 let tableDescriptor = await ctx.dbDescriptor.table(childTable.name);
-                tableDescriptor.describeTable(childTable);
+                tableDescriptor.describeTable(childTable,true);
             }
             catch (e){
                 console.log("table "+ childTable.name+" does not exists in database");

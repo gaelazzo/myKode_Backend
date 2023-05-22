@@ -6,6 +6,12 @@ BEGIN
 END
 GO
 
+IF EXISTS(select * from sysobjects where id = object_id(N'[flowchartuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+ drop table [flowchartuser]
+END
+GO
+
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customgroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN

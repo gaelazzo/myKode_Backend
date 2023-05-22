@@ -171,13 +171,13 @@ describe('SqlServerFormatter functions', function () {
 
 
     it('isIn(\'el\',[1,2,3]) should work', function(){
-      expect($qf.isIn('el',[1,2,3])).toBe('(\'el\' in (1,2,3))');
+      expect($qf.isIn('el',[1,2,3])).toBe('(\'el\' IN (1,2,3))');
     });
 
     it('isIn(\'el\',[1,2,3]) should work (using context)', function () {
       expect($qf.isIn('el', [$q.context(fieldGet('a')),
         $q.context(fieldGet('b')),
-        $q.context(fieldGet('c'))], testCtx)).toBe('(\'el\' in (1,2,3))');
+        $q.context(fieldGet('c'))], testCtx)).toBe('(\'el\' IN (1,2,3))');
     });
 
 
@@ -199,7 +199,7 @@ describe('SqlServerFormatter functions', function () {
 
 
     it('isIn(field(\'el\'),[1,2,3]) should work', function () {
-      expect($qf.isIn($q.field('el'), [1, 2, 3], testCtx)).toBe('(el in (1,2,3))');
+      expect($qf.isIn($q.field('el'), [1, 2, 3], testCtx)).toBe('(el IN (1,2,3))');
     });
 
 
@@ -247,20 +247,20 @@ describe('SqlServerFormatter functions', function () {
 
     it('and should join given function with AND', function () {
       var f = $q.and($q.eq('a', 2), $q.eq('b',3), $q.eq('c',4));
-      expect(f.toSql($qf)).toBe('((a=2) and (b=3) and (c=4))');
+      expect(f.toSql($qf)).toBe('(a=2)AND(b=3)AND(c=4)');
     });
 
     it('and should join given function with AND (using context)', function () {
       var f = $q.and($q.eq('a', $q.context(fieldGet('b'))), $q.eq('b', 3),
             $q.eq('c', $q.add($q.context(fieldGet('a')), $q.context(fieldGet('c')),
               $q.context(function (env) {return env.g.c;}))));
-      expect(f.toSql($qf, testCtx)).toBe('((a=2) and (b=3) and (c=(1+3+13)))');
+      expect(f.toSql($qf, testCtx)).toBe('(a=2)AND(b=3)AND(c=(1+3+13))');
     });
 
 
     it('or should join given function with OR', function () {
       var f = $q.or($q.eq('a', 2), $q.eq('b', 3), $q.eq('c', 4));
-      expect(f.toSql($qf)).toBe('((a=2) or (b=3) or (c=4))');
+      expect(f.toSql($qf)).toBe('((a=2)OR(b=3)OR(c=4))');
     });
 
   });
@@ -300,21 +300,21 @@ describe('SqlServerFormatter functions', function () {
       var q2 = $q.eq('a',3);
       var q3 = $q.and(q1,q2);
       spyOn(q1,'toSql').and.callThrough();
-      expect(q3.toSql($qf)).toBe('((a=2) and (a=3))');
+      expect(q3.toSql($qf)).toBe('(a=2)AND(a=3)');
       expect(q1.toSql).toHaveBeenCalled();
     });
 
 
     it('toSql of a composed query works', function () {
       var q = $q.or($q.and($q.eq('a', 2),$q.eq('b',3)), $q.and($q.eq('d','a'),$q.lt('c',1)));
-      expect($qf.toSql(q)).toBe('(((a=2) and (b=3)) or ((d=\'a\') and (c<1)))');
+      expect($qf.toSql(q)).toBe('((a=2)AND(b=3)OR(d=\'a\')AND(c<1))');
     });
 
 
     it('toSql of a composed query works (using context)', function () {
       var q = $q.or($q.and($q.eq('a', 2), $q.eq('b', $q.context(fieldGet('c')))),
               $q.and($q.eq('d', 'a'), $q.lt('c', $q.context(fieldGet('a')))));
-      expect($qf.toSql(q,testCtx)).toBe('(((a=2) and (b=3)) or ((d=\'a\') and (c<1)))');
+      expect($qf.toSql(q,testCtx)).toBe('((a=2)AND(b=3)OR(d=\'a\')AND(c<1))');
     });
 
   });

@@ -388,6 +388,22 @@ describe('sqlServerDriver ', function () {
                 });
         });
 
+        it('Date should be exact', function (done) {
+            expect(canExecute).toBeTruthy();
+            sqlConn.queryBatch('SELECT * from customer where idcustomer=1')
+            .done(function (result) {
+                _(result).forEach(function (r) {
+                    expect(r.birth).toEqual(jasmine.any(Date)); // '2010-24-09 12:27:38'
+                    expect(r.birth).toEqual(new Date(2010,8,24,12,27,38,0))
+                });
+                done();
+            })
+            .fail(function (err) {
+                expect(err).toBeUndefined();
+                done();
+            });
+        });
+
         it('notify should be called from queryRaw when multiple result got (two select)', function (done) {
             expect(canExecute).toBeTruthy();
             var progressCalled, nResult = 0;

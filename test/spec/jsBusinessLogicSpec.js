@@ -91,6 +91,8 @@ describe ("jsBusinessLogic",function () {
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
+
+
         masterConn= null;
         sqlConn= null;
         dbList.setDbInfo('testMainMySqlDriver', good);
@@ -1198,12 +1200,12 @@ describe ("jsBusinessLogic",function () {
 
             it("should give key columns", function () {
                 let t1 = new dsNameSpace.DataTable("table1");
-                t1.setDataColumn("k1", CType.string);
+                t1.setDataColumn("k1", CType.String);
                 t1.setDataColumn("k2", CType.int);
                 t1.setDataColumn("d1", CType.int);
                 t1.key("k1", "k2");
                 let t2 = new dsNameSpace.DataTable("table2");
-                t2.setDataColumn("k1", CType.string);
+                t2.setDataColumn("k1", CType.String);
                 t2.setDataColumn("k2", CType.int);
                 t2.setDataColumn("d1", CType.int);
                 t2.key("k1", "k2");
@@ -1215,7 +1217,7 @@ describe ("jsBusinessLogic",function () {
                 expect(cols.indexOf("k1")).toBe(0);
                 expect(cols.indexOf("k2")).toBe(1);
                 expect(cols.indexOf("d1")).toBe(-1);
-                expect(query.toString()).toBe("k1==1 AND k2==2");
+                expect(query.toString()).toBe("(k1==1) AND (k2==2)");
 
             });
 
@@ -1238,7 +1240,7 @@ describe ("jsBusinessLogic",function () {
                 expect(cols.indexOf("k1")).toBe(0);
                 expect(cols.indexOf("k2")).toBe(1);
                 expect(cols.indexOf("d1")).toBe(-1);
-                expect(query.toString()).toBe("k1==1 AND k2==2");
+                expect(query.toString()).toBe("(k1==1) AND (k2==2)");
 
             });
 
@@ -1261,7 +1263,7 @@ describe ("jsBusinessLogic",function () {
                 expect(cols.indexOf("k1")).toBe(-1);
                 expect(cols.indexOf("k2")).toBe(0);
                 expect(cols.indexOf("d1")).toBe(-1);
-                expect(query.toString()).toBe("k2==2");
+                expect(query.toString()).toBe("(k2==2)");
 
             });
 
@@ -1375,15 +1377,15 @@ describe ("jsBusinessLogic",function () {
 
                             expect(bm[0].openSubstitutions[0].queryCols.has("idcustomer")).toBeTruthy();
                             expect(bm[0].openSubstitutions[0].queryCols.has("idphone")).toBeFalsy();
-                            expect(bm[0].openSubstitutions[0].queryString).toBe("idcustomer==29");
+                            expect(bm[0].openSubstitutions[0].queryString).toBe("(idcustomer==29)");
 
                             expect(bm[1].openSubstitutions[0].queryCols.has("idcustomer")).toBeTruthy();
                             expect(bm[1].openSubstitutions[0].queryCols.has("idphone")).toBeFalsy();
-                            expect(bm[1].openSubstitutions[0].queryString).toBe("idcustomer==30");
+                            expect(bm[1].openSubstitutions[0].queryString).toBe("(idcustomer==30)");
 
                             expect(bm[2].openSubstitutions[0].queryCols.has("idcustomer")).toBeTruthy();
                             expect(bm[2].openSubstitutions[0].queryCols.has("idphone")).toBeTruthy();
-                            expect(bm[2].openSubstitutions[0].queryString).toBe("idcustomer==30 AND idphone==12");
+                            expect(bm[2].openSubstitutions[0].queryString).toBe("(idcustomer==30) AND (idphone==12)");
 
 
                             BL.destroy().always(()=>{done();});
@@ -1417,7 +1419,7 @@ describe ("jsBusinessLogic",function () {
                         expect(bm[3].openSubstitutions[0].queryCols.size).toBe(1);
 
                         expect(bm[3].openSubstitutions[0].queryCols.has("idcustomer")).toBeTruthy();
-                        expect(bm[3].openSubstitutions[0].queryString).toBe("idcustomer==29");
+                        expect(bm[3].openSubstitutions[0].queryString).toBe("(idcustomer==29)");
 
 
                     } catch (err) {
@@ -1555,18 +1557,18 @@ describe ("jsBusinessLogic",function () {
 
                     expect(groups.length).toBe(3);
                     expect(groups[0].tableName).toBe("customer");
-                    expect(groups[0].querySet.has("idcustomer==value1")).toBe(true);
-                    expect(groups[0].querySet.has("idcustomer==value2")).toBe(true);
+                    expect(groups[0].querySet.has("(idcustomer==value1)")).toBe(true);
+                    expect(groups[0].querySet.has("(idcustomer==value2)")).toBe(true);
                     expect(groups[0].queryCols.has("idcustomer")).toBe(true);
 
                     expect(groups[1].tableName).toBe("customerphone");
-                    expect(groups[1].querySet.has("idcustomer==value4 AND idphone==value3")).toBe(true);
+                    expect(groups[1].querySet.has("(idcustomer==value4) AND (idphone==value3)")).toBe(true);
                     expect(groups[1].queryCols.has("idcustomer")).toBe(true);
                     expect(groups[1].queryCols.has("idphone")).toBe(true);
 
 
                     expect(groups[2].tableName).toBe("customerview");
-                    expect(groups[2].querySet.has("idcustomer==value5")).toBe(true);
+                    expect(groups[2].querySet.has("(idcustomer==value5)")).toBe(true);
                     expect(groups[2].queryCols.has("idcustomer")).toBe(true);
 
                     await BL.destroy();
@@ -1602,16 +1604,16 @@ describe ("jsBusinessLogic",function () {
                     let groups = await BL.refineMessages_groupQueries(bm, 10);
                     expect(groups.length).toBe(3);
                     expect(groups[0].tableName).toBe("customer");
-                    expect(groups[0].querySet.has("idcustomer==value1")).toBe(true);
+                    expect(groups[0].querySet.has("(idcustomer==value1)")).toBe(true);
                     expect(groups[0].queryCols.has("idcustomer")).toBe(true);
 
                     expect(groups[1].tableName).toBe("customer");
-                    expect(groups[1].querySet.has("idcustomer==value2")).toBe(true);
+                    expect(groups[1].querySet.has("(idcustomer==value2)")).toBe(true);
                     expect(groups[1].queryCols.has("idcustomer")).toBe(true);
 
 
                     expect(groups[2].tableName).toBe("customer");
-                    expect(groups[2].querySet.has("idcustomer==value3")).toBe(true);
+                    expect(groups[2].querySet.has("(idcustomer==value3)")).toBe(true);
                     expect(groups[2].queryCols.has("idcustomer")).toBe(true);
 
                     await BL.destroy();
@@ -1654,15 +1656,15 @@ describe ("jsBusinessLogic",function () {
                     let groups = await BL.refineMessages_groupQueries(bm, 48);
                     expect(groups.length).toBe(2);
                     expect(groups[0].tableName).toBe("customer");
-                    expect(groups[0].querySet.has("idcustomer==value1")).toBe(true);
-                    expect(groups[0].querySet.has("idcustomer==value2")).toBe(true);
-                    expect(groups[0].querySet.has("idcustomer==value3")).toBe(true);
+                    expect(groups[0].querySet.has("(idcustomer==value1)")).toBe(true);
+                    expect(groups[0].querySet.has("(idcustomer==value2)")).toBe(true);
+                    expect(groups[0].querySet.has("(idcustomer==value3)")).toBe(true);
                     expect(groups[0].queryCols.has("idcustomer")).toBe(true);
 
                     expect(groups[1].tableName).toBe("customer");
                     expect(groups[1].queryCols.has("idcustomer")).toBe(true);
-                    expect(groups[1].querySet.has("idcustomer==value4")).toBe(true);
-                    expect(groups[1].querySet.has("idcustomer==value5")).toBe(true);
+                    expect(groups[1].querySet.has("(idcustomer==value4)")).toBe(true);
+                    expect(groups[1].querySet.has("(idcustomer==value5)")).toBe(true);
                     try {
                         await BL.destroy();
                     }
@@ -1732,11 +1734,11 @@ describe ("jsBusinessLogic",function () {
                     expect(selectParams.length).toBe(2);
 
                     expect(selectParams[0].tableName).toBe("customer");
-                    expect(selectParams[0].filter.toString()).toBe("idcustomer==value1 OR idcustomer==value2 OR idcustomer==value3");
+                    expect(selectParams[0].filter.toString()).toBe("(idcustomer==value1) OR (idcustomer==value2) OR (idcustomer==value3)");
                     expect(selectParams[0].columns).toBe("idcustomer,age,surname");
 
                     expect(selectParams[1].tableName).toBe("customer");
-                    expect(selectParams[1].filter.toString()).toBe("idcustomer==value4 OR idcustomer==value5");
+                    expect(selectParams[1].filter.toString()).toBe("(idcustomer==value4) OR (idcustomer==value5)");
                     expect(selectParams[1].columns).toBe("idcustomer,surname");
 
                     await BL.destroy();
@@ -1796,15 +1798,15 @@ describe ("jsBusinessLogic",function () {
                     expect(selectParams.length).toBe(3);
 
                     expect(selectParams[0].tableName).toBe("customer");
-                    expect(selectParams[0].filter.toString()).toBe("idcustomer==value1 OR idcustomer==value2");
+                    expect(selectParams[0].filter.toString()).toBe("(idcustomer==value1) OR (idcustomer==value2)");
                     expect(selectParams[0].columns).toBe("idcustomer,age,surname");
 
                     expect(selectParams[1].tableName).toBe("customerphone");
-                    expect(selectParams[1].filter.toString()).toBe("idcustomer==value4 AND idphone==value3");
+                    expect(selectParams[1].filter.toString()).toBe("(idcustomer==value4) AND (idphone==value3)");
                     expect(selectParams[1].columns).toBe("idcustomer,idphone,phonekind");
 
                     expect(selectParams[2].tableName).toBe("customerview");
-                    expect(selectParams[2].filter.toString()).toBe("idcustomer==value5");
+                    expect(selectParams[2].filter.toString()).toBe("(idcustomer==value5)");
                     expect(selectParams[2].columns).toBe("idcustomer,customerkind");
 
                     await BL.destroy();

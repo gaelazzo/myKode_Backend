@@ -148,6 +148,34 @@
 			},
 
 
+			/**
+			 *
+			 * @param {DataTable} table
+			 */
+			setDefaults: function(table) {
+				//console.log("invoking setDefaults of registryreference")
+				// si intende che il datatable sia già corredato dai defaults per come è stato deserializzato dal server
+				// questo metodo può contenere al massimo delle personalizzazioni
+				// La colonna title su registry in inserimento non accetta null, quindi aggiungo un defualt.
+				if(table.columns["cu"]){
+					table.defaults({"cu":this.security.sys('user')});
+				}
+				if(table.columns["ct"]){
+					table.defaults({"ct":new Date()});
+				}
+				if(table.columns["lu"]){
+					table.defaults({"lu":this.security.sys('user')});
+				}
+				if(table.columns["lt"]){
+					table.defaults({"lt":new Date()});
+				}
+
+				// Indagare perchè il metaDato del server non ci pensa lui
+				if (table.columns["flagdefault"]){
+					table.defaults({flagdefault: "N"}); // la defaults è un _assign, quindi non sovrascrive tutta la coll defaults, ma aggiunge la proprietà
+				}
+			},
+
 
 			//$isValidFunction$
 

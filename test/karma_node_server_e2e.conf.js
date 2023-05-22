@@ -31,8 +31,12 @@ module.exports = function(config) {
             'client/components/metadata/jsDataQuery.js',
             'client/components/metadata/jsDataSet.js',
             'node_modules/jquery/dist/jquery.js',
-            'test/spece2e/dummy.spec.js',
-            'test/spece2e/rest-api.spec.js',
+            'client/components/metadata/MetaApp.js',
+            'client/components/metadata/getDataUtils.js',
+            'test/spec_e2e/dummy.spec.js',
+            'test/spec_e2e/rest-api.spec.js',
+            'client/bower_components/bootstrap/dist/css/bootstrap.css',
+            'client/bower_components/bootstrap/dist/js/bootstrap.bundle.js',
         ],
 
         browserify: {
@@ -83,7 +87,7 @@ module.exports = function(config) {
 
         // level of logging
         // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-        logLevel: config.LOG_INFO
+        logLevel: config.LOG_ERROR
 
     });
 };

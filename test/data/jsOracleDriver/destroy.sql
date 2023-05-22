@@ -1,29 +1,70 @@
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customer]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].[customer]
-END
+   EXECUTE IMMEDIATE 'DROP TABLE ' || '"customer"';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
 GO
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[seller]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+
 BEGIN
- drop table [dbo].[seller]
-END
+   EXECUTE IMMEDIATE 'DROP TABLE ' || '"seller"';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
 GO
-if exists (select * from dbo.sysobjects where id = object_id(N'[testSP2]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [testSP2]
-GO
-if exists (select * from dbo.sysobjects where id = object_id(N'[testSP1]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [testSP1]
-GO
-if exists (select * from dbo.sysobjects where id = object_id(N'[testSP3]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [testSP3]
-GO
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+
+-- customerkind
 BEGIN
- drop table [dbo].[customerkind]
-END
+   EXECUTE IMMEDIATE 'DROP TABLE ' || '"customerkind"';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
 GO
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[sellerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+
 BEGIN
- drop table [dbo].[sellerkind]
-END
+   EXECUTE IMMEDIATE 'DROP TABLE ' || '"sellerkind"';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
+GO
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP PROCEDURE ' || 'testSP1';
+EXCEPTION
+  WHEN OTHERS THEN
+    IF SQLCODE != -4043 THEN
+      RAISE;
+    END IF;
+END;
+GO
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP PROCEDURE ' || 'testSP2';
+EXCEPTION
+  WHEN OTHERS THEN
+    IF SQLCODE != -4043 THEN
+      RAISE;
+    END IF;
+END;
+GO
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP PROCEDURE ' || 'testSP3';
+EXCEPTION
+  WHEN OTHERS THEN
+    IF SQLCODE != -4043 THEN
+      RAISE;
+    END IF;
+END;
 GO

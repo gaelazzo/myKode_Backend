@@ -139,28 +139,39 @@ describe('rest api',
                     q.eq('idcustomuser', 'BIANCO'),
                     q.eq('idcustomuser', 'NERO'));
                 let objser = q.toObject(filter);
-                let filterSerialized = JSON.stringify(objser);
+                let filterSerialized = objser; //JSON.stringify(objser);
 
                 try{
-                    const params = new URLSearchParams();
-                    params.append('tableName', 'customusergroup');
-                    params.append('columnList',  "idcustomgroup,idcustomuser");
-                    params.append('top', '10');
-                    params.append('filter', filterSerialized);
-
                     let response = await fetch(
                         'http://localhost:54471/test/data/select',
+
                         {
+                            headers: {"Content-Type": "application/json",
+                                // 'Content-Type': 'application/x-www-form-urlencoded',
+                            },
                             method: 'POST',
-                            body: params
+                            body: JSON.stringify({tableName: 'customusergroup',
+                                columnList:"idcustomgroup,idcustomuser,lt",
+                                top:10,
+                                filter: filterSerialized
+                            }),
+                            //json:true
                         });
                     expect(response).toBeDefined();
-                    let dtObj = await response.json();
+                    let dtObj = getDataUtils.getJsObjectFromJson(await response.json());
                     //const dtObj = JSON.parse(body);
                     const dt = new jsDataSet.DataTable(dtObj.name);
                     dt.deSerialize(dtObj, true);
-                    //expect(dt.name).toBe('customusergroup'); now this has been changed
+                    expect(dt.name).toBe('customusergroup'); //now this has been changed
                     expect(dt.rows.length).toBe(3);
+                    //actual value got from db json 2011-10-18T09:11:12.563Z
+                    //AZZURRO LT {ts '2011-10-18 11:11:12.563'}
+                    let azzurro= dt.select(q.eq("idcustomuser","AZZURRO"))[0];
+                    expect(typeof (azzurro)).toBe("object");
+                    expect(azzurro.lt instanceof Date).toBe(true);
+                    expect(azzurro.lt).toEqual(new Date(2011,9,18,11,11,12,563));
+
+                    //AZZURRO LT {ts '2011-10-18 11:11:12.563'}
                 }
                 catch (error){
                     expect(error).toBeUndefined();
@@ -171,14 +182,16 @@ describe('rest api',
 
         it("selectCount ws: returns the number of record of table",
             function (done){
-                let filter = q.or(q.eq('idcustomuser', 'AZZURRO'), q.eq('idcustomuser', 'BIANCO'), q.eq('idcustomuser', 'NERO'));
+                let filter = q.or(q.eq('idcustomuser', 'AZZURRO'),
+                        q.eq('idcustomuser', 'BIANCO'),
+                        q.eq('idcustomuser', 'NERO'));
                 let objser = q.toObject(filter);
-                let filterSerialized = JSON.stringify(objser);
+                let filterSerialized = objser;
 
                 request({
                     url: 'http://localhost:54471/test/data/selectCount',
                     method: 'POST',
-                    form: {
+                    json:{
                         tableName: 'customusergroup',
                         filter: filterSerialized
                     }
@@ -192,8 +205,8 @@ describe('rest api',
                     // N.B respect to .net be, express send() funct not send numbers. So we have to manage the response in the client.
                     // --> client must expect string type not number type!
                     expect(response).toBeDefined();
-                    expect(typeof body).toBe("string");
-                    expect(body).toBe("3");
+                    expect(typeof body).toBe("number");
+                    expect(body).toBe(3);
                     done();
                 });
             }, timeout);
@@ -204,7 +217,8 @@ describe('rest api',
                 const t1name = 'customuser';
                 const t2name = 'customusergroup';
                 const filter1 = q.or(q.eq('idcustomuser', 'AZZURRO'), q.eq('idcustomuser', 'BIANCO'));
-                const filter2 = q.or(q.eq('idcustomuser', 'AZZURRO'), q.eq('idcustomuser', 'BIANCO'), q.eq('idcustomuser', 'NERO'));
+                const filter2 = q.or(q.eq('idcustomuser', 'AZZURRO'), q.eq('idcustomuser', 'BIANCO'),
+                                    q.eq('idcustomuser', 'NERO'));
                 ds.newTable(t1name);
                 ds.newTable(t2name);
                 const selBuilderArray = [];
@@ -213,7 +227,7 @@ describe('rest api',
 
                 const ar = selBuilderArray.map((sel) => {
                     let objser = q.toObject(sel.filter);
-                    let filterSerialized = JSON.stringify(objser);
+                    let filterSerialized = objser;
                     return {
                         table: sel.table.serialize(true),
                         top: sel.top,
@@ -221,13 +235,13 @@ describe('rest api',
                         filter: filterSerialized
                     };
                 });
-                const selBuilderArrPrm = JSON.stringify({arr: ar});
+                const selBuilderArrPrm = {arr: ar}; //JSON.stringify({arr: ar});
 
                 request({
                     url: 'http://localhost:54471/test/data/multiRunSelect',
                     method: 'POST',
-                    form: {
-                        selBuilderArr: selBuilderArrPrm
+                    json:{
+                        selBuilderArr: selBuilderArrPrm,
                     }
                 }, function (error, response, body){
                     if (error){
@@ -237,7 +251,8 @@ describe('rest api',
                         return;
                     }
                     expect(response).toBeDefined();
-                    const objParsed = JSON.parse(body);
+                    expect(typeof body).toBe("object");
+                    const objParsed = getDataUtils.getJsObjectFromJson(body); //JSON.parse(body);
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
                     expect(ds.name).toBe('temp');
@@ -252,7 +267,7 @@ describe('rest api',
                 request({
                     url: 'http://localhost:54471/test/data/getDataSet',
                     method: 'POST',
-                    form: {
+                    json: {
                         tableName: 'customuser',
                         editType: 'test'
                     }
@@ -264,7 +279,8 @@ describe('rest api',
                         return;
                     }
                     expect(response).toBeDefined();
-                    const objParsed = JSON.parse(body);
+                    expect(typeof body).toBe("object");
+                    const objParsed = getDataUtils.getJsObjectFromJson(body);
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
                     expect(ds.name).toBe('customuser_test');
@@ -284,13 +300,13 @@ describe('rest api',
                     q.eq('idcustomuser', 'BIANCO'),
                     q.eq('idcustomuser', 'NERO'));
                 let objser = q.toObject(filter);
-                let filterSerialized = JSON.stringify(objser);
+                let filterSerialized = objser;
                 const tableName = 'customusergroup';
                 const listType = 'default';
                 request({
                     url: 'http://localhost:54471/test/data/getPagedTable',
                     method: 'POST',
-                    form: {
+                    json: {
                         tableName: tableName,
                         nPage: 1,
                         nRowPerPage: 5,
@@ -305,12 +321,12 @@ describe('rest api',
                         done();
                         return;
                     }
-                    const objParsed = JSON.parse(body);
+                    const objParsed = getDataUtils.getJsObjectFromJson(body);
                     const totpage = objParsed.totpage;
                     const totrows = objParsed.totrows;
                     expect(totpage).toBe(1);
                     expect(totrows).toBe(3);
-                    const dtObj = JSON.parse(objParsed.dt);
+                    const dtObj = objParsed.dt;
                     const dt = new jsDataSet.DataTable(dtObj.name);
                     dt.deSerialize(dtObj, true);
                     //expect(dt.name).toBe('customusergroup'); this is not serialized anymore
@@ -325,14 +341,14 @@ describe('rest api',
                 request({
                     url: 'http://localhost:54471/test/data/getDataSet',
                     method: 'POST',
-                    form: {
+                    json: {
                         tableName: 'customuser',
                         editType: 'test'
                     }
                 }, function (error, response, body){
 
                     expect(response).toBeDefined();
-                    const objParsed = JSON.parse(body);
+                    const objParsed = getDataUtils.getJsObjectFromJson(body);
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
@@ -344,11 +360,11 @@ describe('rest api',
 
                     const filter = q.eq('idcustomuser', idcustomuser);
                     let objser = q.toObject(filter);
-                    let filterSerialized = JSON.stringify(objser);
+                    let filterSerialized = objser;
                     request({
                         url: 'http://localhost:54471/test/data/getDsByRowKey',
                         method: 'POST',
-                        form: {
+                        json: {
                             tableName: 'customuser',
                             editType: 'test',
                             filter: filterSerialized
@@ -362,7 +378,6 @@ describe('rest api',
                             return;
                         }
                         expect(response).toBeDefined();
-                        const objParsed = JSON.parse(body);
                         const ds = getDataUtils.getJsDataSetFromJson(body);
                         expect(ds.name).toBe('customuser_test');
                         expect(ds.tables.customuser.rows.length).toBe(1);
@@ -385,13 +400,13 @@ describe('rest api',
                 request({
                     url: 'http://localhost:54471/test/data/getDataSet',
                     method: 'POST',
-                    form: {
+                    json: {
                         tableName: 'customuser',
                         editType: 'test'
                     }
                 }, function (error, response, body){
 
-                    const objParsed = JSON.parse(body);
+                    const objParsed = getDataUtils.getJsObjectFromJson(body);
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
@@ -399,15 +414,15 @@ describe('rest api',
                     ds.tables.customuser.add(objrow);
                     ds.tables.customuser.acceptChanges();
                     const objser = ds.serialize(true);
-                    const dsSerialized = JSON.stringify(objser);
+                    const dsSerialized = objser;
 
                     const filter = ds.tables.customuser.keyFilter(objrow);
                     let objserFilter = q.toObject(filter);
-                    let filterSerialized = JSON.stringify(objserFilter);
+                    let filterSerialized = objserFilter;
                     request({
                         url: 'http://localhost:54471/test/data/doGet',
                         method: 'POST',
-                        form: {
+                        json: {
                             ds: dsSerialized,
                             primaryTableName: 'customuser',
                             filter: filterSerialized,
@@ -421,7 +436,7 @@ describe('rest api',
                             done();
                             return;
                         }
-                        const objParsed = JSON.parse(body);
+                        const objParsed = getDataUtils.getJsObjectFromJson(body);
                         const ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         expect(ds.name).toBe('customuser_test');
@@ -440,17 +455,17 @@ describe('rest api',
 
                 const idcustomuser = 'AZZURRO';
 
-                // recupera un dataset e poi lo popola a aprtire dalla riga principale
+                // recupera un dataset e poi lo popola a partire dalla riga principale
                 request({
                     url: 'http://localhost:54471/test/data/getDataSet',
                     method: 'POST',
-                    form: {
+                    json: {
                         tableName: 'customuser',
                         editType: 'test'
                     }
                 }, function (error, response, body){
 
-                    const objParsed = JSON.parse(body);
+                    const objParsed = getDataUtils.getJsObjectFromJson(body);
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
@@ -458,20 +473,20 @@ describe('rest api',
                     ds.tables.customuser.add(objrow);
                     ds.tables.customuser.acceptChanges();
                     const objser = ds.serialize(true);
-                    const dsSerialized = JSON.stringify(objser);
+                    const dsSerialized = objser;
 
                     const filter = ds.tables.customuser.keyFilter(objrow);
                     let objserFilter = q.toObject(filter);
-                    let filterSerialized = JSON.stringify(objserFilter);
+                    let filterSerialized = objserFilter;
                     request({
                         url: 'http://localhost:54471/test/data/doGet',
                         method: 'POST',
-                        form: {
+                        json:{
                             ds: dsSerialized,
                             primaryTableName: 'customuser',
                             filter: filterSerialized,
                             onlyPeripherals: true
-                        }
+                        },
                     }, function (error, response, body){
 
                         if (error){
@@ -479,13 +494,13 @@ describe('rest api',
                             expect(true).toBe(false);
                             done();
                         }
-                        const objParsed = JSON.parse(body);
+                        const objParsed = getDataUtils.getJsObjectFromJson(body);
                         const ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         expect(ds.name).toBe('customuser_test');
-                        // soloe le periferiche poichè  onlyPeripherals: true
+                        // solo le periferiche poichè  onlyPeripherals: true
                         expect(ds.tables.customuser.rows.length).toBe(1);
-                        expect(ds.tables.customusergroup.rows.length).toBe(0);
+                        expect(ds.tables.customusergroup).toBeUndefined();
                         done();
                     });
                 });
@@ -497,7 +512,7 @@ describe('rest api',
                 request({
                     url: 'http://localhost:54471/test/data/setUsrEnv',
                     method: 'POST',
-                    form: {
+                    json:{
                         key: 'test_key',
                         value: 'test_value'
                     }
@@ -511,7 +526,7 @@ describe('rest api',
                     }
                     expect(response).toBeDefined();
                     expect(typeof body).toBe("string");
-                    expect(body).toBe("test_value");
+                    expect(body).toBe("ok");
                     done();
                 });
             }, timeout);
@@ -520,12 +535,12 @@ describe('rest api',
             function (done){
                 let filter = q.eq('idcustomuser', 'AZZURRO');
                 let objser = q.toObject(filter);
-                let filterSerialized = JSON.stringify(objser);
+                let filterSerialized = objser;
 
                 request({
                     url: 'http://localhost:54471/test/data/doReadValue',
                     method: 'POST',
-                    form: {
+                    json: {
                         table: 'customusergroup',
                         expr: 'idcustomgroup',
                         filter: filterSerialized,
@@ -552,7 +567,7 @@ describe('rest api',
                 request({
                     url: 'http://localhost:54471/test/data/changeRole',
                     method: 'POST',
-                    form: {
+                    json: {
                         idflowchart: idflowchart,
                         ndetail: ndetail,
                     }
@@ -563,7 +578,7 @@ describe('rest api',
                         done();
                         return;
                     }
-                    const objParsed = JSON.parse(body);
+                    const objParsed = body;
                     expect(Object.keys(objParsed.sys).length).toBeGreaterThan(0);
                     expect(Object.keys(objParsed.usr).length).toBeGreaterThan(0);
                     expect(objParsed.sys.usergrouplist).toBe('ORGANIGRAMMA');
@@ -586,7 +601,7 @@ describe('rest api',
                         return;
                     }
                     expect(response).toBeDefined();
-                    const dtObj = JSON.parse(body);
+                    const dtObj = getDataUtils.getJsObjectFromJson(body);
                     const dt = new jsDataSet.DataTable(tableName);
                     dt.deSerialize(dtObj, true);
                     //expect(dt.name).toBe(tableName);
@@ -610,7 +625,7 @@ describe('rest api',
                         return;
                     }
                     expect(response).toBeDefined();
-                    const dtObj = JSON.parse(body);
+                    const dtObj = getDataUtils.getJsObjectFromJson(body);
                     const dt = new jsDataSet.DataTable(dtObj.name);
                     dt.deSerialize(dtObj, true);
                     expect(dt.name).toBe(tableName);
@@ -630,16 +645,17 @@ describe('rest api',
                 request({
                     url: 'http://localhost:54471/test/data/getDataSet',
                     method: 'POST',
+
                     headers: {
                         "language": "it"
                     },
-                    form: {
+                    json: {
                         tableName: tableName,
                         editType: editType
                     }
                 }, function (error, response, body){
 
-                    const objParsed = JSON.parse(body);
+                    const objParsed = getDataUtils.getJsObjectFromJson(body);
 
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
@@ -650,21 +666,21 @@ describe('rest api',
 
                     const filter = q.eq('idcustomuser', idcustomuser);
                     let objser = q.toObject(filter);
-                    let filterSerialized = JSON.stringify(objser);
+                    let filterSerialized = objser;
                     request({
                         url: 'http://localhost:54471/test/data/getDsByRowKey',
                         method: 'POST',
                         headers: {
                             "language": "it"
                         },
-                        form: {
+                        json:{
                             tableName: tableName,
                             editType: editType,
                             filter: filterSerialized
                         }
                     }, function (error, response, body){
 
-                        const objParsed = JSON.parse(body);
+                        const objParsed = getDataUtils.getJsObjectFromJson(body);
                         const ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         // 3. modifico il dataset
@@ -672,7 +688,8 @@ describe('rest api',
                         const tcustomusergroup = ds.tables.customusergroup;
                         const rowTested = tcustomusergroup.rows[0];
                         const characterToAdd = "%";
-                        // evito di aggiugneread ogni lancio dit est il "newValue", quindi se la stringa contiene come ultimo carattere "newValue"
+                        // evito di aggiungere ad ogni lancio di test il "newValue", quindi se la stringa
+                        //  contiene come ultimo carattere "newValue"
                         // lo rimuovo, altrimenti lo concateno (la volta successiva così lo rimuovo)
                         const originalValue = rowTested[field];
                         const newValue = originalValue + characterToAdd;
@@ -680,14 +697,15 @@ describe('rest api',
                         tcustomusergroup.rows[0].getRow().state = jsDataSet.dataRowState.modified;
 
                         const objser = ds.serialize(true);
-                        const dsSerialized = JSON.stringify(objser);
+                        const dsSerialized = objser;
                         request({
                             url: 'http://localhost:54471/test/data/saveDataSet',
                             headers: {
                                 "language": "it"
                             },
+
                             method: 'POST',
-                            form: {
+                            json: {
                                 tableName: tableName,
                                 editType: editType,
                                 filter: filterSerialized,
@@ -703,7 +721,7 @@ describe('rest api',
                             }
                             expect(response).toBeDefined();
 
-                            const objParsed = JSON.parse(body);
+                            const objParsed = getDataUtils.getJsObjectFromJson(body);
 
                             //const dsObj = JSON.parse(objParsed.dataset);
                             const success = objParsed.success;
@@ -743,13 +761,13 @@ describe('rest api',
                 request({
                     url: 'http://localhost:54471/test/data/getDataSet',
                     method: 'POST',
-                    form: {
+                    json:{
                         tableName: tableName,
                         editType: editType
                     }
                 }, function (error, response, body){
 
-                    const objParsed = JSON.parse(body);
+                    const objParsed = getDataUtils.getJsObjectFromJson(body);
                     const ds = new jsDataSet.DataSet(objParsed.name);
                     ds.deSerialize(objParsed, true);
 
@@ -759,18 +777,19 @@ describe('rest api',
 
                     const filter = q.eq('idcustomuser', idcustomuser);
                     let objser = q.toObject(filter);
-                    let filterSerialized = JSON.stringify(objser);
+                    let filterSerialized = objser;
                     request({
                         url: 'http://localhost:54471/test/data/getDsByRowKey',
+
                         method: 'POST',
-                        form: {
+                        json: {
                             tableName: tableName,
                             editType: editType,
                             filter: filterSerialized
                         }
                     }, function (error, response, body){
 
-                        let objParsed = JSON.parse(body);
+                        let objParsed =getDataUtils.getJsObjectFromJson(body);
                         let ds = new jsDataSet.DataSet(objParsed.name);
                         ds.deSerialize(objParsed, true);
                         // 3. modifico il dataset
@@ -791,7 +810,7 @@ describe('rest api',
                         request({
                             url: 'http://localhost:54471/test/data/saveDataSet',
                             method: 'POST',
-                            form: {
+                            json:{
                                 tableName: tableName,
                                 editType: editType,
                                 filter: filterSerialized,
@@ -807,7 +826,7 @@ describe('rest api',
                                 return;
                             }
                             expect(response).toBeDefined();
-                            const objParsed = JSON.parse(body);
+                            const objParsed = getDataUtils.getJsObjectFromJson(body);
 
                             const dsObj = objParsed.dataset;
                             const success = objParsed.success;
@@ -822,7 +841,7 @@ describe('rest api',
                             expect(messages[0].description).toBe('operation not permitted msg');
                             expect(messages[0].id).toBe('post/customuser/U/1');
                             expect(messages[0].audit).toBe('TEST001');
-                            expect(messages[0].severity).toBe('E');
+                            expect(messages[0].severity).toBe('Errore');
                             expect(success).toBe(false);
                             expect(canIgnore).toBe(false); //
 
@@ -848,7 +867,7 @@ describe('rest api',
                 request({
                     url: `http://localhost:54471/test/auth/login`,
                     method: 'POST',
-                    form: {
+                    json:{
                         userName: userName,
                         password: password,
                         datacontabile: (new Date(2023,12,31)).toJSON(),
@@ -873,7 +892,7 @@ describe('rest api',
                 request({
                     url: `http://localhost:54471/test/auth/login`,
                     method: 'POST',
-                    form: {
+                    json: {
                         userName: userName,
                         password: password,
                         datacontabile: (new Date(2023,12,31)).toJSON(),
@@ -1058,7 +1077,8 @@ describe('rest api',
 
 
 
-        it('should delete uploaded files',  function (done) {
+        it('should delete uploaded files',
+            function (done) {
             let allFiles = fs.readdirSync(uploadPath);
             const totFileToClear = 2;
             // mi aspetto totFileToClear file caricati durante test. Uno per singolo chunk, il secondo con multipli chunk

@@ -156,6 +156,7 @@ function doPar(expr) {
     return "(" + expr + ")";
 }
 
+$sqlf.doPar = doPar;
 
 /**
  * get the 'is null' condition over object o

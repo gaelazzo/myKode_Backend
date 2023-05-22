@@ -163,6 +163,7 @@ Token.prototype = {
             nDetail: this.ndetail,
             sessionguid: this.sessionguid,
             roles: this.roles,
+            expiresOn: this.expiresOn,
             IsAnonymous: this.IsAnonymous
             //The "jti" (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned
             // in a manner that ensures that there is a negligible probability that the same value will be
@@ -302,9 +303,7 @@ function  assureMasterKey(){
         fs.writeFileSync(masterKeyFileName, masterKey,{encoding: 'utf8'});
     }
     tokenConfig.options.secret = masterKey;
-
     jwtCheck =  expressJwt(tokenConfig.options);
-
 }
 
 module.exports = {

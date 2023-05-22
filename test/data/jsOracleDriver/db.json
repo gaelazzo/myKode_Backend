@@ -1,5 +1,10 @@
-{ "server": "localhost",
-  "dbName": "orcl",
-  "user": "sys",
-  "pwd": "omg"
+{ 
+    "server": "localhost",
+    "dbName": "test",
+    "user": "user1",
+    "pwd": "new_password",
+    "port": 1521
 }
+
+
+

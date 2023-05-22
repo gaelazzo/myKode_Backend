@@ -30,11 +30,11 @@
         /**
          * @constructor MetaData
          * @description Information about a metadata
-         * @param {string} tableName
+         * @param {string} name
          */
-        function MetaData(tableName) {
+        function MetaData(name) {
 
-            this.tableName = tableName;
+            this.name = name;
             this.metaPage= null;
             this.listTop = 0;
             return this;
@@ -57,6 +57,10 @@
                 this.getData = ctx.getDataInvoke;
                 this.security = ctx.environment;
                 this.getMeta = ctx.getMeta;
+
+                if (this.superClass){
+                    this.superClass.setRequest(req);
+                }
             },
 
             /**
@@ -121,7 +125,7 @@
                                 return false;
                             }
                         }
-                        if ( col && col.ctype === CType.string  &&
+                        if ( col && col.ctype === CType.String  &&
                             (val.replace(/\s*$/,"") === "")) { //Esegue il trimEnd
                             outMsg = emptyKeyMsg;
                             outField = colName;
@@ -142,73 +146,69 @@
                 if (foundCondition) return self.createIsValidResult(outMsg, outField, outCaption, r);
 
                 outCaption = '';
-                _.forOwn(
-                    r.table.columns ,
-                    /**
-                     * @param {DataColumn} c
-                     * @return {boolean}
-                     */
-                    function(c) {
-                        let colname = c.name;
+
+                for (let colname in r.table.columns) {
+                    if (!Object.prototype.hasOwnProperty.call(r.table.columns, colname))continue;
+                    let c = r.table.columns[colname];
                         val = r.current[colname];
 
                         // caption è valorizzata dal back da colDescr oppure tramite la setCaption dal programmatore.
                         outCaption = colname;
                         if (c.caption && c.caption !== "") outCaption = c.caption;
 
-                        if (c.ctype === CType.string) {
+                        if (c.ctype === CType.String) {
                             const thisLen = val ? val.toString().length : 0;
                             const maxLen = metaModel.getMaxLen(c);
                             if (maxLen > 0 && thisLen > maxLen) {
                                 outMsg = stringTooLong;
                                 outField = colname;
-                                return false;
+                                return self.createIsValidResult(outMsg, outField, outCaption, r);//return false
                             }
                         }
 
                         if (metaModel.allowNull(c) && !metaModel.denyNull(c)) {
-                            return true; // Continua
+                            continue; //return true; // Continua
                         }
 
                         if ((val === null) || (val === undefined)) {
                             //console.log("emptyFieldMsg is "+colname);
                             outMsg = emptyFieldMsg;
                             outField = colname;
-                            return false;
+                            return self.createIsValidResult(outMsg, outField, outCaption, r);//return false;
                         }
 
                         if (c.ctype === CType.date || c.ctype === CType.DateTime ) {
                             if (!val) {
                                 outMsg = emptyKeyMsg;
                                 outField = colname;
-                                return false;
+                                return self.createIsValidResult(outMsg, outField, outCaption, r);//return false;
                             }
                             if (val.getTime && val.getTime() === new Date(emptyDate).getTime()) {
                                 //console.log("emptyFieldMsg date is "+colname);
                                 outMsg = emptyFieldMsg;
                                 outField = colname;
-                                return false;
+                                return self.createIsValidResult(outMsg, outField, outCaption, r);//return false;
                             }
                         }
 
                         // E' passato il   if ((val === null) || (val === undefined))  ma devo fare attenzione a stringa vuota o a zero
-                        if ((c.ctype === CType.string) && (val.replace(/\s*$/, "") === "")) {
+                        if ((c.ctype === CType.String) && (val.replace(/\s*$/, "") === "")) {
                             //console.log("emptyFieldMsg string is "+colname);
                             outMsg = emptyFieldMsg;
                             outField = colname;
-                            return false;
+                            return self.createIsValidResult(outMsg, outField, outCaption, r);//return false;
                         }
 
                         if (!metaModel.allowZero(c) && metaModel.isColumnNumeric(c) && metaModel.denyZero(c) && val === 0) {
                             outMsg = emptyFieldMsg;
                             //console.log("emptyFieldMsg numeric is "+colname);
                             outField = colname;
-                            return false;
+                            return self.createIsValidResult(outMsg, outField, outCaption, r);//return false;
                         }
 
-                        return true;
-
-                    });
+                        //return true;
+                }
+                //);
 
                 return self.createIsValidResult(outMsg, outField, outCaption, r);
             },
@@ -425,7 +425,7 @@
              * @returns {string}
              */
             getName: function(editType) {
-                return this.tableName;
+                return this.name;
             },
 
             /**
@@ -435,10 +435,17 @@
              * Sets the default values for a DataTable. DataTable coming from server ha already its defaults. This method can contain some customization
              * @param {DataTable} table
              */
-            setDefaults: function(table) {
+            setDefaults: function(table){
                 // si intende che il datatable sia già corredato dai defaults per come è stato deserializzato dal server
                 // questo metodo può contenere al massimo delle personalizzazioni
-                return null;
+                if (!table)return;
+                if (!table.columns) return;
+                let def = table.defaults();
+                _.forOwn(table.columns,(c,colName) => {
+                    if (c.allowNull !== false) return;
+                    if (def[colName] !== undefined && def[colName]!==null) return;
+                    def[colName] = metaModel.clearValue(c);
+                });
             },
 
             /**
@@ -532,14 +539,14 @@
                 const def = Deferred("selectByCondition");
                 const self = this;
                 const res = this.getData.selectCount(tableName, filter)
-                .then(function (resultCount) {
+                    .then(function (resultCount) {
                     if (resultCount !== 1) return def.resolve(null);
-                    return self.getData.runSelect(self.primaryTableName, "*", filter, null)
-                    .then(function (dataTable) {
-                        if (!dataTable.rows.length) return def.resolve(null);
-                        return def.from(self.checkSelectRow(dataTable, dataTable.rows[0].getRow()));
+                    return self.getData.runSelect(tableName, "*", filter, null) //self.primaryTableName
+                        .then(function (dataTable) {                            
+                            if (!dataTable.rows.length) return def.resolve(null);
+                            return def.from(self.checkSelectRow(dataTable, dataTable.rows[0].getRow()));
                     });
-                });
+                    });
 
                 return def.from(res).promise();
             },
@@ -715,7 +722,7 @@
         (typeof appMeta === 'undefined') ? undefined : appMeta.getMeta.bind(appMeta),
         (typeof appMeta === 'undefined') ? undefined : appMeta.getData,
         (typeof jsDataSet === 'undefined') ? require('./../metadata/jsDataSet').CType : jsDataSet.CType,
-        (typeof appMeta === 'undefined') ? undefined : appMeta.security,
+        (typeof appMeta === 'undefined') ? undefined : appMeta.security
     )
 );
 

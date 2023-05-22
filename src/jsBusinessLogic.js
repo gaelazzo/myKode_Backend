@@ -58,7 +58,7 @@ const Deferred = require("JQDeferred");
  * @augments BasicMessage
  * @param {RowChange} [options.rowChange] row to check
  * @param {DataRow} [options.r] DataRow to check, needed if rowChange is not provided
- * @param {boolean} options.post true is is a post commit data check
+ * @param {boolean} options.post true is a post commit data check
  * * @param {string} options.toCompile
  * @param {string} options.shortMsg  rule name, audit["title"]
  * @param {string}  options.longMsg complete message, used for merging , audit["message"] compiled

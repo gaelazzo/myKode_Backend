@@ -5,7 +5,7 @@ function middleware(req,res,next){
     let key = req.body.key;
     let value = req.body.value;
     ctx.environment.usr(key,value);
-    res.send(200, ctx.environment.usr(key));
+    res.send(200, "ok");
 }
 
 let router = express.Router();

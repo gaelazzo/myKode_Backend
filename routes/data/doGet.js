@@ -55,7 +55,10 @@ function getVisited(ds, visited, toVisit, primaryTable) {
 async function middleware(req,res,next){
     let ctx = req.app.locals.context;
     let primaryTableName = req.body.primaryTableName;
-    let onlyPeripherals = req.body.onlyPeripherals === "true";
+    if ( req.body.onlyPeripherals !== true && req.body.onlyPeripherals!== false){
+        return res.status(400).send("Bad parameter type onlyPeripherals");
+    }
+    let onlyPeripherals = req.body.onlyPeripherals === true;
     let filter= getDataUtils.getJsDataQueryFromJson(req.body.filter);
     let ds = getDataUtils.getJsDataSetFromJson(req.body.ds);
     if (!isAnonymousAllowed(req, primaryTableName,"default")){
@@ -88,6 +91,7 @@ async function middleware(req,res,next){
             ds.tables[s].clear();
         });
     }
+    _.forOwn(ds.tables, t=> {if (t.rows.length===0){ ds.removeTable(t);}});
     res.status(200).send(getDataUtils.getJsonFromJsDataSet(ds,false));
     //res.json(ds.serialize(true));
 }

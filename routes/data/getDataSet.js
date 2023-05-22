@@ -13,6 +13,13 @@ async function middleware(req,res,next){
     let ctx = req.app.locals.context;
     let tableName = req.body.tableName;
     let editType = req.body.editType;
+    if (!tableName){
+        return res.status(400).send("Il campo tableName è obbligatorio");
+    }
+    if (!editType){
+        return res.status(400).send("Il campo editType è obbligatorio");
+    }
+
     if (!isAnonymousAllowed(req, tableName,editType)){
         res.status(400).send("Anonymous not permitted, dataset "+tableName+" "+editType);
         return;

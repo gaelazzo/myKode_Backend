@@ -56,9 +56,9 @@ describe('MetaData', function () {
                     const t = ds.newTable("t");
                     let objrow1, objrow2, objrow3, objrow4 ;
 
-                    t.setDataColumn("Code", CType.number);
-                    t.setDataColumn("Name", CType.string);
-                    t.setDataColumn("City", CType.string);
+                    t.setDataColumn("Code", CType.int);
+                    t.setDataColumn("Name", CType.String);
+                    t.setDataColumn("City", CType.String);
                     t.setDataColumn("Born", CType.date);
                     t.setDataColumn("Age", CType.int);
 
@@ -107,27 +107,36 @@ describe('MetaData', function () {
                         expect(result).not.toBeNull("empty Date with not allowNull errors");
                         expect(result.errField).toBe("Born");
                         expect(result.errMsg).toContain(emptyFieldMsg); // data default vuota
-                    });
+                    })
+  					.fail(err => {
+                            expect(err).toBeUndefined();
+                            expect(true).toBe(false);
+                        });
 
                     meta.isValid(objrow4.getRow()).then(function (result) {
-                        expect(result).not.toBeNull("string too long errors");
+						expect(result).not.toBeNull("string too long errors");
                         expect(result.errField).toBe("City");
                         expect(result.errMsg).toContain(stringTooLong);
-                    });
+                        done();
+                    },
+                        () => {
+                            expect(true).toBe(false, "isValid should return an error");
+                            done();
+                        }
+                    );
 
-                    done();
 
                 });
 
             it('sortedColumnNameList works', function () {
                 var ds = new jsDataSet.DataSet("temp");
                 var t1 = ds.newTable("table1");
-                t1.setDataColumn("1", "String");
-                t1.setDataColumn("!2", "String");
-                t1.setDataColumn("3", "String");
-                t1.setDataColumn("4", "String");
-                t1.setDataColumn("!5", "String");
-                t1.setDataColumn("6", "String");
+                t1.setDataColumn("1", CType.int);
+                t1.setDataColumn("!2", CType.String);
+                t1.setDataColumn("3", CType.String);
+                t1.setDataColumn("4", CType.String);
+                t1.setDataColumn("!5", CType.String);
+                t1.setDataColumn("6", CType.String);
 
                 t1.columns["1"].listColPos = 2;
                 t1.columns["4"].listColPos = -1;

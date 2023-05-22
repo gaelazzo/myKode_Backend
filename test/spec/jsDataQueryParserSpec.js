@@ -205,7 +205,7 @@ describe('JsDataQueryParser', function () {
 
     it('Compiling (1+a)=2', function () {
         let expr= qParser.prototype.from("(1+a)=2");
-        expect(expr.toString()).toBe("(1+a)==2");
+        expect(expr.toString()).toBe("((1+a)==2)");
     });
     it('Compiling an expression with + and * 3*4*3+2*3+5', function () {
         let expr= qParser.prototype.from("3*4*3+2*3+5");
@@ -225,7 +225,7 @@ describe('JsDataQueryParser', function () {
     });
     it('Compiling an expression with field +,*,/ 3*a +2 = 5 and b is not null', function () {
         let expr= qParser.prototype.from("3*a+2 = 5 and b is not null");
-        expect(expr.toString()).toBe("3*a+2==5 AND b is not null");
+        expect(expr.toString()).toBe("(3*a+2==5) AND b is not null");
     });
     it('Compiling an expression with field +,*,/ 5*3 = 2*5+5', function () {
         let expr= qParser.prototype.from("5*3 = 2*5+5");
@@ -253,13 +253,13 @@ describe('JsDataQueryParser', function () {
 
     it('Compiling an expression with field +,*,/ a is not null and b=5 and c>2 and d=\'a\'', function () {
         let expr= qParser.prototype.from("a is not null and b=5 and c>2 and d=\'a\'");
-        expect(expr.toString()).toBe("a is not null AND b==5 AND c>2 AND d=='a'");
+        expect(expr.toString()).toBe("a is not null AND (b==5) AND (c>2) AND (d=='a')");
     });
 
 
     it('Compiling an expression with field +,*,/ a is not null and b=5 and c>2 and d=\'a\'\'b\'', function () {
         let expr= qParser.prototype.from("a is not null and b=5 and c>2 and d=\'a\'\'b");
-        expect(expr.toString()).toBe("a is not null AND b==5 AND c>2 AND d=='a\'\'b'");
+        expect(expr.toString()).toBe("a is not null AND (b==5) AND (c>2) AND (d=='a\'\'b')");
     });
 
     it('Compiling 12', function () {
@@ -316,20 +316,20 @@ describe('JsDataQueryParser', function () {
     it('Compiling a  is not  null and b is null and c=1 or z=\'a\'', function () {
         let s="a  is not  null and b is null and c=1 or z=\'a\'";
         let expr= qParser.prototype.from(s);
-        expect(expr.toString()).toBe("a is not null AND b is null AND c==1 OR z==\'a\'");
+        expect(expr.toString()).toBe("a is not null AND b is null AND (c==1) OR (z==\'a\')");
     });
 
     it('Compiling a  is not  null and b is null and c=1 or z=\'a\'', function () {
-        let s="a  is not  null and b is null and c=1 or z='a' and q is null";
+        let s="a  is not  null and b is null and (c=1) or (z='a') and q is null";
         let expr= qParser.prototype.from(s);
-        expect(expr.toString()).toBe("a is not null AND b is null AND c==1 OR z=='a' AND q is null");
+        expect(expr.toString()).toBe("a is not null AND b is null AND ((c==1)) OR ((z=='a')) AND q is null");
         expect(expr.myName).toBe("or");
     });
 
     it('Compiling (a  is not  null and b is null and c=1 or z=\'a\') and q is null', function () {
         let s="(a  is not  null and b is null and c=1 or z='a') and q is null";
         let expr= qParser.prototype.from(s);
-        expect(expr.toString()).toBe("(a is not null AND b is null AND c==1 OR z=='a') AND q is null");
+        expect(expr.toString()).toBe("(a is not null AND b is null AND (c==1) OR (z=='a')) AND q is null");
         expect(expr.myName).toBe("and");
     });
 
@@ -401,7 +401,7 @@ describe('JsDataQueryParser', function () {
     it('Compiling a not in (2,3,4,5) or c==1', function () {
         let s="a not in (2,3,4,5) or c=1";
         let expr= qParser.prototype.from(s);
-        expect(expr.toString()).toBe("a not in (2,3,4,5) OR c==1");
+        expect(expr.toString()).toBe("a not in (2,3,4,5) OR (c==1)");
         expect(expr.myName).toBe("or");
     });
 
@@ -470,7 +470,7 @@ describe('JsDataQueryParser', function () {
     it('Compiling <%variable_Name%>=3 and <%usr[beta]%>=\'S\'', function () {
         let s="<%variable_Name%>=3 and <%usr[beta]%>='S'";
         let expr= qParser.prototype.from(s);
-        expect(expr.toString()).toBe("context(variable_Name)==3 AND context.usr[beta]=='S'");
+        expect(expr.toString()).toBe("(context(variable_Name)==3) AND (context.usr[beta]=='S')");
         expect(expr.myName).toBe("and");
     });
 

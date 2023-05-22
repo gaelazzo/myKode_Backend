@@ -737,7 +737,7 @@ Connection.prototype.tableDescriptor = function (tableName) {
         that = this;
     this.queryBatch(
         'SELECT (case when OBJECT_SCHEMA_NAME(c.object_id)=\'dbo\' then 1 else 0 end)  as \'dbo\',s.xtype,c.name ' +
-        ',t.Name \'type\',c.max_length \'len\',c.precision ,c.scale ,c.is_nullable,ISNULL(i.is_primary_key, 0) \'pk\'' +
+        ',t.Name \'type\',c.max_length ,c.precision ,c.scale ,c.is_nullable,ISNULL(i.is_primary_key, 0) \'pk\'' +
         'FROM sys.columns c INNER JOIN  sys.types t ON c.user_type_id = t.user_type_id ' +
         'INNER JOIN sysobjects s ON s.id = c.object_id ' +
         'LEFT OUTER JOIN  sys.index_columns ic ON ic.object_id = c.object_id AND ic.column_id = c.column_id ' +

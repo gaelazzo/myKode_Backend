@@ -12,17 +12,17 @@ const jsPassword = require("./../../src/jsPassword");
 
 async function resetPassword(req,res,next) {
     let ctx = req.app.locals.context;
-    if (!req.body.email) {
+    if (!req.query.email) {
         res.send(400, "Email required");
         return;
     }
-    let email = req.body.email;
+    let email = req.query.email;
 
     // 1. da virtual user ricerco per mail e recupero username
-    let data =   await ctx.dataAccess.select({tableName:"virtualuser",filter: q.eq("email",)});
-    if (!data | data.length===0){
-        // se non trovo mail, mando ad ogni modo messaggio. per sicurezza non possiamo dire mail non esistente
-        res.send("Invio mail completato");
+    let data =   await ctx.dataAccess.select({tableName:"virtualuser",filter: q.eq("email",email)});
+    if (!data || data.length===0){
+        // se non trovo mail, mando ad ogni modo messaggio. Per sicurezza non possiamo dire mail non esistente
+        res.send("Invio mail completato.");
         return;
     }
     let dr = data[0];
