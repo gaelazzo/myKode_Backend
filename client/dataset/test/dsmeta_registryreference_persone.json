@@ -1,5 +1,5 @@
 {
-  "name": "dsmeta_registryreference_persone",
+  "name": "registryreference_persone",
   "relations": {
     "registry_registryreference": {
       "parentTable": "registry",

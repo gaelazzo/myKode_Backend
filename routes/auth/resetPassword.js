@@ -28,7 +28,7 @@ async function resetPassword(req,res,next) {
     let dr = data[0];
     let userName= dr["username"];
 
-    //2. tramite username recupero riga su registryreference, sulla quale dovrò aggiornare nuova pwd
+    //2. tramite username recupero riga su registryreference, sulla quale dovrÃ² aggiornare nuova pwd
     let registryreference =   await ctx.dataAccess.select({tableName:"registryreference",
         filter: q.eq("userweb",userName)});
 

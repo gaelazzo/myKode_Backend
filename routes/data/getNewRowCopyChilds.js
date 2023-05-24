@@ -42,7 +42,7 @@ async function getNewRowCopyChilds(req,res,next){
     let newParentDataTable = outDs.tables[tableName];
     // inizializzo prm da passare alla get_new_row di mdl.
     // ---> Se esiste la riga parent,
-    // allora devo calcolare il ds giusto poiché servono le relazioni etc..
+    // allora devo calcolare il ds giusto poichÃ© servono le relazioni etc..
     let newRowParent =  newParentDataTable.importRow(rowToInsert);
     // FINE calcolo ds outDs nuovo con i dati del client
     //********************************************************************************

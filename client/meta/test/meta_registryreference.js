@@ -137,7 +137,7 @@
 
 				//$getNewRowInside$
 
-				dt.autoIncrement('idregistryreference', { minimum: 99990001 });
+				dt.autoIncrement('idregistryreference', { selector:["idreg"], minimum: 99990001 });
 
 				// metto i default
 				return this.superClass.getNewRow(parentRow, dt, editType)
@@ -164,10 +164,14 @@
 					table.defaults({"ct":new Date()});
 				}
 				if(table.columns["lu"]){
-					table.defaults({"lu":this.security.sys('user')});
+					//table.defaults({"lu":this.security.sys('user')});
+					table.defaults({"lu":"-"});//for test purposes
 				}
 				if(table.columns["lt"]){
 					table.defaults({"lt":new Date()});
+				}
+				if(table.columns["active"]){
+					table.defaults({"active":"S"});
 				}
 
 				// Indagare perchè il metaDato del server non ci pensa lui

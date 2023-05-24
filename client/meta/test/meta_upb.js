@@ -20,7 +20,7 @@
 
    function Meta_upb() {
        MetaData.apply(this, ["upb"]);
-       this.name = 'meta_upb';
+
    }
 
 

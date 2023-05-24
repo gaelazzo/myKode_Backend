@@ -154,7 +154,7 @@ const _ = require('lodash');
             //Salta i commenti normali
             if (C === '/'){
                 try{
-                    //vede se è un commento normale ossia /* asas */
+                    //vede se Ã¨ un commento normale ossia /* asas */
                     if (S[index + 1] === '*'){
                         index = closedComment(S, index + 2);
                         continue;

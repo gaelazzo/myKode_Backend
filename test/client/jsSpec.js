@@ -16,7 +16,7 @@ describe('Test Corso', function () {
      * @param {object}I0
      * @param {Date}I0.date
      * @param {Date}I0.stipendio
-     * @param {int}I0.anzianità
+     * @param {int}I0.anzianitÃ 
      * @param {Date} t0
      * @return {Generator<*, {{number}importo_corrente, {Date}data_prossimo_avanzamento}, *>}
      */

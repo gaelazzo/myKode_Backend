@@ -1,4 +1,4 @@
-// Generated on 2014-03-27 using generator-angular-fullstack 1.2.7
+// Rivisto da Nino 04/01/2023
 'use strict';
 
 // # Globbing
@@ -79,7 +79,7 @@ module.exports = function (grunt) {
     const path = require("path");
 
 
-    var asyncCmd = require("async-exec-cmd");
+    let asyncCmd = require("async-exec-cmd");
 
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
@@ -150,21 +150,69 @@ module.exports = function (grunt) {
           }
         },
 
-        watch: {
+        watch_common: {
             files: ['src/*.js','client/components/metadata/*.js',
                 'client/components/i18n/*.js'],
-            tasks: ['test'],
+            tasks: ['jasmine:common'],
             options: {
                 livereload: true
             }
         },
 
         karma: {
-            spece2e: {
+            spec: {
+                configFile: "test/karma.conf.js",
+                autoWatch: true,
+                singleRun: true,
+                reporters: ["dots"],
+                specReporter: {
+                    maxLogLines: 5, // limit number of lines logged per test
+                    suppressErrorSummary: false, // do not print error summary
+                    suppressFailed: false, // do not print information about failed tests
+                    suppressPassed: true, // do not print information about passed tests
+                    suppressSkipped: true, // do not print information about skipped tests
+                    showSpecTiming: true, // print the time elapsed for each spec
+                    failFast: false // test would finish with error when a first fail occurs.
+                }
+            },
+
+            midway: {
+                configFile: "test/karma_midway.conf.js",
+                autoWatch: true,
+                singleRun: true,
+                reporters: ["dots"],
+                specReporter: {
+                    maxLogLines: 5, // limit number of lines logged per test
+                    suppressErrorSummary: false, // do not print error summary
+                    suppressFailed: false, // do not print information about failed tests
+                    suppressPassed: true, // do not print information about passed tests
+                    suppressSkipped: true, // do not print information about skipped tests
+                    showSpecTiming: true, // print the time elapsed for each spec
+                    failFast: false // test would finish with error when a first fail occurs.
+                }
+            },
+
+            server_e2e: {
                 configFile: "test/karma_node_server_e2e.conf.js",
                 autoWatch: true,
                 singleRun: true,
-                reporters: ["spec"],
+                reporters: ["dots"],
+                specReporter: {
+                    maxLogLines: 5, // limit number of lines logged per test
+                    suppressErrorSummary: false, // do not print error summary
+                    suppressFailed: false, // do not print information about failed tests
+                    suppressPassed: true, // do not print information about passed tests
+                    suppressSkipped: false, // do not print information about skipped tests
+                    showSpecTiming: true, // print the time elapsed for each spec
+                    failFast: false // test would finish with error when a first fail occurs.
+                }
+            },
+
+            client_e2e_app: {
+                configFile: "test/karma_e2e_app.conf.js",
+                autoWatch: true,
+                singleRun: true,
+                reporters: ["dots"],
                 specReporter: {
                     maxLogLines: 5, // limit number of lines logged per test
                     suppressErrorSummary: false, // do not print error summary
@@ -172,12 +220,32 @@ module.exports = function (grunt) {
                     suppressPassed: false, // do not print information about passed tests
                     suppressSkipped: true, // do not print information about skipped tests
                     showSpecTiming: true, // print the time elapsed for each spec
-                    failFast: false // test would finish with error when a first fail occurs.
+                    failFast: true // test would finish with error when a first fail occurs.
                 }
-            }
+            },
+            client_e2e: {
+                configFile: "test/karma_e2e.conf.js",
+                autoWatch: true,
+                singleRun: true,
+                reporters: ["dots"],
+                specReporter: {
+                    maxLogLines: 5, // limit number of lines logged per test
+                    suppressErrorSummary: false, // do not print error summary
+                    suppressFailed: false, // do not print information about failed tests
+                    suppressPassed: false, // do not print information about passed tests
+                    suppressSkipped: true, // do not print information about skipped tests
+                    showSpecTiming: true, // print the time elapsed for each spec
+                    failFast: true // test would finish with error when a first fail occurs.
+                }
+            },
         },
 
         jasmine: {
+            common_server:{
+                spec_dir: "",
+                spec_files: ["./test/client/*Spec.js","./test/spec/*Spec.js"],
+                env: jasmineEnv
+            },
             common: {
                 spec_dir: "./test/client",
                 spec_files: ["*Spec.js"],
@@ -208,8 +276,8 @@ module.exports = function (grunt) {
     let classesMidway = [];
 
 
-    gruntConfig.jasmine["all_e2e"] = {
-        spec_dir: './test/spece2e/',
+    gruntConfig.jasmine["all_e2e_app"] = {
+        spec_dir: './test/spec_e2e_app/',
         spec_files: ["*Spec.js"],
         autotest: false
     };
@@ -238,6 +306,7 @@ module.exports = function (grunt) {
             classesClient.push(className);
         }
     });
+    let allJasmineConfig={};
 
     //crea gli unit test con jasmine (sia quelli sotto src che quelli sotto client/components/metadata
     // questi saranno visibili sotto il task "jasmine"
@@ -281,7 +350,6 @@ module.exports = function (grunt) {
         let processed=0;
         folders.forEach(folder=>{
             let folderComplete = path.join(__dirname,folder);
-            console.log(folder);
 
             glob(folder, {}, (err, files)=>{
                 if (err){
@@ -291,7 +359,6 @@ module.exports = function (grunt) {
                 //console.log(files);
                 files.forEach(file => {
                     if (path.basename(file)[0]==='_') return;
-                    console.log(file);
                     try {
                         let md = jsdoc2md.renderSync({files: file});
                         const basename = path.basename(file, path.extname(file));
@@ -301,7 +368,7 @@ module.exports = function (grunt) {
                     catch (e){
                         console.log(e);
                     }
-            });
+                });
                 processed+=1;
                 if (processed===folders.length) done();
             });
@@ -316,74 +383,54 @@ module.exports = function (grunt) {
 
         let result = await jasmineObj.execute();
 
-        if (result.overallStatus === 'passed') {
-            grunt.log.writeln('All specs have passed');
+        if (result.overallStatus!=="failed") {
+            grunt.log.writeln('No specs has failed');
         } else {
             grunt.log.writeln('At least one spec has failed');
         }
         done();
     });
+    grunt.registerTask('common unit', ['jasmine:common']);
+    grunt.registerTask('server unit', ['jasmine:server']);
+    grunt.registerTask("server midway",["NodeStart","jasmine:midway","NodeStop"]); // , "NodeStop"
+    grunt.registerTask("server e2e", ["createSqlDB","NodeStart",  "karma:server_e2e","NodeStop","destroySqlDB"]);
 
+    grunt.registerTask("client unit", ["karma:spec"]);
+    grunt.registerTask("client midway", ["createSqlDB","NodeStart","karma:midway","NodeStop","destroySqlDB"]);
+    grunt.registerTask("client e2e", ["createSqlDB", "NodeStart",
+                "karma:client_e2e", "karma:client_e2e_app",
+                "NodeStop","destroySqlDB"]);
+    grunt.registerTask("client e2e_app", ["createSqlDB", "NodeStart",
+         "karma:client_e2e_app",
+        "NodeStop","destroySqlDB"]);
+
+    grunt.registerTask('all server',
+            [ 'jasmine:common_server', "createSqlDB","NodeStart",
+                    "karma:server_e2e",
+                    "destroySqlDB",
+                    "jasmine:midway", //jasmine:midway crea e distrugge il db
+                "NodeStop"
+            ]);
+    grunt.registerTask('all client',['client unit',
+            "createSqlDB", "NodeStart" ,
+                    "karma:midway","karma:client_e2e","karma:client_e2e_app",
+             "NodeStop","destroySqlDB"]);
+    grunt.registerTask("all",
+            ['jasmine:common_server',"karma:spec",
+
+                "createSqlDB", "NodeStart" ,
+                "karma:server_e2e",
+                "karma:midway","karma:client_e2e","karma:client_e2e_app",
+                "destroySqlDB",
+                "jasmine:midway","NodeStop",
+            ]);
 
     grunt.registerTask('docMD', ['jsDocMD:dist']);
 
     grunt.registerTask('doc', ['jsdoc','shell:jsdoc', 'open:doc']);
 
-    grunt.registerTask('common unit', ['jasmine:common']);
-    grunt.registerTask("server midway",["NodeStart","jasmine:midway","NodeStop"]); // , "NodeStop"
-    grunt.registerTask('server unit', ['jasmine:server']);
 
-    grunt.registerTask("createSqlDB","Create Sql DB",function(){
-        var done = this.async();
-        asyncCmd(
-            "node",
-            ["test/runSql",
-                "config\\dbList.json",
-                "test\\data\\jsApplication\\setup.sql",
-                "test_sqlServer"
-            ],
-            function (err, res, code, buffer) {
-                if (err) {
-                    grunt.log.writeln("createSqlDB error");
-                    grunt.log.writeln(err, code);
-                    done();
-                    return;
-                }
-                grunt.log.writeln("createSqlDB ok");
-                done();
-            }
-        );
-        setTimeout(function () {
-            grunt.log.writeln("createSqlDB timeout");
-            done();
-        }, 60000);
-    });
 
-    grunt.registerTask("destroySqlDB","Destroy Sql DB",function(){
-        var done = this.async();
-        asyncCmd(
-            "node",
-            ["test/runSql",
-                "config\\dbList.json",
-                "test\\data\\jsApplication\\Destroy.sql",
-                "test_sqlServer"
-            ],
-            function (err, res, code, buffer) {
-                if (err) {
-                    grunt.log.writeln("destroySqlDB error");
-                    grunt.log.writeln(err, code);
-                    done();
-                    return;
-                }
-                grunt.log.writeln("destroySqlDB ok");
-                done();
-            }
-        );
-        setTimeout(function () {
-            grunt.log.writeln("destroySqlDB timeout");
-            done();
-        }, 5000);
-    });
 
     grunt.registerTask("NodeStart", "start Node server.js", function () {
         var done = this.async();
@@ -407,8 +454,6 @@ module.exports = function (grunt) {
             done();
         }, 5000);
     });
-
-    grunt.registerTask("e2e", ["createSqlDB", "NodeStart", "karma:spece2e","destroySqlDB"]);
 
     grunt.registerTask("test Client", "test client", async function () {
         let done = this.async();
@@ -457,24 +502,73 @@ module.exports = function (grunt) {
         }, 5000);
     });
 
-    grunt.registerTask('serverStart', ['shell:startNode']);
-    grunt.registerTask('serverStop', ['shell:stopNode']);
+    //grunt.registerTask('serverStart', ['shell:startNode']);
+    //grunt.registerTask('serverStop', ['shell:stopNode']);
 
-    // classes.forEach(function (className) {
-    //     grunt.registerTask(className + " Server", ['jasmine:' + className + "Spec"]);
-    // });
-    //
-    // classesClient.forEach(function (className) {
-    //     grunt.registerTask(className + " Client", ['jasmine:' + className + "Client"]);
-    // });
-    //
-    // classesMidway.forEach(function (className) {
-    //     grunt.registerTask(className + " Midway", [ 'jasmine:' + className + "Midway"]);//, 'keepalive'
-    // });
+    grunt.registerTask("createSqlDB","Create Sql DB",function(){
+        var done = this.async();
+        let doneFired = false;
+        asyncCmd(
+            "node",
+            ["test/runSql",
+                "config\\dbList.json",
+                "test\\data\\jsApplication\\setup.sql",
+                "test_sqlServer"
+            ],
+            function (err, res, code, buffer) {
+                if (err) {
+                    grunt.log.writeln("createSqlDB error");
+                    grunt.log.writeln(err, code);
+                    doneFired=true;
+                    done();
+                    return;
+                }
+                grunt.log.writeln("createSqlDB ok");
+                doneFired=true;
+                done();
+            }
+        );
+        setTimeout(function () {
+            if (!doneFired){
+                doneFired=true;
+                grunt.log.writeln("createSqlDB timeout");
+                done();
+            }
+        }, 60000);
+    });
 
-    //grunt.registerTask('default', ['test']);
+    grunt.registerTask("destroySqlDB","Destroy Sql DB",function(){
+        var done = this.async();
+        let doneFired = false;
+        asyncCmd(
+            "node",
+            ["test/runSql",
+                "config\\dbList.json",
+                "test\\data\\jsApplication\\Destroy.sql",
+                "test_sqlServer"
+            ],
+            function (err, res, code, buffer) {
+                if (err) {
+                    grunt.log.writeln("destroySqlDB error");
+                    grunt.log.writeln(err, code);
+                    doneFired = true;
+                    done();
+                    return;
+                }
+                doneFired=true;
+                grunt.log.writeln("destroySqlDB ok");
+                done();
+            }
+        );
+        setTimeout(function () {
+            grunt.log.writeln("destroySqlDB timeout");
+            if (!doneFired){
+                doneFired=true;
+                done();
+            }
 
-    //grunt.registerTask("midway", ["NodeServer", "karma:spece2e"]);
+        }, 5000);
+    });
 
 
 };

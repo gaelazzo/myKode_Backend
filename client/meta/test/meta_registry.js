@@ -17,8 +17,7 @@
 	let moduleExports = freeModule && freeModule.exports === freeExports;
 
     function meta_registry() {
-		MetaData.apply(this, ["registry"]);
-        this.name = 'meta_registry';
+		MetaData.apply(this, ["Cliente/Fornitore"]);
     }
 
     meta_registry.prototype = _.extend(
@@ -379,8 +378,7 @@
                var def = Deferred("getNewRow-meta_registry");
 
 				//$getNewRowInside$
-
-				dt.autoIncrement('idreg', { minimum: 99990001 });
+				dt.autoIncrement('idreg', { minimum: 990000 });
 
 				// metto i default
 				return this.superClass.getNewRow(parentRow, dt, editType)
@@ -390,9 +388,49 @@
 					});
 			},
 
+			/**
+			 *
+			 * @param {DataTable} table
+			 */
+			setDefaults: function(table){
+				this.superClass.setDefaults(table)
+				// si intende che il datatable sia già corredato dai defaults per come è stato deserializzato dal server
+				// questo metodo può contenere al massimo delle personalizzazioni
+				// La colonna title su registry in inserimento non accetta null, quindi aggiungo un defualt.
 
+				// Indagare perchè il metaDato del server non ci pensa lui
+				// if (table.columns["title"]){
+				// 	table.defaults({title: "default title"}); // la defaults è un _assign, quindi non sovrascrive tutta la coll defaults, ma aggiunge la proprietà
+				// }
 
-			//$isValidFunction$
+				if(table.columns["cu"]){
+					table.defaults({"cu":this.security.sys('user')});
+				}
+				if(table.columns["ct"]){
+					table.defaults({"ct":new Date()});
+				}
+				if(table.columns["lu"]){
+					table.defaults({"lu":this.security.sys('user')});
+				}
+				if(table.columns["lt"]){
+					table.defaults({"lt":new Date()});
+				}
+				table.defaults({"residence":0,
+					'active':'S',
+					"authorization_free": "N",
+					"multi_cf": "N",
+					"flagbankitaliaproceeds": "N",
+					"flag_pa": "N",
+					"sdi_norifamm": "N"});
+
+				// Indagare perchè il metaDato del server non ci pensa lui
+				if (table.columns["flagdefault"]){
+					table.defaults({flagdefault: "N"}); // la defaults è un _assign, quindi non sovrascrive tutta la coll defaults, ma aggiunge la proprietà
+				}
+
+			},
+
+				//$isValidFunction$
 
 			//$getStaticFilter$
 

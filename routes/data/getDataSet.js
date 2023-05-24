@@ -14,10 +14,10 @@ async function middleware(req,res,next){
     let tableName = req.body.tableName;
     let editType = req.body.editType;
     if (!tableName){
-        return res.status(400).send("Il campo tableName è obbligatorio");
+        return res.status(400).send("Il campo tableName Ã¨ obbligatorio");
     }
     if (!editType){
-        return res.status(400).send("Il campo editType è obbligatorio");
+        return res.status(400).send("Il campo editType Ã¨ obbligatorio");
     }
 
     if (!isAnonymousAllowed(req, tableName,editType)){

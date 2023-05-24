@@ -25,6 +25,7 @@
     "lodash": "latest",
     "morgan": "^1.10.0",
     "multer": "^1.4.3",
+    "nodemailer": "^6.9.1",
     "request": "^2.88.2",
     "uuid": "^8.3.2"
   },
@@ -41,7 +42,8 @@
     "grunt-open": "^0.2.4",
     "grunt-shell": "^3.0.1",
     "grunt-wiredep": "^3.0.1",
-    "jasmine": "^4.1.0",
+    "jasmine": "^4.5.0",
+    "jasmine-collection-matchers": "*",
     "jasmine-console-reporter": "^3.1.0",
     "jasmine-core": "3.6.0",
     "jasmine-node": "^3.0.0",
