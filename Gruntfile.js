@@ -23,11 +23,8 @@ const jasmineEnv=  {
     random: false
 };
 
-let allJasmineConfig= {
 
-}
 const glob = require('glob');
-
 const jsdoc2md = require('jsdoc-to-markdown');
 
 const fs = require("fs");
