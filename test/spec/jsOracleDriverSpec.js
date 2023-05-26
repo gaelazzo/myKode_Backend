@@ -22,7 +22,7 @@ const $dq = require('./../../client/components/metadata/jsDataQuery'),
  *  }
  */
 //PUT THE FILENAME OF YOUR FILE HERE:
-const configName = 'test/data/jsOracleDriver/db.json';
+const configName = 'test/dbOracle.json';
 
 let dbConfig;
 if (process.env.TRAVIS || !configName){
