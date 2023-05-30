@@ -929,8 +929,8 @@ describe("MetaModel", function () {
                     expect(table1Rel.rows.length).toBe(3);
                     expect(table2Rel.rows.length).toBe(0);
                     expect(table1_2.rows.length).toBe(0);
-
-                    metaModel.xCopyChilds(dsDest, dsRif, r1.getRow());
+                    let rows  = [];
+                    metaModel.xCopyChilds(dsDest, dsRif, r1.getRow(),rows);
 
                     // dopo la xCopyChilds, le righe con chiave nelle rel vengono copiate
                     expect(table1.rows.length).toBe(3);

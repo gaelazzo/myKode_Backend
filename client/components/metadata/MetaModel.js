@@ -1089,7 +1089,25 @@
 			const destTableName = rDest.table.name;
 			//Remove rDest and all its children from dsDest, for any table existent in dsSource
 			MetaModel.prototype.xRemoveChilds(dsSource, rDest);
-			//let r = MetaModel.prototype.copyDataRowNoCheck(dsDest.tables[destTableName], rSource, destIsInsert);
+			return MetaModel.prototype.xCopyChildTables(dsDest, dsDest.tables[destTableName], dsSource, rSource.table, destIsInsert);
+		},
+
+		/**
+		 * @method xCopyNoCheck
+		 * @public
+		 * @description SYNC
+		 * Copies a DataRow from dsSource to dsDest. NO, behaviour has changed. Now copies the entire table
+		 * rSource and rDest must have same key, or rSource have to not generate conflicts in dsDest
+		 * @notes
+		 *  Invoked from propagateChangesToMaster as xCopy(dsDetail, dsMaster, detailDataRow, masterRow);
+		 * @param {DataSet} dsSource
+		 * @param {DataSet} dsDest
+		 * @param {DataRow} rSource
+		 * @param {string} destTableName
+		 * @param {boolean} forceAddState
+		 */
+		xCopyNoCheck: function (dsSource, dsDest, rSource, destTableName,forceAddState) {
+			const destIsInsert =forceAddState; //;
 			return MetaModel.prototype.xCopyChildTables(dsDest, dsDest.tables[destTableName], dsSource, rSource.table, destIsInsert);
 		},
 
@@ -1101,13 +1119,15 @@
 		 * @param {DataSet} dsDest
 		 * @param {DataSet} dsSource
 		 * @param {DataRow} rowSource
+		 * @param {DataRow[]} copiedRows
 		 */
-		xCopyChilds: function (dsDest, dsSource, rowSource) {
+		xCopyChilds: function (dsDest, dsSource, rowSource,copiedRows) {
 
 			const t = rowSource.table;
 			let source_unaliased = t.tableForReading();
 			if (!dsDest.tables[source_unaliased]) source_unaliased = rowSource.table.name;
 			MetaModel.prototype.copyDataRow(dsDest.tables[source_unaliased], rowSource);
+			if (copiedRows!==undefined) copiedRows.push(rowSource.current);
 			MetaModel.prototype.allowClear(dsDest.tables[source_unaliased], false);
 			const self = this;
 
@@ -1117,7 +1137,7 @@
 						self.allowClear(dsDest.tables[rel.childTable], false);
 						const childs = rowSource.getChildRows(rel.name);
 						_.forEach(childs, function (child) {
-							self.xCopyChilds(dsDest, dsSource, child.getRow());
+							self.xCopyChilds(dsDest, dsSource, child.getRow(),copiedRows);
 						});
 					}
 				}
@@ -1198,17 +1218,19 @@
 				let res = MetaModel.prototype.copyDataRowNoCheck(tDest, child.getRow(), forceAddState);
 				if (firstResult === null) firstResult = res;
 			}
-			_.forEach(tSource.childRelations(), function (rel) {
-				if (dsDest.tables[rel.childTable]) {
-					if (self.checkChildRel(rel)) {
-						const childDataTable = dsSource.tables[rel.childTable];
-						// copia gli autoincrements
-						self.copyAutoincrementsProperties(childDataTable, dsDest.tables[rel.childTable]);
-						self.xCopyChildTables(dsDest, dsDest.tables[rel.childTable],
-								dsSource, childDataTable,false);
+			if (tSource.rows.length>0){
+				_.forEach(tSource.childRelations(), function (rel){
+					if (dsDest.tables[rel.childTable]){
+						if (self.checkChildRel(rel)){
+							const childDataTable = dsSource.tables[rel.childTable];
+							// copia gli autoincrements
+							self.copyAutoincrementsProperties(childDataTable, dsDest.tables[rel.childTable]);
+							self.xCopyChildTables(dsDest, dsDest.tables[rel.childTable],
+								dsSource, childDataTable, false);
+						}
 					}
-				}
-			});
+				});
+			}
 			return firstResult;
 		},
 

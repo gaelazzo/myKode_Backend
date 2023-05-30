@@ -224,7 +224,9 @@ describe('App3_E2E', function() {
                                 testHelper.waitEvent(appMeta.EventEnum.showPage)
                                     .then(function (metaPageDetail) {
                                         // TEST GENERICO DA INVOCARE per testare inizializzazione di qualsiasi MetaPage
-                                        testHelper.testMetaPageInitialization(metaPageDetail, "registryreference", "persone");
+                                        testHelper.testMetaPageInitialization(metaPageDetail,
+                                            "registryreference",
+                                            "persone");
 
                                         // Verifico presenza di un elemento su html
                                         testHelper.htmlNodeByTagExists('registryreference.idreg');

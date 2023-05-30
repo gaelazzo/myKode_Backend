@@ -112,7 +112,7 @@ GO
 -- CREAZIONE TABELLA flowchart --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchart]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [flowchart] (
+CREATE TABLE [DBO].[flowchart] (
 idflowchart varchar(34) NOT NULL,
 address varchar(100) NULL,
 ayear int NULL,
@@ -157,7 +157,7 @@ GO
 -- CREAZIONE TABELLA flowchartuser --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchartuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [flowchartuser] (
+CREATE TABLE [DBO].[flowchartuser] (
 idflowchart varchar(34) NOT NULL,
 ndetail int NOT NULL,
 idcustomuser varchar(50) NOT NULL,
@@ -198,7 +198,7 @@ GO
 -- CREAZIONE TABELLA menu --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[menu]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [menu] (
+CREATE TABLE [DBO].[menu] (
 idmenu int NOT NULL,
 edittype varchar(60) NULL,
 lt datetime NULL,
@@ -296,7 +296,7 @@ GO
 -- CREAZIONE TABELLA userenvironment --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[userenvironment]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [userenvironment] (
+CREATE TABLE [DBO].[userenvironment] (
 idcustomuser varchar(50) NOT NULL,
 variablename varchar(50) NOT NULL,
 flagadmin char(1) NULL,
@@ -313,7 +313,7 @@ GO
 -- CREAZIONE TABELLA flowchartrestrictedfunction --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchartrestrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [flowchartrestrictedfunction] (
+CREATE TABLE [DBO].[flowchartrestrictedfunction] (
 idflowchart varchar(34) NOT NULL,
 idrestrictedfunction int NOT NULL,
 ct datetime NOT NULL,
@@ -588,7 +588,7 @@ GO
 
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customer]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE customer(
+CREATE TABLE [DBO].customer(
 	idcustomer int NOT NULL,
 	name varchar(100) NULL,
 	age int NULL,
@@ -639,7 +639,7 @@ DROP PROCEDURE  ctemp;
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[seller]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
-CREATE TABLE seller(
+CREATE TABLE [DBO].seller(
 	idseller int NOT NULL,
 	name varchar(100) NULL,
 	age int NULL,
@@ -695,7 +695,7 @@ IF NOT EXISTS(select * from sysobjects where id = object_id(N'[sellerkind]') and
 BEGIN
 
 
-CREATE TABLE sellerkind(
+CREATE TABLE [DBO].sellerkind(
 	idsellerkind int NOT NULL,
 	name varchar(100) NULL,
 	rnd int NULL,
@@ -741,7 +741,7 @@ DROP PROCEDURE  ctemp;
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
-CREATE TABLE customerkind(
+CREATE TABLE [DBO].customerkind(
 	idcustomerkind int NOT NULL,
 	name varchar(100) NULL,
 	rnd int NULL,
@@ -839,7 +839,7 @@ UPDATE [flowchartuser] SET all_sorkind01 = null,all_sorkind02 = null,all_sorkind
 		title = 'Prova Classificazione' WHERE idcustomuser = '1' AND idflowchart = '210001' AND ndetail = '1'
 ELSE
 INSERT INTO [flowchartuser] (idcustomuser,idflowchart,ndetail,all_sorkind01,all_sorkind02,all_sorkind03,all_sorkind04,all_sorkind05,ct,cu,flagdefault,idsor01,idsor02,idsor03,idsor04,idsor05,lt,lu,
-sorkind01_withchilds,sorkind02_withchilds,sorkind03_withchilds,sorkind04_withchilds,sorkind05_withchilds,start,stop,title) 
+sorkind01_withchilds,sorkind02_withchilds,sorkind03_withchilds,sorkind04_withchilds,sorkind05_withchilds,start,stop,title)
 VALUES ('AZZURRO','210001','1',null,null,null,null,null,{ts '2020-12-21 11:00:20.257'},'NINO','N',null,null,null,null,null,
 {ts '2020-12-21 11:00:20.257'},'assistenza',null,null,null,null,null,{d '2000-01-01'},null,'Prova Classificazione')
 GO
@@ -901,7 +901,7 @@ GO
 -- CREAZIONE TABELLA audit --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[audit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [audit] (
+CREATE TABLE [DBO].[audit] (
 idaudit varchar(30) NOT NULL,
 consequence text NULL,
 flagsystem char(1) NULL,
@@ -921,7 +921,7 @@ GO
 -- CREAZIONE TABELLA auditparameter --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[auditparameter]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [auditparameter] (
+CREATE TABLE [DBO].[auditparameter] (
 tablename varchar(150) NOT NULL,
 opkind char(1) NOT NULL,
 isprecheck char(1) NOT NULL,
@@ -944,7 +944,7 @@ GO
 -- CREAZIONE TABELLA auditcheck --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[auditcheck]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [auditcheck] (
+CREATE TABLE [DBO].[auditcheck] (
 tablename varchar(150) NOT NULL,
 opkind char(1) NOT NULL,
 idaudit varchar(30) NOT NULL,
@@ -1319,7 +1319,12 @@ delete from virtualuser
 GO
 
 --[DBO]--
+IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registry]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+
 DROP TABLE [dbo].[registry]
+END
+
 
 GO
 -- CREAZIONE TABELLA registry --
@@ -5048,7 +5053,7 @@ GO
 -- CREAZIONE TABELLA upb --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[upb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [upb] (
+CREATE TABLE [DBO].[upb] (
 idupb varchar(36) NOT NULL,
 active char(1) NULL,
 assured char(1) NULL,
@@ -5111,7 +5116,7 @@ GO
 
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[fin]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [fin] (
+CREATE TABLE [DBO].[fin] (
 idfin int NOT NULL,
 ayear smallint NOT NULL,
 codefin varchar(50) NOT NULL,

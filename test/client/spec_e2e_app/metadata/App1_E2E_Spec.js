@@ -349,7 +349,7 @@ describe('App1_E2E', function() {
                     // Evento di attesa pagina caricata
                     testHelper.waitEvent(appMeta.EventEnum.showPage)
                         .then(function (metaPage) {
-                            //console.log("step 00");
+                            console.log("step 00");
                             mp = metaPage;
                             // TEST GENERICO DA INVOCARE per testare inizializzazione di qualsiasi MetaPage
                             testHelper.testMetaPageInitialization(metaPage, "registry", "anagrafica1");
@@ -362,7 +362,7 @@ describe('App1_E2E', function() {
                             testHelper.inputGotFocus('registry.p_iva');
 
                             // inserisco la parte iniziale della partita iva da cercare
-                            //testHelper.insertValueInputByTag('registry.p_iva', '-');//serve per far si che scatti il lostfocus 
+                            //testHelper.insertValueInputByTag('registry.p_iva', '-');//serve per far si che scatti il lostfocus
                             testHelper.insertValueInputByTag('registry.p_iva', common.pIvatoSearch);
                             pivaLength = testHelper.getLengthValueByTag('registry.p_iva');
                             allCheckExecuted++;
@@ -373,7 +373,7 @@ describe('App1_E2E', function() {
                             // con questa configurazione mi aspetto apra la modale con la lista di opzioni da scegliere
                             let s = common.pageEventWaiter(metaPage, appMeta.EventEnum.showModalWindow)
                                 .then(function () {
-                                    //console.log("choose appeared");
+                                    console.log("choose appeared");
                                     //console.log(document.body.innerHTML);
                                     let nRows = $("table:first").find("tr").length;
                                     expect(nRows).toBeGreaterThan(0); // grid dati 11 righe. 1 header + 10 dati
@@ -388,7 +388,7 @@ describe('App1_E2E', function() {
 
                                     appMeta.globalEventManager.subscribe(appMeta.EventEnum.ROW_SELECT,
                                         () => {
-                                            //console.log("got ROW SELECT");
+                                            console.log("got ROW SELECT");
                                             //testHelper.log(" appMeta.EventEnum.ROW_SELECT")
                                             ss.resolve();
                                         }

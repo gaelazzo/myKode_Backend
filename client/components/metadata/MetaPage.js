@@ -188,6 +188,7 @@
 
     MetaPage.prototype = {
         constructor: MetaPage,
+        copiedRows: [],
 
         afterGetFormData: function () {
             return ResolvedDeferred(null, "afterGetFormData");
@@ -988,14 +989,16 @@
          * @private
          * @description SYNC
          * @param {DataRow} start
+         * @param {DataRow[]} copiedRows
          */
-        startFrom:function (start) {
+        startFrom:function (start, copiedRows) {
             const def = Deferred("startFrom");
             const self = this;
             let sDS = start.table.dataset;
 
-            const res = appMeta.getData.readCached(this.state.DS).then(function (){
-                metaModel.xCopyChilds(self.state.DS, sDS, start);
+            const res = appMeta.getData.readCached(this.state.DS).
+            then(function (){
+                metaModel.xCopyChilds(self.state.DS, sDS, start, copiedRows);
                 const primaryDataTable = self.getPrimaryDataTable();
                 const rSel = primaryDataTable.rows[0];
                 self.helpForm.lastSelected(primaryDataTable, rSel);
@@ -1024,7 +1027,8 @@
             // --> Decommentare ed utilizzare se serve per fare operazioni sul sourceRow. -> meta.SetEntityDetail(meta.sourceRow);
 
             const self = this;
-            const res = this.startFrom(sRow)
+            this.copiedRows = [];
+            const res = this.startFrom(sRow, this.copiedRows)
             .then(function (){
                 const start = self.helpForm.lastSelected(primaryDataTable);
                 self.state.setEditState();
@@ -5147,8 +5151,8 @@
                         metaModel.calcTemporaryID(masterRow.table, detailDataRow);
                     }
 
-                    const filter = detailDataRow.table.keyFilter(detailDataRow.current);
-                    //appMeta.getData.getWhereKeyClause(externalRowDataRow, externalRowDataRow.table, externalRowDataRow.table, false); //  QueryCreator.WHERE_KEY_CLAUSE(externalRow, DataRowVersion.Default, false);
+                    //const filter = detailDataRow.table.keyFilter(detailDataRow.current);
+                         //ex appMeta.getData.getWhereKeyClause(externalRowDataRow, externalRowDataRow.table, externalRowDataRow.table, false); //  QueryCreator.WHERE_KEY_CLAUSE(externalRow, DataRowVersion.Default, false);
 
                     ////Penso che di questo controllo si possa fare a meno
                     //const existentFound = sourceRow.table.find(filter);
@@ -5161,9 +5165,28 @@
                     //    }
                     //}
                 }
-                const dsDetail = self.state.DS
-                //xCopy: function (dsSource, dsDest, rSource, rDest) 
-                this.state.callerState.newSourceRow = metaModel.xCopy(dsDetail, dsMaster, detailDataRow, masterRow);
+                const dsDetail = self.state.DS;
+
+                //xCopy: function (dsSource, dsDest, rSource, rDest)
+                //Removes original rows
+                let forceAddState = (masterRow.state === dataRowState.added);
+                let destTableName = masterRow.table.name;
+                if (self.copiedRows.length >0){
+                    self.copiedRows.forEach(r => {
+                        //console.log("detaching ",r);
+                        if (r.getRow){
+                            //console.log("detaching actually ",r.getRow());
+                            r.getRow().detach();
+                        }
+                    });
+                    this.copiedRows = [];
+
+                    this.state.callerState.newSourceRow =
+                            metaModel.xCopyNoCheck(dsDetail, dsMaster, detailDataRow, destTableName, forceAddState);
+                }
+                else {
+                    this.state.callerState.newSourceRow = metaModel.xCopy(dsDetail, dsMaster, detailDataRow, masterRow);
+                }
 
             } catch (e) {
                 logger.log(logType.ERROR, "GetSourceChanges: Error on data", e.message);

@@ -403,7 +403,7 @@ describe('MetaPage with Clock', function () {
                        metapage = new MetaPage('table1', 'table1_def.json', false);
 
 
-                       // costrusico oggetto stato e ds per testare i metodi che fanno operazioni con il dataset
+                       // costruisco oggetto stato e ds per testare i metodi che fanno operazioni con il dataset
                        state1 = new appMeta.MetaPageState();
                        state2 = new appMeta.MetaPageState();
                        var ds1 = new jsDataSet.DataSet("temp1");
@@ -467,11 +467,11 @@ describe('MetaPage with Clock', function () {
                        var rows =  ds1.tables.table1.select(q.eq("key", "key1"))
                        expect(rows[0]["field1"]).toBe("f1");
 
-                       // la riga sel è r1, che èanche sul ds deldettaglio, con valore cambiato, quindi mi aspetto che il nuovo valore venga propagato
+                       // la riga sel è r1, che è anche sul ds del dettaglio, con valore cambiato, quindi mi aspetto che il nuovo valore venga propagato
                        metapage2.propagateChangesToMaster().then(
                             function (res) {
                                 expect(t1ds1.rows.length).toBe(2);
-                                var rows =  ds1.tables.table1.select(q.eq("key", "key1"))
+                                var rows =  ds1.tables.table1.select(q.eq("key", "key1"));
                                 expect(rows[0]["field1"]).toBe("f5");
                                 expect(ds2.tables.table1.rows.length).toBe(1); // TODO è giusto che la riga non sia più presente sul ds dettaglio??no
                                 expect(res).toBe(true);
