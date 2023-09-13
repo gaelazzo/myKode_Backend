@@ -1658,13 +1658,13 @@
             });
             newDr.old = _old;
 
-            let _added = {}
+            let _added = {};
             _.forOwn(dr.added, (val, key) => {
                 if (this.columns[key]) _added[key] = val;
             });
             newDr.added = _added;
 
-            let _removed = {}
+            let _removed = {};
             _.forOwn(dr.removed, (val, key) => {
                 if (this.columns[key]) _removed[key] = val;
             });

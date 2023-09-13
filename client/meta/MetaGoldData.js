@@ -101,7 +101,8 @@
 					freeExports.MetaGoldData = MetaGoldData;
 				}
 			}
-		} else {
+		}
+		else {
 			// Export for a browser or Rhino.
 			if (root.appMeta){
 				root.appMeta.MetaGoldData = MetaGoldData;
@@ -109,20 +110,19 @@
 				root.MetaGoldData=MetaGoldData;
 			}
 		}
-
 	}(  (typeof _ === 'undefined') ? require('lodash') : _,
-		(typeof appMeta === 'undefined') ? require('./MetaModel').metaModel : appMeta.metaModel,
-		(typeof appMeta === 'undefined') ? require('./LocalResource').localResource : appMeta.LocalResource,
-		(typeof appMeta === 'undefined') ? require('./EventManager').Deferred : appMeta.Deferred,
-		(typeof appMeta === 'undefined') ? require('./GetDataUtils') : appMeta.getDataUtils,
-		(typeof appMeta === 'undefined') ? require('./Logger').logger : appMeta.logger,
-		(typeof appMeta === 'undefined') ? require('./Logger').logTypeEnum : appMeta.logTypeEnum,
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/MetaModel').metaModel : appMeta.metaModel,
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/LocalResource').localResource : appMeta.LocalResource,
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/EventManager').Deferred : appMeta.Deferred,
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/GetDataUtils') : appMeta.getDataUtils,
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/Logger').logger : appMeta.logger,
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/Logger').logTypeEnum : appMeta.logTypeEnum,
 		(typeof appMeta === 'undefined') ? undefined : appMeta.getMeta.bind(appMeta),
 		(typeof appMeta === 'undefined') ? undefined : appMeta.getData,
-		(typeof jsDataSet === 'undefined') ? require('./../metadata/jsDataSet').CType : jsDataSet.CType,
+		(typeof jsDataSet === 'undefined') ? require('./../components/metadata/jsDataSet').CType : jsDataSet.CType,
 		(typeof appMeta === 'undefined') ? undefined : appMeta.security,
-		(typeof appMeta === 'undefined') ? require('./../metadata/MetaData') : appMeta.MetaData,
-		(typeof appMeta === 'undefined') ? require('./jsDataQuery') : appMeta.jsDataQuery
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/MetaData') : appMeta.MetaData,
+		(typeof appMeta === 'undefined') ? require('./../components/metadata/jsDataQuery') : appMeta.jsDataQuery
 
 	)
 );

@@ -909,6 +909,7 @@
 				function (c) {
 					if (that.temporaryColumn(c)) return true;
 					if (!that.unchangedValues(dRow, c)) {
+						// if it was undefined and now it is null, there is no real change
 						if ((dRow.getValue(c.name, dataRowVersion.original) !== undefined ||
 								dRow.getValue(c.name, dataRowVersion.current) !== null)) {
 							hasRealUpdates = true;
@@ -1079,17 +1080,17 @@
 		 * rSource and rDest must have same key, or rSource have to not generate conflicts in dsDest
 		 * @notes
 		 *  Invoked from propagateChangesToMaster as xCopy(dsDetail, dsMaster, detailDataRow, masterRow);
-		 * @param {DataSet} dsSource
-		 * @param {DataSet} dsDest
-		 * @param {DataRow} rSource
-		 * @param {DataRow} rDest
+		 * @param {DataSet} dsChild
+		 * @param {DataSet} dsMaster
+		 * @param {DataRow} rDetailRow
+		 * @param {DataRow} rMasterRow
 		 */
-		xCopy: function (dsSource, dsDest, rSource, rDest) {
-			const destIsInsert = (rDest.state === dataRowState.added);
-			const destTableName = rDest.table.name;
+		xCopyFromChild: function (dsChild, dsMaster, rDetailRow, rMasterRow) {
+			const destIsInsert = (rMasterRow.state === dataRowState.added);
+			const destTableName = rMasterRow.table.name;
 			//Remove rDest and all its children from dsDest, for any table existent in dsSource
-			MetaModel.prototype.xRemoveChilds(dsSource, rDest);
-			return MetaModel.prototype.xCopyChildTables(dsDest, dsDest.tables[destTableName], dsSource, rSource.table, destIsInsert);
+			MetaModel.prototype.xRemoveChilds(dsChild, rMasterRow);
+			return MetaModel.prototype.xCopyChildTables(dsMaster, dsMaster.tables[destTableName], dsChild, rDetailRow.table, destIsInsert);
 		},
 
 		/**
@@ -1100,15 +1101,15 @@
 		 * rSource and rDest must have same key, or rSource have to not generate conflicts in dsDest
 		 * @notes
 		 *  Invoked from propagateChangesToMaster as xCopy(dsDetail, dsMaster, detailDataRow, masterRow);
-		 * @param {DataSet} dsSource
-		 * @param {DataSet} dsDest
-		 * @param {DataRow} rSource
+		 * @param {DataSet} dsChild
+		 * @param {DataSet} dsMaster
+		 * @param {DataRow} rDetailRow
 		 * @param {string} destTableName
 		 * @param {boolean} forceAddState
 		 */
-		xCopyNoCheck: function (dsSource, dsDest, rSource, destTableName,forceAddState) {
+		xCopyFromChildNoCheck: function (dsChild, dsMaster, rDetailRow, destTableName,forceAddState) {
 			const destIsInsert =forceAddState; //;
-			return MetaModel.prototype.xCopyChildTables(dsDest, dsDest.tables[destTableName], dsSource, rSource.table, destIsInsert);
+			return MetaModel.prototype.xCopyChildTables(dsMaster, dsMaster.tables[destTableName], dsChild, rDetailRow.table, destIsInsert);
 		},
 
 		/**

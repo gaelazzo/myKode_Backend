@@ -794,8 +794,8 @@ describe("MetaModel", function () {
                         //table2: 1,4,5
                         //table2Rel: 1,1
 
-                        // copies from table2 to table1 and from table1Rel to table2Rel
-                    metaModel.xCopy(dsSource, dsDest, r1Tab2.getRow(), r1.getRow());
+                        // copies from table2 to table1 and from table1Rel to table2Relù
+                    metaModel.xCopyFromChild(dsSource, dsDest, r1Tab2.getRow(), r1.getRow());
 
                     // dopo la xCopy, le righe con chiave nelle rel vengono copiate
                      expect(table2.rows.length).toBe(3);

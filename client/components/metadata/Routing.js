@@ -44,7 +44,9 @@
         download : "download",
 
         downloadDbField: "downloadDbField",
-       
+
+        //custom methods
+        //end custom methods
     };
 
 
@@ -206,6 +208,9 @@
             this.registerService(methodEnum.remove, 'DELETE', 'file', false, true);
             this.registerService(methodEnum.download, 'GET', 'file', false, true);
             this.registerService(methodEnum.downloadDbField, 'GET', 'file', false, true);
+
+            //custom routes
+            //end custom routes
 
         }
     };

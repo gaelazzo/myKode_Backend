@@ -2268,7 +2268,7 @@
             this.currOperation = currOperation.save;
             const self = this;
 
-            // booleano per capire se devo uscire dal metodo nei succssivi then, senza fare le ultime righe di codice come il freshform
+            // booleano per capire se devo uscire dal metodo nei successivi then, senza fare le ultime righe di codice come il freshform
             let returnImmediately = false;
 
             // DEPRECATO enumerato che indica se devo risolvere il deferred globale "this.resultDeferred" della maschera oppure tornare solamente true/false
@@ -4086,6 +4086,7 @@
                     if (!valid) return def.resolve(false);
 
                     if (!self.detailPage) return def.resolve(true);
+                    if (!ds.hasChanges()) return def.resolve(true);
 
                     return self.propagateChangesToMaster()
                     .then(function (wasValid){
@@ -5182,10 +5183,10 @@
                     this.copiedRows = [];
 
                     this.state.callerState.newSourceRow =
-                            metaModel.xCopyNoCheck(dsDetail, dsMaster, detailDataRow, destTableName, forceAddState);
+                            metaModel.xCopyFromChildNoCheck(dsDetail, dsMaster, detailDataRow, destTableName, forceAddState);
                 }
                 else {
-                    this.state.callerState.newSourceRow = metaModel.xCopy(dsDetail, dsMaster, detailDataRow, masterRow);
+                    this.state.callerState.newSourceRow = metaModel.xCopyFromChild(dsDetail, dsMaster, detailDataRow, masterRow);
                 }
 
             } catch (e) {
