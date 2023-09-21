@@ -10,7 +10,6 @@
 (function() {
 
     const utils = appMeta.utils;
-    const localResource = appMeta.localResource;
     const metaModel = appMeta.metaModel;
 
     const postData = appMeta.postData;
@@ -66,6 +65,9 @@
         afterRowSelect: 'afterRowSelect'
     };
 
+    function dict(){
+        return appMeta.localResource.dictionary;
+    }
 
     /**
      * @constructor
@@ -318,7 +320,7 @@
                         return true;
                     }
                     // in questo caso mostro indicatore di attesa poiché devo aggiornare i controlli
-                    waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_page_update, true);
+                    waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_page_update, true);
                     self.state.currentRow = r;
                     // la riga potrebbe essere cancellata, quindi detachata poichè si preme sulla stessa riga aggiunta ma si vuole fare il
                     // discard delle modifiche, quindi eseguo questo check
@@ -392,12 +394,12 @@
          */
         showMessageOkCancel: function(msg) {
             // Fai apparire un messagebox di avviso con il testo
-            return this.showMessage(localResource.alert,
+            return this.showMessage(dict().alert,
                 msg,
-                [localResource.ok, localResource.cancel],
-                localResource.cancel)
+                [dict().ok, dict().cancel],
+                dict().cancel)
                 .then(function(res) {
-                    return (res === localResource.ok);
+                    return (res === dict().ok);
                 });
         },
 
@@ -412,9 +414,10 @@
         showMessageOk: function(msg) {
             // Fa apparire un messagebox di avviso con il testo
             return Deferred("showMessageOk:"+msg).from(
-                this.showMessage(localResource.alert, msg, [localResource.ok])
+                this.showMessage(dict().alert, msg,
+                                    [dict().ok])
                     .then(function(res) {
-                        return (res === localResource.ok);
+                        return (res === dict().ok);
                     }));
         },
 
@@ -438,7 +441,7 @@
                 .then(function(result) {
                     if (!result) return true;
                     // Fai apparire un messagebox di avviso con il testo
-                    return self.showMessageOkCancel(localResource.changesUnsaved);
+                    return self.showMessageOkCancel(dict().changesUnsaved);
                 }));
             return result;
         },
@@ -630,12 +633,12 @@
          * Based on the state of the form it sets the page title ("name of Page" + "suffix depending on state")
          */
         setPageTitle: function() {
-            let suffix = localResource.insertTitle;
+            let suffix = dict().insertTitle;
             if (this.state.isSearchState()) {
-                suffix = localResource.searchTitle;
+                suffix = dict().searchTitle;
             }
             if (this.state.isEditState()) {
-                suffix = localResource.changeTitle;
+                suffix = dict().changeTitle;
             }
             this.setTitle(this.getName() + " (" + suffix + ")");
         },
@@ -678,8 +681,8 @@
 
             // ogni volta che chiamo una nuova metapage metto indicatore di caricamento.
             // Lo nascondo al termine della funz. activate()
-            let msg = localResource.modalLoader_wait_metapage_loading;
-            if (self.detailPage) msg = localResource.modalLoader_wait_metapageDetail_loading;
+            let msg = dict().modalLoader_wait_metapage_loading;
+            if (self.detailPage) msg = dict().modalLoader_wait_metapageDetail_loading;
             const waitingHandler = self.showWaitingIndicator(msg);
 
             this.drawState = drawStates.prefilling;
@@ -851,7 +854,7 @@
 
                 return utils._if(!self.helpForm.mainTableSelector)
                 ._then(function (){
-                     return self.showMessageOk(localResource.getFormNoMainTreeView(self.getName()))
+                     return self.showMessageOk(dict().getFormNoMainTreeView(self.getName()))
                     .then(function (){
                         self.drawState = drawStates.done;
                         self.inited = true;
@@ -872,7 +875,7 @@
                             .then(function (res){
                                 treeFilled = res;
                                 if (!treeFilled){
-                                    return self.showMessageOk(localResource.requiredRow_not_found);
+                                    return self.showMessageOk(dict().requiredRow_not_found);
                                 }
                             });
                         }).then(function (){
@@ -1461,7 +1464,7 @@
                         return tn.original.canSelect()
                             .then(function(res) {
                                 if (!res) {
-                                    return self.showMessageOk(localResource.selectedRowIsNotOperative)
+                                    return self.showMessageOk(dict().selectedRowIsNotOperative)
                                         .then(function () {
                                             return def.resolve(false);
                                         });
@@ -1591,7 +1594,7 @@
             startFilter = this.helpForm.mergeFilters(startFilter, this.additionalSearchCondition);
 
 
-            const waitingHandler = this.showWaitingIndicator(localResource.modalLoader_wait_search);
+            const waitingHandler = this.showWaitingIndicator(dict().modalLoader_wait_search);
             let outData;
             const res = utils._if((!this.isList) || this.isTree)
             ._then(function (){
@@ -1676,7 +1679,7 @@
             metaModel.clearEntity(this.state.DS);
 
 
-            const waitingHandler = this.showWaitingIndicator(localResource.modalLoader_wait_page_update, true);
+            const waitingHandler = this.showWaitingIndicator(dict().modalLoader_wait_page_update, true);
 
             this.goingToEditMode = true;
             const res = this.eventManager.trigger(appMeta.EventEnum.startClearMainRowEvent, this, "selectRow")
@@ -1701,7 +1704,7 @@
                         // logger.log(logType.WARNING, "post getDsByRowKey - Ho ricevuto il dataset popolato: " + logger.getTimeMs());
 
                         if (primaryTable.rows.length === 0){
-                            return self.showMessageOk(localResource.rowSelectedNoMoreInDb).then(function (){
+                            return self.showMessageOk(dict().rowSelectedNoMoreInDb).then(function (){
                                 self.hideWaitingIndicator(waitingHandler);
                                 return def.resolve(false);
                             });
@@ -1800,7 +1803,7 @@
 
             // metto attesa, effettua query per recuperare ventualmente il nuovo nodo
 
-            const waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_tree_updating);
+            const waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_tree_updating);
 
             const primaryTable = this.getPrimaryDataTable();
             this.helpForm.lastSelected(primaryTable, null);
@@ -1902,17 +1905,17 @@
                             dataTablePaged.dataset = self.state.DS;
                             if ((!toMerge) && (totRows === 0)) {
                                 const mergedFilterString = (mergedFilter) ? mergedFilter.toString() : "";
-                                const filterString = localResource.getFilterMessage(mergedFilterString);
+                                const filterString = appMeta.localResource.getFilterMessage(mergedFilterString);
 
-                                let msgNoRowFound = localResource.getNoRowFound(searchTableName,
+                                let msgNoRowFound = appMeta.localResource.getNoRowFound(searchTableName,
                                     filterString,
                                     listingType);
                                 if (!appMeta.security.isAdmin()) msgNoRowFound = null;
 
-                                return new appMeta.BootstrapModal(localResource.alert,
-                                    localResource.dictionary.noElementFound,
-                                    [localResource.ok],
-                                    appMeta.localResource.dictionary.cancel,
+                                return new appMeta.BootstrapModal(dict().alert,
+                                    dict().noElementFound,
+                                    [dict().ok],
+                                    dict().cancel,
                                     msgNoRowFound).show(self)
                                     .then(function () {
                                         return self.hideWaitingIndicator();
@@ -2007,7 +2010,7 @@
             const res = this.getPrimaryTable(mergedFilter)
             .then(function (){
                 if (self.getPrimaryDataTable().rows.length === 0){
-                    return self.showMessageOk(localResource.noElementFound)
+                    return self.showMessageOk(dict().noElementFound)
                     .then(function (){
                         return false;
                     });
@@ -2090,7 +2093,7 @@
             if (r) {
                 dtRow = r.getRow();
                 if (dtRow && dtRow.state === dataRowState.deleted || dtRow.state === dataRowState.detached) {
-                    msg = localResource.getRowSelectedDetachedorDeleted();
+                    msg = appMeta.localResource.getRowSelectedDetachedorDeleted();
                 }
             }
             const res = utils._if(msg)
@@ -2104,26 +2107,26 @@
                 let txtcreate = "";
 
                 if (dtRow && dtRow.table.columns.cu){
-                    txtcreate = localResource.createdByUser(r.cu);
+                    txtcreate = appMeta.localResource.createdByUser(r.cu);
                 }
                 if (dtRow && dtRow.table.columns.createuser){
-                    txtcreate = localResource.createdByUser(r.createuser);
+                    txtcreate = appMeta.localResource.createdByUser(r.createuser);
                 }
 
                 if (dtRow &&  dtRow.table.columns.ct){
                     if (txtcreate === ""){
-                        txtcreate = localResource.createdOn(r.ct);
+                        txtcreate = appMeta.localResource.createdOn(r.ct);
                     }
                     else{
-                        txtcreate += localResource.onlyOn(r.ct);
+                        txtcreate += appMeta.localResource.onlyOn(r.ct);
                     }
                 }
                 if (dtRow &&  dtRow.table.columns.createtimestamp){
                     if (txtcreate === ""){
-                        txtcreate = localResource.createdOn(r.createtimestamp);
+                        txtcreate = appMeta.localResource.createdOn(r.createtimestamp);
                     }
                     else{
-                        txtcreate += localResource.onlyOn(r.createtimestamp);
+                        txtcreate += appMeta.localResource.onlyOn(r.createtimestamp);
                     }
                 }
 
@@ -2131,34 +2134,34 @@
                 let txtupdate = "";
 
                 if (dtRow.table.columns.lu){
-                    txtupdate = localResource.modifiedBy(r.lu);
+                    txtupdate = appMeta.localResource.modifiedBy(r.lu);
                 }
 
                 if (dtRow.table.columns.lastuser){
-                    txtupdate = localResource.modifiedBy(r.lastuser);
+                    txtupdate = appMeta.localResource.modifiedBy(r.lastuser);
                 }
 
                 if (dtRow.table.columns.lt){
                     if (txtupdate === ""){
-                        txtupdate = localResource.modifiedOn(r.lt);
+                        txtupdate = appMeta.localResource.modifiedOn(r.lt);
                     }
                     else{
-                        txtupdate += localResource.onlyOn(r.lt);
+                        txtupdate += appMeta.localResource.onlyOn(r.lt);
                     }
                 }
 
                 if (dtRow.table.columns.lastmodtimestamp){
                     if (txtupdate === ""){
-                        txtupdate = localResource.modifiedOn(r.lastmodtimestamp);
+                        txtupdate = appMeta.localResource.modifiedOn(r.lastmodtimestamp);
                     }
                     else{
-                        txtupdate += localResource.onlyOn(r.lastmodtimestamp);
+                        txtupdate += appMeta.localResource.onlyOn(r.lastmodtimestamp);
                     }
                 }
 
                 msg = txtcreate + txtupdate;
                 if (!msg.length){
-                    msg = localResource.info_not_avalilable;
+                    msg = dict().info_not_available;
                 }
                 return self.showMessageOk(msg)
                 .then(function (){
@@ -2217,7 +2220,7 @@
             let waitingHandler;
             // Metto indicatore attesa. Nel caso dettaglio non serve perchè non fa e2e, quindi apparirebbe per pochi ms inutilmente
             if (!this.detailPage) {
-                waitingHandler = this.showWaitingIndicator(localResource.modalLoader_wait_save);
+                waitingHandler = this.showWaitingIndicator(dict().modalLoader_wait_save);
             }
             return this.getFormData(false)
                 .then(function(resultType) {
@@ -2663,7 +2666,7 @@
                 // non è usata da alcun form al momento, poiché si preferisce l'in-form -detail
                 const primaryTable = self.getPrimaryDataTable();
 
-                const waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_insert);
+                const waitingHandler = self.showWaitingIndicator(appMeta.localResource.modalLoader_wait_insert);
 
                
 
@@ -2766,7 +2769,7 @@
                     // il setDefaults() qui non fa nulla, potrebbe essere implementato da chi deriva il MetaData lato js
                     const meta = self.state.meta;
                     //meta.setDefaults(primaryDataTable); lo fa già nell'activate, non deve rifarlo qui
-                    waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_insert);
+                    waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_insert);
                     return meta.getNewRow(parentRow, primaryDataTable, self.editType);
                 })
                 .then(function (rowToEdit) {
@@ -2816,14 +2819,14 @@
         cmdMainInsertCopy:function () {
             const def = Deferred("cmdMainInsertCopy");
             const self = this;
-            const res = this.showMessage(localResource.alert,
-                localResource.getPressedInsertAndcopy(),
-                [localResource.confirm, localResource.cancel],
-                localResource.cancel)
+            const res = this.showMessage(dict().alert,
+                appMeta.localResource.getPressedInsertAndcopy(),
+                [dict().confirm, dict().cancel],
+                dict().cancel)
             .then(function (res){
-                if (res !== localResource.confirm) return def.resolve(null);
+                if (res !== dict().confirm) return def.resolve(null);
 
-                const waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_insertcopy);
+                const waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_insertcopy);
 
                 return self.warnUnsaved()
                 .then(function (res){
@@ -3037,7 +3040,7 @@
             }).then(function (rowOut){
                 rowToInsert = rowOut;
                 if (!rowToInsert){
-                    return self.showMessageOk(localResource.getInvalidData(self.primaryTableName)).then(function (){
+                    return self.showMessageOk(appMeta.localResource.getInvalidData(self.primaryTableName)).then(function (){
                         return def.resolve();
                     });
                 }
@@ -3145,7 +3148,7 @@
 
                 .then(function (rowToInsert){
                     if (!rowToInsert){
-                        return self.showMessageOk(localResource.getInvalidData(self.primaryTableName)).then(function (){
+                        return self.showMessageOk(appMeta.localResource.getInvalidData(self.primaryTableName)).then(function (){
                             return def.resolve();
                         });
                     }
@@ -3288,7 +3291,7 @@
                     });
             } catch (e) {
                 self.state.DS.rejectChanges();
-                return self.showMessageOk(localResource.getDeleteObjInsert(self.getName()))
+                return self.showMessageOk(appMeta.localResource.getDeleteObjInsert(self.getName()))
                     .then(function () {
                         return self.freshForm(true, false)
                             .then(function () {
@@ -3333,11 +3336,11 @@
 
                 }
 
-                const waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_delete);
+                const waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_delete);
 
                 if (self.state.isInsertState()){
                     if (!self.dontWarnOnInsertCancel){
-                        return self.showMessageOkCancel(localResource.getDeleteRowConfirm(self.name)).
+                        return self.showMessageOkCancel(appMeta.localResource.getDeleteRowConfirm(self.name)).
                             then(function (res){
                                 if (!res){
                                     self.currOperation = currOperation.none;
@@ -3357,7 +3360,7 @@
                     return def.resolve(null);
                 }
 
-                return self.showMessageOkCancel(localResource.getDeleteObjInsert(self.getName()))
+                return self.showMessageOkCancel(appMeta.localResource.getDeleteObjInsert(self.getName()))
                 .then(function (res){
                     if (!res){
                         self.currOperation = currOperation.none;
@@ -3401,7 +3404,7 @@
                     const entityName = self.helpForm.getFieldLower(command, 1);
                     let entityTable = self.getDataTable(entityName);
                     if (!entityTable) {
-                        return self.showMessageOk(localResource.getMissingTableDataSet(entityName)).then(function() {
+                        return self.showMessageOk(appMeta.localResource.getMissingTableDataSet(entityName)).then(function() {
                             return def.resolve(false);
                         });
                     }
@@ -3415,7 +3418,7 @@
                     const currMetaData = appMeta.getMeta(unaliased);
 
                     if (!currMetaData) {
-                        return self.showMessageOk(localResource.getEntityNotfound(unaliased, self.title)).then(function() {
+                        return self.showMessageOk(appMeta.localResource.getEntityNotfound(unaliased, self.title)).then(function() {
                             return def.resolve(false);
                         });
                     }
@@ -3439,7 +3442,7 @@
                             let stripped = startvalue;
                             if (stripped.endsWith("%")) stripped = stripped.slice(0, -1);
                             const filter2 = self.helpForm.mergeFilters(filter, q.isNullOrEq(startfield, stripped));
-                            waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_search);
+                            waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_search);
                             return currMetaData.selectByCondition(filter2, unaliased)
                                 .then(function (dtRow) {
                                     selected = dtRow;
@@ -3465,7 +3468,7 @@
                                     return self.edit(unaliased, editmode, true)
                                         .then(function (dialogResult) {//we assume true = "Ok" = mainsave command invoked
 
-                                            waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_page_update);
+                                            waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_page_update);
                                             return utils._if(!dialogResult)
                                                 ._then(function () {
                                                     // entityCalledChanged valorizzato nella returnToCaller()
@@ -3594,7 +3597,7 @@
             const self = this;
             const currRootElement = origin || this.rootElement;
 
-            const waitingHandler = this.showWaitingIndicator(localResource.modalLoader_wait_valuesSearching);
+            const waitingHandler = this.showWaitingIndicator(dict().modalLoader_wait_valuesSearching);
 
             const res = this.getFormData(true).then(function (){
                 const cmd = self.helpForm.getFieldLower(command, 0);
@@ -3603,7 +3606,7 @@
                 const unaliased = self.getDataTable(entityName).tableForReading();
                 if (!unaliased){
                     self.hideWaitingIndicator(waitingHandler);
-                    return self.showMessageOk(localResource.getCommandExecutionError(command)).then(function (){
+                    return self.showMessageOk(appMeta.localResource.getCommandExecutionError(command)).then(function (){
                         return def.resolve(false);
                     });
                 }
@@ -3613,7 +3616,7 @@
 
                 if (!currMetaData) {
                     self.hideWaitingIndicator(waitingHandler);
-                    return self.showMessageOk(localResource.getEntityNotfound(unaliased, self.title)).then(function (){
+                    return self.showMessageOk(appMeta.localResource.getEntityNotfound(unaliased, self.title)).then(function (){
                         return def.resolve(false);
                     });
                 }
@@ -3682,7 +3685,7 @@
                 return def.resolve(false);
             }
             //SelectedRow may have been retrieved from a view
-            const waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_page_update);
+            const waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_page_update);
             let exit = false;
             return utils._if(selectedRow.table.name !== entityTable.name)
                 ._then(function() {
@@ -4000,7 +4003,7 @@
             if (this.inited) {//the meta page already has been inited
                 return (def.resolve().promise());
             }
-            const waitingHandler = this.showWaitingIndicator(localResource.modalLoader_wait_page_init);
+            const waitingHandler = this.showWaitingIndicator(dict().modalLoader_wait_page_init);
             const self = this;
             const res = this.assurePageState()
                 .then(this.assureDataSet.bind(this))
@@ -4412,7 +4415,7 @@
 
             const row = grid.getCurrentRow().row;
             if (!row) {
-                return self.showMessageOk(localResource.selectRowInAGrid)
+                return self.showMessageOk(dict().selectRowInAGrid)
                     .then(function () {
                         return def.resolve(null);
                     });
@@ -4422,7 +4425,7 @@
             const res = this.getFormData(true)
             .then(function (){
                 if (!grid.DS){
-                    const msg = localResource.getGridControlTagWrong(grid.tag, self.title);
+                    const msg = appMeta.localResource.getGridControlTagWrong(grid.tag, self.title);
                     return self.showMessageOk(msg)
                     .then(function (){
                         return def.resolve(null);
@@ -4431,7 +4434,7 @@
 
                 const res = self.helpForm.getCurrentRow(grid.el);  // N.b restituisce un obj così { table: this.dataTable, row: this.currentRow };
                 if (!res.row){
-                    return self.showMessageOk(localResource.selectRowInAGrid)
+                    return self.showMessageOk(dict().selectRowInAGrid)
                     .then(function (){
                         return def.resolve(null);
                     });
@@ -4445,7 +4448,7 @@
                 return self.editDataRow(res.row.getRow(), editType)
 
                 .then(function (dialogResult){
-                    const waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_page_update);
+                    const waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_page_update);
 
                     return utils._if(dialogResult)
                     ._then(function (){
@@ -4627,7 +4630,7 @@
             const res = this.getFormData(true)
             .then(function (){
                 if (!grid.DS){
-                    const msg = localResource.getGridControlTagWrong(grid.tag, self.title);
+                    const msg = appMeta.localResource.getGridControlTagWrong(grid.tag, self.title);
                     return self.showMessageOk(msg).then(function (){
                         return def.resolve(null);
                     });
@@ -4659,7 +4662,7 @@
             if (!dataRow) return def.resolve(null);
 
             const linkedTable = dataRow.table;
-            const waitingHandler = this.showWaitingIndicator(localResource.modalLoader_wait_unlink_row);
+            const waitingHandler = this.showWaitingIndicator(dict().modalLoader_wait_unlink_row);
             const res = this.unlinkDataRow(this.getPrimaryDataTable(), dataRow)
             .then(function (dtRow){
 
@@ -4764,13 +4767,13 @@
             const def = Deferred('insertGridRow');
             const self = this;
 
-            let waitingHandler = this.showWaitingIndicator(localResource.modalLoader_wait_insert);
+            let waitingHandler = this.showWaitingIndicator(dict().modalLoader_wait_insert);
 
             const res = this.getFormData(true)
             .then(function (){
                 const sourceDataSet = grid.DS;
                 if (!sourceDataSet){
-                    return self.showMessageOk(localResource.getGridControlTagWrong(grid.tag, self.title))
+                    return self.showMessageOk(appMeta.localResource.getGridControlTagWrong(grid.tag, self.title))
                     .then(function (){
                         self.hideWaitingIndicator(waitingHandler);
                         return def.resolve(null);
@@ -4782,7 +4785,7 @@
                 const primaryDataTable = self.getPrimaryDataTable();
                 const parentDataRow = self.helpForm.lastSelected(primaryDataTable);
                 if (!parentDataRow){
-                    return self.showMessageOk(localResource.noPrimaryDataSelected)
+                    return self.showMessageOk(dict().noPrimaryDataSelected)
                     .then(function (){
                         self.hideWaitingIndicator(waitingHandler);
                         return def.resolve(null);
@@ -4807,7 +4810,7 @@
                     // Quindi è importante che siano copiate anche nel dataset del form di detail
                     if (!rowToInsert){
 
-                        return self.showMessageOk(localResource.getGridDataNoValid(tableName))
+                        return self.showMessageOk(appMeta.localResource.getGridDataNoValid(tableName))
                         .then(function (){
                             self.hideWaitingIndicator(waitingHandler);
                             return def.resolve(null);
@@ -4827,7 +4830,7 @@
                         return utils._if(dialogResult)
                         ._then(function (){
                             //27/5/2021 c'era una nuova variabile ma inutilizzata
-                            waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_page_update);
+                            waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_page_update);
                             // recupero newSourceRow dallo stato. è un ObjectRow
                             rowToInsert = self.state.newSourceRow;
 
@@ -4888,7 +4891,7 @@
 
             const row = grid.getCurrentRow().row;
             if (!row) {
-                return this.showMessageOk(localResource.noPrimaryDataSelected)
+                return this.showMessageOk(dict().noPrimaryDataSelected)
                     .then(function () {
                         return def.resolve(false);
                     });
@@ -4903,7 +4906,7 @@
 
                 const sourceDataSet = grid.DS;
                 if (!sourceDataSet){
-                    return self.showMessageOk(localResource.getGridControlTagWrong(grid.tag, self.title))
+                    return self.showMessageOk(appMeta.localResource.getGridControlTagWrong(grid.tag, self.title))
                     .then(function (){
                         return def.resolve(false);
                     });
@@ -4912,7 +4915,7 @@
                 const res = self.helpForm.getCurrentRow(grid.el);
 
                 if (!res.row){
-                    return self.showMessageOk(localResource.noPrimaryDataSelected)
+                    return self.showMessageOk(dict().noPrimaryDataSelected)
                     .then(function (){
                         return def.resolve(false);
                     });
@@ -4922,11 +4925,11 @@
                 const sourceTable = res.table;
 
                 // mostra messaggio di conferma ok cancel
-                return self.showMessageOkCancel(localResource.getDeleteObjInsert(sourceTable.name))
+                return self.showMessageOkCancel(appMeta.localResource.getDeleteObjInsert(sourceTable.name))
                 .then(function (res){
 
                     if (!res) return def.resolve(false);
-                    const waitingHandler = self.showWaitingIndicator(localResource.modalLoader_wait_page_update);
+                    const waitingHandler = self.showWaitingIndicator(dict().modalLoader_wait_page_update);
 
                     // prima faceva solo currDR.getRow().del(); invece ha senso fare la cascade delte, che mette delted le subentity strette
                     // e unlinka lenotsub entity
@@ -5123,7 +5126,7 @@
             const t = this.getDataTable(unaliased);
             if (!t) return true;
             if (t.rows.length !== 1) {
-                return self.showMessageOk(localResource.getMoreThenRow(t.name))
+                return self.showMessageOk(appMeta.localResource.getMoreThenRow(t.name))
                     .then(function() {
                         return def.resolve(false);
                     });

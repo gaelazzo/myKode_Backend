@@ -10,7 +10,6 @@
     var CalendarController;
     var getData = appMeta.getData;
     var Deferred = appMeta.Deferred;
-    var locale = appMeta.localResource;
     var q = window.jsDataQuery;
     var utils = appMeta.utils;
     /**
@@ -89,7 +88,7 @@
         this.countMonth = 0;
         this.monthsIntervalPagination = 1;
 
-        this.loader = new appMeta.LoaderControl(this.myRootListManger, appMeta.localResource.loader_waitListLoading);
+        this.loader = new appMeta.LoaderControl(this.myRootListManger, appMeta.localResource.dictionary.loader_waitListLoading);
         return this;
     }
 
@@ -284,7 +283,7 @@
             var d2new = d2; //new Date(d2 - 1000 * 60 ); // tolgo 1 minuto così risulta 23:00:00 e mette giorno giusto
             var d1string = [pad(d1.getDate()), pad(d1.getMonth()+1), d1.getFullYear()].join('/');
             var d2string = [pad(d2new.getDate()), pad(d2new.getMonth()+1), d2new.getFullYear()].join('/');
-            return locale.getFilterDateString(this.startColumnName, d1string, d2string);
+            return appMeta.localResource.getFilterDateString(this.startColumnName, d1string, d2string);
         },
 
         /**
@@ -353,7 +352,7 @@
             // se sono più del totale mostrato paginato mostro "xx di 100"
             if(rowsShowed > this.nRowPerPage) rowsShowed = this.nRowPerPage + " " + locale.of + " " + rowsShowed;
             var filterDate = this.filterStringForTitle ? ", " + this.filterStringForTitle : "";
-            return locale.getNumberOfRows(rowsShowed) + filterDate;
+            return appMeta.localResource.getNumberOfRows(rowsShowed) + filterDate;
         },
 
         /**

@@ -11,7 +11,6 @@
    var Stabilizer = appMeta.Stabilizer;
    var getDataUtils = appMeta.getDataUtils;
    var utils = appMeta.utils;
-   var localResource = appMeta.localResource;
    var logger = appMeta.logger;
    var logType = appMeta.logTypeEnum;
    var getData = appMeta.getData;
@@ -670,7 +669,8 @@
       addTableEmptyRow: function () {
          let numColumnToAdd = 4; // Possiamo dare un numero maggiore di colspan (che non hanno effetto) piuttosto che minore
          let colsNum = this.orderedCols.length + numColumnToAdd;
-         let $tr = $('<tr><td align="center" class="norow" colspan=' + colsNum + '>' + localResource.gridEmpty + '</td></tr>');
+         let $tr = $('<tr><td align="center" class="norow" colspan=' + colsNum + '>' +
+                  appMeta.localResource.dictionary.gridEmpty + '</td></tr>');
          this.mytable.append($tr);
       },
 
@@ -1470,7 +1470,7 @@
             this.$divLbl = $('<span class="searchzoneGridX">');
             if (this.$groupingArea) {
                this.$groupingArea.append(this.$divLbl);
-               this.$divLbl.text(localResource.dragHereColumns);
+               this.$divLbl.text(appMeta.localResource.dictionary.dragHereColumns);
             }
 
          }
@@ -1507,7 +1507,7 @@
             $(that.el).append(divConfAggr);
             $("#" + that.dialogConfAggrId).dialog({
                show: "slide", modal: true, autoOpen: true,
-               title: localResource.configAggrTitle,
+               title: appMeta.localResource.dictionary.configAggrTitle,
                width: appMeta.currApp.getScreenWidth() * 0.85,
                height: appMeta.currApp.getScreenHeight() * 0.7,
                close: _.partial(that.hideConfigAggr, that),
@@ -1555,13 +1555,13 @@
          let $tab2 = $root.find("#gridoption_tab2");
 
          // localizzo label su tab
-         $root.find("a[data-target='#gridoption_tab1']").text(localResource.gridoption_tab1);
+         $root.find("a[data-target='#gridoption_tab1']").text(appMeta.localResource.dictionary.gridoption_tab1);
          // $root.find("a[data-target='#gridoption_tab2']").text(localResource.gridoption_tab2);
 
          let btnconfirmid = "btn_confirm_id" + iddialog;
          let $btn = $('<button class="btn btn-primary mb-2" id="' + btnconfirmid + '">');
          $($tab1).append($btn);
-         $btn.text(localResource.confirm);
+         $btn.text(appMeta.localResource.dictionary.confirm);
 
          // costrusico griglia delle opzioni colonne
          let $table = $('<table class="table" border="1">');
@@ -1572,7 +1572,7 @@
          $($thead).append($tr);
 
          // costruisco colonne, mette funzioni di aggregazione, il valore checkbox solo se sono  numeriche
-         let headercols = _.concat([localResource.column, localResource.visible], this.aggrFunctionArr);
+         let headercols = _.concat([appMeta.localResource.dictionary.column, appMeta.localResource.dictionary.visible], this.aggrFunctionArr);
          _.forEach(headercols, function (col) {
             let $th = $('<th>');
             var caption = _.includes(self.aggrFunctionArr, col) ? self.getStringFromAggregationFunction(col) : col;
@@ -1584,10 +1584,10 @@
             _.forEach(headercols, function (hc) {
                var currid = iddialog + col.name.replace("!", "") + hc; // id html non puà contenere carattere "!", altrimenti jquery va in eccezione
                var $td = $('<td style="user-select: none; text-align: center; vertical-align: middle;" nowrap>');
-               if (hc === localResource.column) {
+               if (hc === appMeta.localResource.dictionary.column) {
                   $td.addClass(appMeta.cssDefault.alignStringColumn);
                   self.addChildElement($tr, $td, col.caption);
-               } else if (hc === localResource.visible) {
+               } else if (hc === appMeta.localResource.dictionary.visible) {
                   let $checkbox = $('<input type="checkbox" id="' + currid + '" class="big-checkbox">');
                   $($td).append($checkbox);
                   $checkbox.prop("checked", true); // tutte visibili all'inizio
@@ -1631,7 +1631,7 @@
          let newListType = "system";
          let objectName = that.dataSourceName;
 
-         let waitingHandler = that.metaPage.showWaitingIndicator(localResource.modalLoader_wait_for_save_layout);
+         let waitingHandler = that.metaPage.showWaitingIndicator(appMeta.localResource.dictionary.modalLoader_wait_for_save_layout);
          // recupero ds vuoto
          getData.getDataSet(dsCustomView_TableName, dsCustomView_EditType)
             .then(function (ds) {
@@ -1668,8 +1668,8 @@
                appMeta.postData.doPostSilent(ds, dsCustomView_TableName, dsCustomView_EditType, [])
                   .then(function (res, messages) {
                      that.metaPage.hideWaitingIndicator(waitingHandler);
-                     if (res) that.metaPage.showMessageOk(localResource.savingLayoutSucceded);
-                     if (!res) that.metaPage.showMessageOk(localResource.savingLayoutError + ": " + JSON.stringify(messages || []));
+                     if (res) that.metaPage.showMessageOk(appMeta.localResource.dictionary.savingLayoutSucceded);
+                     if (!res) that.metaPage.showMessageOk(appMeta.localResource.dictionary.savingLayoutError + ": " + JSON.stringify(messages || []));
                   })
             });
 
@@ -1730,10 +1730,10 @@
        */
       getStringFromAggregationFunction: function (aggrFuncName) {
          switch (aggrFuncName) {
-            case "avg": return localResource.avg;
-            case "sum": return localResource.sum;
-            case "max": return localResource.max;
-            case "min": return localResource.min;
+            case "avg": return appMeta.localResource.dictionary.avg;
+            case "sum": return appMeta.localResource.dictionary.sum;
+            case "max": return appMeta.localResource.dictionary.max;
+            case "min": return appMeta.localResource.dictionary.min;
             default: return "missing aggr. function";
          }
          return "";
@@ -1846,7 +1846,7 @@
        * @returns {boolean} true if column is visible
        */
       computesColVis: function (col) {
-         let curridVis = this.dialogConfAggrId + col.name.replace("!", "") + localResource.visible;
+         let curridVis = this.dialogConfAggrId + col.name.replace("!", "") + appMeta.localResource.dictionary.visible;
          let bvalueVis = ($('#' + curridVis) && $('#' + curridVis).length) ? !!$('#' + curridVis).is(":checked") : true;
          return bvalueVis;
       },
@@ -2657,7 +2657,7 @@
             parent = curr;
          }
          let rSel = $(this).data("mdldatarowlinked");
-         let waitingHandler = that.metaPage.showWaitingIndicator(localResource.modalLoader_wait_tree_node_search);
+         let waitingHandler = that.metaPage.showWaitingIndicator(appMeta.localResource.dictionary.modalLoader_wait_tree_node_search);
          return treemanager.selectNodeByRow(rSel, false)
             .then(function () {
                that.dataTable.parentnode = treemanager.getParent(treemanager.selectedNode());
@@ -2706,7 +2706,7 @@
 
          var myDT = this.dataTable;
 
-         var waitingHandler = this.metaPage.showWaitingIndicator(localResource.modalLoader_wait_tree_navigation);
+         var waitingHandler = this.metaPage.showWaitingIndicator(appMeta.localResource.dictionary.modalLoader_wait_tree_navigation);
 
          if (myDT.parentnode) {
             if (node.children.length === 0) {

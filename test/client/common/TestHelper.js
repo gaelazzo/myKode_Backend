@@ -66,7 +66,7 @@
 			appMeta.metaPages = [];
 			appMeta.htmlPages = [];
 			appMeta.globalEventManager = new appMeta.EventManager();
-			appMeta.localResource.setLanguage("it");
+			appMeta.localization.setLanguage("it");
 			// N.B non c'è bisogno passa per il proxy di Karma. (vedi nel Karma_e2e.conf.js
 			appMeta.routing.setUrlPrefix("http://localhost:54471/");
 		},

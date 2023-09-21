@@ -7,7 +7,6 @@
 
     var Deferred = appMeta.Deferred;
     var utils = appMeta.utils;
-    var localResource = appMeta.localResource;
     /**
      * @constructor BootstrapContainerTab
      * @description
@@ -124,7 +123,7 @@
             if (this.details) {
                 $("#myModal" + self.idunivoque + " .modal-footer")
                     .append($("<button class='btn btn-secondary'>")
-                        .text(localResource.dictionary.details)
+                        .text(appMeta.localResource.dictionary.details)
                         .data("mdlModalWin", self)
                         .on("click", self.toggleDetails));
             }

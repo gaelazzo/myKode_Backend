@@ -8,7 +8,7 @@
 
     var Deferred = appMeta.Deferred;
     var Attachment = appMeta.Attachment;
-    var localResource = appMeta.localResource;
+
     var $q = window.jsDataQuery;
     
     /**
@@ -55,8 +55,8 @@
         this.fileNameColumnName = "filename";
 
         // stringa da mostrare nella label per il download
-        this.lblDownload = (typeof $(el).data("mdllbldownloadfile") === "undefined") ? appMeta.localResource.download_attach : $(el).data("mdllbldownloadfile");
-        this.lblUpload = (typeof $(el).data("mdllbluploadfile") === "undefined") ? appMeta.localResource.upload_attach : $(el).data("mdllbluploadfile");
+        this.lblDownload = (typeof $(el).data("mdllbldownloadfile") === "undefined") ? appMeta.localResource.dictionary.download_attach : $(el).data("mdllbldownloadfile");
+        this.lblUpload = (typeof $(el).data("mdllbluploadfile") === "undefined") ? appMeta.localResource.dictionary.upload_attach : $(el).data("mdllbluploadfile");
 
         // è il nome del file che invio al server. se passo vuoto allora concatena il nome del file reale sul disco client
         this.lblFileName = (typeof $(el).data("mdlfilename") === "undefined") ? "" : $(el).data("mdlfilename");

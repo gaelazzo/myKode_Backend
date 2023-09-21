@@ -18,7 +18,7 @@
     const Deferred = appMeta.Deferred;
     const jsObjFromString = appMeta.jsObjFromString;
     const stringFromJsObj = appMeta.stringFromJsObj;
-    const locale = appMeta.localResource;
+
     const logger = appMeta.logger;
     const logType = appMeta.logTypeEnum;
     const utils = appMeta.utils;
@@ -595,7 +595,7 @@
 
             if (savedLastTextNoFound === $(textBox).attr("id") + "#" + $(textBox).val()) return def.resolve(false);
             /*{
-                return that.metaPage.showMessageOk(locale.noElementFound)
+                return that.metaPage.showMessageOk(appMeta.localResource.dictionary.noElementFound)
                     .then(function () {
                         that.applyFocus(textBox);
                          //no change has been made on text
@@ -718,25 +718,25 @@
             tag = tag.toLowerCase();
 
             if (tag.startsWith("edit")){
-                $(el).text(locale.editButton);
+                $(el).text(appMeta.localResource.dictionary.editButton);
                 $(el).on("click", _.partial(this.metaPage.editClick, this.metaPage));
                 return;
             }
 
             if (tag.startsWith("delete")){
-                $(el).text(locale.deleteButton);
+                $(el).text(appMeta.localResource.dictionary.deleteButton);
                 $(el).on("click", _.partial(this.metaPage.deleteClick, this.metaPage));
                 return;
             }
 
             if (tag.startsWith("insert")){
-                $(el).text(locale.insertButton);
+                $(el).text(appMeta.localResource.dictionary.insertButton);
                 $(el).on("click", _.partial(this.metaPage.insertClick, this.metaPage));
                 return;
             }
 
             if (tag.startsWith("unlink")){
-                $(el).text(locale.unlinkButton);
+                $(el).text(appMeta.localResource.dictionary.unlinkButton);
                 $(el).on("click", _.partial(this.metaPage.unlinkClick, this.metaPage));
                 return;
             }

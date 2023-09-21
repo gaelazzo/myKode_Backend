@@ -455,7 +455,8 @@ describe("GridControl",
 
         it('shows modal', function (done){
             $("body").append('<link rel="stylesheet" href="/base/client/bower_components/bootstrap/dist/css/bootstrap.css" />');
-            var bmodal = new BootstrapModal(localResource.alert, localResource.changesUnsaved, [localResource.ok, localResource.cancel], localResource.cancel);
+            var bmodal = new BootstrapModal(localResource.alert, localResource.dictionary.changesUnsaved,
+                        [localResource.dictionary.ok, localResource.dictionary.cancel], localResource.dictionary.cancel);
 
             var s = stabilize();
             common.pageEventWaiter(metapage, appMeta.EventEnum.showModalWindow)
@@ -474,10 +475,10 @@ describe("GridControl",
         it('shows modal and click closeCommand',
             function (done){
                 $("body").append('<link rel="stylesheet" href="/base/client/bower_components/bootstrap/dist/css/bootstrap.css" />');
-                var bmodal = new BootstrapModal(localResource.alert,
-                    localResource.changesUnsaved,
-                    [localResource.ok, localResource.cancel],
-                    localResource.cancel);
+                var bmodal = new BootstrapModal(localResource.dictionary.alert,
+                    localResource.dictionary.changesUnsaved,
+                    [localResource.dictionary.ok, localResource.dictionary.cancel],
+                    localResource.dictionary.cancel);
 
                 var s = stabilize();
                 common.pageEventWaiter(metapage, appMeta.EventEnum.showModalWindow)
@@ -497,16 +498,17 @@ describe("GridControl",
         it('shows modal, with details, press ok button, close the modal', function (done){
             $("body").append('<link rel="stylesheet" href="/base/client/bower_components/bootstrap/dist/css/bootstrap.css" />');
             var detailsString = 'string of detail';
-            var bmodal = new BootstrapModal(localResource.alert, localResource.changesUnsaved, [localResource.ok, localResource.cancel], localResource.cancel, detailsString);
+            var bmodal = new BootstrapModal(localResource.dictionary.alert, localResource.dictionary.changesUnsaved,
+                    [localResource.dictionary.ok, localResource.dictionary.cancel], localResource.dictionary.cancel, detailsString);
 
             var s = stabilize();
             common.pageEventWaiter(metapage, appMeta.EventEnum.showModalWindow)
             .then(function (){
                 expect($(".modal").length).toBe(1);
                 expect($($(bmodal.currModal).find("button")[0]).text()).toBe("×");
-                expect($($(bmodal.currModal).find("button")[1]).text()).toBe(localResource.ok);
-                expect($($(bmodal.currModal).find("button")[2]).text()).toBe(localResource.cancel);
-                expect($($(bmodal.currModal).find("button")[3]).text()).toBe(localResource.details);
+                expect($($(bmodal.currModal).find("button")[1]).text()).toBe(localResource.dictionary.ok);
+                expect($($(bmodal.currModal).find("button")[2]).text()).toBe(localResource.dictionary.cancel);
+                expect($($(bmodal.currModal).find("button")[3]).text()).toBe(localResource.dictionary.details);
                 $(bmodal.currModal).find("button")[1].click(); // click sul bottone ok, 2 è annulla, 0 closeCommand
 
             });
@@ -521,15 +523,16 @@ describe("GridControl",
         it('shows modal, with details, press details button, show string of the details', function (done){
             $("body").append('<link rel="stylesheet" href="/base/client/bower_components/bootstrap/dist/css/bootstrap.css" />');
             var detailsString = 'string of detail';
-            var bmodal = new BootstrapModal(localResource.alert, localResource.changesUnsaved, [localResource.ok, localResource.cancel], localResource.cancel, detailsString);
+            var bmodal = new BootstrapModal(localResource.dictionary.alert, localResource.dictionary.changesUnsaved,
+                            [localResource.dictionary.ok, localResource.dictionary.cancel], localResource.dictionary.cancel, detailsString);
             var s = stabilize();
             common.pageEventWaiter(metapage, appMeta.EventEnum.showModalWindow)
             .then(function (){
                 expect($(".modal").length).toBe(1);
                 expect($($(bmodal.currModal).find("button")[0]).text()).toBe("×");
-                expect($($(bmodal.currModal).find("button")[1]).text()).toBe(localResource.ok);
-                expect($($(bmodal.currModal).find("button")[2]).text()).toBe(localResource.cancel);
-                expect($($(bmodal.currModal).find("button")[3]).text()).toBe(localResource.details);
+                expect($($(bmodal.currModal).find("button")[1]).text()).toBe(localResource.dictionary.ok);
+                expect($($(bmodal.currModal).find("button")[2]).text()).toBe(localResource.dictionary.cancel);
+                expect($($(bmodal.currModal).find("button")[3]).text()).toBe(localResource.dictionary.details);
                 $(bmodal.currModal).find("button")[3].click(); // click sul bottone dettagli. mette un paragrafo con la stringa dei dettagli
                 expect($("p").text()).toBe(detailsString);
                 $(bmodal.currModal).find("button")[3].click(); // click sul bottone dettagli. scompare p dei dettagli

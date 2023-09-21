@@ -6,7 +6,6 @@
  */
 (function() {
 
-    var locale = appMeta.localResource;
     var Deferred = appMeta.Deferred;
     var logType = appMeta.logTypeEnum;
     var logger = appMeta.logger;
@@ -44,7 +43,7 @@
 
         this.addedTable  = null;
         this.toAddTable = null;
-        this.loader = new appMeta.LoaderControl(this.rootElement, locale.multiSelect_lbl_wait);
+        this.loader = new appMeta.LoaderControl(this.rootElement, appMeta.localResource.dictionary.multiSelect_lbl_wait);
 
         return this;
     }
@@ -260,11 +259,12 @@
          * Initializes the button events and the labels
          */
         initControls:function () {
+            let locale = appMeta.localResource.dictionary;
             $(".multiSelect_btn_add").text(locale.multiSelect_addRows).on("click", _.partial(this.addRowsEv, this));
             $(".multiSelect_btn_remove").text(locale.multiSelect_removeRows).on("click", _.partial(this.removeRowsEv, this));
             $(".multiSelect_lbl_toAdd").html(locale.multiSelect_lbl_toAdd);
             $(".multiSelect_lbl_added").html(locale.multiSelect_lbl_added);
-            $(".multiSelect_lbl_description").html(locale.multiSelect_lbl_descrtiption); // html invece di text, per inserire html ascii, tipo è con &egrave; il metodo text() fa apparire esattamente come è las tringa
+            $(".multiSelect_lbl_description").html(locale.multiSelect_lbl_description); // html invece di text, per inserire html ascii, tipo è con &egrave; il metodo text() fa apparire esattamente come è las tringa
         },
 
         /**

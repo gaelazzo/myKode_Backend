@@ -11,7 +11,6 @@
 		/** Detect free variable `module`. */
 		let freeModule = freeExports && typeof module === 'object' && module && !module.nodeType && module;
 
-
 		//noinspection JSUnresolvedVariable
 		/** Detect free variable `global` from Node.js or Browserified code and use it as `root`. (thanks lodash)*/
 		let moduleExports = freeModule && freeModule.exports === freeExports;

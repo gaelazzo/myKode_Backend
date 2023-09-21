@@ -76,7 +76,7 @@
                     if (!meta) {
                         meta = new this.MetaData(tableName);
                     }
-                    meta.setLanguage(this.localResource.currLng);
+                    meta.setLanguage(this.localResource.currLanguage);
                     return meta;
                 },
 

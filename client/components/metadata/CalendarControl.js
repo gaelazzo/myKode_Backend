@@ -9,7 +9,6 @@
 	var Deferred = appMeta.Deferred;
 	var Stabilizer = appMeta.Stabilizer;
 	var utils = appMeta.utils;
-	var localResource = appMeta.localResource;
 	var logger = appMeta.logger;
 	var logType = appMeta.logTypeEnum;
     /**
@@ -104,7 +103,7 @@
 			var evObj = {}; // obj evento di ritorno
 
 			if (!dtRow) {
-				logger.log(logType.ERROR, localResource.calendarNotRowCorrect);
+				logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarNotRowCorrect);
 				return null;
 			}
 
@@ -112,16 +111,16 @@
 			var startColName = this.startColumnName;
 			if (objConfig && objConfig.startColumnName) startColName = objConfig.startColumnName;
 			if (!startColName) {
-				logger.log(logType.ERROR, localResource.calendarWrongConfig + ": start");
+				logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": start");
 				return null;
 			}
 			if (dtRow.table.columns[startColName].ctype !== 'DateTime') {
-				logger.log(logType.ERROR, localResource.calendarWrongConfig + ": start is not a DateTime");
+				logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": start is not a DateTime");
 				return null;
 			}
 			// check su colonna con valori nulli
 			if (!row[startColName]) {
-				logger.log(logType.INFO, localResource.calendarWrongConfig + "a row has null value on start");
+				logger.log(logType.INFO, appMeta.localResource.dictionary.calendarWrongConfig + "a row has null value on start");
 				return null;
 			}
 
@@ -130,7 +129,7 @@
 			if (objConfig && objConfig.titleColumnName) titlecolName = objConfig.titleColumnName;
 			if (titlecolName) {
 				if (!dtRow.table.columns[titlecolName]) {
-					logger.log(logType.ERROR, localResource.calendarWrongConfig + ": title");
+					logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": title");
 					return null;
 				}
 			}
@@ -150,11 +149,11 @@
 			if (stopColumnName) {
 				var colStop = dtRow.table.columns[stopColumnName];
 				if (!colStop) {
-					logger.log(logType.ERROR, localResource.calendarWrongConfig + ": stop ");
+					logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": stop ");
 					return null;
 				}
 				if (colStop.ctype !== 'DateTime') {
-					logger.log(logType.ERROR, localResource.calendarWrongConfig + ": stop is not a DateTime");
+					logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": stop is not a DateTime");
 					return null;
 				}
 				// check su colonna con valori nulli
@@ -234,7 +233,7 @@
 					listMonth: {
 						type: 'list',
 						duration: { days: 31 },
-						buttonText: localResource.agenda
+						buttonText: appMeta.localResource.dictionary.agenda
 					}
 				},
 				bootstrapFontAwesome: {
@@ -250,7 +249,7 @@
                  addEventButton: 'ui-icon-circle-plus'
                  },*/
 				defaultDate: self.defaultDate, // default ad oggi
-				locale: localResource.currLng,
+				locale: appMeta.localResource.currLanguage,
 				navLinks: true, // can click day/week names to navigate views
 				eventLimit: true, // allow "more" link when too many events
 
@@ -495,7 +494,7 @@
 				return true;
 			}
 
-			return this.metaPage.showMessageOkCancel(localResource.getDoYouWantModifyEventResize(event.title, end.format("DD/MM/YYYY HH:mm")))
+			return this.metaPage.showMessageOkCancel(appMeta.localResource.getDoYouWantModifyEventResize(event.title, end.format("DD/MM/YYYY HH:mm")))
 				.then(function (res) {
 					if (res) {
 						// bind valore sulla riga
@@ -532,7 +531,7 @@
 			// se end non esiste , metto default 1 ora dallo start
 			var end = event.end ? event.end : event.start.add(moment.duration(1, 'hours'));
 
-			return this.metaPage.showMessageOkCancel(localResource.getDoYouWantModifyEvent(event.title, start.format("DD/MM/YYYY HH:mm"), end.format("DD/MM/YYYY HH:mm")))
+			return this.metaPage.showMessageOkCancel(appMeta.localResource.getDoYouWantModifyEvent(event.title, start.format("DD/MM/YYYY HH:mm"), end.format("DD/MM/YYYY HH:mm")))
 				.then(function (res) {
 					if (res) {
 						// bind valore sulla riga
@@ -750,16 +749,16 @@
 			//verifico se si trata di un evento "tutto il giorno" allora tolgo l'ora
 			if (!event.end) {
 				var startdate = moment(event.start).format("DD/MM/YYYY");
-				htmlInfo += '<br><span><strong>' + localResource.date + ':  </strong>' + startdate + '</span>';
+				htmlInfo += '<br><span><strong>' + appMeta.localResource.dictionary.date + ':  </strong>' + startdate + '</span>';
 			} else {
 				var startdate = moment(event.start).format("DD/MM/YYYY HH:mm");
-				htmlInfo += '<br><span><strong>' + localResource.start + ':  </strong>' + startdate + '</span>';
+				htmlInfo += '<br><span><strong>' + appMeta.localResource.dictionary.start + ':  </strong>' + startdate + '</span>';
 			}
 
 			// mostra data fine
 			if (/*this.stopColumnName &&*/ event.end) {
 				var stopdate = moment(event.end).format("DD/MM/YYYY HH:mm");
-				htmlInfo += '<br><span><strong>' + localResource.end + ':  </strong>' + stopdate + '</span>';
+				htmlInfo += '<br><span><strong>' + appMeta.localResource.dictionary.end + ':  </strong>' + stopdate + '</span>';
 			}
 
 			// aggiungo bottoni di editing se esistono
@@ -778,7 +777,7 @@
 			this.dialogEvent.dialog({
 				modal: true,
 				autoResize: true,
-				title: localResource.infoevent,
+				title: appMeta.localResource.dictionary.infoevent,
 				open: function () {
 					// inserisco qui html ad -hoc e associo handler solo dopo averlo aggiungo nell'html
 					$(this).html(htmlInfo);

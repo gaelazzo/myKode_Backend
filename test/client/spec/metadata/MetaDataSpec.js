@@ -40,10 +40,10 @@ describe('MetaData', function () {
             it('isValid() works ',
                 function (done) {
                     localResource.setLanguage("it");
-                    var emptyKeyMsg = localResource.emptyKeyMsg;
-                    var emptyFieldMsg = localResource.emptyFieldMsg;
-                    var stringTooLong = localResource.stringTooLong;
-                    var noDataSelected = localResource.noDataSelected;
+                    var emptyKeyMsg = localResource.dictionary.emptyKeyMsg;
+                    var emptyFieldMsg = localResource.dictionary.emptyFieldMsg;
+                    var stringTooLong = localResource.dictionary.stringTooLong;
+                    var noDataSelected = localResource.dictionary.noDataSelected;
 
                     var ds = new jsDataSet.DataSet("temp");
                     var t = ds.newTable("t");

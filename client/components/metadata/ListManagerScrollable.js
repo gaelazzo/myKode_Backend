@@ -30,7 +30,7 @@
                 this.myRootListManger = $("<div data-tag='" + this.tableName + "." + this.listType + "' class='autoChooseDataTag'>");
                 // aggiungo al mio root corrente il div dinamico con la griglia e il footer.
                 $(this.currentRootElement).append(this.myRootListManger);
-                this.loader = new appMeta.LoaderControl(this.myRootListManger, appMeta.localResource.loader_waitListLoading);
+                this.loader = new appMeta.LoaderControl(this.myRootListManger, appMeta.localResource.dictionary.loader_waitListLoading);
             },
 
             /**

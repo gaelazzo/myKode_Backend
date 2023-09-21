@@ -1,7 +1,7 @@
 (function() {
 
     var ListManager = window.appMeta.ListManager;
-    var locale = appMeta.localResource;
+
     function ListManagerMultiSelect(tableName, listType, filter, isModal, rootElement, metaPage, filterLocked, toMerge, sort) {
         ListManager.apply(this, [tableName, listType, filter, true, rootElement, metaPage, filterLocked, toMerge, sort]);
     }
@@ -25,7 +25,8 @@
                     "<div class='modal-dialog modal-lg'>" +
                     "<div class='modal-content'  >" +
                     "<div class='modal-header'>"+
-                    "<button class='btn btn-primary modal-select-btn mr-2' type='button'> " + locale.confirmSelection + " </button>" +
+                    "<button class='btn btn-primary modal-select-btn mr-2' type='button'> " +
+                            appMeta.localResource.dictionary.confirmSelection + " </button>" +
                     "<h4 class='modal-title'> " + this.title + "</h4>" +
                     "<button type='button' class='close modal-white-close'>" +
                     "<span aria-hidden='true'>&times;</span></button>" +

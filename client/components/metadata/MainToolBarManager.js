@@ -143,7 +143,7 @@
         setButtonText:function (btn, tag) {
             // set the text
             var txt = "";
-            let locale = appMeta.localResource;
+            let locale = appMeta.localResource.dictionary;
             // prendo il testo del bottone dal file locale
             if (locale[tag] !== undefined){
                 txt = locale[tag];
@@ -212,7 +212,6 @@
          * @returns Promise
          */
         freshButtons: function() {
-            let locale = appMeta.localResource;
             if (!this.rootElement) return appMeta.Deferred("freshButton").resolve(true);
             if (!this.metaPage) return appMeta.Deferred("freshButton").resolve(true);
             let self = this;
@@ -255,32 +254,42 @@
 
                                 if (cmd === "mainsetsearch") {
                                     if (self.metaPage.state.isSearchState()) {
-                                        self.buttonText(mybtn, locale.emptyField);
+                                        self.buttonText(mybtn, appMeta.localResource.dictionary.emptyField);
                                     } else {
-                                        self.buttonText(mybtn, locale.mainsetsearch);
+                                        self.buttonText(mybtn, appMeta.localResource.dictionary.mainsetsearch);
                                     }
                                 }
 
                                 if (cmd === "maindelete") {
                                     if (self.metaPage.state.isInsertState()) {
-                                        if (self.buttonText(mybtn) !== locale.cancel) self.buttonText(mybtn, locale.cancel);
+                                        if (self.buttonText(mybtn) !== appMeta.localResource.dictionary.cancel) {
+                                            self.buttonText(mybtn, appMeta.localResource.dictionary.cancel);
+                                        }
                                     }
 
                                     if (self.metaPage.state.isEditState()) {
                                         if (self.metaPage.detailPage) {
-                                            if (self.buttonText(mybtn) !== locale.cancel) self.buttonText(mybtn, locale.cancel);
+                                            if (self.buttonText(mybtn) !== appMeta.localResource.dictionary.cancel) {
+                                                self.buttonText(mybtn, appMeta.localResource.dictionary.cancel);
+                                            }
                                         }
                                         else {
-                                            if (self.buttonText(mybtn) !== locale.eliminate) self.buttonText(mybtn, locale.eliminate);
+                                            if (self.buttonText(mybtn) !== appMeta.localResource.dictionary.eliminate) {
+                                                self.buttonText(mybtn, appMeta.localResource.dictionary.eliminate);
+                                            }
                                         }
                                     }
                                 }
 
                                 if (cmd === "mainsave") {
                                     if (self.metaPage.detailPage) {
-                                        if (self.buttonText(mybtn) !== locale.ok) self.buttonText(mybtn, locale.ok);
+                                        if (self.buttonText(mybtn) !== appMeta.localResource.dictionary.ok) {
+                                            self.buttonText(mybtn, appMeta.localResource.dictionary.ok);
+                                        }
                                     } else {
-                                        if (self.buttonText(mybtn) !== locale.mainsave) self.buttonText(mybtn, locale.mainsave);
+                                        if (self.buttonText(mybtn) !== appMeta.localResource.dictionary.mainsave) {
+                                            self.buttonText(mybtn, appMeta.localResource.dictionary.mainsave);
+                                        }
                                     }
                                 }
 

@@ -104,7 +104,7 @@
                         if (objConn.noLogError === undefined){
                             // se è scaduto il token, lancio evento. così lo posso intercettare fuori e fare le opportune operazioni
                             // Per ora ho gestito err http 401 Unhautorized. Capire altri errori http cosa fare
-                            var msg = appMeta.localResource.serverUnracheable;
+                            var msg = appMeta.localResource.serverUnreachable;
                             if (err.status) {
 
                                 // ripulisco errore

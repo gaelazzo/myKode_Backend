@@ -37,13 +37,13 @@
      * @constructor LocalResource
      */
     function LocalResource() {
-        this.dictionary= null;
+        this.dict = {};
     }
 
     LocalResource.prototype = {
         constructor: LocalResource,
-
-        dictionaries: {}, //shared between all instances of application
+        defaultLanguage:null,
+        dictionaries: {}, //shared between all the instances of the application
 
         localizedResources:{},
 
@@ -54,6 +54,10 @@
          */
         registerDictionary: function(language, dictionary){
             LocalResource.prototype.dictionaries[language]= dictionary;
+            if (LocalResource.prototype.defaultLanguage===null){
+                LocalResource.prototype.defaultLanguage= language;
+            }
+
         },
 
         /**
@@ -96,52 +100,17 @@
          * @param {string} lng language constant it for italian, en for english, fr: francaise etc..
          */
         setLanguage:function (lng) {
-            this.currLng = lng;
+            this.currLanguage = lng;
 
-            // creo il nome del prototipo a runtime senza cablare la switch così se aggiungo una lingua
-            // viene automaticamente presa
-            try {
-                if (appMeta){
-                    //executed on client
-                    this.dictionary = this.getDictionary(lng); //appMeta['localResource'+lbnSuffix]();
-                    _.extend(this, this.dictionary);
-
-                    // localizza eventuali custom control con localizzazione custom
-                    this.localizeCustomControls(lng);
-
-                    if (appMeta.currApp.toolBarManager) {
-                        appMeta.currApp.toolBarManager.localize();
-                    }
-                }
-                else {
-
-                    //executed on server
-                    //
-                    this.dictionary = this.getDictionary(lng);
-                    _.extend(this, this.dictionary);
-                }
-
-            } catch (e){
-                console.log(e);
-                console.log("Language " + lng + " doesn't exist! Go to i18n folder and create the file localResource " + lng + ".js");
-            }
+            this.dictionary = this.getDictionary(lng); //appMeta['localResource'+lbnSuffix]();
         },
 
-        /**
-         * Client function, only does some work on client environment
-         */
-        localizeCustomControls:function (lng) {
-            if (typeof appMeta === undefined || typeof  $ === undefined){
-                return;
-            }
-            $(appMeta.currApp.rootElement + " [data-custom-control] ")
-                .each(function(index, el) {
-                    let ctrl = $(el).data("customController");
-                    if (!ctrl) return;
-                    if (!ctrl.localize) return;
-                    ctrl.localize(lng);
-                });
+        translate: function(str){
+          let res = this.dictionary[str];
+          if (res === undefined) return str;
+          return res;
         },
+
 
 
         /**

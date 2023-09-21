@@ -12,7 +12,6 @@
     var Deferred = appMeta.Deferred;
     var logger = appMeta.logger;
     var logType = appMeta.logTypeEnum;
-    var locale = appMeta.localResource;
     /**
      * @constructor BootstrapContainerTab
      * @description
@@ -317,7 +316,7 @@
 
             if (!this.waitOption){
                 this.waitOption = document.createElement("option");
-                this.waitOption.textContent = locale.loading;
+                this.waitOption.textContent = appMeta.localResource.dictionary.loading;
                 this.waitOption.value = "";
             }
 

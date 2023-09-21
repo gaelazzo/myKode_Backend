@@ -8,7 +8,7 @@
 (function () {
     var cssDefault = appMeta.cssDefault;
     var GridControlX = appMeta.CustomControl("gridx");
-    var locale = appMeta.localResource;
+
     /**
      * @constructor GridControlXMultiSelect
      * @description
@@ -218,7 +218,7 @@
                     that.rowSelectedDict[rowkey] = row;
                 }
 
-                $(that.countElement).html(locale.selectedRows + ": " + Object.keys(that.rowSelectedDict).length);
+                $(that.countElement).html(appMeta.localResource.dictionary.selectedRows + ": " + Object.keys(that.rowSelectedDict).length);
             },
 
             /**

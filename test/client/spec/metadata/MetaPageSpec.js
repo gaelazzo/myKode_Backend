@@ -100,15 +100,15 @@ describe('MetaPage', function () {
                     };
 
                     metapage.setPageTitle();
-                    expect(metapage.title).toBe(title + " (" + appMeta.localResource.searchTitle + ")");
+                    expect(metapage.title).toBe(title + " (" + appMeta.localResource.dictionary.searchTitle + ")");
 
                     state1.setEditState();
                     metapage.setPageTitle();
-                    expect(metapage.title).toBe(title + " (" + appMeta.localResource.changeTitle + ")");
+                    expect(metapage.title).toBe(title + " (" + appMeta.localResource.dictionary.changeTitle + ")");
 
                     state1.setInsertState();
                     metapage.setPageTitle();
-                    expect(metapage.title).toBe(title + " (" + appMeta.localResource.insertTitle + ")");
+                    expect(metapage.title).toBe(title + " (" + appMeta.localResource.dictionary.insertTitle + ")");
                 });
 
             it('metapage should have a assurePageState() function',

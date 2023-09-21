@@ -56,14 +56,14 @@
                 //console.log("evaluated token is "+token)
                 options["headers"] = {
                     'Authorization': "Bearer " + token,
-                    "language": appMeta.localResource.currLng
+                    "language": appMeta.localResource.currLanguage
                 };
             }
             else {
                 let AnonymousToken = "AnonymousToken123456789";
                 options["headers"] = {
                     'Authorization': "Bearer " + AnonymousToken,
-                    "language": appMeta.localResource.currLng
+                    "language": appMeta.localResource.currLanguage
                 };
             }
 

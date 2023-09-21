@@ -257,7 +257,7 @@ describe('MetaPage e2e', function () {
                                     .then(function () {            
                                         expect($(".modal:visible").length).toBe(1);
                                         expect($(".modal:visible").find("button").length).toBe(1);
-                                        expect($(".modal .modal-body").text()).toContain(appMeta.localResource.noElementFound);
+                                        expect($(".modal .modal-body").text()).toContain(appMeta.localResource.dictionary.noElementFound);
                                         
                                         // 4. click sul bottone ok, chiude la message
                                         $(".modal:visible").find("button")[0].click();

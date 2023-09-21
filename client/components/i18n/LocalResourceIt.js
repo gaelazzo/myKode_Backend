@@ -51,7 +51,7 @@
 
         toast_login_success : "Login effettuata correttamente",
         toast_reg_success : "Registrazione avvenuta correttamente",
-        info_not_avalilable : "Informazioni di riga non presenti per questo oggetto",
+        info_not_available : "Informazioni di riga non presenti per questo oggetto",
 
         rowSelectedNoMoreInDb : "La riga selezionata non è più presente nel db",
         noElementFound:"Nessun elemento trovato",
@@ -140,7 +140,7 @@
         serverUnracheable: "Rete non disponibile, oppure chiamata bloccata da un sistema di sicurezza (provare a disabilitare firewall o antivirus)",
         serverErrorInternal : "Errore interno del server: ",
 
-        saveSuccesfully: "Dati salvati correttamente",
+        saveSuccessfully: "Dati salvati correttamente",
 
         adding_row: "Aggiungo riga..",
         newEvent: "Nuovo evento per",

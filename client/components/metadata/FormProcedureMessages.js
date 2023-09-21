@@ -4,7 +4,6 @@
  * Manages the form that shows the db procedure messages
  */
 (function() {
-    var locale = appMeta.localResource;
     var Deferred = appMeta.Deferred;
     var logType = appMeta.logTypeEnum;
     var logger = appMeta.logger;
@@ -25,7 +24,8 @@
         this.messages = messages;
         this.templateFileHtmlPath  =  appMeta.config.path_procedureMessagesTemplate;
         this.columnNames = ["id", "description"];
-        this.columnCaptions = [locale.prodMess_id, locale.prodMess_lonMsg];
+        this.columnCaptions = [appMeta.localResource.dictionary.prodMess_id,
+                                appMeta.localResource.dictionary.prodMess_lonMsg];
 
         // dichiara il deferred di cui verrà fatta la promise alla fine del fillcontrol, cioè quando sarà
         // mostrato il form, e si rimane in attesa dell'operazione dell'utente.
@@ -128,19 +128,19 @@
          * Initializes the controls. Attaches labels and events to the buttons
          */
         initControls:function () {
-            $("#procedureMessage_id .modal-title").text(locale.procedureMessage_modal_title);
+            $("#procedureMessage_id .modal-title").text(appMeta.localResource.dictionary.procedureMessage_modal_title);
 
             // dopo che ho aggiunto le righe valuto al visibilità del bottone
             if (this.canignore){
                 $(".procedureMessage_btn_ignoreandsave").show();
                 $(".procedureMessageWarningIcon").show();
-                $(".procedureMessage_btn_ignoreandsave").text(locale.procedureMessage_btn_ignoreandsave).on("click", _.partial(this.ignoreAndSave, this));
+                $(".procedureMessage_btn_ignoreandsave").text(appMeta.localResource.dictionary.procedureMessage_btn_ignoreandsave).on("click", _.partial(this.ignoreAndSave, this));
             }
             else{
                 $(".procedureMessageErrorIcon").show();
             }
 
-            $(".procedureMessage_btn_nosave").text(locale.procedureMessage_btn_nosave).on("click", _.partial(this.noSave, this));
+            $(".procedureMessage_btn_nosave").text(appMeta.localResource.dictionary.procedureMessage_btn_nosave).on("click", _.partial(this.noSave, this));
 
         },
 
@@ -203,7 +203,7 @@
             var self = this;
             var $tr = $("<tr>");
 
-            $tr.append( $("<th>").html(locale.prodMess_type));
+            $tr.append( $("<th>").html(appMeta.localResource.dictionary.prodMess_type));
 
             _.forEach(self.columnCaptions,
                 function(cName) {

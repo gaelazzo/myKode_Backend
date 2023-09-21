@@ -11,7 +11,7 @@
     let GridController;
     let getData = appMeta.getData;
     let Deferred = appMeta.Deferred;
-    let locale = appMeta.localResource;
+
     let q = window.jsDataQuery;
     let utils = appMeta.utils;
 
@@ -113,7 +113,7 @@
             this.myRootListManger = $("<div data-tag='" + this.tableName + "." + this.listType + "' class='autoChooseDataTag'>");
             // aggiungo al mio root corrente il div dinamico con la griglia e il footer.
             $(this.currentRootElement).append(this.myRootListManger);
-            this.loader = new appMeta.LoaderControl(this.myRootListManger, appMeta.localResource.loader_waitListLoading);
+            this.loader = new appMeta.LoaderControl(this.myRootListManger, appMeta.localResource.dictionary.loader_waitListLoading);
         },
 
         /**
@@ -210,7 +210,7 @@
         addBtnCloseNotModal:function () {
             if (!this.isModal){
                 let $button = $('<button class="btn btn-secondary" style="float: right">');
-                $button.text(appMeta.localResource.close);
+                $button.text(appMeta.localResource.dictionary.close);
                 $button.on("click", _.partial(this.hideControl, this));
                 $(this.currentRootElement).append($button);
             }
@@ -421,8 +421,10 @@
             let to = from + this.nRowPerPage;
             if (to > rowsShowed) to = rowsShowed;
             let msgShow = rowsShowed.toString();
-            if (rowsShowed > this.nRowPerPage) msgShow = locale.from + " " + from + " " + locale.to + " " + to + " " + locale.of + " " + rowsShowed;
-            return locale.getNumberOfRows(msgShow);
+            if (rowsShowed > this.nRowPerPage) msgShow = appMeta.localResource.dictionary.from +
+                    " " + from + " " + appMeta.localResource.dictionary.to + " " + to + " " +
+                        appMeta.localResource.dictionary.of + " " + rowsShowed;
+            return appMeta.localResource.getNumberOfRows(msgShow);
         },
 
         /**

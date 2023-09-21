@@ -9,7 +9,7 @@
  * Before to open the metapage child it creates the row and propagates the fields of the parent row on the child
  */
 (function () {
-    var localResource = appMeta.localResource;
+
     var dataRowState = jsDataSet.dataRowState;
     var GridControlX = appMeta.CustomControl("gridx");
     /**
@@ -119,11 +119,11 @@
                         mp.entityChanged = true;
                         appMeta.metaModel.getTemporaryValues(childTable);
                         // rileggo ds.
-                        waitingHandler = mp.showWaitingIndicator(localResource.modalLoader_wait_page_update);
+                        waitingHandler = mp.showWaitingIndicator(appMeta.localResource.dictionary.modalLoader_wait_page_update);
                        return  mp.reFillControls();
                     }).then(function () {
                         mp.hideWaitingIndicator(waitingHandler);
-                    })
+                    });
             },
 
             /**
@@ -146,7 +146,7 @@
                     }, "");
                 }
 
-                that.metaPage.showMessageOkCancel(localResource.getPressSaveAfterDelete(msg))
+                that.metaPage.showMessageOkCancel(appMeta.localResource.getPressSaveAfterDelete(msg))
                     .then(function (res) {
                         if (res) {
                            childRow.getRow().del();
@@ -174,7 +174,7 @@
                         if (dialogResult)  mp.entityChanged = true;
                         appMeta.metaModel.getTemporaryValues(childTable);
                         // rileggo ds.
-                        waitingHandler = mp.showWaitingIndicator(localResource.modalLoader_wait_page_update);
+                        waitingHandler = mp.showWaitingIndicator(appMeta.localResource.dictionary.modalLoader_wait_page_update);
                         return  mp.reFillControls();
                     }).then(function () {
                         mp.hideWaitingIndicator(waitingHandler);
@@ -426,10 +426,10 @@
                        return '';
                    }
                     if (v.toUpperCase('N')) {
-                        return appMeta.localResource.no;
+                        return appMeta.localResource.dictionary.no;
                     }
                     if (v.toUpperCase('S')) {
-                        return appMeta.localResource.yes;
+                        return appMeta.localResource.dictionary.yes;
                     }
 
                     return v;

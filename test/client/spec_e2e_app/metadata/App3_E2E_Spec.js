@@ -45,8 +45,8 @@ describe('App3_E2E', function() {
                 function(done) {
 
                     appMeta.testCaseNumber  = 1;
-                    var columExpectedLength = 9; // 6 + 3 per i bottoni ( 1.add+edit + 2.delete + 3.unlink)
-                    var allCheckExecuted = 0;
+                    let columExpectedLength = 9; // 6 + 3 per i bottoni ( 1.add+edit + 2.delete + 3.unlink)
+                    let allCheckExecuted = 0;
                     // Evento di attesa pagina caricata
                     loadRegistry(1)
                         .then(function(metaPage) {
@@ -61,7 +61,7 @@ describe('App3_E2E', function() {
                                 expect($("#grid1").find("tr:first > th").length).toBe(columExpectedLength);
                                 // Verifico che i nomi colonna siano quelli aspettati nel metaDato.
                                 // Costruisco array di nomi, prendendo le text() dei tag th
-                                var names = _.map($("#grid1").find("tr:first > th"), function (el) {
+                                let names = _.map($("#grid1").find("tr:first > th"), function (el) {
                                     return $(el).text();
                                 });
                                 // confronto con array visibleColumns del metaDato
@@ -76,7 +76,7 @@ describe('App3_E2E', function() {
                                 expect($("#grid1").find("tr").eq(1).find("td > div > i").eq(2).hasClass( "fa-unlink" )).toBeTruthy();
 
 
-                                var s = stabilize(); // la close mi risolve anche il deferredResult della pagina quindi tutti i def risolti mi aspetto
+                                let s = stabilize(); // la close mi risolve anche il deferredResult della pagina quindi tutti i def risolti mi aspetto
                                 testHelper.clickButtonByTag('mainclose');
                                 return s;
                             }).then(function () {

@@ -107,7 +107,7 @@ describe("MainTooBarManager",
                     var s = stabilizeToCurrent();
                     s.then(function () {
                         expect(metapage.doMainCommand).toHaveBeenCalled();
-                        expect($("#maindelete1").find('span').text()).toBe(appMeta.localResource.cancel);
+                        expect($("#maindelete1").find('span').text()).toBe(appMeta.localResource.dictionary.cancel);
 
                         // N.B osserva il Mock della funzione commandEnabled
                         expect($("#search1").is(":visible")).toBe(false);

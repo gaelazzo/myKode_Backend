@@ -10,7 +10,6 @@
     var Stabilizer = appMeta.Stabilizer;
     var getDataUtils = appMeta.getDataUtils;
     var utils = appMeta.utils;
-    var localResource = appMeta.localResource;
     var logger = appMeta.logger;
     var logType = appMeta.logTypeEnum;
     /**
@@ -1017,7 +1016,7 @@
             }
             var index = $(this).data("mdlRowIndex");
             var rSel =  that.gridRows[index];
-            var waitingHandler = that.metaPage.showWaitingIndicator(localResource.modalLoader_wait_tree_node_search);
+            var waitingHandler = that.metaPage.showWaitingIndicator(appMeta.localResource.dictionary.modalLoader_wait_tree_node_search);
             return treemanager.selectNodeByRow(rSel, false)
                 .then(function () {
                     that.dataTable.parentnode = treemanager.getParent(treemanager.selectedNode());
@@ -1065,7 +1064,7 @@
             if (!node) return def.resolve();
 
             var myDT = this.dataTable;
-            var waitingHandler = this.metaPage.showWaitingIndicator(localResource.modalLoader_wait_tree_navigation);
+            var waitingHandler = this.metaPage.showWaitingIndicator(appMeta.localResource.dictionary.modalLoader_wait_tree_navigation);
             if (myDT.parentnode) {
                 if (node.children.length === 0) {
                     this.metaPage.hideWaitingIndicator(waitingHandler);
@@ -1076,7 +1075,7 @@
                 
                 return this.fillControlTreeNavigator().then(function () {
                     self.metaPage.hideWaitingIndicator(waitingHandler);
-                })
+                });
             }
 
             treemanager.openNode(node);

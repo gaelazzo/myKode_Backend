@@ -69,6 +69,7 @@ describe("ComboManager",
             state.DS = ds;
             state.meta  = new appMeta.MetaData('datasource');
             metapage = new MetaPage('datasource', 'def', true);
+
             metapage.state = state;
             helpForm = new HelpForm(state, "datasource", "#rootelement");
             helpForm.lastSelected(t, objrow6);
