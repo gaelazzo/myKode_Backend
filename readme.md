@@ -1,230 +1,153 @@
 # myKode Backend
 
-myKode Backend è un insieme di classi node.js, corredate da un backend minimale 
-progettate per minimizzare i tempi di scrittura di un'applicazione node.
+myKode Backend is a set of Node.js classes accompanied by a minimal backend designed to minimize the development time of a Node.js application.
 
-Le classi del framework sono progettate per poter accedere a vari database relazionali in modo intercambiabile.
-La struttura scelta per gestire in memoria i set di dati è [jsDataSet](jsDataSet.md), una classe simile ai DataSet di
-.NET, in cui i DataRow sono molto simili a plain object, però conservano lo stato originale della riga, 
-ossia lo stato successivo all'ultimo acceptChanges (metodo che rende le modifiche permanenti) o rejectChanges (metodo 
-che annulla le modifiche alla riga).
+The framework's classes are designed to access various relational databases interchangeably. The chosen structure for managing data sets in memory is [jsDataSet](jsDataSet.md), a class similar to .NET's DataSets, where DataRow objects are much like plain objects but retain the original state of the row, i.e., the state after the last `acceptChanges` (a method that makes changes permanent) or `rejectChanges` (a method that cancels changes to the row).
 
-La classe [jsDataQuery](jsDataQuery.md) è usata per rappresentare filtri ed espressioni e le sue istanze possono essere 
-indifferentemente applicate a tabelle del database o a qualsiasi collezione di oggetti javascript, 
-in particolar modo ai DataRow dei DataTable di un DataSet.
+The class [jsDataQuery](jsDataQuery.md) is used to represent filters and expressions, and its instances can be applied interchangeably to database tables or any collection of JavaScript objects, especially to DataRow objects of a DataSet.
 
-Sono previste classi per la gestione di diverse applicazioni e diversi database.
-
-
+Classes are provided for managing different applications and databases.
 
 ## jsApplication
 
-[jsApplication](jsApplication.md) è il prototipo generale dell'applicazione al suo livello più alto.
+[jsApplication](jsApplication.md) is the general prototype of the application at its highest level.
 
-È possibile integrarne o modificarne i vari metodi per personalizzarli in base alle proprie esigenze.
+It is possible to integrate or modify its various methods to customize them according to specific needs.
 
-### Autenticazione
-L'autenticazione è gestita mediante token [jwt](https://jwt.io/introduction). A ogni utente è associata una sessione
-identificata da un codice che il client deve inviare in ogni richiesta, nel token jws criptato.
+### Authentication
+Authentication is managed through JSON Web Tokens ([JWT](https://jwt.io/introduction)). Each user is associated with a session identified by a code that the client must send in every request, in the encrypted JWT token.
 
-La jsApplication si occupa di creare un contesto([Context](Context.md)) per ogni richiesta
-e distruggerlo quando la richiesta è soddisfatta, di creare l'environment dell'utente connesso con informazioni quali,
-ad esempio, il suo ruolo e le sue autorizzazioni.
+`jsApplication` handles creating a context ([Context](Context.md)) for each request and destroying it when the request is fulfilled. It creates the environment of the connected user with information such as their role and permissions.
 
-Si occupa anche di creare le routes e di garantirne l'accesso solo ai client che forniscono un token adeguato nell'header
-della richiesta, a meno che la route non sia stata appositamente configurata con la funzione getNoTokenFolders.
-getNoTokenFolders è infatti un metodo di jsApplication definito semplicemente come:
-
-    getNoTokenFolders: function(){
-        return {
-            "auth":true
-        };
-    }
-
-che consente di accedere (solo) alla cartella auth senza bisogno di un token valido.
-Premesso che anche le richieste non autenticate devono fornire un token fittizio, "anonimo", il cui valore si configura
-nel file config/tokenConfig nella proprietà AnonymousToken, definiamo token "valido" un token jwt regolare, non quello
-anonimo.
-La cartella auth configurata in questo modo sarà accessibile quindi anche ai token "anonimi", ed infatti è usata solo
-per le routes che servono ad autenticarsi.
-
-Volendo dare accesso ad altre cartelle alle richieste prive di un token valido sarà sufficiente aggiungere
-
-Anche le richieste non autenticate devono fornire un token fittizio, "anonimo", basterà aggiungere alla struttura 
-restituita altri nomi di cartella, esempio:
+It also creates routes and ensures access is granted only to clients providing an appropriate token in the request header unless the route has been specifically configured with the `getNoTokenFolders` function. `getNoTokenFolders` is a method of `jsApplication` defined simply as:
 
 ```js
-    getNoTokenFolders: function(){
-        return {
-            "auth":true,
-            "public": true
-         };
-    }
+getNoTokenFolders: function(){
+    return {
+        "auth": true
+    };
+}
 ```
 
-Per quanto detto nell'header http di ogni richiesta del client dovrà esserci in ogni caso una riga del tipo
+This allows access (only) to the "auth" folder without requiring a valid token. Even unauthenticated requests must provide a fictitious, "anonymous" token, the value of which is configured in the `config/tokenConfig` file under the `AnonymousToken` property.
 
-    Authorization: Bearer <token>
+In the HTTP header of each client request, there must be a line like:
 
-Dove <token> è o il token "anonimo" oppure un token rilasciato dall'applicazione all'atto dell'autenticazione. 
+```
+Authorization: Bearer <token>
+```
 
-jsApplication provvede a decodificare il token di ogni richiesta e impostare i dati ricavati dalla proprietà 
-**req.headers.authorization** della request req. In questo modo tutte le route possono accedervi.
+Where `<token>` is either the "anonymous" token or a token issued by the application upon authentication.
 
-Il token è verificato e decodificato nel campo req.**auth** (volendo è configurabile in 
-tokenConfig.options.requestProperty). Dunque in generale in req.auth ci sarà un oggetto di tipo [Token](src/jsToken.js)
-Un semplice esempio di route di autenticazione si può trovare nel module [login](routes/auth/login.md)
+`jsApplication` decodes the token for each request and sets the data obtained from the `req.headers.authorization` property of the request `req`. This way, all routes can access it.
 
-Una jsApplication al suo avvio crea una ExpressApplication e un Express.Router.
-Per ogni sotto cartella presente nella cartella routes/, legge i file al suo interno e ad ognuno di essi
-associa un router che risponde alla richiesta /folder/nomeFile, a patto che il file in questione 
-    sia un node module il cui nome file non inizi con underscore, ed esponga un router come unica proprietà 
-    esportata del node module.
-In questo modo per aggiungere una nuova route basta esporla in un node module all'interno di una sotto cartella di routes,
-indipendentemente dal tipo di servizio get/post e dai suoi parametri.
+The token is verified and decoded in the `req.auth` field (configurable in `tokenConfig.options.requestProperty`). In general, `req.auth` will contain an object of type [Token](src/jsToken.js). A simple example of an authentication route can be found in the [login](routes/auth/login.md) module.
 
-Si occupa anche di autenticare l'utente e fornirgli un contesto anonimo ove non sia ancora autenticato.
-Per ogni utente collegato stabilisce una sessione identificata con un sessionID
+Upon startup, a `jsApplication` creates an `ExpressApplication` and an `Express.Router`. For each subfolder in the `routes/` folder, it reads the files inside it and associates a router with each one that responds to the request `/folder/fileName`, provided that the file is a node module whose file name does not start with an underscore and exposes a router as its only exported property. This makes it easy to add a new route by exposing it in a node module inside a subfolder of `routes`, regardless of the type of service (GET/POST) and its parameters.
 
-Ogni database è identificato da un dbCode, e jsApplication è associata a un database e ne crea un pool di connessioni
-per renderne più efficiente l'accesso. Quando arriva una richiesta infatti, è presa una connessione dal pool ove ve ne
-sia una disponibile.
+It also handles authenticating the user and providing an anonymous context if not authenticated yet. For each connected user, it establishes a session identified with a sessionID.
 
+Each database is identified by a `dbCode`, and `jsApplication` is associated with a database and creates a connection pool to make access more efficient. When a request arrives, a connection is taken from the pool if one is available.
 
-## Accesso ai dati
+## Data Access
 
-Per leggere/scrivere dati sul database, invocare stored procedure o qualsiasi altra operazione, ci sono tre principali
-classi: [DataAccess](DataAccess.md), [GetData](jsGetData.md) e [PostData](PostData.md)
+To read/write data from/to the database, invoke stored procedures, or perform any other operation, there are three main classes: [DataAccess](DataAccess.md), [GetData](jsGetData.md), and [PostData](PostData.md).
 
-- [DataAccess](DataAccess.md) è usata per operazioni di basso livello, come inviare semplici comandi di lettura 
- o scrittura
-- [GetData](jsGetData.md) è usata per leggere interi DataSet o parti di esso
-- [PostData](PostData.md) è usata per scrivere interi DataSet
+- [DataAccess](DataAccess.md) is used for low-level operations, such as sending simple read or write commands.
+- [GetData](jsGetData.md) is used to read entire DataSets or parts of them.
+- [PostData](PostData.md) is used to write entire DataSets.
 
-## Logica di Business
+## Business Logic
 
-[jsBusinessLogic](jsBusinessLogic.md) è la classe che si occupa dell'invocazione delle regole di business. 
-Queste regole sono in pratica controlli SQL che vengono applicati ad ogni singola riga che viene scritta sul database.
-Il testo dei controlli è memorizzato in alcune tabelle di configurazione. 
-Le regole sono "compilate" da un tool esterno in stored procedures del database, e invocate al momento del
-salvataggio dei dati. 
-Ove le tabelle di configurazione non contengano righe, non sarà applicato alcun controllo.
+[jsBusinessLogic](jsBusinessLogic.md) is the class responsible for invoking business rules. These rules are essentially SQL checks applied to each individual row written to the database. The text of the checks is stored in some configuration tables. The rules are "compiled" by an external tool into database stored procedures and invoked when saving data. If the configuration tables contain no rows, no checks will be applied.
 
-## Sicurezza
+## Security
 
-La classe [jsSecurity](Security.md) è interrogata dalla classe PostData in fase di salvataggio dei dati.
-Le regole sono memorizzate sotto forma di condizioni testuali nella tabella customgroupoperation. 
+The class [jsSecurity](Security.md) is queried by the `PostData` class during the data saving phase. The rules are stored as textual conditions in the `customgroupoperation` table.
 
-Per i dettagli consultare il [jsDoc](docs/module-Security.html) e la [sintesi](Security.md)
-
+For details, refer to the [jsDoc](docs/module-Security.html) and the [summary](Security.md).
 
 ## DataSet
 
-I [DataSet](jsDataSet.md) dell'applicazione sono memorizzati in forma di json e nella cartella client/dataset.
-I json sono nel formato usato per la serializzazione della classe jsDataSet, in base ai metodi serialize e deserialize.
+The [DataSets](jsDataSet.md) of the application are stored in JSON format in the `client/dataset` folder. The JSON follows the format used for serializing the `jsDataSet` class, based on the `serialize` and `deserialize` methods.
 
-La serializzazione include anche lo stato dei DataRow con i valori correnti e anche i valori originali per le righe
- nello stato di modified.
+Serialization also includes the state of DataRow with current values and original values for rows in the modified state.
 
-Nella creazione di un DataSet è necessario inserire tutti i DataTable con tutte le DataColumn necessarie e le 
- DataRelation che legano le DataTable incluse, ove siano importanti per la navigazione in fase di estrazione
- dei dati con la classe [GetData](jsGetData.md).
+When creating a DataSet, all DataTables with all necessary DataColumn and DataRelation that link the included DataTables must be inserted. This is especially important for navigation when extracting data using the [GetData](jsGetData.md) class.
 
-L'ipotesi di base è che vi sia una tabella "principale" del DataSet ed un insieme di tabelle "subentità", che ne 
- rappresentano i dettagli. Poi vi sono tabelle parent delle tabelle (principale+subentità), le cui righe sono lette
- alla bisogna, ossia in base ai dati presenti nel primo set.
+The basic assumption is that there is a "main" table of the DataSet and a set of "subentity" tables representing its details. Then there are parent tables of the entity and subentity tables, whose rows are read as needed based on the data present in the first set.
 
+The subentity relationship is logically identified by the fact that it cannot exist in any way without the entity (table) of which it is a detail. This must be formalized through keys; the subentity must include in its key fields all key fields of the entity and must be related with a DataRelation in the DataSet. It is possible to have subentities at a lower level without any limit.
 
-La relazione di subentità è identificata logicamente dal fatto di non poter esistere in alcun modo senza l'entità
-(tabella) di cui è dettaglio. Questo deve essere formalizzato tramite le chiavi, ossia la subentità deve includere nei 
- propri campi chiave tutti i campi chiave dell'entità, e devono essere messi in relazione con una DataRelation nel 
- DataSet.
-E' possibile avere subentità anche di livello inferiore, senza alcun limite.
+Satellite tables can also be present, i.e., tables that are parents of entity and subentity tables.
 
-Poi possono essere presenti quante tabelle "satellite" si vuole, ossia tabelle parent delle tabelle entità e subentità.
+To create a DataSet, several methods can be used:
 
-Per creare un DataSet si può operare in diversi modi:
+### Manual creation of a DataSet
+You can instantiate a DataSet and then add tables and columns to them. This is a bit cumbersome unless a code generator is used to update the code based on any changes to the table structure.
 
-### Creazione manuale di un DataSet
-Si può istanziare un DataSet e poi aggiungervi le tabelle e poi aggiungere alle tabelle le colonne. 
-E' un po' scomodo a meno di usare un generatore di codice che poi aggiorna il codice in base alle modifiche eventuali alla
- struttura delle tabelle.
-
-Es.
+Example:
 
 ```js
-        let d = new DataSet()
-        let tOrder = d.newTable("order")
-        tOrder.setDataColumn("idorder",CType.int)
-        tOrder.setDataColumn("name",CType.string)
-        tOrder.setDataColumn("surname",CType.string)
-        tOrder.key("idorder")
+let d = new DataSet();
+let tOrder = d.newTable("order");
+tOrder.setDataColumn("idorder", CType.int);
+tOrder.setDataColumn("name", CType.string);
+tOrder.setDataColumn("surname", CType.string);
+tOrder.key("idorder");
 
-        let tOrderDetail = d.newTable("orderdetail")
-        tOrderDetail.setDataColumn("idorder",CType.int)
-        tOrderDetail.setDataColumn("iddetail",CType.int)
-        tOrderDetail.setDataColumn("name",CType.string)
-        tOrderDetail.setDataColumn("surname",CType.string)
-        tOrderDetail.key("idorder")
+let tOrderDetail = d.newTable("orderdetail");
+tOrderDetail.setDataColumn("idorder", CType.int);
+tOrderDetail.setDataColumn("iddetail", CType.int);
+tOrderDetail.setDataColumn("name", CType.string);
+tOrderDetail.setDataColumn("surname", CType.string);
+tOrderDetail.key("idorder");
 
-        d.newRelation("order_orderdetail","order",["idorder"],"orderdetail",["idorder"])
+d.newRelation("
 
+order_orderdetail", "order", ["idorder"], "orderdetail", ["idorder"]);
 ```
 
-### Creazione semi manuale di un DataSet
-E' possibile istanziare un DataSet e poi aggiungervi le tabelle create invocando il metodo createTable() di un 
- [DbDescriptor](jsDbList.md). In questo modo la tabella avrà automaticamente le colonne e la chiave primaria impostata.
+### Semi-manual creation of a DataSet
+It is possible to instantiate a DataSet and then add tables by invoking the `createTable()` method of a [DbDescriptor](jsDbList.md). This way, the table will automatically have columns, and the primary key set.
 
-A questo punto basta aggiungere le relazioni desiderate e la creazione è finita:
+Then, add the desired relationships:
 
 ```js
-        let d = new DataSet()
-        let tOrder = await dbDescriptor.createTable("order")
-        d.addTable(tOrder);
+let d = new DataSet();
+let tOrder = await dbDescriptor.createTable("order");
+d.addTable(tOrder);
 
-        let tOrderDetail = await dbDescriptor.createTable("orderdetail")
-        d.addTable(tOrderDetail);
+let tOrderDetail = await dbDescriptor.createTable("orderdetail");
+d.addTable(tOrderDetail);
 
-        d.newRelation("order_orderdetail","order",["idorder"],"orderdetail",["idorder"])
+d.newRelation("order_orderdetail", "order", ["idorder"], "orderdetail", ["idorder"]);
 ```
 
-### Creazione visuale con tool HDSGene
-È possibile usare un tool, HDSGene, fornito dalla Tempo S.r.l., che si integra con l'editor visuale dei DataSet 
- di Visual Studio e consente di generare il json corrispondente nella cartella ove si salva il DataSet.
+### Visual creation with the HDSGene tool
+It is possible to use a tool, HDSGene, provided by Tempo S.r.l., which integrates with the visual editor of DataSet in Visual Studio. It generates the corresponding JSON in the folder where the DataSet is saved.
 
-A quel punto basterà copiare il file json nella cartella client/datasets, supponiamo con il nome dsmeta_order_main.json,
- e caricarlo con la funzione getDataSet presente nel context:
-
+Copy the JSON file to the `client/datasets` folder, assuming the name is `dsmeta_order_main.json`, and load it with the `getDataSet` function in the context:
 
 ```js
-
-    let d = ctx.getDataSet("order","main");
+let d = ctx.getDataSet("order", "main");
 ```
 
-La convenzione infatti è che il nome file debba essere dsmeta_[tableName]_[editType].json
-
+The convention is that the file name should be `dsmeta_[tableName]_[editType].json`.
 
 ## MetaData
 
-La classe MetaData ha lo scopo di centralizzare la conoscenza di ogni tabella in una specifica classe, che deriva da
- MetaData.
+The purpose of the MetaData class is to centralize the knowledge of each table in a specific class, which derives from MetaData.
 
-Non ne è specificamente richiesto l'uso nel backend, ma se nel client si utilizza il frontend myKode_Frontend, che potrebbe
- farne uso, e si implementano dei servizi lato backend, questi potrebbero a loro volta usare gli stessi metadati 
- (istanze di MetaData) del client.
+Its use is not specifically required on the backend, but if the frontend `myKode_Frontend` is used on the client, which might make use of it, and backend services are implemented, they could in turn use the same metadata (instances of MetaData) as the client.
 
-Se si implementano dei servizi lato backend che prevedono la creazione o manipolazione di DataSet che va oltre
- la semplice lettura dei dati dal db, è consigliabile utilizzare i metodi di tale classe.
+If backend services are implemented that involve creating or manipulating DataSets beyond simple data reading from the database, it is advisable to use the methods of this class.
 
-In sintesi, ogni classe derivante MetaData centralizza le informazioni su una tabella come ad esempio:
+In summary, each class deriving from MetaData centralizes information about a table, such as:
 
-- validità dei dati di una riga 
-- default per i valori dei campi quando una riga è creata
-- schema di calcolo dei campi ad autoincremento (vedasi a riguardo la classe [PostData](PostData.md))
-- struttura degli elenchi su tale tabella: quali campi debbano apparire, con quale etichetta, ordinamento etc.
+- Validity of row data
+- Defaults for field values when a row is created
+- Calculation schema for auto-increment fields (see the [PostData](PostData.md) class for more information)
+- Structure of lists on that table: which fields should appear, with what label, sorting, etc.
 
-I dettagli nel file [MetaData](jsMetaData.md)
-
-
-
-
+Details can be found in the [MetaData](jsMetaData.md) file.
