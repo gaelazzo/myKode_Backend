@@ -1,87 +1,66 @@
+[![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/DbDescriptor.it.md)
+
 # DbDescriptor
 
-La classe DbDescriptor è la classe che "conosce" la struttura di un database.
-Una tabella o vista del database è rappresentata dalla classe TableDescriptor, che ha le seguenti proprietà:
+The `DbDescriptor` class is the class that "knows" the structure of a database. A database table or view is represented by the `TableDescriptor` class, which has the following properties:
 
 ### TableDescriptor
-- {string} name: nome della tabella o vista
-- {string} xtype: T per tabelle, V per viste
-- {boolean} dbo : true se è tabella DBO (comune a tutti gli schemi ove previsti dal db)
-- {ColumnDescriptor[]} columns: array di descrittori di colonna
+- `{string} name`: name of the table or view
+- `{string} xtype`: T for tables, V for views
+- `{boolean} dbo`: true if it is a DBO table (common to all schemas where specified by the database)
+- `{ColumnDescriptor[]} columns`: an array of column descriptors
 
-Un TableDescriptor espone un metodo getKey che restituisce l'array dei nomi dei campi chiave della tabella
- associata.
+A `TableDescriptor` exposes a method `getKey` that returns an array of key field names for the associated table.
 
 ### ColumnDescriptor
-Un ColumnDescriptor descrive una singola colonna e contiene i campi:
+A `ColumnDescriptor` describes a single column and contains the fields:
 
+```plaintext
+- {string} name        - field name
+- {string} type        - type in the database
+- {string} ctype       - JavaScript type
+- {number} max_length  - size in bytes
+- {number} precision   - number of integer digits
+- {number} scale       - number of decimal digits
+- {boolean} is_nullable - true if it can be null
+- {boolean} pk          - true if it is part of the primary key
 ```
-- {string} name        - nome campo
-- {string} type        - tipo nel db
-- {string} ctype       - tipo javascript
-- {number} max_length  - dimensione in bytes
-- {number} precision   - n. cifre intere
-- {number} scale       - n. cifre decimali
-- {boolean} is_nullable - true se può essere null
-- {boolean} pk          - true se è parte della chiave primaria
-```
- 
-La classe DbDescriptor gestisce un dictionary di TableDescriptor, che è condiviso tra tutte le connessioni allo 
- stesso Db.
 
-- createTable(tableName): restituisce la promise per un DataTable avente la struttura (colonne, chiave) della
- tabella indicata. Questa DataTable avrà le proprietà maxLenght allowNull e cType dei DataColumn impostati, 
- e la chiave primaria
-- table (tableName, tableDescriptor): legge o imposta il table descriptor associato ad un tableName. Se è richiesto il
- TableDescriptor di una tabella di cui non lo si è impostato manualmente prima, è richiesto al driver del database
- di ricavarlo dalle tabelle di sistema del db (che varieranno in base al db). 
+The `DbDescriptor` class manages a dictionary of `TableDescriptor`, which is shared among all connections to the same database.
 
+- `createTable(tableName)`: returns the promise for a `DataTable` with the structure (columns, key) of the specified table. This `DataTable` will have the properties `maxLenght`, `allowNull`, and `cType` of the `DataColumn` set, and the primary key.
+- `table(tableName, tableDescriptor)`: reads or sets the table descriptor associated with a tableName. If the `TableDescriptor` of a table has not been set manually before, it is requested from the database's system tables (which will vary depending on the database).
 
-Il modulo DbList si inizializza con il metodo init, che legge la configurazione dei db esistenti, in particolare, 
- è un file json che memorizza un dictionary del tipo "codice db"=> impostazioni del db, ad esempio:
+The `DbList` module initializes with the `init` method, which reads the configuration of existing databases. In particular, it is a JSON file that stores a dictionary of the form "db code" => database settings, for example:
 
-```
+```json
 {
     "main": {
-    "server": "192.168.10.122,1434",
-    "useTrustedConnection": false,
-    "user": "nino ",
-    "pwd": "yourPassword",
-    "database": "dbName",
-    "sqlModule": "jsSqlServerDriver", 
-    "defaultSchema": "amministrazione",
-    "persisting": true
-   }
+        "server": "192.168.10.122,1434",
+        "useTrustedConnection": false,
+        "user": "nino ",
+        "pwd": "yourPassword",
+        "database": "dbName",
+        "sqlModule": "jsSqlServerDriver", 
+        "defaultSchema": "amministrazione",
+        "persisting": true
+    }
 }
 ```
 
-sqlModule è il nome del SqlDriver da caricare in corrispondenza di questo db. Potrebbe anche essere, ad esempio, 
- jsMySqlDriver. I dati contenuti in questo file saranno passati pari pari al costruttore del DataAccess quando
- sarà necessario creare una connessione al db.
- 
-Tale file potrà contenere anche più di una descrizione di database all'occorrenza.
+`sqlModule` is the name of the `SqlDriver` to load for this database. It could also be, for example, `jsMySqlDriver`. The data contained in this file will be passed as is to the constructor of the `DataAccess` when it is necessary to create a connection to the database.
 
-Tramite la funzione getDbInfo esportata dal modulo jsDbList possiamo ottenere le informazioni relative ad un database.
-Queste informazioni sono quelle lette con la funzione init, e possono includere anche altri campi custom ove desiderato.
+This file may also contain more than one database description if needed.
 
-Analogamente con setDbInfo le possiamo impostare. Le modifiche saranno anche salvate sul file utilizzato in fase di 
- init, quindi le ritroveremo alla prossima inizializzazione.
+Through the `getDbInfo` function exported by the `jsDbList` module, we can obtain information about a database. This information is what is read with the `init` function and may also include other custom fields if desired.
 
-Con le funzioni getConnection(dbCode) e getDataAccess(dbCode) esposte dal modulo jsDbList è possibile ottenere 
- una connessione fisica (Connection) o un'istanza di un DataAccess al db avente uno specifico dbCode.
-La classe Security associata ai DataAccess dello stesso DataBase è un singleton condiviso tra tutti DataAccess 
- connessi allo stesso dbCode, per motivi di efficienza.
+Similarly, with `setDbInfo`, we can set this information. The changes will also be saved to the file used during `init`, so we will find them at the next initialization.
 
-Tuttavia di solito non richiamiamo direttamente le funzioni getConnection o getDataAccess di dbList, ma lo facciamo
- indirettamente tramite la classe JsConnectionPool. Quest'ultima gestisce un pool di connessioni
- allo stesso dbCode, ed espone un metodo getDataAccess che restituisce un JsConnectionPool, che espone a sua volta
- un metodo getDataAccess che  dà l'effettivo DataAccess. E' possible poi rilasciare la connessione tramite il metodo
- release di JsConnectionPool.
+With the `getConnection(dbCode)` and `getDataAccess(dbCode)` functions exposed by the `jsDbList` module, it is possible to obtain a physical connection (`Connection`) or an instance of a `DataAccess` to the database with a specific `dbCode`. The `Security` class associated with `DataAccess` from the same database is a shared singleton among all `DataAccess` connected to the same `dbCode`, for efficiency reasons.
 
-E comunque normalmente queste operazioni sono tutte svolte dalla classe jsApplication e di solito non vengono usate
- visto che abbiamo già a disposizione la connessione al db in req.app.locals.context.sqlConn (la Connection fisica)
- req.app.locals.context.dataAccess (il [DataAccess](DataAccess.md)). 
+However, we usually do not directly call the `getConnection` or `getDataAccess` functions of `dbList`, but we do it indirectly through the `JsConnectionPool` class. The latter manages a pool of connections to the same `dbCode` and exposes a `getDataAccess` method that returns a `JsConnectionPool`, which in turn exposes a `getDataAccess` method that gives the actual `DataAccess`. It is then possible to release the connection using the `release` method of `JsConnectionPool`.
 
-Anche la deallocazione è effettuata automaticamente dalla jsApplication.
+In any case, these operations are normally all performed by the `jsApplication` class and are usually not used since we already have the database connection in `req.app.locals.context.sqlConn` (the physical `Connection`) and `req.app.locals.context.dataAccess` (the [DataAccess](DataAccess.md)).
 
+Deallocation is also done automatically by `jsApplication`.
 

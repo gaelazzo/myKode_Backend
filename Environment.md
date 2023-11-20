@@ -1,25 +1,19 @@
+[![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/Environment.it.md)
+
 # Environment
 
-Environment è una classe atta a contenere le variabili di ambiente di un utente.
+`Environment` is a class designed to contain user environment variables.
 
-Queste sono accessibili tramite le funzioni sys(fieldName,value) e usr(fieldName,value), ove se manca il secondo 
- parametro si intende che si sta leggendo il valore, altrimenti lo si sta impostando (jQuery-style)
+These variables are accessible through the functions `sys(fieldName, value)` and `usr(fieldName, value)`. If the second parameter is missing, it is assumed that you are reading the value; otherwise, you are setting it (jQuery-style).
 
-C'è anche il metodo field(fieldName), invocato nel processo di salvataggio dalla classe OptimisticLocking,
- e questo di default, per i campi "stamp" (lt,ct) restituisce la data corrente, altrimenti restituisce
- il valore impostato per quel campo (lu,cu), impostato di solito nell'applicazione, quando è creato l'environment.
+There is also the method `field(fieldName)`, invoked in the saving process by the `OptimisticLocking` class. By default, for "stamp" fields (lt, ct), it returns the current date; otherwise, it returns the value set for that field (lu, cu), usually set in the application when the environment is created.
 
-La classe Environment è calcolata quando l'utente si autentica, mediante il metodo calcUserEnvironment. Tuttavia
- prima di invocare calcUserEnvironment, è necessario valorizzare i campi sys("idcustomuser) ed eventualmente
- sys("idflowchart") e sys("ndetail"). Questo metodo in sostanza invoca la stored procedure compute_environment
- e copia i valori restituiti (due tabelle) da essa nei dizionari sys e usr. 
+The `Environment` class is calculated when the user authenticates, using the `calcUserEnvironment` method. However, before invoking `calcUserEnvironment`, it is necessary to set the values for `sys("idcustomuser")` and optionally `sys("idflowchart")` and `sys("ndetail")`. This method essentially calls the stored procedure `compute_environment` and copies the values returned (two tables) from it to the `sys` and `usr` dictionaries.
 
-I valori restituiti da calcUserEnvironment sono righe di tre colonne: mustquote (S/N), variablename, value.
-mustquote è S se è necessario quotare con apici il valore in value, ma vale solo per la tabella usr.
+The values returned by `calcUserEnvironment` are rows with three columns: `mustquote` (S/N), `variablename`, `value`. `mustquote` is 'S' if it is necessary to quote the value with single quotes in the `value` column, but this only applies to the `usr` table.
 
-E' da notare che nel calcolo dell'Environment, alle stringhe restituite dalla sp, ove queste contengano delle 
- sottostringhe di tipo <%sys[fieldName]%> o <%usr[fieldName]%> queste sono sostituite con i valori di sys(fieldName)
- o usr(fieldName) disponibili al momento, ricorsivamente sin quando non vi sono più sottostringhe del genere.
+It is worth noting that in the calculation of the `Environment`, for strings returned by the stored procedure that contain substrings of the form `<%sys[fieldName]%>` or `<%usr[fieldName]%>`, these are replaced with the values of `sys(fieldName)` or `usr(fieldName)` available at the moment, recursively until there are no more such substrings.
+
 
 
 

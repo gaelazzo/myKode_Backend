@@ -1,172 +1,123 @@
+[![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/jsDbList.it.md)
+
 # jsDbList
 
-Il modulo jsDbList dichiara due classi
+The `jsDbList` module declares two classes:
 
+## Context
 
-# Context
+It is a class that serves as a dashboard for all information related to the execution context of a session.
 
-E' una classe che serve da cruscotto per tutte le informazioni relative al contesto 
- di esecuzione di una sessione. 
+The properties of a `Context` object are assigned by `jsApplication` when accepting the execution of a route. Among these, we distinguish:
 
-Le proprietà di un oggetto Context sono assegnate da jsApplication quando accetta 
- l'esecuzione di una route, tra queste distinguiamo:
+### `dbCode` {string}
+The code of the used database (used to invoke the **getDbInfo** function).
 
-### {string} dbCode
-Codice del db usato (usato per richiamare la funzione **getDbInfo**) 
+### `dbDescriptor` {DbDescriptor}
+Instance of the `DbDescriptor` for the connected database (a singleton per database).
 
-### {DbDescriptor} dbDescriptor
-Istanza del DbDescriptor per il db connesso (è un singleton per-db)
+### `createPostData` {PostData}
+Function that creates a class implementing the [PostData](PostData.md) interface. The default implementation returns an instance of [BusinessPostData](jsBusinessLogic.md).
 
-### {PostData} createPostData
-Funzione che crea una classe che implementa l'interfaccia di [PostData](PostData.md), in particolare
- l'implementazione di default restituisce un'istanza di [BusinessPostData](jsBusinessLogic.md).
+### `getDataInvoke` {GetDataInvoke}
+Function that creates an instance of the `GetDataInvoke` class associated with the current context. This class can be invoked by metadata, which is shared between the client and the server.
 
+When used on the server side, metadata will reference the class present in `client/components/metadata`. When used on the client side, metadata will reference the `getData` class associated with `appMeta`. However, in the metadata, this mechanism is transparent when used, and it is sufficient to use the instance as `(this).getData`, where `this` is the metadata itself. The class used on the client side exposes the same interface as the one used on the server side, so the code can run interchangeably.
 
-### {GetDataInvoke} getDataInvoke
-Funzione che crea un'istanza della classe GetDataInvoke associata al contesto corrente.
-Questa classe ha la particolarità di poter essere invocata anche dai metadati, che sono condivisi tra client 
-e server. 
+This does not preclude the application from using the [GetData](jsGetData.md) class in classes not shared with the client.
 
-Quando usata lato server i metadati faranno riferimento alla classe presente in client/components/metadata.
-Quando usata lato client i metadati faranno riferimento alla classe getData associata ad appMeta.
-Tuttavia nel metadato questo meccanismo è tutto trasparente al momento dell'utilizzo, 
- infatti basta usare l'istanza in (this).getData ove this è il Metadato stesso. La classe utilizzata nel client
- espone la stessa interfaccia di quella usata lato server, quindi il codice può girare indifferentemente.
+### `formatter` {sqlFormatter}
+SqlFormatter associated with the connected database; it should not be necessary unless manually composing SQL commands.
 
-Questo non toglie che in classi non condivise con il client l'applicazione possa usare la classe 
- [GetData](jsGetData.md)
+### `sqlConn` {Connection}
+`Connection` associated with the current database. The `Connection` is a lower-level class compared to `DataAccess`. For details, consult the relevant documentation: [jsSqlDriver](src/jsSqlServerDriver.md) and [jsMySqlDriver](src/jsMySqlDriver.md).
 
+### `environment` {Environment}
+[Environment](Environment.md) associated with the request.
 
-### {sqlFormatter} formatter
+### `dataAccess` {DataAccess}
+[DataAccess](DataAccess.md) associated with the request.
 
-SqlFormatter associato al db connesso, non dovrebbe servire a meno che non si intenda comporre manualmente 
-dei comandi sql.
+Overall, the `Context` has all the information needed to operate on the database and all knowledge about the connected user. In each middleware, it is accessible in the property:
 
-###  {Connection} sqlConn
+```javascript
+req.app.locals.context
+```
 
-{Connection} associata al db corrente, la Connection è una classe di livello più basso rispetto al DataAccess.
-Per i dettagli consultare la relativa documentazione: [jsSqlDriver](src/jsSqlServerDriver.md) e
-  [jsMySqlDriver](src/jsMySqlDriver.md).
+## DbDescriptor
 
+This class knows the structure of tables and views and can be used, for example, to create DataTables to add to DataSets or to know what fields each table has, what type they are, and what the keys are.
 
-###  {Environment} environment
-[Environment](Environment.md) associato alla richiesta.
+Main methods of `DbDescriptor`:
 
-
-###  {DataAccess} dataAccess
-[DataAccess](DataAccess.md) associato alla richiesta
-
-
-Complessivamente, il Context ha tutte le informazioni che servono per poter operare sul database e tutta la 
- conoscenza sull'utente connesso. In ogni middleware, è accessibile nella proprietà
-
-            req.app.locals.context
-
-
-
-# DbDescriptor
-
-Classe che conosce la struttura delle tabelle e delle viste ed è utilizzabile, ad esempio, per creare DataTable
- da aggiungere ai DataSet o per sapere ogni tabella quali campi ha e di che tipo sono, e quali sono chiave.
-
-Di ogni DataBase è conservato in memoria sul server un solo DbDescriptor, per motivi di efficienza.
-
-
-Principali metodi del DbDescriptor:
-
-- table(tableName,tableDescriptor): legge o imposta il TableDescriptor di una tabella o vista. Se si tenta di leggere 
- un TableDescriptor non precedentemente impostato, sarà invocato il metodo tableDescriptor della Connection sottostante
- per ottenere le informazioni desiderate direttamente dalle tabelle di sistema del database.
-- {DataTable} createTable(tableName): crea un DataTable con le colonne di una determinata tabella o vista
-- forgetTable(tableName): cancella le informazioni su un DataTable cosi che alla prossima richiesta possano eventualmente
- essere ricalcolate 
-
+- `table(tableName, tableDescriptor)`: reads or sets the `TableDescriptor` of a table or view. If attempting to read a `TableDescriptor` not previously set, the `tableDescriptor` method of the underlying `Connection` is invoked to obtain the desired information directly from the system tables of the database.
+- `createTable(tableName)`: creates a `DataTable` with the columns of a specific table or view.
+- `forgetTable(tableName)`: deletes information about a `DataTable` so that it can potentially be recalculated on the next request.
 
 ## init
-Il metodo init di DbDescriptor prevede in input il nome di un file che di norma è criptato ma può anche non esserlo
-a seconda dei parametri:
-- encryptedFileName nome del file criptato da leggere
-- fileName nome del file da eventualmente creare decriptato
-- encrypt  se true, il file letto è da criptare
-- decrypt  se true, va creata una copia del file criptato, in chiaro
-- key,iv,pwd parametri per decriptare o criptare il file
+The `init` method of `DbDescriptor` takes the name of a file as input, which is usually encrypted but can also be unencrypted depending on the parameters:
 
-questo metodo legge le informazioni sulle connessioni (di tipo DbInfo di cui tra poco) in blocco.
+- `encryptedFileName`: name of the encrypted file to read
+- `fileName`: name of the file to possibly create decrypted
+- `encrypt`: if true, the read file is to be encrypted
+- `decrypt`: if true, a copy of the encrypted file is to be created in clear text
+- `key`, `iv`, `pwd`: parameters for decrypting or encrypting the file
 
-È poi possibile comunque utilizzare i metodi getDbInfo/setDbInfo/delDbInfo per gestire le informazioni
-lette dal file.
+This method reads the information about connections (of type `DbInfo`, which will be explained shortly) in bulk.
 
-Il file di configurazione viene automaticamente aggiornato con le modifiche.
+It is still possible to use the `getDbInfo/setDbInfo/delDbInfo` methods to manage the information read from the file.
 
+The configuration file is automatically updated with the changes.
 
 ### TableDescriptor
 
-E' una classe che descrive una tabella ed espone:
+It is a class that describes a table and exposes:
 
-- string[] columnNames(): array dei nomi delle colonne
-- ColumnDescriptor column(columnName): descrittore della colonna data
-- describeTable({DataTable}t): aggiunge al DataTable t le colonne di questa tabella, in particolare impostando il nome 
- della colonna e le proprietà ctype,is_nullable,max_length di ogni colonna. Inoltre imposta la chiave del DataTable.
-- string[] getKey(): array dei nomi delle colonne chiave
-
+- `columnNames()`: array of column names
+- `column(columnName)`: descriptor of the given column
+- `describeTable(t)`: adds the columns of this table to the `DataTable` t, setting the name of the column and the properties `ctype`, `is_nullable`, `max_length` for each column. It also sets the key of the `DataTable`.
+- `getKey()`: array of key column names
 
 ### ColumnDescriptor
 
-Descrittore di colonna. Ha i seguenti campi:
+Column descriptor. It has the following fields:
 
-- {string} name - nome campo
-- {string} type - db type
-- {string} ctype - tipo javascript 
-- {number} max_length  - dimensione max bytes se stringa 
-- {number} precision - n. cifre totali gestite per i decimal
-- {number} scale - n. cifre decimali per i decimal
-- {boolean} is_nullable - true se ammette null
-- {boolean} pk - true se chiave primaria
- 
+- `name` {string} - field name
+- `type` {string} - db type
+- `ctype` {string} - JavaScript type
+- `max_length` {number} - maximum size in bytes if a string
+- `precision` {number} - total number of digits for decimals
+- `scale` {number} - number of decimal places for decimals
+- `is_nullable` {boolean} - true if it allows null
+- `pk` {boolean} - true if it is a primary key
 
+## getDbInfo, setDbInfo, delDbInfo, existsDbInfo
 
+Methods to read / write / delete / check the presence of database access information (`DbInfo`)
 
-# getDbInfo, setDbInfo, delDbInfo, existsDbInfo
-
-Metodi per leggere / scrivere / eliminare / verificare la presenza delle informazioni di accesso a un database (DbInfo)
-
-DbInfo è una struttura del tipo:
-```js
-    {
-     server: "nome server",
-     useTrustedConnection: true/false, id true user/pwd are not used
-     user: "user to connect to db",
-     pwd: "password to connect to db",
-     database: "data base name",
-     sqlModule: 'jsMySqlDriver' or 'jsSqlServerDriver'
-    }
+`DbInfo` is a structure like the following:
+```javascript
+{
+ server: "server name",
+ useTrustedConnection: true/false, if true user/pwd are not used
+ user: "user to connect to the db",
+ pwd: "password to connect to the db",
+ database: "database name",
+ sqlModule: 'jsMySqlDriver' or 'jsSqlServerDriver'
+}
 ```
-ed è necessaria al modulo jsDbList per sapere come costruire connessioni (Connection).
+and is required for the `jsDbList` module to know how to build connections (`Connection`).
 
+## getConnection
 
-# getConnection
+Function that, given a `dbCode`, returns the `Connection`. For its operation, it requires that `setDbInfo` has been previously called for that `dbCode`. Note that there is no `Connection` class; it only represents an abstract interface.
 
-Funzione che, dato un dbCode, ne restituisce la Connection. Per il suo funzionamento, necessita che
-sia stata precedentemente invocata setDbInfo per quel dbCode.
-Si osservi come non esiste una classe Connection, che rappresenta solo un'interfaccia astratta.
+The returned instance will actually be of type `SqlServerConnection` or `MySqlConnection` (or other) depending on the type of database.
 
-L'istanza restituita sarà in realtà di tipo SqlServerConnection o MySqlConnection (o altro) a seconda
- del tipo di database.
+## getDescriptor
 
+Function that, given a `dbCode`, returns the `DbDescriptor`. The `DbDescriptor` is placed in a cache, where there is only one for each `dbCode`. If it is not already present, it calculates it, but it requires that `setDbInfo` has been previously invoked for that `dbCode` or that the requested connection was in the configuration file used to initialize the `dbList`.
 
-# getDescriptor
+## getDataAccess
 
-Funzione che, dato un dbCode, ne restituisce il DbDescriptor. Il DbDescriptor è inserito in una cache,
-ove ne è presente solo uno per ogni dbCode. 
-Se non è già presente lo calcola, ma necessita che sia stata precedentemente invocata la setDbInfo
- per quel dbCode  o che la connessione richiesta fosse comunque nel file di configurazione usato 
-per inizializzare la dbList.
-
-
-
-# getDataAccess
-
-Funzione che, dato un dbCode, ne ottiene una connessione (DataAccess). La chiusura della connessione è
-a carico del chiamante.
-Per il corretto funzionamento, richiede che sia stata precedentemente invocata la setDbInfo o che la connessione
- richiesta fosse comunque nel file di configurazione usato per inizializzare la dbList.
+Function that, given a `dbCode`, gets a connection (`DataAccess`). Closing the connection is the responsibility of the caller. For correct operation, it requires that `setDbInfo` has been previously called or that the requested connection was in the configuration file used to initialize the `dbList`.

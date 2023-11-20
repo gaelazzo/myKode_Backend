@@ -1,101 +1,61 @@
+[![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/jsGetData.it.md)
+
 # GetData
 
-È la classe che si occupa di leggere interi DataSet in un modo ottimizzato.
+It is the class responsible for reading entire DataSets in an optimized way.
 
-Non ha un costruttore ma un certo numero di metodi statici, ognuno dei quali ha 
- l'effetto di riempire un [DataSet](jsDataSet.md) con le righe presenti nel DataBase
- in base a determinati criteri.
+It does not have a constructor but a number of static methods, each of which has the effect of populating a [DataSet](jsDataSet.md) with rows from the database based on certain criteria.
 
-Tutti i filtri usati in questa classe, così come quelli dell'intero framework,
- sono di tipo [SqlFun](jsDataQuery.md)
+All filters used in this class, as well as those in the entire framework, are of type [SqlFun](jsDataQuery.md).
 
-I metodi di GetData presuppongono un DataSet in cui siano presenti vari DataTable, relazionati
- con delle DataRelation in modo tale che sia possibile navigare tra i dati logicamente correlati.
+The methods of `GetData` assume a DataSet in which various DataTables are present, related with DataRelations in such a way that it is possible to navigate logically related data.
 
-E' quindi indispensabile aggiungere al DataSet sia le DataTable che le DataRelation, e da queste
- informazioni dipenderà quali righe i metodi leggeranno dal DataBase, unitamente ai filtri
- eventualmente specificati.
+It is, therefore, essential to add both DataTables and DataRelations to the DataSet, and from this information will depend on which rows the methods will read from the database, together with any specified filters.
 
-La lettura dei DataSet avviene a spirale, a partire dalle tabelle relazionate con la tabella 
- indicata, e poi nei passi successivi sono lette le altre tabelle con dei filtri che dipendono
- dalle righe lette nei passi precedenti.
+The reading of DataSets occurs spirally, starting from the tables related to the specified table, and then in subsequent steps, other tables are read with filters that depend on the rows read in the previous steps.
 
-Il filtri dipendono dalla DataRelation presenti nel DataSet, ed è per questo che è essenziale
- che siano inserite correttamente e con bene in mente questo obiettivo.
+Filters depend on the DataRelations present in the DataSet, and that is why it is essential that they are inserted correctly, keeping this objective in mind.
 
-Questo meccanismo, basato su queste convenzioni, consente di non dover scrivere codice per
- leggere set di dati collegati a web form o funzionalità varie, ma richiamare semplicemente 
- una delle funzioni adibite alla lettura o aggiornamento dei DataSet della classe GetData.
+This mechanism, based on these conventions, allows you not to have to write code to read sets of data linked to web forms or various functionalities but simply to invoke one of the functions for reading or updating DataSets in the `GetData` class.
 
+Let's see the different methods it exposes; for details, refer to the [JSDoc](https://temposrl.github.io/myKode_Backend/getData.html) or the [Markdown conversion](src/jsGetData.md).
 
-Vediamo i diversi metodi che espone, per i dettagli si veda il 
-[jsdoc](https://temposrl.github.io/myKode_Backend/getData.html) o la  [conversione in markdown](src/jsGetData.md)
-
-# Calcolo di filtri
+# Filter Calculation
 
 ## getFilterByExample
-Calcola un filtro confrontando tutti i campi di un oggetto. 
-Se è fornito il parametro useLike, i campi stringa sono confrontati con dei like, altrimenti
- sono confrontati per uguaglianza. 
+Calculates a filter by comparing all the fields of an object.
+If the `useLike` parameter is provided, string fields are compared with "like"; otherwise, they are compared for equality.
 
+# Reading a Table
 
-
-# Lettura di una Tabella
-
-A volte può essere utile leggere dati in una singola tabella, ad esempio come step 
- preparativo di una chiamata a doGet, che a sua volta legge tutto un DataSet a partire
- dalle righe contenute in una tabella specificata.
+Sometimes it may be useful to read data from a single table, for example, as a preparatory step for a call to `doGet`, which, in turn, reads an entire DataSet starting from the rows contained in a specified table.
 
 ## getByFilter
-Legge delle righe dal DataBase in un DataTable specificato ed in base ad un 
- criterio ([SqlFun](jsDataQuery.md)) specificato
+Reads rows from the database into a specified DataTable based on a specified criterion ([SqlFun](jsDataQuery.md)).
 
 ## getByKey
-Come getByFilter, ma ottiene il filtro in base ai valori di un oggetto, considerando 
- i campi chiave della tabella. Ovviamente l'oggetto dovrà avere dei campi 
- con gli stessi nomi della chiave della tabella.
+Like `getByFilter`, but obtains the filter based on the values of an object, considering the key fields of the table. Obviously, the object must have fields with the same names as the key of the table.
 
-
-# Lettura di un DataSet
+# Reading a DataSet
 
 ## fillDataSetByKey
-A partire da un certo filtro riempie prima la tabella specificata del DataSet,
- e poi a partire dalle righe trovate, legge a spirale tutte le righe delle
- tabelle nel DataSet relazionate con le righe già lette, sino ad esaurimento 
- delle relazioni con ulteriori tabelle.
+Starting from a certain filter, it first fills the specified table of the DataSet, and then, starting from the found rows, it spirally reads all the rows of the tables in the DataSet related to the already read rows, until exhaustion of the relations with additional tables.
 
-Questo e altri metodi funzionano solo a patto che nel DataSet i DataTable
- siano relazionati con delle DataRelation in modo corretto.
+This and other methods only work if in the DataSet the DataTables are related with DataRelations in the correct way.
 
 ## fillDataSetByFilter
-Come fillDataSetByKey, ma richiede un filtro già formato e non un oggetto da cui 
- ricavarlo.
+Like `fillDataSetByKey`, but requires an already formatted filter instead of an object from which to derive it.
 
 ## doGet
-Dato un DataSet, ed eventualmente una riga da cui partire, legge le tabelle del 
- DataSet preoccupandosi di
+Given a DataSet, and possibly a row to start from, it reads the tables of the DataSet, making sure to
 
-- leggere preventivamente le tabelle marcate come "cached" 
-- non modificare le righe di tabelle delle entità e subentità già presenti 
- nel DataSet
-- se richiesto (parametro onlyPeripherals), leggere solamente le tabelle secondarie
-  e non le subentità
-- Se è specificata una riga (parametro oneRow), è letta quella riga e le sue figlie (solamente)
-- Se non è specificato oneRow, si assume che nella tabella specificata ci siano 
- già delle righe da cui partire per la lettura a spirale
-- Tutte le tabelle non cached, sono azzerate prima di iniziare la lettura dei dati, 
- a meno che non si specifichi onlyPeriperals, nel qual caso solo le tabelle
- secondarie sono inizialmente azzerate.
+- pre-read tables marked as "cached"
+- not modify rows of tables of entities and sub-entities already present in the DataSet
+- if requested (parameter `onlyPeripherals`), only read secondary tables and not sub-entities
+- If a row is specified (parameter `oneRow`), only that row and its children are read
+- If `oneRow` is not specified, it is assumed that there are already rows in the specified table from which to start the spiral reading
+- All non-cached tables are reset before starting to read the data unless `onlyPeripherals` is specified, in which case only secondary tables are initially reset.
 
-doGet dovrebbe essere usata la prima volta con onlyPeripherals=false, 
- ma le volte successive con onlyPeripherals=true se si intende solo aggiornare
- le tabelle satellite, altrimenti saranno rilette anche la tabella principale 
- e le subentità, che sono eventualmente state oggetto di modifiche nell'interazione
- dell'utente con la maschera
+`doGet` should be used the first time with `onlyPeripherals=false`, but subsequent times with `onlyPeripherals=true` if only updating satellite tables is intended; otherwise, the main table and sub-entities, which may have been modified in the user's interaction with the form, will also be re-read.
 
-Si ricorda che per subentità si intendono tabelle child relazionate, con proprio campi chiave,
- con tutta la chiave primaria della tabella parent, dove la tabella padre è la tabella principale 
- o un'altra subentità (la relazione di subentità è transitiva).
-
-
-
+Note that sub-entities refer to related child tables, with their key fields, with the entire primary key of the parent table, where the parent table is the main table or another sub-entity (the sub-entity relationship is transitive).

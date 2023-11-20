@@ -1,98 +1,52 @@
+[![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/PostData.it.md)
+
 # PostData
 
-La classe PostData consente di salvare il contenuto di interi DataSet sul Database.
+The `PostData` class allows saving the content of entire DataSets to the Database.
 
-Le modifiche sono ricavate dal DataSet in base allo stato delle righe presenti nelle sue tabelle.
+The changes are derived from the DataSet based on the state of the rows present in its tables.
 
+### Order of Saving Rows and Tables
+The order of saving rows depends on the relationships of the tables and the state of the rows. Therefore, rows in the insertion state of parent tables will be written before the insertion state child rows.
 
-### Ordine di salvataggio delle righe e tabelle
-L'ordine di salvataggio delle righe dipende dalle relazioni delle tabelle e dallo stato delle righe, per cui
- le righe in inserimento delle tabelle parent saranno scritte prima delle righe child in inserimento.
+Conversely, child rows to be deleted will be deleted before any parent rows to be deleted.
 
-All'opposto le righe da cancellare child saranno eliminate prima delle parent eventualmente da cancellare.
+### Calculation of Auto-increment Fields
+Based on the auto-increment properties defined on the columns of the DataSet, calculations and subsequent database reads are performed at the time of saving to manage fields with an incremental logic, even discreetly complex and dependent on the other fields of the row being saved.
 
-### Calcolo dei campi ad autoincremento
-In base alle proprietà di autoincremento definite sulle colonne del DataSet, al momento del salvataggio 
- sono effettuati dei calcoli e conseguenti letture sul database per consentire di gestire dei campi 
- con una logica incrementale anche discretamente complessa e dipendente dagli altri campi della riga che si sta
- salvando.
+Regarding auto-increment fields, these are set through the properties of the [DataTable](jsDataSet.md) class, in particular with the AutoIncrementColumn(columnName, options) method, specifying in the options:
 
-A riguardo dei campi ad autoincremento, questi si impostano tramite le proprietà della classe [DataTable](jsDataSet.md) 
- , in particolare con il metodo AutoIncrementColumn(columnName, options), specificando nelle options:
+- `columnName`: name of the auto-increment field, i.e., a field that, when saving a row in the insertion state, is calculated as the maximum value of that column, with any other additional conditions and modes that we will see now.
+- `{string[]}` `selector`: an array of column names selector for the calculation of this field. The selectors are fields that are compared to calculate the max()+1 of an auto-increment field when a row is inserted. For example, if the selector fields are A and B, and the object to be inserted is {N:1, A:'x', B:'y'}, the query for calculating the max will be like select max(N) from table where A='x' and B='y', assuming that N is auto-increment.
+- `{number[]}` `selectorMask`: masks to apply to the selector fields. The mask is bitwise AND with the value of the selector.
+- `{string}` `prefixField`: the name of the prefix field to use as a prefix after calculating the maximum value. For example, if the `prefixField` is C and the row to be inserted is {N:'AAA1', C:'AAA'}, a query like SELECT MAX(convert(int, substring(N,4,12) where N like 'AAA%') will be performed.
+- `{string}` `middleConst`: constant value to be appended to the prefix value obtained with `prefixField`.
+- `{int}` `idLen`: size of the auto-increment field in characters when it consists of a substring, default is 12.
 
-- columnName: nome del campo ad autoincremento, ossia un campo che quando si salva una riga che è in stato di inserimento
- viene calcolato come massimo del valore di quella colonna, con eventuali altre condizioni e modalità aggiuntive che
- ora vedremo.
-- {string[]} selector: array di nomi di colonne selettore per il calcolo di questo campo. I selettori sono campi che 
- vengono confrontati per calcolare il max()+1 di un campo ad autoincremento quando è effettuato un inserimento della riga. 
- Ad esempio se i campi selettori sono A e B e l'oggetto da inserire è {N:1, A:'x', B:'y'}, la query per il calcolo del max sarà 
- del tipo select max(N) from table where A='x' and B='y', supponendo che N sia ad autoincremento
-- {number[]} selectorMask sono delle maschere da applicare ai campi selettori. La maschera è in AND bitwise con il valore
- del selettore
-- {string} prefixField nome campo prefisso da usare come prefisso dopo aver calcolato il valore del massimo. 
- Ad esempio se il campo prefixField è C e la riga da inserire è {N:'AAA1', C:'AAA'} sarà effettuata una query del tipo
- SELECT MAX(convert(int, substring(N,4,12) where N like 'AAA%'. 
-- {string} middleConst valore costante che si va ad accodare al valore prefisso ottenuto con prefixField
-- {int} idLen dimensione del campo ad autoincremento in caratteri quando consiste in una sottostringa, di default
- è 12
+### Application of Business Logic
+The `PostData` class is designed for the application of Business Logic. In fact, to obtain the object that deals with it, it invokes the `getBusinessLogic` method, which by default returns a class that performs no checks but is easily redefinable, and this has been done in the [BusinessPostData](jsBusinessLogic.md) class.
 
+### Application of Security Logic
+For each row to be saved, the `canPost` method of the `Security` class is invoked to verify if the user has the ability to perform that operation. The instance of the `Security` class is taken from the `security` property of the `Context` passed in the `init` method. If even a single row is not insertable/deletable/modifiable based on this criterion, the entire transaction is canceled.
 
+Although `PostData` is a class that performs a rather complex function, its methods are essentially two:
 
-### Applicazione della Business logic
-La classe PostData è predisposta per l'applicazione della BusinessLogic, infatti per ottenere 
-l'oggetto che se ne occupa invoca il metodo getBusinessLogic, che di default restituisce una classe che non 
-effettua alcun controllo, ma è facilmente ridefinibile, e questo è stato fatto nella classe
-[BusinessPostData](jsBusinessLogic.md)
- 
+- `init({[DataSet](jsDataSet.md)} d, {[Context](Context.md)} c)`: instructs the instance of the class to save the data of DataSet `d` using the `Context` context. It is possible to save multiple DataSets simultaneously by calling this method multiple times before invoking the `doPost` method.
+- `doPost(options)`: saves all specified DataSets, returning a series of messages where Business rules are violated or errors in writing to the Database.
 
-### Applicazione della logica di sicurezza
-Per ogni riga da salvare è invocato il metodo canPost della classe Security, 
- al fine di verificare se l'utente ha la possibilità di effettuare quella operazione.
-L'istanza della classe Security è presa dalla proprietà security del Context passato nel metodo init. 
-Basta che una sola riga non risulti inseribile/cancellabile/modificabile in base a tale criterio
- per annullare tutta la transazione.
+The `doPost` options include:
 
+- `isolationLevel`: by default `DataAccess.isolationLevels.readCommitted`, the isolation level to use in the transaction.
+- `OptimisticLocking`: an instance of `OptimisticLocking`, which is a class defined in [jsDataSet](jsDataSet.md), and its default is set by the `createPostData` method of the `jsApplication` class.
+- `previousRules`: a list of business messages to ignore, in case of duplicates during saving. How duplicates are defined depends on the `getId` method of the `BasicMessage` class, which usually simply compares the `msg` field of the message itself.
 
-Per quanto PostData sia una classe che effettua una funzione piuttosto complessa, i suoi metodi sono essenzialmente due:
+## Nested Saves
+It is also possible, and documented in the unit tests, to use the `PostData` class more advancedly, namely nested saving. This can be useful if one of the two DataSets to be saved is not available initially but can only be calculated after writing the data of the first to the Database (but before committing the transaction). With the nested mode, it is the external `PostData` class that opens and closes the transaction, and the internal `PostData` class saves the data and returns messages that are combined with those of the external class. The method used for this purpose is `setInnerPosting`, to be called on the external class, which takes two parameters:
 
-- init({[DataSet](jsDataSet.md)} d, {[Context](Context.md)}c) che istruisce l'istanza della classe a salvare i dati del 
- DataSet d usando il contesto Context. È possibile salvare diversi DataSet contemporaneamente chiamando questo metodo
- più volte prima di invocare il metodo doPost
-- doPost(options): salva tutti i DataSet specificati, restituendo una serie di messaggi ove
- vi siano regole di Business violate oppure errori nella scrittura sul DataBase
+- `DataSet`: data to be saved in the nested posting (but not examined until the external one is saved).
+- `innerPoster` (of type `IInnerPoster`): class to use to initialize the internal `PostData` class when the external one has written the data to the db.
 
-Le opzioni di doPost includono:
-- isolationLevel: di default DataAccess.isolationLevels.readCommitted, livello di isolamento da usare nella transazione
-- OptimisticLocking: è un'istanza di OptimisticLocking, che è una classe definita in [jsDataSet](jsDataSet.md) e il cui
- default è impostato dal metodo [createPostData](jsApplication.md) della classe jsApplication. 
-- previousRules: è un elenco di messaggi di business da ignorare, qualora dovessero risultarne di uguali in fase di 
- salvataggio. Come vengono definite identiche dipende dal metodo getId della classe BasicMessage, che di solito confronta
- semplicemente il campo msg del messaggio stesso
+The `IInnerPoster` class is written so that it can be easily redefined, in particular:
 
-
-## Salvataggi annidati
-E' anche possibile un uso più avanzato, e documentato negli unit test, della classe PostData, ed è il salvataggio
- annidato.
-Può essere utile se uno dei due DataSet da salvare non è disponibile inizialmente ma si può calcolare solo 
- dopo aver scritto i dati del primo sul DataBase (ma prima di aver effettuato il commit della transazione).
-Con la modalità annidata, è la classe PostData esterna che apre e chiude la transazione, e la classe PostData
- "interna" salva i dati e restituisce dei messaggi che sono uniti a quelli della classe esterna.
-
-Il metodo usato a tale scopo è setInnerPosting, da chiamarsi sulla classe esterna, che prevede due parametri:
-
-- DataSet dati da salvare nel posting annidato (ma non sono esaminati sin quando non è salvato quello esterno)
-- innerPoster (di tipo IInnerPoster), classe da usare per inizializzare la classe PostData interna quando 
- quella esterna ha scritto i dati sul db.
-
-La classe IInnerPoster è scritta in modo tale da poter essere facilmente ridefinita, in particolare:
-
-- il costruttore crea una semplice classe PostData e la mette nella proprietà p. Si può ridefinire per creare 
- una classe diversa, ad esempio BusinessPostData, che deriva da PostData
-- il metodo init, che richiama semplicemente p.setAsInnerPoster() e poi il metodo init di p con il dataset passato
- dal chiamante. In questa fase è possibile modificare il DataSet e fare qualsiasi tipo di modifica prima di richiamare
- il metodo init della classe interna.
-
-
-
-
-
+- The constructor creates a simple `PostData` class and puts it in the `p` property. It can be redefined to create a different class, for example, `BusinessPostData`, derived from `PostData`.
+- The `init` method, which simply calls `p.setAsInnerPoster()` and then the `init` method of `p` with the dataset passed from the caller. At this stage, you can modify the DataSet and make any type of change before calling the `init` method of the internal class.

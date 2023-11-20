@@ -1,4 +1,5 @@
 [![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/jsApplication.it.md)
+
 # jsApplication
 
 `jsApplication` is the general prototype of the application at its highest level.
