@@ -1,3 +1,4 @@
+[![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/readme.it.md)
 # myKode Backend
 
 myKode Backend is a set of Node.js classes accompanied by a minimal backend designed to minimize the development time of a Node.js application.
