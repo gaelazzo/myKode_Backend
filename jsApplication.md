@@ -1,101 +1,69 @@
+[![it](https://img.shields.io/badge/lang-it-green.svg)](https://github.com/TempoSrl/myKode_Backend/tree/main/jsApplication.it.md)
 # jsApplication
 
-jsApplication è il prototipo generale dell'applicazione al suo livello più alto.
+`jsApplication` is the general prototype of the application at its highest level.
 
-Esaminiamo alcuni metodi che possono essere usati per la personalizzazione.
+Let's examine some methods that can be used for customization.
 
 ## createConnectionPool
 
-E' una classe il cui unico metodo è getDataAccess() che restituisce un'istanza di jsConnectionPool, una semplice classe che crea un DataAccess invocando un
-metodo di [jsDbList](jsDbList.md) e la aggiunge ad un pool, che nella fattispecie è un semplice elenco di connessioni.
+It is a class whose only method is `getDataAccess()`, which returns an instance of `jsConnectionPool`, a simple class that creates a `DataAccess` by invoking a method of [jsDbList](jsDbList.md) and adds it to a pool, which, in this case, is a simple list of connections.
 
-Quando una connessione (jsPooledConnection) è rilasciata (con il metodo release), questa si rende disponibile ad essere
- restituita da chiamate successive a getDataAccess().
+When a connection (`jsPooledConnection`) is released (with the `release` method), it becomes available to be returned by subsequent calls to `getDataAccess()`.
 
-Se si volesse implementare una logica più sofisticata, quale ad esempio tenere sempre aperte un numero prefissato di 
- connessioni o rilasciare definitivamente le connessioni non in uso dopo un certo periodo di tempo, si può creare una
- classe derivata da JsConnectionPool e far si che createConnectionPool ne restituisca una istanza
-
+If you wanted to implement a more sophisticated logic, such as always keeping a fixed number of connections open or permanently releasing unused connections after a certain period, you can create a class derived from `JsConnectionPool` and ensure that `createConnectionPool` returns an instance of it.
 
 ## getNoTokenFolders
 
-Restituisce un oggetto che ha tante proprietà quante sono le cartelle a cui consentire l'accesso
- ai client anonimi, non ancora autenticati, è usato per aggiungere la il middleware di autenticazione a tutte
- le route che lo necessitano
-
+Returns an object that has as many properties as there are folders to allow access to anonymous clients, not yet authenticated. It is used to add authentication middleware to all routes that require it.
 
 ## error
 
-Questa è una route a cui sono redirezionati tutti gli errori. Eventuali funzionalità di logging vanno inserite qui.
-
+This is a route to which all errors are redirected. Any logging functionalities should be inserted here.
 
 ## releaseConnection
 
-Questa route aggiunge alla richiesta corrente gli eventi di close e finish in modo che questi possano, quando richiamati,
- rilasciare la connessione del connectionPool invocandone il metodo release
-
+This route adds the close and finish events to the current request so that they can, when invoked, release the connection from the connection pool by invoking its `release` method.
 
 ## createEnvironment
 
-Crea un jsEnvironment a partire da un'istanza di Identity, una classe dichiarata in [jsToken](src/jsToken.md).
-E' compito del processo di autenticazione creare un'Identity valida, un Token e comunicarlo al client in modo che 
- esso possa effettuare le successive richieste nello stato di autenticato.
+Creates a `jsEnvironment` from an instance of `Identity`, a class declared in [jsToken](src/jsToken.md). It is the responsibility of the authentication process to create a valid `Identity`, a Token, and communicate it to the client so that it can make subsequent requests in the authenticated state.
 
-Un environment contiene le variabili di sessione di un determinato utente ed è messo in cache quando è 
- creata la sessione,  per velocizzare le sue interazioni successive.
-
+An environment contains the session variables of a specific user and is cached when the session is created to speed up its subsequent interactions.
 
 ## createPostData
 
-Crea una classe [PostData](PostData.md) (o sua derivata), da usare per salvare un DataSet. 
-La classe creata va poi inizializzata con il metodo init. 
+Creates a [PostData](PostData.md) class (or its derivative) to use for saving a DataSet. The created class must then be initialized with the `init` method.
 
-Questo metodo di default crea una classe BusinessPostData, però è possibile modificarlo, ad esempio per non gestire 
-la logica di business e salvare di dati senza alcun controllo, perché magari si sono già controllati i dati altrove.
+This default method creates a `BusinessPostData` class, but it can be modified, for example, to not handle business logic and save data without any control because perhaps the data has already been checked elsewhere.
 
-createPostData imposta anche la classe di default per l'optimistic locking, come 
+`createPostData` also sets the default class for optimistic locking, such as:
 
 ```js
-    new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
+new OptimisticLocking(['lt', 'lu'], ['ct', 'cu', 'lt', 'lu'])
 ```
-ossia i campi usati per l'optimistic locking saranno rispettivamente:
 
-- per la modifica: lt, lu
-- per la creazione: ct, cu, lt, lu
+where the fields used for optimistic locking will be, respectively:
 
-I campi stamp dell' environment sono ct e lt, e quando l'environment li calcola
+- for modification: lt, lu
+- for creation: ct, cu, lt, lu
 
-Il metodo prepareForPosting della classe OptimisticLocking è usata per calcolare i campi di locking ogni volta che
- si deve salvare un DataRow sul database.
-Il metodo prepareForPosting a sua volta invoca il metodo field(fieldName) della classe [Environment](Environment.md) 
- per ogni campo indicato in configurazione rispettivamente in inserimento o modifica a seconda dello stato della riga
- da salvare.
+The stamp fields of the environment are ct and lt, and when the environment calculates them.
 
-Di default la classe Environment usa ct e lt come campi stamp, mentre i valori dei campi cu e lu sono impostati nel
- metodo createEnvironment di jsApplication, uguali al valore identity.name. E' possibile personalizzare tale valore.
+The `prepareForPosting` method of the `OptimisticLocking` class is used to calculate the locking fields whenever a DataRow needs to be saved to the database. The `prepareForPosting` method, in turn, invokes the `field(fieldName)` method of the [Environment](Environment.md) class for each field indicated in the configuration, respectively, for insertion or modification depending on the state of the row to be saved.
 
-
+By default, the `Environment` class uses ct and lt as stamp fields, while the values of the cu and lu fields are set in the `createEnvironment` method of `jsApplication`, equal to the value `identity.name`. It is possible to customize this value.
 
 ## getDataSet
 
-Crea un determinato DataSet identificato da tableName ed editType. Di default legge un file json
- dalla cartella ./client/dataset e lo deserializza in un jsDataSet
-
+Creates a specific DataSet identified by `tableName` and `editType`. By default, it reads a JSON file from the ./client/dataset folder and deserializes it into a `jsDataSet`.
 
 ## getAnonymousEnvironment
 
-Crea un ambiente anonimo avendo in input una Identity, di default  crea semplicemente un nuovo 
- environment tramite il costruttore
-
+Creates an anonymous environment based on an input `Identity`. By default, it simply creates a new environment through the constructor.
 
 ## getOrCreateContext
 
-Crea un contesto in base al token, anonimo se il token non c'è o è un token anonimo.
+Creates a context based on the token, anonymous if the token is not present or is an anonymous token.
 
-Il contesto ([Context](Context.md)) è sempre creato come anonimo, poi in fase di autenticazione si provvede a 
-ricalcolare l'environment, e a marcare il contesto come non più anonimo. Per fare questo è possibile 
-richiamare il metodo _doLogin del modulo
- routes/_authUtils
-
-
-
+The context ([Context](Context.md)) is always created as anonymous, then during authentication, it recalculates the environment and marks the context as no longer anonymous. To do this, you can invoke the `_doLogin` method of the module routes/_authUtils.
