@@ -56,14 +56,14 @@ describe('edgeSql ', function () {
             good: {
                 server: "localhost",
                 useTrustedConnection: false,
-                user: "user1",
-                pwd: "user1user1",
+                user: dbConfig.user,
+                pwd: dbConfig.password,
                 database: null
             },
             bad: {
                 server: "localhost",
                 useTrustedConnection: false,
-                user: "user1",
+                user: dbConfig.user,
                 pwd: "x",
                 database: null
             }
@@ -71,9 +71,9 @@ describe('edgeSql ', function () {
         dbInfo.database = dbName;
 
         dbInfoConnectionString = {
-            good: "data source=localhost;initial catalog="+dbName+";User ID =user1;Password=user1user1;" +
+            good: "data source=localhost;initial catalog="+dbName+";User ID ="+dbConfig.user+";Password="+dbConfig.password+";" +
                 "Pooling=False;Connection Timeout=600;",
-            bad: "data source=localhost;initial catalog="+dbName+";User ID =user1;Password=x;" +
+            bad: "data source=localhost;initial catalog="+dbName+";User ID ="+dbConfig.user+";Password=x;" +
                 "Pooling=False;Connection Timeout=600;"
         };
         driver = 'sqlServer';
@@ -83,14 +83,14 @@ describe('edgeSql ', function () {
             good: {
                 server: "localhost",
                 useTrustedConnection: false,
-                user: "user1",
-                pwd: "user1user1",
+                user: dbConfig.user,
+                pwd: dbConfig.password,
                 database: null
             },
             bad: {
                 server: "localhost",
                 useTrustedConnection: false,
-                user: "user1",
+                user: dbConfig.user,
                 pwd: "x",
                 database: null
             }
