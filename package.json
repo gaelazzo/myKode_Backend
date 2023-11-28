@@ -1,6 +1,6 @@
 {
   "name": "jsmetabackend",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Backend js Framework",
   "main": "index.js",
   "scripts": {
