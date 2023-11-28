@@ -88,7 +88,9 @@
      * @returns {Promise}
      */
     utils.optionalDeferred = function(condition, func, defaultValue) {
-        if (!condition) return Deferred("utils.optionalDeferred").resolve(defaultValue).promise();
+        if (!condition) {
+            return Deferred("utils.optionalDeferred").resolve(defaultValue).promise();
+        }
         return func();
     };
 
@@ -101,12 +103,12 @@
      * @returns {Promise}
      */
     utils.skipRun = function(func) {
-        return function(result) {
-            let res = func(result);
+        return function(param) {
+            let res = func(param);
             if (res.then) {
-                return res.then(utils.fConst(result));
+                return res.then(utils.fConst(param));
             }
-            return OriginaDeferred().resolve(result).promise();
+            return OriginaDeferred().resolve(param).promise();
         };
     };
 
@@ -121,7 +123,9 @@
      * @returns {function}
      */
     utils.optBind = function(fun, obj, args) {
-        if (!fun) return function() {};
+        if (!fun) {
+            return function() {};
+        }
         let rest = Array.prototype.slice.call(arguments, 1);
         if (rest.length > 1) {
             return fun.bind.apply(fun, rest);
@@ -315,8 +319,7 @@
             }
             let ua = window.navigator.userAgent;
             let msie = ua.indexOf("MSIE ");
-            if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) return true;
-            return false;
+            return (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) ;
         } catch (e){
             return false;
         }

@@ -264,6 +264,7 @@
             if (this.metaPage.eventManager) {
                 return this.metaPage.eventManager.trigger(appMeta.EventEnum.showModalWindow, this, "buildModal");
             }
+            console.log("ListManager: there is no eventManager");
             return true;
         },
 

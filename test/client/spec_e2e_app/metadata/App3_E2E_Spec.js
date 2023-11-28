@@ -24,7 +24,9 @@ describe('App3_E2E', function() {
 
             afterEach(function () {
                 expect(appMeta.Stabilizer.nesting).toBe(0);
-                if (appMeta.Stabilizer.nesting > 0) appMeta.Stabilizer.showDeferred();
+                if (appMeta.Stabilizer.nesting > 0) {
+                    appMeta.Stabilizer.showDeferred();
+                }
             });
 
             function loadRegistry(idreg){

@@ -116,7 +116,7 @@ async function saveDataSet(req,res,next) {
                        shortMsg: "Exception",    //errore breve, per le business rule
 
                        //Serialized as description
-                       longMsg: `Bisogna rivedere il metodo isValid della tabella: ${currMeta.name}  err: ${e} ctx: ${JSON.stringify(ctx.localResource.dictionary)}`,
+                       longMsg: `Bisogna rivedere il metodo isValid della tabella: ${currMeta.name}  err: ${e}`,
                        canIgnore: false,
                        idDetail: "Validazione",
 

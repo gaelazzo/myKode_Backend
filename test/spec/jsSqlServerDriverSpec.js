@@ -307,7 +307,7 @@ describe('sqlServerDriver ', function () {
                 d = new Date(d.valueOf()+cv);
             }
 
-            let v1 = JSON.stringify(d)
+            let v1 = JSON.stringify(d);
             let cmd = sqlConn.giveConstant(d);
             sqlConn.queryBatch(cmd)
             .done(function (result) {

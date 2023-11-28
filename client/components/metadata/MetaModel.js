@@ -922,7 +922,7 @@
 		},
 
 		unchangedValues:function (dRow, column) {
-			if (column.ctype === CType.DateTime) {
+			if (column.ctype === CType.DateTime  || column.ctype === CType.date) {
 				let d1 = dRow.getValue(column.name, dataRowVersion.current);
 				let d2 = dRow.getValue(column.name, dataRowVersion.original);
 				if (!d1 && d2) {

@@ -41,7 +41,6 @@ describe("MultiSelectControl",
 
         describe("methods work",
             function () {
-
                 it("fillControl() is ASYNC and grids are populated", function (done) {
                     // costruisco ogetto stato e ds
                     var state = new appMeta.MetaPageState();
@@ -237,7 +236,6 @@ describe("MultiSelectControl",
                                 // test sull' html
                                 expect($(".gridToAdd").find("table > tr").length).toBe(countRowInitGridToAdd + 1); // header + 1 row
                                 expect($(".gridAdded").find("table > tr").length).toBe(countRowInitGridAdded + 1); // header
-
                                 // costruisco jquery event per simulare il mouseDown con ctrl
                                 var e = $.Event("mousedown", { keyCode: 91, ctrlKey: true });
                                 var s = stabilizeToCurrent();

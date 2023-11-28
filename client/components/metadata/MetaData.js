@@ -104,7 +104,7 @@
 
                         val =  r.current[colName];
 
-                        if ((val === null)) {
+                        if ((val === null)) { //||(val===undefined)
                             outMsg = emptyKeyMsg;
                             outField = colName;
                             foundCondition = true;
@@ -249,7 +249,13 @@
              * @param {string} outCaption
              * @param {DataRow} row
              * @param {string} [warningMessage]
-             * @returns {Deferred}
+             * @returns promise({
+             * 				[string warningMsg],
+             * 				[string errMsg],
+             *				string errField,
+             *				string outCaption,
+             *			    {DataRow} row
+             * 			})
              */
             createIsValidResult: function (errMessage, colname, outCaption, row, warningMessage) {
                 let def = Deferred("createIsValidResult");

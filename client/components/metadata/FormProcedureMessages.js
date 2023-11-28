@@ -61,6 +61,7 @@
                         self.adjustSizeModal();
                         // evento per il momento solo per test
                         if (self.metaPage.eventManager) self.metaPage.eventManager.trigger(appMeta.EventEnum.showModalWindow, self);
+                        //if (!self.metaPage.evManager) console.log("FormProcedureMessage: there is no eventManager");
                     })
                 .fail(
                     function (e) {

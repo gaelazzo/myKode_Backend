@@ -15,20 +15,20 @@
 	<title>MetaXApp</title>
 
 	<!-- bower:css -->
-	<link rel="stylesheet" href="bower_components/jstree/dist/themes/default/style.css" />
+	<link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css" />
+	<link rel="stylesheet" href="bower_components/jstree/dist/themes/default/style.min.css" />
+	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.min.css" />
+	<link rel="stylesheet" href="bower_components/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.css" />
 	<!-- endbower -->
 
-
-	<!-- INIZIO stili librerie terze parti-->
-	<!--<link href="../bower_components/bootstrap4/dist/css/bootstrap.css" rel="stylesheet" type="text/css"> COMMENTATO PERCHE' SOSTITUITO CON QUELLO ITALIA-->
-	<link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css" />
+	<!-- INIZIO stili aggiuntivi librerie terze parti-->
 	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet" />
 
 	<!-- icone bandiere del mondo, utilizzate nel menù localizzazione -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css" rel="stylesheet">
 
-	<!-- Stili per jsTree -->
+	<!-- Stili aggiuntivi per jsTree -->
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css" />
 	<!-- FINE Stili per jsTree -->
 	<!-- FINE stili librerie terze parti -->
@@ -50,7 +50,9 @@
 	<!-- FINE Stili della applicazione -->
 
 	<!-- bower:js -->
-	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.bundle.js"></script>
 	<script src="bower_components/font-awesome/js/all.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="bower_components/jquery-ui/jquery-ui.js"></script>
@@ -59,7 +61,7 @@
 	<script src="bower_components/es5-shim/es5-shim.js"></script>
 	<script src="bower_components/lodash/lodash.js"></script>
 	<script src="bower_components/observe-js/src/observe.js"></script>
-	<script src="bower_components/moment/moment.js"></script>
+	<script src="bower_components/moment/min/moment.min.js"></script>
 	<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
 	<script src="bower_components/fullcalendar/dist/locale-all.js"></script>
 	<script src="bower_components/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.js"></script>
@@ -128,9 +130,9 @@
 		<nav class="navbar-institutional navbar navbar-expand-lg navbar-dark">
 			<div class="container">
 				<a class="navbar-brand" href="#">
-					<img class="portale_brand_logo_id" src="" alt="logo" />
+					<img class="portale_brand_logo_id" src="" alt="logo" style="max-height: 40px; height: auto; width: auto;/>
 					<span class="portale_brand_name_id">MetaGoldApp</span>
-				</a> <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbar11">
+				</a> <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbar11">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 				<div class="collapse navbar-collapse" id="navbar11">
@@ -146,7 +148,7 @@
                         <li class="nav-item"> <a class="nav-link" href="#" id="menu_guide_btn_id">Guida</a> </li>-->
 						<!-- Inizio menù scelta lingua -->
 						<li class="nav-item">
-							<a class="nav-link dropdown-toggle" id="langctrl_id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<a class="nav-link dropdown-toggle" id="langctrl_id" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<span class="flag-icon flag-icon-it" data-lang="it"></span> Italian
 							</a>
 							<div class="dropdown-menu">
@@ -161,7 +163,7 @@
 					<button id="gotoLogin_id" type="button" class="btn btn-primary">Accedi</button>
 					<button id="logoutButton" type="button" class="btn btn-primary">Esci</button>
 					<a class="navbar-brand" href="#">
-						<img class="tempo_brand_logo_id" src="" alt="logo" />
+						<img class="tempo_brand_logo_id" src="" alt="logo" style="max-height: 40px; height: auto; width: auto;"/>
 					</a>
 				</div>
 			</div>
@@ -332,4 +334,47 @@
 </div>
 
 </body>
+
+
+<script>
+	$(document).on('DOMNodeInserted', function(event) {
+		// Rileva quando viene aggiunta una nuova porzione di HTML alla pagina
+		let newNode = event.target;
+
+		// Verifica se il nodo appena inserito è del tipo desiderato (ad esempio, un elemento div)
+		if (newNode.nodeType === Node.ELEMENT_NODE && newNode.tagName === 'DIV') {
+			let parentElement = newNode.parentNode;
+			if (parentElement && parentElement.id === 'metaRoot') {
+				// Trova tutti gli elementi con l'attributo datePickerFormat nella porzione aggiunta
+				let newElementsWithDatePicker = $(event.target).find('[data-datePickerFormat]');
+
+				// Applica il datepicker a ciascun elemento trovato
+				newElementsWithDatePicker.each(function() {
+					let datePickerFormat = $(this).data().datepickerformat;
+					$(this).datepicker({dateFormat: datePickerFormat});
+				});
+			}
+		}
+
+		// Verifica se il nodo appena inserito è del tipo desiderato (ad esempio, un elemento div)
+		if (newNode.nodeType === Node.ELEMENT_NODE && newNode.tagName === 'DIV') {
+			let parentElement = newNode.parentNode;
+			if (parentElement && parentElement.id === 'metaRoot') {
+				// Trova tutti gli elementi con l'attributo datePickerFormat nella porzione aggiunta
+				let newElementsWithDateTimePicker = $(event.target).find('[data-dateTimePickerFormat]');
+
+				// Applica il datepicker a ciascun elemento trovato
+				newElementsWithDateTimePicker.each(function() {
+					let datePickerFormat = $(this).data().datetimepickerformat;
+					$(this).datetimepicker({dateFormat: datePickerFormat});
+				});
+			}
+		}
+
+	});
+
+
+</script>
+
 </html>
+

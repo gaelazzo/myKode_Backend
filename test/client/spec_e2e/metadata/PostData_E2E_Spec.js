@@ -1,6 +1,7 @@
 'use strict';
 
 describe('PostData e2e', function () {
+
     var postData;
     var conn;
     var ds;
@@ -10,6 +11,7 @@ describe('PostData e2e', function () {
     var defLogin;
     // effettuo login
     beforeAll(function () {
+        //console.log("PostData")
         appMeta.basePath = "/base/client/";
         appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
         appMeta.globalEventManager = new appMeta.EventManager();
@@ -63,7 +65,7 @@ describe('PostData e2e', function () {
                         // 1. recupero ds vuoto
                         return conn.call(objConn);
                     })
-                        .then(function (res) {
+                    .then(function (res) {
                         // recupero ds vuoto
                         var ds = appMeta.getDataUtils.getJsDataSetFromJson(res);
 
@@ -83,7 +85,7 @@ describe('PostData e2e', function () {
                         // chiamo metodo server
                         return postData.saveDataSet(dsTarget, "registry", "anagrafica", null);
                     })
-                        .then(function (dsTarget2, messages, success, canIgnore) {
+                    .then(function (dsTarget2, messages, success, canIgnore) {
                         expect((dsTarget2!==false)).toBe(true);
                         expect(messages.length).toBe(0); //non ci sono messaggi
                         expect(success).toBe(true); // metodo esegue correttamente
@@ -140,7 +142,7 @@ describe('PostData e2e', function () {
                                             .then(function (dsTarget2,  messages, success, canignore) {
 
                                                 if (success){
-                                                    console.log("save with success");
+                                                    //console.log("save with success");
                                                     expect((dsTarget2!==false)).toBe(true);
                                                     // verifico che tornino dei dati
                                                     var tRegistryAddress = dsTarget2.tables["registryaddress"];
@@ -424,7 +426,7 @@ describe('PostData e2e', function () {
                             var jsonPath = "base/test/client/spec_midway/jstest/registry_anagrafica.json";
                             var json = $.getJSON({ 'url': jsonPath, 'async': false });
                             var dsToSave = appMeta.getDataUtils.getJsDataSetFromJson(json.responseText);
-                            dsToSave.displayData();
+                            // dsToSave.displayData();
                             // chiamo metodo server
                             return postData.saveDataSet(dsToSave, "registry", "docenti", null);
                         })

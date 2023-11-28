@@ -294,7 +294,7 @@ TableDescriptor.prototype.describeTable = function (t, onlyExistingColumns){
         if (onlyExistingColumns && !t.columns[c.name]) {
             return;
         }
-        let col = t.setDataColumn(c.name,c.ctype);
+        let col = t.setDataColumn(c.name, c.ctype);
         if (col.allowNull===undefined) {
             col.allowNull = (c.is_nullable===1);
         }

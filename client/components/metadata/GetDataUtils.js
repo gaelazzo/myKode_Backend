@@ -138,6 +138,7 @@
         //console.log("getDataUtils.getJsDataSetFromJson BASE")
         // riconverto la stringa json proveniente dal server
         //console.log("getJsDataSetFromJson, typeof(jsonJsDataSet) is:", typeof (jsonJsDataSet));
+        if (!jsonJsDataSet) return null;
         let objParsed = getDataUtils.getJsObjectFromJson(jsonJsDataSet);
 
         // creo nuovo jsDataSet da popolare
@@ -160,8 +161,10 @@
      */
     getDataUtils.getJsonFromJsDataSet = function (ds, serializeStructure) {
         //return JSON.stringify(ds.serialize(serializeStructure));
-
-        var objser = ds.serialize(serializeStructure);
+        if (!ds) {
+            return null;
+        }
+        let objser = ds.serialize(serializeStructure);
         // _.forEach(objser.tables, function (objdt) {
         //     getDataUtils.convertDateTimeToUTC(objdt, false);
         // });

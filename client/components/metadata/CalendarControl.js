@@ -114,7 +114,8 @@
 				logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": start");
 				return null;
 			}
-			if (dtRow.table.columns[startColName].ctype !== 'DateTime') {
+			if (dtRow.table.columns[startColName].ctype !== 'DateTime' &&
+				dtRow.table.columns[startColName].ctype !== 'date') {
 				logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": start is not a DateTime");
 				return null;
 			}
@@ -152,7 +153,7 @@
 					logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": stop ");
 					return null;
 				}
-				if (colStop.ctype !== 'DateTime') {
+				if (colStop.ctype !== 'DateTime' && colStop.ctype !== 'date') {
 					logger.log(logType.ERROR, appMeta.localResource.dictionary.calendarWrongConfig + ": stop is not a DateTime");
 					return null;
 				}
@@ -197,7 +198,7 @@
 			var t = row.getRow().table;
 			var dc = t.columns[field];
 			// formattazione specifica per campi di tipo data.
-			if (dc.ctype === 'DateTime') {
+			if (dc.ctype === 'DateTime' || dc.ctype==="date") {
 				return formattedDate(row[field]);
 			}
 			var tag = t.name + '.' + field + (dc.format ? '.' + dc.format : '');
@@ -402,14 +403,14 @@
 			if (that.timeoutId) {
 				clearTimeout(that.timeoutId);
 				that.timeoutId = null;
-				Stabilizer.decreaseNesting("rowClickEv.timeout");
+				Stabilizer.decreaseNesting("rowClickEv");
 			}
 			//console.log("increasing for Timeout");
 			Stabilizer.increaseNesting("rowClickEv");
 			that.timeoutId = setTimeout(function () {
 				that.timeoutId = null;
 				that.rowClick(event);
-				Stabilizer.decreaseNesting("rowClickEv.timeout");
+				Stabilizer.decreaseNesting("rowClickEv");
 			}, appMeta.currApp.dbClickTimeout);
 		},
 

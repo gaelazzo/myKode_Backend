@@ -13,6 +13,7 @@ describe("HelpForm e2e + MetaPage class",
 
         // effettuo login
         beforeAll(function () {
+            //console.log("Helpform e2e")
             appMeta.basePath = "/base/client/";
             appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
 

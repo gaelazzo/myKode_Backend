@@ -120,6 +120,9 @@ beforeEach(function() {
 
 });
 describe("jsDataSet", function () {
+    beforeAll(function (){
+        //console.log("jsDataSet");
+    });
 
     describe('System status', function () {
         const dsSpace = jsDataSet,

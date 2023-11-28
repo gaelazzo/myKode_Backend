@@ -294,7 +294,6 @@
                     .then(function () {
                         self.waitMasterDetail(false);
                         def.resolve(true);
-
                     });
                 return def.from(res);
             }
@@ -347,7 +346,9 @@
                 this.checkComboBoxSource(val);
             }
             // se c'è una sola riga dati ed è deny null+insert, scegli quella punto e basta
-            if (this.comboRows.length === 1 && this.isDenyNull && this.pageState.isInsertState()) return  def.from(this.setIndex(this.firstDataRow));
+            if (this.comboRows.length === 1 && this.isDenyNull && this.pageState.isInsertState()) {
+                return  def.from(this.setIndex(this.firstDataRow));
+            }
             return def.from(this.setValue(val));
         },
 

@@ -38,10 +38,12 @@
             switch (ctype) {
                 case "Decimal":
                 case "Double":
+                case "Float":
                 case "Int16":
                 case "Single":
                 case "Int32":
                 case "DateTime":
+                case "date":
                     return this.alignNumericColumn;
                 case "String":
                     return this.alignStringColumn;

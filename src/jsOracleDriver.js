@@ -68,13 +68,13 @@ const mapping = {
     'FLOAT':CType.Decimal,
 
     'DATE':CType.date,
-    'DATETIME':CType.date,
+    'DATETIME':CType.DateTime,
 
     'TIMESTAMP':CType.DateTime,
     'TIMESTAMP WITH TIME ZONE':CType.DateTime,
     'TIMESTAMP WITH LOCAL TIME ZONE':CType.DateTime,
-    'INTERVAL YEAR TO MONTH':CType.date,
-    'INTERVAL DAY TO SECOND':CType.date,
+    'INTERVAL YEAR TO MONTH':CType.DateTime,
+    'INTERVAL DAY TO SECOND':CType.DateTime,
 
     'BOOLEAN':CType.bool,
 };

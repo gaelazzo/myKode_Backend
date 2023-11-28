@@ -115,7 +115,9 @@
          */
         getMethod:function (method) {
             var ss = this.services[method];
-            if (!ss) return ss;
+            if (!ss) {
+                return ss;
+            }
             let service = _.clone(ss);
             service.url = this.backendUrl+appMeta.serviceBasePath +service.url;
             return service;

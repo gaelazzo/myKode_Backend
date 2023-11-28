@@ -792,7 +792,7 @@
                                 var cols = getDataColumnsFromTable(tname);
                                 _.forEach(cols, function (col) {
                                     var value = row[col.name] !== null && row[col.name] !== undefined ? row[col.name] : '';
-                                    if (col.ctype === "DateTime" && value) {
+                                    if ((col.ctype === "DateTime" || col.ctype === "date") && value) {
                                         value = value.getDate().toString() + '/' +value.getMonth().toString() + '/' + value.getFullYear().toString()
                                     }
                                     if (value) {
@@ -816,7 +816,7 @@
 
                         // Caso data
 
-                        if (col.ctype === "DateTime" && value) {
+                        if ((col.ctype === "DateTime" || col.ctype === "date") && value) {
                             value = value.getDate().toString() + '/' +value.getMonth().toString() + '/' + value.getFullYear().toString()
                         }
 

@@ -5153,3 +5153,233 @@ INSERT INTO [fin] (idfin,ayear,codefin,ct,cu,flag,lt,lu,nlevel,paridfin,printing
 GO
 
 
+
+--[DBO]--
+-- CREAZIONE TABELLA menuweb --
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[menuweb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+CREATE TABLE [dbo].[menuweb] (
+idmenuweb int NOT NULL,
+editType nvarchar(60) NULL,
+idmenuwebparent int NULL,
+label nvarchar(250) NOT NULL,
+link nvarchar(250) NULL,
+sort int NULL,
+tableName nvarchar(60) NULL,
+ CONSTRAINT xpkmenuweb PRIMARY KEY (idmenuweb
+)
+)
+END
+GO
+delete from menuweb
+
+insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, label)
+    values(2,null, 1, 1, null, 'Finanziario')
+insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, label)
+    values(3,null, 2, 2, null, 'Uscite')
+--insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, label) values(4,null, 3, 1, null, 'Contratti')
+insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, label)
+    values(4,'default', 3, 1, 'mandate', 'Contratti Passivi')
+
+/*
+insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, label)
+        values(5,"default1", 4, 2, "mandate", "Contratto Passivo 1")
+
+insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, label)
+        values(6,"default2", 4, 3, "mandate", "Contratto Passivo 2")
+
+insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, label)
+        values(7,"default3", 4, 4, "mandate", "Contratto Passivo 3")
+*/
+
+GO
+
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[mandate]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+CREATE TABLE [mandate] (
+idmankind varchar(20) NOT NULL,
+yman smallint NOT NULL,
+nman int NOT NULL,
+active char(1) NULL,
+adate date NOT NULL,
+adatesubappropriation date NULL,
+anacreduced float NULL,
+annotations varchar(400) NULL,
+applierannotations varchar(400) NULL,
+arrivaldate date NULL,
+arrivalprotocolnum varchar(20) NULL,
+cigcode varchar(10) NULL,
+consipmotive varchar(600) NULL,
+ct datetime NOT NULL,
+cu varchar(64) NOT NULL,
+deliveryaddress varchar(400) NULL,
+deliveryexpiration varchar(50) NULL,
+description varchar(150) NOT NULL,
+doc varchar(35) NULL,
+docdate date NULL,
+exchangerate float NULL,
+external_reference varchar(200) NULL,
+finsubappropriation varchar(60) NULL,
+flagbit int NULL,
+flagdanger char(1) NULL,
+flagintracom char(1) NULL,
+flagtenderresult char(1) NULL,
+idaccmotivedebit varchar(36) NULL,
+idaccmotivedebit_crg varchar(36) NULL,
+idaccmotivedebit_datacrg date NULL,
+idconsipkind int NULL,
+idconsipkind_ext int NULL,
+idcurrency int NULL,
+idexpirationkind smallint NULL,
+idman int NULL,
+idmandatestatus smallint NULL,
+idmankind_origin varchar(20) NULL,
+idoffice int NULL,
+idreg int NULL,
+idreg_rupanac int NULL,
+idsor01 int NULL,
+idsor02 int NULL,
+idsor03 int NULL,
+idsor04 int NULL,
+idsor05 int NULL,
+idstore int NULL,
+lt datetime NOT NULL,
+lu varchar(64) NOT NULL,
+motiveassignment varchar(400) NULL,
+nman_origin int NULL,
+officiallyprinted char(1) NOT NULL,
+paymentexpiring smallint NULL,
+publishdate date NULL,
+publishdatekind varchar(10) NULL,
+registryreference varchar(150) NULL,
+requested_doc int NULL,
+resendingpcc char(1) NULL,
+rtf image NULL,
+subappropriation varchar(60) NULL,
+tenderkind varchar(10) NULL,
+txt text NULL,
+yman_origin smallint NULL,
+ CONSTRAINT xpkmandate PRIMARY KEY (idmankind,
+yman,
+nman
+)
+)
+END
+GO
+
+-- CREAZIONE TABELLA mandatekind --
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[mandatekind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+CREATE TABLE [mandatekind] (
+idmankind varchar(20) NOT NULL,
+active char(1) NULL,
+address varchar(150) NULL,
+assetkind tinyint NOT NULL,
+ct datetime NOT NULL,
+cu varchar(64) NOT NULL,
+dangermail varchar(200) NULL,
+deltaamount decimal(19,2) NULL,
+deltapercentage decimal(19,2) NULL,
+description varchar(150) NOT NULL,
+email varchar(200) NULL,
+faxnumber varchar(50) NULL,
+flag int NULL,
+flag_autodocnumbering char(1) NULL,
+flagactivity smallint NULL,
+flagcreatedoubleentry char(1) NULL,
+header varchar(150) NULL,
+idivakind_forced int NULL,
+idreg_rupanac int NULL,
+idsor01 int NULL,
+idsor02 int NULL,
+idsor03 int NULL,
+idsor04 int NULL,
+idsor05 int NULL,
+idupb varchar(36) NULL,
+ipa_fe varchar(7) NULL,
+isrequest char(1) NULL,
+linktoasset char(1) NULL,
+linktoinvoice char(1) NULL,
+lt datetime NOT NULL,
+lu varchar(64) NOT NULL,
+multireg char(1) NULL,
+name_c varchar(200) NULL,
+name_l varchar(200) NULL,
+name_r varchar(200) NULL,
+notes1 text NULL,
+notes2 text NULL,
+notes3 text NULL,
+office varchar(150) NULL,
+phonenumber varchar(30) NULL,
+requested_doc int NULL,
+riferimento_amministrazione varchar(20) NULL,
+rtf image NULL,
+title_c varchar(200) NULL,
+title_l varchar(200) NULL,
+title_r varchar(200) NULL,
+touniqueregister char(1) NULL,
+txt text NULL,
+warnmail varchar(400) NULL,
+ CONSTRAINT xpkmandatekind PRIMARY KEY (idmankind
+)
+)
+END
+GO
+
+DELETE FROM MANDATEKIND
+GO
+
+-- GENERAZIONE DATI PER mandatekind --
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('CICCIO-CP','S','Piazza Umberto I - 70121 Bari','31',{ts '2013-03-12 10:24:04.593'},'sa',null,null,null,'Contratto Ciccio',null,'0805714184','2','S','4','S','DIPARTIMENTO AFFARI GENERALI(D.A.G.)
+Macroarea per le Forniture di
+Beni e Servizi e per i Servizi Sociali','18','2132',null,null,null,null,null,'00010027','BL0001','N','S','S',{ts '2018-02-08 12:22:35.623'},'assistenza','S',null,null,null,'Le condizioni di pagamento e fornitura del presente ordine si intendono accettate trascorsi 7 gg. dalla data di ricevimento.',null,null,'Area Fornitore di Beni e Servizi','0800000000','2','222',null,null,null,null,'N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('CP_PCC','S',null,'13',{ts '2014-12-30 15:54:59.757'},'assistenza',null,null,null,'Documento equivalente di pagamento',null,null,'1','S','2','S',null,'3',null,null,null,null,null,null,null,'123456','N','S','N',{ts '2019-09-03 16:15:19.927'},'nino','N',null,null,null,null,null,null,null,null,'0',null,null,null,null,null,'S',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('CPAttivitaQualsiasi',null,null,'31',{ts '2015-10-30 11:30:03.977'},'assistenza',null,null,null,'C.P. - Attivita Qualsiasi',null,null,'3','S','4','N',null,null,null,null,null,null,null,null,null,'1234567','N','N','S',{ts '2023-06-07 12:17:34.213'},'assistenza','S','FIRMA AL CENTRO',null,'Prof. Gioacchino ANGARANO  ','riga1
+riga2
+riga3
+riga4',null,null,null,null,'0',null,null,null,null,'Il Direttore','N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('ESSENZIALE','S',null,'0',{ts '2014-06-18 15:22:06.310'},'assistenza',null,null,null,'CP _ ESSENZIALE',null,null,'0','S','4','S',null,'5',null,null,null,null,null,null,null,null,'N','S','S',{ts '2018-02-16 12:24:50.387'},'assistenza','N',null,null,null,null,null,null,null,null,'7',null,null,null,null,null,'N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('GENERALE',null,null,'23',{ts '2006-01-31 17:12:09.953'},'migrazione','assistenzasoft@gmail.com',null,null,'Tipo ordine GENERALE',null,'','3','S','2','N','Intestazione da mandatekind.',null,null,'3637','3869',null,null,null,null,null,'N','S','S',{ts '2023-06-07 12:43:03.250'},'assistenza','N','FIRMA AL CENTRO','maria smaldino','Prof. Gioacchino AAA  ',null,null,null,null,'','0',null,null,null,null,'Il Direttore','N',null,'assistenzahw@gmail.com')
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('GIURprova','S',null,'0',{ts '2015-09-03 16:30:43.140'},'assistenza',null,null,null,'GIUR - Convenzione passiva (Non soggetta ad IVA)',null,null,'0','N','4','N',null,null,null,'3643','3930','1104','1844','3909',null,null,'S','N','N',{ts '2018-02-12 17:37:44.830'},'assistenza','N',null,null,null,null,null,null,null,null,'6',null,null,null,null,null,'N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('NOFATT','S',null,'31',{ts '2010-03-22 09:35:53.937'},'SARA',null,'15',null,'Contratto Passivo  collegabile a Fattura',null,null,'0','S','4','N',null,null,'86',null,null,null,null,null,null,null,'N','S','S',{ts '2016-06-01 14:13:03.877'},'assistenza','N',null,null,null,'MARIA MARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIAMARIA','ANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNAANNA','SILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIASILVIA',null,null,'0',null,null,null,null,null,'N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('NOFATTURA',null,null,'31',{ts '2010-06-25 16:06:41.547'},'SA',null,null,null,'Contratto passivo SENZA FATTURA',null,null,'0','S','4','S',null,null,null,null,null,null,null,null,null,null,'N','S','N',{ts '2010-10-15 13:10:04.573'},'sa','N',null,null,null,null,null,null,null,null,'0',null,null,null,null,null,'N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('PRIMO',null,null,'31',{ts '2006-08-03 10:47:12.703'},'''SARA''',null,'0.02',null,'Tipo ordine test','pippo@pluto.it','0804261654842512','2','S','3','N',null,null,null,'3654',null,null,null,null,'000100000001',null,'N','S','S',{ts '2014-03-07 16:07:42.423'},'nino','S','FIRMA AL CENTRO','maria smaldino','Prof. Gioacchino AAA  ','riga1
+riga2
+riga3
+riga4','NOTE2
+
+NOTE22
+','Promiscua','Segretaria','08095165462','0',null,null,'Centro','Sinistra','Il Direttore','N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('PROVA',null,null,'23',{ts '2007-11-06 13:53:55.933'},'NINO',null,null,null,'prova',null,null,'1','N','4','S',null,null,null,null,null,null,null,null,null,null,'N','S','N',{ts '2014-03-07 16:07:20.283'},'nino','S','FIRMA AL CENTRO','maria smaldino','Prof. Gioacchino ANGARANO  ','riga1
+riga2
+riga3
+riga4','NOTE2
+
+NOTE22
+','Promiscua',null,null,'0',null,null,null,null,'Il Direttore','N',null,null)
+GO
+
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('Prove Piero','S',null,'23',{ts '2010-07-09 13:21:38.953'},'SA',null,null,null,'Tipo contratto prova Piero',null,null,'0','S','4','S',null,null,null,'3636',null,null,null,null,null,null,'S','N','N',{ts '2021-09-10 10:31:44.640'},'nino','N',null,null,null,null,null,null,null,null,'0',null,null,null,null,null,'N',null,'assistenzahw@gmail.com')
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('RICH',null,null,'31',{ts '2015-04-28 15:35:19.960'},'assistenza',null,null,null,'RICHIESTA',null,null,'1','S','2','N',null,null,null,null,null,null,null,null,'00010007',null,'S','N','N',{ts '2016-05-04 12:02:14.393'},'assistenza','N','FIRMA AL CENTRO','maria smaldino','Prof. Gioacchino ANGARANO  ','riga1
+riga2
+riga3
+riga4',null,null,null,null,'0',null,null,null,null,'Il Direttore','N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('RICH_GEN','S',null,'23',{ts '2020-02-21 12:39:57.783'},'assistenza','assistenzasoft@gmail.com',null,null,'Tipo richiesta GENERALE',null,'','3','S','2','N','Intestazione da mandatekind.',null,null,'3637','3869',null,null,null,null,null,'S','N','N',{ts '2020-02-21 12:39:57.783'},'assistenza','N','FIRMA AL CENTRO','maria smaldino','Prof. Gioacchino ANGARANO  ',null,null,null,null,'','0',null,null,null,null,'Il Direttore','N',null,'assistenzahw@gmail.com')
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('RICHIESTAWEB',null,null,'31',{ts '2015-10-29 14:00:53.497'},'assistenza',null,null,null,'RICHIESTA - WEB',null,null,'1','S','2','N',null,null,null,null,null,null,null,null,null,null,'S','N','N',{ts '2016-05-04 12:02:17.627'},'assistenza','N','FIRMA AL CENTRO',null,'Prof. Gioacchino ANGARANO  ','riga1
+riga2
+riga3
+riga4',null,null,null,null,'0',null,null,null,null,'Il Direttore','N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('RICHIESTAWEB_Q',null,null,'31',{ts '2015-10-29 16:25:27.427'},'assistenza',null,null,null,'RICHIESTA - WEB - Attivita Qualsiasi',null,null,'1','S','4','N',null,null,null,null,null,null,null,null,null,null,'S','N','N',{ts '2016-05-04 12:02:20.927'},'assistenza','N','FIRMA AL CENTRO',null,'Prof. Gioacchino ANGARANO  ','riga1
+riga2
+riga3
+riga4',null,null,null,null,'0',null,null,null,null,'Il Direttore','N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('SOLOIST','S',null,'31',{ts '2012-10-22 11:26:08.890'},'sa',null,null,null,'Solo attività istituzionale',null,null,'0','S','1','N',null,null,null,'3637',null,null,null,null,null,null,'N','S','S',{ts '2014-06-26 10:47:24.190'},'assistenza','N',null,null,null,null,null,null,null,null,'0',null,null,null,null,null,'N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('STIPENDI','S',null,'16',{ts '2015-10-26 09:59:37.833'},'assistenza',null,null,null,'STIPENDI',null,null,'1','S','1','S',null,null,null,null,null,null,null,null,null,null,'N','N','N',{ts '2015-10-26 09:59:37.833'},'assistenza','S',null,null,null,null,null,null,null,null,'0',null,null,null,null,null,'N',null,null)
+INSERT INTO [mandatekind] (idmankind,active,address,assetkind,ct,cu,dangermail,deltaamount,deltapercentage,description,email,faxnumber,flag,flag_autodocnumbering,flagactivity,flagcreatedoubleentry,header,idivakind_forced,idreg_rupanac,idsor01,idsor02,idsor03,idsor04,idsor05,idupb,ipa_fe,isrequest,linktoasset,linktoinvoice,lt,lu,multireg,name_c,name_l,name_r,notes1,notes2,notes3,office,phonenumber,requested_doc,riferimento_amministrazione,rtf,title_c,title_l,title_r,touniqueregister,txt,warnmail) VALUES ('TEST',null,null,'31',{ts '2007-11-06 13:54:05.747'},'NINO',null,null,null,'TEST',null,null,'1','S','2','N',null,null,null,null,null,null,null,null,'00010007',null,'S','N','N',{ts '2016-05-04 12:02:28.743'},'assistenza','N','FIRMA AL CENTRO','maria smaldino','Prof. Gioacchino ANGARANO  ','riga1
+riga2
+riga3
+riga4',null,null,null,null,'0',null,null,null,null,'Il Direttore','N',null,null)
+GO
+
+-- FINE GENERAZIONE SCRIPT --
+

@@ -188,7 +188,7 @@
          */
         hideControl:function (that) {
             if (that.currentRootElement){
-                if (that.isModal) $(this.myModalUnivoqueId).modal('hide'); // inovo hide così rimuove lo sofndo non cliccabile
+                if (that.isModal) $(this.myModalUnivoqueId).modal('hide'); // invoco hide così rimuove lo sfondo non cliccabile
                 that.currentRootElement.remove();
             }
             if (that.metaPage.eventManager) that.metaPage.eventManager.trigger(appMeta.EventEnum.listManagerHideControl, that, "hideControl");

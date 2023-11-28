@@ -137,7 +137,7 @@
         modalLoader_wait_waiting: "Attendere...",
 
         // server error
-        serverUnracheable: "Rete non disponibile, oppure chiamata bloccata da un sistema di sicurezza (provare a disabilitare firewall o antivirus)",
+        serverUnreachable: "Rete non disponibile, oppure chiamata bloccata da un sistema di sicurezza (provare a disabilitare firewall o antivirus)",
         serverErrorInternal : "Errore interno del server: ",
 
         saveSuccessfully: "Dati salvati correttamente",

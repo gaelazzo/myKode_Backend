@@ -16,8 +16,5 @@
   "devDependencies": {
     "jasmine-core": "~2.2.1",
     "jasmine-jquery": "^2.1.1"
-  },
-  "resolutions": {
-    "lodash": "~4.17.21"
   }
 }

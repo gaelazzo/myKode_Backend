@@ -43,8 +43,8 @@ describe("ComboManager",
             $("html").html(mainwin);
 
             // colonne per il datasource
-            datasource.insertFilter = q.eq("c_codice", "3"); // sto in searchState, quindi non viene preso in considerazione
-            datasource.searchFilter = null;
+            datasource.searchFilter  = q.eq("c_codice", "3"); // sto in insertState, quindi non viene preso in considerazione
+            datasource.insertFilter = null;
 
             datasource.clear();
             t.clear();
@@ -73,6 +73,7 @@ describe("ComboManager",
             metapage.state = state;
             helpForm = new HelpForm(state, "datasource", "#rootelement");
             helpForm.lastSelected(t, objrow6);
+            metapage.updateState();
             metapage.helpForm = helpForm;
             helpForm.preScanControls()
             .then(()=>{

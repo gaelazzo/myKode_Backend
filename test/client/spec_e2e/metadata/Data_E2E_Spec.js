@@ -1,5 +1,6 @@
 
 describe('Data', function () {
+
     var conn;
     var ds;
     var logger = appMeta.logger;
@@ -11,6 +12,7 @@ describe('Data', function () {
     var defLogin;
     // effettuo login
     beforeAll(function () {
+        //console.log("Data")
         appMeta.connection.setTestMode(true);
         appMeta.basePath = "base/test_client/";
         appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
@@ -115,6 +117,7 @@ describe('Data', function () {
     });
 
     afterEach(function () {
+        if (appMeta.Stabilizer.nesting>0) appMeta.Stabilizer.showDeferred();
         expect(appMeta.Stabilizer.nesting).toBe(0);
     });
 

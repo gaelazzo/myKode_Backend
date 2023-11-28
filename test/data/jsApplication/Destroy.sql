@@ -298,3 +298,20 @@ BEGIN
 END
 GO
 
+IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[menuweb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+ drop table [dbo].[menuweb]
+END
+GO
+
+IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[mandate]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+ drop table [dbo].[mandate]
+END
+GO
+
+IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[mandatekind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+ drop table [dbo].[mandatekind]
+END
+GO

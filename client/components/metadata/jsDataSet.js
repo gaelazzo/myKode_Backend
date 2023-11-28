@@ -1934,16 +1934,17 @@
          * @returns string
          */
         columnList: function () {
-            let c = _.map(
-                this.columns,
-                function (c) {
-                    return c.name;
-                }
-            );
-            if (c.length > 0) {
-                return c.join(",");
-            }
-            return '*';
+            let nomiColonne = _.chain(this.columns)
+            .pickBy(c => {
+                return (c.expression === '' || _.isEmpty(c.expression)) && !_.startsWith(c.name, '!');
+            })
+            .map(c => c.name)
+            .values()
+            .join(',')
+            .defaultTo('*')
+            .value();
+
+
         },
 
         /**
@@ -1993,6 +1994,12 @@
             //t.staticFilter(this.staticFilter());
             if (this.myStaticFilter) {
                 t.staticFilter = dataQuery.toObject(this.myStaticFilter);
+            }
+            if (this.searchFilter) {
+                t.searchFilter = dataQuery.toObject(this.searchFilter);
+            }
+            if (this.insertFilter) {
+                t.staticFilter = dataQuery.toObject(this.insertFilter);
             }
             if (this.isSkipSecurity) {
                 t.skipSecurity = this.isSkipSecurity;
@@ -2107,7 +2114,12 @@
                 if (t.staticFilter) {
                     this.staticFilter(dataQuery.fromObject(t.staticFilter));
                 }
-
+                if (t.searchFilter) {
+                    this.searchFilter = dataQuery.fromObject(t.searchFilter);
+                }
+                if (t.insertFilter) {
+                    this.staticFilter = dataQuery.fromObject(t.insertFilter);
+                }
                 if (t.skipSecurity) {
                     this.skipSecurity(t.skipSecurity);
                 }
@@ -2177,7 +2189,8 @@
          * @returns DataRelation[]
          */
         parentRelations: function () {
-            return this.dataset.relationsByChild[this.name];
+            if (!this.dataset) return [];
+            return this.dataset.relationsByChild[this.name]||[];
         },
 
         /**
@@ -2186,7 +2199,8 @@
          * @returns DataRelation[]
          */
         childRelations: function () {
-            return this.dataset.relationsByParent[this.name];
+            if (!this.dataset) return [];
+            return this.dataset.relationsByParent[this.name]||[];
         },
 
         /**
@@ -2224,6 +2238,7 @@
             let cloned = new DataTable(this.name);
             cloned.key(this.key());
             ["myTableForReading", "myTableForWriting", "isCached", "isTemporaryTable", "myOrderBy", "myStaticFilter",
+                "searchFilter","insertFilter",
                 "isSkipSecurity", "isSkipInsertCopy", "myRealTable", "myViewTable", "myDenyClear", "myDefaults"].forEach((field) => {
                     if (this[field]) cloned[field] = this[field];
                 });

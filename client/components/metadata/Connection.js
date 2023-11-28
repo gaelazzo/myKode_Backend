@@ -1,3 +1,4 @@
+/* global appMeta */
 /**
  * @module Connection
  * @description
@@ -43,7 +44,7 @@
 
         this.requestIdCurrent = 0; // contatore delle richieste corrente
         this.testMode = false;
-    };
+    }
 
 
     Connection.prototype = {
@@ -89,6 +90,8 @@
             objConn.prm.idRequest = currIdRequest;
 
             var self = this;
+            let dict = appMeta.localResource.dictionary;
+
 
             // Rilancio al chiamante, aggiungendo logica in questa fase se necessario
             // N.B la progress quindi non serve gestirla, la gestisce direttamente il chiamante finale
@@ -100,13 +103,13 @@
                     })
                 .fail(
                     function (err) {
+                        //console.log("currentBackendManager.call error", err);
                         var logtype = logType.INFO;
                         if (objConn.noLogError === undefined){
-                            // se è scaduto il token, lancio evento. così lo posso intercettare fuori e fare le opportune operazioni
+                            // se è scaduto il token, lancio evento. Così lo posso intercettare fuori e fare le opportune operazioni
                             // Per ora ho gestito err http 401 Unhautorized. Capire altri errori http cosa fare
-                            var msg = appMeta.localResource.serverUnreachable;
+                            var msg = dict.serverUnreachable;
                             if (err.status) {
-
                                 // ripulisco errore
                                 var serr = null;
                                 if (err.text) {
@@ -115,56 +118,58 @@
 
                                 if (err.status === 401) {
                                     self.currentBackendManager.unsetToken(); // reset della'header dove c'è token di autenticazione
-                                    if (!appMeta.globalEventManager) appMeta.globalEventManager = new appMeta.EventManager();
+                                    if (!appMeta.globalEventManager) {
+                                        appMeta.globalEventManager = new appMeta.EventManager();
+                                    }
 
                                     // in ogni caso devo riportare al login
                                     appMeta.globalEventManager.trigger(appMeta.EventEnum.expiredCredential, self, 'expiredCredential');
                                 }
+                                msg = serr;
 
                                 if (err.status === 500) {
-                                    msg = appMeta.localResource.serverErrorInternal;
+                                    msg = dict.serverErrorInternal;
                                 }
                                 if (err.text) {
-
                                     // gestione custom per filtro serializzato con undefined
                                     if (serr.startsWith(serverErrorTypeEnum.FilterWithUndefined)) {
-                                        var parts = serr.split('$__$');
-                                        msg = appMeta.localResource.filterWithUndefined + ' ' + parts[1];
+                                        let parts = serr.split('$__$');
+                                        msg = dict.filterWithUndefined + ' ' + parts[1];
                                     }
 
                                     // msg = serr;
                                     switch (serr) {
                                         case serverErrorTypeEnum.NoCredential :
-                                            msg = appMeta.localResource.serverErrorNoCredential;
+                                            msg = dict.serverErrorNoCredential;
                                             break;
                                         case serverErrorTypeEnum.DataContabileMissing :
-                                            msg = appMeta.localResource.dataContabileMissing;
+                                            msg = dict.dataContabileMissing;
                                             break;
                                         case serverErrorTypeEnum.ExpiredCredential :
                                             self.currentBackendManager.unsetToken();
-                                            msg = appMeta.localResource.serverErrorExpiredCredential;
+                                            msg = dict.serverErrorExpiredCredential;
                                             break;
                                         case serverErrorTypeEnum.ExpiredSession :
                                             self.currentBackendManager.unsetToken();
-                                            msg = appMeta.localResource.serverErrorExpiredSession;
+                                            msg = dict.serverErrorExpiredSession;
                                             break;
                                         case serverErrorTypeEnum.BadCredential :
                                             msg = appMeta.localResource.serverErrorBadCredential;
                                             break;
                                         case serverErrorTypeEnum.DataNotPermitted :
-                                            msg = appMeta.localResource.serverErrorDataNotPermitted;
+                                            msg = dict.serverErrorDataNotPermitted;
                                             break;
                                         case serverErrorTypeEnum.TokenEmpty :
-                                            msg = appMeta.localResource.serverErrorTokenEmpty;
+                                            msg = dict.serverErrorTokenEmpty;
                                             break;
                                         case serverErrorTypeEnum.UserNotSecurity :
-                                            msg = appMeta.localResource.serverErrorUserNotSecurity;
+                                            msg = dict.serverErrorUserNotSecurity;
                                             break;
                                         case serverErrorTypeEnum.AnonymousNotPermitted :
-                                            msg = appMeta.localResource.serverErrorAnonymous;
+                                            msg = dict.serverErrorAnonymous;
                                             break;
                                         case serverErrorTypeEnum.ExpiredCredentialSSO :
-                                            msg = appMeta.localResource.serverErrorSSO;
+                                            msg = dict.serverErrorSSO;
                                             break;
 
                                         }
@@ -179,11 +184,11 @@
 
                         //&& (objConn.method === 'login' || objConn.method === 'loginLDAP')
                         if (objConn.prm && objConn.prm.password) {
-                            objConn.prm.password = '************'
+                            objConn.prm.password = '************';
                         }
 
                         if (self.testMode) {
-                            console.log(err);
+                            //console.log(err);
                             def.reject(err);
                         }
                         else {
@@ -193,7 +198,7 @@
                                 then(() => def.reject(err))
                         }
                         return def.promise();
-                    })
+                    });
         },
 
         /**

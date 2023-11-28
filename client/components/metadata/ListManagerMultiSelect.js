@@ -60,7 +60,7 @@
                 $(this.myModalUnivoqueId  + ' .modal-footer').append($(this.myfooter));
                 $(this.myModalUnivoqueId).modal('show');
                 if (this.metaPage.eventManager) return this.metaPage.eventManager.trigger(appMeta.EventEnum.showModalWindow, this, "buildModal");
-
+                console.log("ListManagerMultiSelect: there is no eventManager");
                 return true;
 
             },

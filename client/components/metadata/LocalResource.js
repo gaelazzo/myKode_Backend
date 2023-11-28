@@ -37,7 +37,7 @@
      * @constructor LocalResource
      */
     function LocalResource() {
-        this.dict = {};
+        this.dictionary = {};
     }
 
     LocalResource.prototype = {

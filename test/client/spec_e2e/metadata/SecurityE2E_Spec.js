@@ -1,10 +1,11 @@
 'use strict';
 
 describe('Security', function () {
-  
+
     var timeout  = 20000;
 
     beforeAll(function () {
+        //console.log("Security")
         appMeta.basePath = "base/test_client/";
         appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
         appMeta.globalEventManager = new appMeta.EventManager();

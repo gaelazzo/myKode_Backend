@@ -174,7 +174,7 @@ desidera effettuare una transazione, che nella classe PostData è automatica.
 
 ### Funzioni che invocano stored procedure
 
-- callSP : invoca una sp passando un elenco ordinato di parametri e restituisce una o più tabelle
+- callSP: invoca una sp passando un elenco ordinato di parametri e restituisce una o più tabelle
 - callSPWithNamedParams: invoca una sp utilizzando i parametri per nome, ove il db lo consenta
 
 

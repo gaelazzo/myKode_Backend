@@ -1,6 +1,7 @@
 'use strict';
 
 describe('MetaData', function () {
+
     var metaData;
     var conn;
     var ds;
@@ -13,6 +14,7 @@ describe('MetaData', function () {
     let defLogin;
     // effettuo login
     beforeAll(function () {
+        //console.log("Metadata")
         appMeta.basePath = "base/test_client/";
         appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
         appMeta.globalEventManager = new appMeta.EventManager();

@@ -49,7 +49,6 @@
                     messages: getDataUtils.getJsonFromMessages(messages)
                 }
             };
-
             appMeta.connection.call(objConn)
                 .then(function (jsonRes) {
                         try{
@@ -62,8 +61,6 @@
                             let dsOut = new jsDataSet.DataSet(obj.dataset.name);
                             // deserializzo il json proveniente dal server e popolo ds
                             dsOut.deSerialize(obj.dataset, true);
-
-                            
 
                             var success = obj.success;
                             let _canIgnore = true;
@@ -93,8 +90,9 @@
                             return def.resolve(false);
                         }
 
-                    }, function(err) {
-                        return def.reject(false);
+                    },
+                    function(err) {
+                        return def.reject(err);
                     }
                 );
 
@@ -149,7 +147,7 @@
 
                     } else {
                         // N.B se "success" è false devono esserci dei messaggi, altrimenti c'è anomalia da qualche parte! Mostro messaggio di errore all'utente
-                        logger.log(logType.ERROR, "save unsucceded, but no procedure db error message found");
+                        logger.log(logType.ERROR, "save failed, but no procedure db error message found");
                         return def.resolve(false);
                     }
                 });

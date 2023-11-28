@@ -40,13 +40,11 @@ const Context = require('./jsDbList').Context;
  */
 function JsApplication() {
     this.expressApplication = createExpressApplication();
-
     this.expressApplication.locals.JsApplication= this; //every expressApplication is attached to a JsApplication
 
     this.router = Express.Router();
     this.pool=null;
-
-
+    
     /**
      * Collection of all user environments of the application, the key is the sessionID
      * @type {Object.<string, Environment>}
@@ -85,9 +83,17 @@ JsApplication.prototype = {
     },
 
     error: function (err,req,res,next){
+        if (err instanceof Error){
+            res.status(401).json({
+                err:err.stack,
+                Message: err.message
+            });
+            return;
+        }
+
         res.status(401).json({
-            err:err,
-            error: err? err.stack:undefined
+            err:err? err.stack:undefined,
+            Message: err
         });
     },
 
@@ -159,7 +165,7 @@ JsApplication.prototype = {
         this.pool = this.createConnectionPool(this.dbCode);
         let noTokenFolders = this.getNoTokenFolders();
         let dbInfo = DBList.getDbInfo(this.dbCode);
-        if (dbInfo.test){
+        if (dbInfo.test || dbInfo.createTestSession){
             this.expressApplication.use(this.createTestSession.bind(this));//used for some unit test
         }
 
@@ -185,8 +191,6 @@ JsApplication.prototype = {
 
         this.expressApplication.use(this.router);
         this.expressApplication.use(this.error.bind(this));
-
-
 
         let connPool;
         let def = Deferred();
@@ -240,6 +244,7 @@ JsApplication.prototype = {
         let def = Deferred();
         let that=this;
         let env= this.createEnvironment(identity);
+        console.log("Creating Session");
         env.load(conn)//evaluate environments from database
         .then(()=>{
             that.environments[identity.sessionID()]=env;
@@ -272,7 +277,6 @@ JsApplication.prototype = {
     getDataSet: function(ctx,tableName,editType){
         return commonGetDataSet.getDataSet(tableName,editType,ctx);
     },
-
 
     getAnonymousEnvironment:function(identity) {
         // TODO create an anonymous environment

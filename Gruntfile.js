@@ -395,7 +395,7 @@ module.exports = function (grunt) {
     grunt.registerTask("client unit", ["karma:spec"]);
     grunt.registerTask("client midway", ["createSqlDB","NodeStart","karma:midway","NodeStop","destroySqlDB"]);
     grunt.registerTask("client e2e", ["createSqlDB", "NodeStart",
-                "karma:client_e2e", "karma:client_e2e_app",
+                "karma:client_e2e",  "karma:client_e2e_app",
                 "NodeStop","destroySqlDB"]);
     grunt.registerTask("client e2e_app", ["createSqlDB", "NodeStart",
          "karma:client_e2e_app",

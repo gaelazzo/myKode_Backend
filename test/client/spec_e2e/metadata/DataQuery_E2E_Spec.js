@@ -15,6 +15,7 @@ describe('DataQuery', function () {
     let defLogin;
     // effettuo login
     beforeAll(function () {
+        //console.log("DataQuery")
         appMeta.basePath = "base/test_client/";
         appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
         if (appMeta.globalEventManager === undefined) {
@@ -22,7 +23,7 @@ describe('DataQuery', function () {
         }
         appMeta.connection.setTestMode(false); //shows the modal window
         appMeta.localResource.setLanguage("it");
-        appMeta.logger.setLanguage(appMeta.LocalResource);
+        appMeta.logger.setLanguage(appMeta.localResource);
         //logger.setLogLevel(logType.INFO);
       
         defLogin = appMeta.Deferred("login test");
@@ -167,9 +168,9 @@ describe('DataQuery', function () {
     });
     afterAll(() => {
         appMeta.connection.setTestMode(true); //shows the modal window
-    })
-            it('Send jsDataQuery to server, basic test: Function "Eq" + "Field" undefined value in integer non nullable',
-                function (done) {
+    });
+    it('Send jsDataQuery to server, basic test: Function "Eq" + "Field" undefined value in integer non nullable',
+        function (done) {
                    
                     defLogin.then(function () {
                         // inputFilter = $q.eq($q.field('idreg'), undefined);
@@ -196,8 +197,8 @@ describe('DataQuery', function () {
                     });
                 });
 
-            it('Multirunselect Send jsDataQuery to server, basic test: Function "Eq" + "Field" undefined value in integer non nullable',
-                function (done) {
+    it('Multirunselect Send jsDataQuery to server, basic test: Function "Eq" + "Field" undefined value in integer non nullable',
+        function (done) {
                     defLogin.then(function () {
                         var ds = new jsDataSet.DataSet("temp");
                         var t1 = ds.newTable("t1");
@@ -236,8 +237,8 @@ describe('DataQuery', function () {
 
 
 
-            it('Send jsDataQuery to server, basic test: Function "Eq" + "Field" undefined value',
-                function (done) {
+    it('Send jsDataQuery to server, basic test: Function "Eq" + "Field" undefined value',
+        function (done) {
                     defLogin.then(function () {
                         inputFilter = $q.eq($q.field('c_name'), undefined);
                         funcCompOnTable(inputFilter).then(function (fnRes) {
@@ -251,11 +252,11 @@ describe('DataQuery', function () {
                             done();
                         });
                     });
-                });
+        });
 
 
-            it('Send jsDataQuery to server, basic test: Function "Eq" + "Field", select on t1 is ok',
-                function (done) {
+    it('Send jsDataQuery to server, basic test: Function "Eq" + "Field", select on t1 is ok',
+        function (done) {
                     defLogin.then(function () {
                         inputFilter = $q.eq($q.field('c_name'), "nome1");
                         funcCompOnTable(inputFilter).then(function () {
@@ -268,8 +269,8 @@ describe('DataQuery', function () {
                 }, timeout);
 
 
-            it('Send jsDataQuery to server, basic test: Function "like", select on t1 is ok',
-                function (done) {
+    it('Send jsDataQuery to server, basic test: Function "like", select on t1 is ok',
+        function (done) {
                     defLogin.then(function () {
                         inputFilter = $q.like($q.field('c_name'), 'nome');
                         funcCompOnTable(inputFilter).then(function () {
@@ -279,12 +280,12 @@ describe('DataQuery', function () {
                             done();
                         });
                     });
-                });
+        });
 
 
-            it('Send jsDataQuery to server, basic test: Function "constant"',
-                function (done) {
-                    defLogin.then(function () {
+    it('Send jsDataQuery to server, basic test: Function "constant"',
+        function (done) {
+            defLogin.then(function () {
                         inputFilter = $q.constant('a');
                         jsonToSend = appMeta.getDataUtils.getJsonFromJsDataQuery(inputFilter);
                         // 4. creo oggetto per l'invio al server
@@ -307,13 +308,13 @@ describe('DataQuery', function () {
                                     done();
                                 });
                     });
-                });
+        });
 
 
 
-            it('Send jsDataQuery to server, basic test: Function "isIn"',
-                function (done) {
-                    defLogin.then(function () {
+    it('Send jsDataQuery to server, basic test: Function "isIn"',
+        function (done) {
+            defLogin.then(function () {
 
                         var inputFilter = $q.isIn('q', ['a', 'A', ' ', null, 1]);
 
@@ -339,12 +340,12 @@ describe('DataQuery', function () {
                                 done();
                             });
                     });
-                });
+        });
 
             //REAL XIT    
-            xit('Send jsDataQuery to server, basic test: Function "isIn", select on t1 is ok',
-                function (done) {
-                    defLogin.then(function () {
+    xit('Send jsDataQuery to server, basic test: Function "isIn", select on t1 is ok',
+        function (done) {
+            defLogin.then(function () {
 
                         var inputFilter = $q.isIn('c_dec', [11, 33]);
                         funcCompOnTable(inputFilter).then(function () {
@@ -354,12 +355,12 @@ describe('DataQuery', function () {
                             done();
                         });
                     });
-                }, timeout);
+        }, timeout);
 
             //REAL XIT
-            xit('Send jsDataQuery to server, basic test: Function "isNotIn", select on t1 is ok',
-                function (done) {
-                    defLogin.then(function () {
+    xit('Send jsDataQuery to server, basic test: Function "isNotIn", select on t1 is ok',
+        function (done) {
+            defLogin.then(function () {
                         var inputFilter = $q.isNotIn('c_dec', [11, 33]);
                         funcCompOnTable(inputFilter).then(function () {
                             done();
@@ -368,11 +369,11 @@ describe('DataQuery', function () {
                             done();
                         });
                     });
-                }, timeout);
+        }, timeout);
 
 
-            it('Send jsDataQuery to server, basic test: Function "And + eq", select on t1 is ok',
-                function (done) {
+    it('Send jsDataQuery to server, basic test: Function "And + eq", select on t1 is ok',
+       function (done) {
                     defLogin.then(function () {
                         var inputFilter = $q.and($q.eq('c_dec', 11), $q.eq('c_name', "nome1"));
                         funcCompOnTable(inputFilter).then(function () {
@@ -382,12 +383,13 @@ describe('DataQuery', function () {
                             done();
                         });
                     });
-                });
+                }
+        );
 
 
-            it('Send jsDataQuery to server, basic test: Function "And + eq", passing array of clause in "and" select on t1 is ok',
-                function (done) {
-                    defLogin.then(function () {
+    it('Send jsDataQuery to server, basic test: Function "And + eq", passing array of clause in "and" select on t1 is ok',
+        function (done) {
+            defLogin.then(function () {
                         var inputFilter = $q.and([$q.eq('c_dec', 11), $q.eq('c_name', "nome1")]);
                         var t1filter1 = t1.select(inputFilter); // serve per confrontare
 
@@ -415,67 +417,67 @@ describe('DataQuery', function () {
                                 })
 
                     });
-                });
+        });
 
 
-            it('Send jsDataQuery to server, basic test: Function "Or + eq", passing array of clause in "or" select on t1 is ok',
-                function (done) {
-                    defLogin.then(function () {
-                        var inputFilter = $q.or([$q.eq('c_dec', 11), $q.eq('c_dec', 22)]);
-                        var t1filter1 = t1.select(inputFilter); // serve per confrontare
+    it('Send jsDataQuery to server, basic test: Function "Or + eq", passing array of clause in "or" select on t1 is ok',
+        function (done) {
+           defLogin.then(function () {
+                var inputFilter = $q.or([$q.eq('c_dec', 11), $q.eq('c_dec', 22)]);
+                var t1filter1 = t1.select(inputFilter); // serve per confrontare
 
-                        jsonToSend = appMeta.getDataUtils.getJsonFromJsDataQuery(inputFilter);
-                        // 4. creo oggetto per l'invio al server
-                        var objConn = {
-                            method: methodEnum.getJsDataQuery,
-                            prm: { dquery: jsonToSend }
-                        };
-                        // 4. invio la richiesta al server
-                        conn.call(objConn)
-                            .then(function (res) {
-                                // riconverto la stringa json proveniente dal server
-                                var m = appMeta.getDataUtils.getJsDataQueryFromJson(res);
-                                var t1filter2 = t1.select(m); // serve per confrontare
+                jsonToSend = appMeta.getDataUtils.getJsonFromJsDataQuery(inputFilter);
+                // 4. creo oggetto per l'invio al server
+                var objConn = {
+                    method: methodEnum.getJsDataQuery,
+                    prm: { dquery: jsonToSend }
+                };
+                // 4. invio la richiesta al server
+                conn.call(objConn)
+                    .then(function (res) {
+                        // riconverto la stringa json proveniente dal server
+                        var m = appMeta.getDataUtils.getJsDataQueryFromJson(res);
+                        var t1filter2 = t1.select(m); // serve per confrontare
 
-                                expect(_.isEqual(t1filter1, t1filter2)).toBe(true);
-                                expect(m.myName).toBe(inputFilter.myName);
-                                done();
-                            },
-                                function (err) {
-                                    //logger.log(logType.ERROR, 'Errore jsDataQuery ', 'err: ', err);
-                                    expect(err).toBe(0);
-                                    done();
-                                })
-
-                    });
-                });
-
-
-            it('Send jsDataQuery to server, basic test: Function "Or + eq", select on t1 is ok',
-                function (done) {
-                    defLogin.then(function () {
-                        var inputFilter = $q.or($q.eq('c_dec', 11), $q.eq('c_name', "nome2"));
-                        funcCompOnTable(inputFilter).then(function () {
-                            done();
-                        }, function (err) {
-                            expect(true).toBe(false);
+                        expect(_.isEqual(t1filter1, t1filter2)).toBe(true);
+                        expect(m.myName).toBe(inputFilter.myName);
+                        done();
+                    },
+                        function (err) {
+                            //logger.log(logType.ERROR, 'Errore jsDataQuery ', 'err: ', err);
+                            expect(err).toBe(0);
                             done();
                         });
-                    });
-                }, timeout);
+
+            });
+        });
 
 
-            it('Send jsDataQuery to server, basic test: Function "le", select on t1 is ok',
-                function (done) {
-                    defLogin.then(function () {
-                        var inputFilter = $q.le('c_dec', 22);
-                        funcCompOnTable(inputFilter).then(function () {
-                            done();
-                        }, function (err) {
-                            expect(true).toBe(false);
-                            done();
-                        });
-                    });
+    it('Send jsDataQuery to server, basic test: Function "Or + eq", select on t1 is ok',
+        function (done) {
+            defLogin.then(function () {
+                var inputFilter = $q.or($q.eq('c_dec', 11), $q.eq('c_name', "nome2"));
+                funcCompOnTable(inputFilter).then(function () {
+                    done();
+                }, function (err) {
+                    expect(true).toBe(false);
+                    done();
+                });
+            });
+        }, timeout);
+
+
+    it('Send jsDataQuery to server, basic test: Function "le", select on t1 is ok',
+      function (done) {
+            defLogin.then(function () {
+                var inputFilter = $q.le('c_dec', 22);
+                funcCompOnTable(inputFilter).then(function () {
+                    done();
+                }, function (err) {
+                    expect(true).toBe(false);
+                    done();
+                });
+            });
                 }, timeout);
 
             it('Send jsDataQuery to server, basic test: Function "lt", select on t1 is ok',

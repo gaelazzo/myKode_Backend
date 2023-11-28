@@ -91,6 +91,7 @@
                 $("button[data-tag='mainselect']").data("mdlModalWin", this).on("click", this.close);
             }
             if (this.evManager) this.evManager.trigger(appMeta.EventEnum.showModalWindow, this);
+            //if (!this.evManager) console.log("ModalForm: there is no eventManager");
             return this.defModal.promise();
         },
 

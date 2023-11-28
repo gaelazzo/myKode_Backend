@@ -85,7 +85,7 @@
                 $.ajax(options);
             }
             catch (err) {
-                console.log("catching " + err);                
+                console.log("ConnWebService: catching " + err);
                 deferred.reject({ text: err, status:500 });
             }
 
@@ -109,10 +109,18 @@
             //console.log("got error from web service! " + xhr.responseJSON + " status " + status + " body:" + thrownError);
             if (xhr.responseJSON) {
                 err = xhr.responseJSON;
-                if (err.Message) err = err.Message;
+                if (err.error && err.error.Message) {
+                    err = err.error.Message;
+                }
+                if (err.err) {
+                    err = err.err;
+                }
+                if (err.Message) {
+                    err = err.Message;
+                }
             }
-           
-            deferred.reject({ text: err, status: xhr.statusText });
+
+            deferred.reject({ text: err, status: xhr.status });
         },
 
         /**
@@ -133,8 +141,17 @@
             // Introdotta nuova gestione dopo  l'inserimento dell'interfaccia comune con i web socket
             var isValidJSON = true;
             //console.log("got data from service")
-            if (!res)  return deferred.resolve(null);
-            try { JSON.parse(res); } catch (e){ isValidJSON = false; }
+            if (!res) {
+                return deferred.resolve(null);
+            }
+            if (typeof res === 'object'){
+                return deferred.resolve(res);
+            }
+            try {
+                JSON.parse(res);
+            } catch (e){
+                isValidJSON = false;
+            }
             if (isValidJSON) {
                 //console.log("ConnWebService received:" + JSON.stringify(options));
                 var obj  = appMeta.getDataUtils.getJsObjectFromJson(res);
@@ -159,7 +176,6 @@
 
             // nel caso resolve vedo se si tratta di multipleresult , in quel caso eseguo n notify
             if (type === appMeta.RequestTypeEnum.resolve){
-
                 if (currRequest.multipleResult){
                     
                     // deve fare un foreach sui dati e mandare la notify

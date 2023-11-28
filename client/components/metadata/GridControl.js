@@ -140,7 +140,8 @@
          * @method selectRowCallBack
          * @private
          * @description ASYNC
-         * It is the callback triggered after a ROW_SELCT event on metapage. If the parameter table is the gridmaster it fill the grid, and select the row "row"
+         * It is the callback triggered after a ROW_SELCT event on metapage.
+         * If the parameter table is the gridmaster it fill the grid, and select the row "row"
          * @param {element|object} sender
          * @param {DataTable} table
          * @param {ObjectRow} row
@@ -378,7 +379,9 @@
                 this.setRowRunning = false;
                 return def.resolve(true);
             }
-            if (row === this.currentRow) return def.resolve(true);
+            if (row === this.currentRow) {
+                return def.resolve(true);
+            }
             if (propagate === undefined) propagate = true;
             this.currentRow = row;
 
@@ -707,6 +710,7 @@
                 case "Single":
                 case "Int32":
                 case "DateTime":
+                case "date":
                     return appMeta.cssDefault.alignNumericColumn;
                 case "String":
                     return appMeta.cssDefault.alignStringColumn;
@@ -889,14 +893,14 @@
             if (this.timeoutId) {
                 clearTimeout(this.timeoutId);
                 this.timeoutId = null;
-                Stabilizer.decreaseNesting("rowClickEv.timeout");
+                Stabilizer.decreaseNesting("rowClickEv");
             }
             Stabilizer.increaseNesting("rowClickEv");
             this.timeoutId = setTimeout(function () {
                 self.timeoutId = null;
                 that.rowClick
                     .call(self, that);
-                Stabilizer.decreaseNesting("rowClickEv.timeout");
+                Stabilizer.decreaseNesting("rowClickEv");
             }, appMeta.currApp.dbClickTimeout);
         },
 
@@ -929,7 +933,7 @@
          */
         rowClick: function (that, propagate) {
             var self = this;
-            // distinguo ildoppio click s è o meno gestito come treeNavigator
+            // distinguo il doppio click se è o meno gestito come treeNavigator
 
             var index = $(this).data("mdlRowIndex");
             var r = null;

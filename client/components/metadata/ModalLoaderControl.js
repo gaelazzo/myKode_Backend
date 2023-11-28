@@ -1,4 +1,4 @@
-/*global _,$,appMeta */
+/*global _,$,appMeta, Deferred */
 /**
  * @module ModalLoaderControl
  * @description
@@ -121,15 +121,16 @@
         hideControl: function () {
             let result = appMeta.Deferred().resolve(true);
             if (this.$el) {
-                //console.log("hiding " + JSON.stringify(this.$el));
-                if (this.$el.is(":visible")) {
+                //console.log("hiding " + JSON.stringify(this.$el.html()));
+                if (this.$el.hasClass('in') ) { //this.$el.is(":visible")
                     //console.log("ModalLoaderControl.hideControl seems visible -", $(".modal:visible").length);
-                    result = appMeta.Deferred()
-                    //console.log("hiding with id " + JSON.stringify(this.$el));
-                    $("#modalLoader_control_id").one("hidden.bs.modal", function () {
+                    result = appMeta.Deferred();
+                    //console.log("hiding with id " + JSON.stringify(this.$el)+" visible is "+$(".modal:visible"));
+                    //$("#modalLoader_control_id")
+                    this.$el.one("hide.bs.modal", function () {
                         //console.log("ModalLoaderControl.hideControl hiding done -", $(".modal:visible").length);
                         result.resolve(true);
-                    })
+                    });
                 }
                 else {
                     //console.log("ModalLoaderControl.hideControl $el was not visible - ", $(".modal:visible").length);
@@ -139,10 +140,10 @@
                 //this.$el = undefined;
             }
             else {
-                //console.log("ModalLoaderControl.hideControl  not hiding - ", $(".modal").length);
+                console.log("ModalLoaderControl.hideControl  not hiding - ", $(".modal").length);
             }
             $("#waitProgressId").css("visibility", "hidden");
-            //console.log("hide succeeded");
+            // console.log("hide returns");
             return result;
         },
 
@@ -223,7 +224,7 @@
                 //console.log("ModalLoaderControl.hide calls hideControl");
                 return this.hideControl();
             }
-
+            //console.log("ModalLoaderControl.hide returns resolved deferred");
             return Deferred().resolve(true);
         }
     };

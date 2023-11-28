@@ -1,5 +1,6 @@
 
 describe('GetData', function () {
+
     var getData;
     var conn;
     var ds;
@@ -12,6 +13,7 @@ describe('GetData', function () {
     var defLogin;
     // effettuo login
     beforeAll(function () {
+        //console.log("GetData e2e")
         appMeta.basePath = "base/test_client/";
         appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
         appMeta.globalEventManager = new appMeta.EventManager();
@@ -716,8 +718,13 @@ describe('GetData', function () {
                             function (res) {
                                 expect(res).toBe(true);
                                 done();
-                            })
-                    })
+                            },
+                            function(err){
+                                console.log(err)
+                                expect(err).toBe("no error");
+                                done();
+                            });
+                    });
                 }, timeout);
 
             it('getByKey() is ASYNC; 1. getDataSet empty from server; 2. returns dataRow on entityTable on row key values',

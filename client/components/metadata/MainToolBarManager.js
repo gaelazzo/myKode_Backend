@@ -48,7 +48,8 @@
          */
         loadTemplate:function () {
             // carico il template della toolbar
-            var htmlCodeTemplate =  appMeta.getData.cachedSyncGetHtml(appMeta.basePath+this.templateFileHtmlPath);
+            let templatePath = appMeta.basePath+this.templateFileHtmlPath;
+            var htmlCodeTemplate =  appMeta.getData.cachedSyncGetHtml(templatePath);
 
             $(this.rootElement).html(htmlCodeTemplate);
             this.loadButtonProperties();
@@ -143,6 +144,7 @@
         setButtonText:function (btn, tag) {
             // set the text
             var txt = "";
+            if (appMeta.getLocalResource===undefined) return;
             let locale = appMeta.localResource.dictionary;
             // prendo il testo del bottone dal file locale
             if (locale[tag] !== undefined){

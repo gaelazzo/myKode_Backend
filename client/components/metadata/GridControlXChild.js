@@ -343,16 +343,6 @@
                     return false;
                 });
 
-                // se è una colonna data, inserisco calendario
-               /* var dc = self.dataTable.columns[colname];
-                if (dc.ctype === 'DateTime') {
-                    inputObj.datepicker({
-                        showOn: "focus",
-                        onClose: function () {
-                            this.focus();
-                        }
-                    });
-                }*/
             },
 
             getTextEditingChildCell:function(caption, value) {
@@ -463,7 +453,7 @@
                         objInfo.value = row[field];
                         objInfo.caption = dc.caption;
 
-                        if (dc.ctype === 'DateTime') {
+                        if (dc.ctype === 'DateTime' || dc.ctype==='date') {
                             objInfo.value = formattedDate(row[field]);
                         }
                         if (dc.sqltype === 'char' && dc.maxstringlen === 1) {

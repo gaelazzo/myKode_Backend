@@ -302,6 +302,7 @@
                 .then(function(data) {
                         //console.log("waited and now:", data);
                         targetDeferred.resolve(data);
+
                     },
                     function(failResult) {
                         //console.log("at the end fail!");
@@ -321,6 +322,7 @@
             //if (inputDeferred && inputDeferred.__createdByStabilizer) return inputDeferred;
             this.increaseNesting(eventName);
 
+
             //we are creating the actual Deferred here
             const outputDeferred = Deferred();
 
@@ -328,10 +330,11 @@
             outputDeferred.from = _.bind(this.takeFrom, this, outputDeferred);
 
             // called when the Deferred is resolved or rejected.
-            outputDeferred
-                .always(function() {
-                    that.decreaseNesting(eventName);
-                });
+            outputDeferred.done(()=>{that.decreaseNesting(eventName);});
+            outputDeferred.fail(()=>{that.decreaseNesting(eventName);});
+                // .always(function() {
+                //     that.decreaseNesting(eventName);
+                // });
 
             outputDeferred.__createdByStabilizer = true;
             //console.log("encapsulate returns ",myDeferred);
@@ -390,6 +393,7 @@
          * @param {string} [eventName]
          */
         decreaseNesting: function (eventName) {
+            if (!eventName) eventName = this.__eventName;
             //console.log("decreaseNesting invoked on ", eventName, " and nesting ", this.nesting);
             if (this.monitoring[eventName] !== undefined) {
                 this.monitoring[eventName] -= 1;
@@ -435,6 +439,16 @@
             }
             logger.log(logtypeEnum.WARNING, this.nesting > 0 ? "stabilize invoked:  actually unstable:" + this.nesting : "stabilize invoked:  waiting for unstable");
             var listener = new DeferredListener(this);
+            return listener.result;
+        },
+
+        /**
+         * Wait for unstability and then for stability
+         * @returns {Deferred}
+         */
+        stabilizeToLevel: function(level) {
+            logger.log(logtypeEnum.WARNING, this.nesting > 0 ? "stabilize invoked:  actually unstable:" + this.nesting : "stabilize invoked:  waiting for unstable");
+            let listener = new DeferredListener(this, level);
             return listener.result;
         },
 
@@ -509,6 +523,7 @@
         Deferred: myDeferred,
         ResolvedDeferred: _.bind(stabilizer.ResolvedDeferred, stabilizer),
         stabilize: _.bind(stabilizer.stabilize, stabilizer),
+        stabilizeToLevel:_.bind(stabilizer.stabilizeToLevel, stabilizer),
         stabilizeToCurrent : _.bind(stabilizer.stabilizeToCurrent, stabilizer),
         EventManager: EventManager,
         EventEnum: eventEnum

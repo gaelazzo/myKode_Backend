@@ -34,7 +34,9 @@ flowchart
 
 The calculation involves invoking stored procedures, both before and after saving the DataSet, but always ensuring that everything happens within a transaction. Therefore, if there are rule violations, the transaction will be completely rolled back.
 
-Each stored procedure refers to a table and a type of operation, and is usually calculated by a tool we provide separately. This tool is based on the audit and auditcheck tables to transform enriched-sql code into highly optimized stored procedures. However, it is possible to write these stored procedures manually, adhering to the format described below.
+Each stored procedure refers to a table and a type of operation, and is usually calculated by a tool we provide separately. 
+This tool is based on the audit and auditcheck tables to transform enriched-sql code into highly optimized stored procedures. 
+However, it is possible to write these stored procedures manually, adhering to the format described below.
 
 ## audit table
 Contains descriptions of various rules to apply, including:
@@ -43,7 +45,9 @@ Contains descriptions of various rules to apply, including:
 - `severity` (W/E/I): W if the message is ignorable, E if it is a blocking error, I if the rule is disabled
 - `title`: name of the rule
 
-The rules are returned to the client to display to the user. The user has the option to ignore them if they are all ignorable, and retry the save operation. Previously ignored rules are then sent back to the server with the data to be saved. The operation concludes if no new messages that the user has not yet seen are presented.
+The rules are returned to the client to display to the user. The user has the option to ignore them if they are all ignorable, 
+and retry the save operation. Previously ignored rules are then sent back to the server with the data to be saved. 
+The operation concludes if no new messages that the user has not yet seen are presented.
 
 Therefore, the input to the save process consists of the set of data to be saved (`DataSet`) combined with the messages previously ignored.
 

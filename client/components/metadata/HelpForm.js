@@ -318,6 +318,7 @@
                                     $(el).on("focus", _.partial(this.enterNumTextBox, this));
                                     $(el).on("blur", this.generalLeaveTextBox);
                                     break;
+                                case "date":
                                 case "DateTime":
                                     $(el).on("blur", this.generalLeaveDateTextBox);
                                     break;
@@ -345,6 +346,7 @@
                             $(el).on("focus", _.partial(this.enterNumTextBox, this));
                             $(el).on("blur", this.generalLeaveTextBox);
                             break;
+                        case "date":
                         case "DateTime":
                             $(el).on("blur", this.generalLeaveDateTextBox);
                             break;
@@ -480,7 +482,6 @@
             });
 
             return foundMainRel || foundRelExtraEntity;
-
         },
 
         /**
@@ -1012,6 +1013,7 @@
          */
         isButtonControl:function (el) {
             const tagName = el.tagName;
+            if (!tagName) return false;
             return (tagName.toUpperCase() === "BUTTON");
         },
 
@@ -1078,7 +1080,7 @@
          * @method generalLeaveDateTextBox
          * @private
          * @description SYNC
-         * Manages the leave event from text box with DateTime
+         * Manages the leave event from text box with date and DateTime
          * "this" represents the html control that fired the event
          */
         generalLeaveDateTextBox: function() {
@@ -1192,6 +1194,9 @@
             const ctrl = $(el).data("customController");
             if (ctrl) {
                 ctrl.clearControl(el);
+                if(ctrl.isStandardFill) { //simmetrically to fillControl
+                    this.reEnable(el);
+                }
                 return;
             }
 
@@ -1380,6 +1385,7 @@
          * @param {Object} column
          */
         enableDisable: function(c, table, column) {
+            if (!c.tagName) return;
             const tagName = c.tagName.toUpperCase();
             const eltag = $(c).data("tag");
             if (tagName === "LABEL") return;
@@ -1480,12 +1486,13 @@
          * @param {object} value
          */
         fillControl: function(el, value) {
-            // check sul tag. anche se in questo punto del codice, l'elemtno html dovrebbe avere il tag
-
+            // check sul tag. anche se in questo punto del codice, l'elemento html dovrebbe avere il tag
             const eltag = $(el).data("tag");
             const tag = this.getStandardTag(eltag);
             const def = Deferred("fillControl " + tag);
-            if (!tag) return def.resolve();
+            if (!tag) {
+                return def.resolve();
+            }
             const self = this;
 
             if (this.isButtonControl(el)) {
@@ -1499,13 +1506,11 @@
             const datatable = this.DS.tables[tableName];
             if (!datatable) return def.resolve();
 
-
-            // il caso "GridControl" o "TreeViewMaanger" o derivati non esegue calcolo del value,
+            // il caso "GridControl" o "TreeViewManager" o derivati non esegue calcolo del value,
             //  poiché non necessita di un value, inoltre il tag è differente
             // quindi nel caso grid si creerebbero casi inconsistenti
             const ctrl = $(el).data("customController");
             const isStandardFill = ctrl ? ctrl.isStandardFill : true;
-
             let column, dataColumn;
 
             if (isStandardFill){
@@ -1530,7 +1535,7 @@
                 }
 
                 if ((currPrimary === null) || (tableName === this.primaryTableName)) {
-                    // se non è tabella principale  e la tabella principale è vuota, assumi vuoto
+                    // se non è tabella principale e la tabella principale è vuota, assumi vuoto
                     r = currPrimary;
                 } else {
                     // tabella secondaria
@@ -1576,11 +1581,14 @@
                 return def.from(
                     ctrl.fillControl(el, value)
                     .then(function () {
-                        if(isStandardFill) that.enableDisable(el, datatable, dataColumn);
+                        if(isStandardFill) {
+                            that.enableDisable(el, datatable, dataColumn);
+                        }
                         return true;
                     })).promise();
 
-            } else {
+            }
+            else {
                 this.setControl(el, datatable, value, dataColumn);
                 return def.resolve();
             }
@@ -2200,7 +2208,7 @@
 
                             // sui controlli data tolgo possibilità di ricevere focus, con tab, per evitare
                             // che si apra il calendarietto in automatico
-                            if (ctype === "DateTime") $(el).attr('tabindex', '-1');
+                            if (ctype === "DateTime" || ctype==="date") $(el).attr('tabindex', '-1');
                             break;
                     }
                     break;
@@ -2232,7 +2240,7 @@
                     let ctype = this.getCtypeTagFromElTag(tag);
                     // sui controlli data tolgo possibilità di ricevere focus, con tab, per evitare
                     // che si apra il calendarietto in automatico
-                    if (ctype === "DateTime") $(el).attr('tabindex', '-1');
+                    if (ctype === "DateTime" || ctype==="date") $(el).attr('tabindex', '-1');
                     break;
             }
 
@@ -2895,6 +2903,7 @@
             if (c.ctype === "Single") return "n"; //default for decimals
             if (c.ctype === "Double") return "n"; //default for decimals
             if (c.ctype === "DateTime") return "d"; //default for datetimes
+            if (c.ctype === "date") return "d"; //default for datetimes
             return "g";
         },
 
@@ -3319,7 +3328,8 @@
 
             if (obj.value === null) return null;
             const fmt = this.getFieldLower(tag, 2);
-            if ((col.ctype === "DateTime") && (this.isOnlyTimeStyle(fmt)) && ( (obj.getTime() !== new Date("1000-01-01").getTime()))) {
+            if (((col.ctype === "DateTime")||(col.ctype==="date")) &&
+                (this.isOnlyTimeStyle(fmt)) && ( (obj.getTime() !== new Date("1000-01-01").getTime()))) {
                 /* TODO QUESTO è un CASO particolare. Poi lo vediamo
                  var c1 = q.eq("(DATEPART(hh," + searchcol + ")",  obj.value.getHours());
                  var c2 = q.eq("(DATEPART(hh," + searchcol + ")",  obj.value.getMinutes());

@@ -2391,13 +2391,13 @@
          if (that.timeoutId) {
             clearTimeout(that.timeoutId);
             that.timeoutId = null;
-            Stabilizer.decreaseNesting("rowClickEv.timeout");
+            Stabilizer.decreaseNesting("rowClickEv");
          }
          Stabilizer.increaseNesting("rowClickEv");
          that.timeoutId = setTimeout(function () {
             that.timeoutId = null;
             that.rowClick.call(self, that);
-            Stabilizer.decreaseNesting("rowClickEv.timeout");
+            Stabilizer.decreaseNesting("rowClickEv");
          }, appMeta.currApp.dbClickTimeout);
       },
 
@@ -2546,7 +2546,7 @@
             });
             // se è una colonna data, inserisco calendario
             var dc = self.dataTable.columns[colname];
-            if (dc.ctype === 'DateTime') {
+            if (dc.ctype === 'DateTime' || dc.ctype==='date') {
                inputObj.datepicker({
                   showOn: "focus",
                   onClose: function () {

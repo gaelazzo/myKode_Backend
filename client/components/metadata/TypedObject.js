@@ -55,6 +55,7 @@
                     return this;
                 // Double, Single and Decimal are always treated as Float
                 case "Double":
+                case "Float":
                 case "Single":
                 case "Decimal":
                 case "number":
@@ -161,15 +162,17 @@
             if (this.value === null || this.value === undefined) return "";
 
             var fmt = getFormatfromTag(tag);
-            if (this.typeName === "DateTime") {
+            if (this.typeName === "DateTime" || this.typeName==="date") {
                 if (isStandardDateFormatStyle(fmt)) {
                     return fromDateToString(this.value,fmt);
                 }
                 return fromDateToString(this.value, "d");
             }
 
+
             var d;
-            if (this.typeName === "Decimal" || this.typeName === "Single" || this.typeName === "Double") {
+            if (this.typeName === "Decimal" || this.typeName === "Single" || this.typeName === "Double" ||
+                  this.typeName === "Float" ) {
                 if (fmt === null || isStandardNumericFormatStyle(fmt)) {
                     return fromNumberToString(this.value, appMeta.config.defaultDecimalPrecision, getNumberStyles(fmt));
                 }
@@ -441,6 +444,7 @@
                 return val.charAt(0).toString();
             case "Decimal":
             case "Double":
+            case "Float":
             case "Single":
                 return val.toString();
             case "int":
@@ -450,7 +454,7 @@
             case "Byte":
                 return val.toString();
             case "DateTime":
-            case "Date":
+            case "date":
                 return fromDateToString(val, "d");
             default:
                 return val.toString();
@@ -479,6 +483,7 @@
             case "Decimal":
             case "number":
             case "Double":
+            case "Float":
             case "Single":
                 return parseFloat(s);
             case "int":
@@ -488,7 +493,7 @@
             case "Byte":
                 return parseInt(s);
             case "DateTime":
-            case "Date":
+            case "date":
                 // utilizzo la funz. già implementata passando d
                 return fromStringToDate(s, "d");
             default:

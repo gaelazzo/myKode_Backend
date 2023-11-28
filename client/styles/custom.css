@@ -1,0 +1,8 @@
+﻿/*per consentire lo scorrimento verticale delle textarea anche se disabilitate*/
+textarea:read-only {
+    pointer-events: unset!important;
+}
+
+.table > tr > td, th {
+    white-space: normal!important;
+}

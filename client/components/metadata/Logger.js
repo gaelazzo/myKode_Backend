@@ -35,6 +35,7 @@
         INFO : 3
     };
 
+
     /**
      * @constructor Logger
      * @description
@@ -44,13 +45,21 @@
         this.levelLog = logTypeEnum.ERROR;
     }
 
+    function getLocalResource(){
+        if (localResource===undefined) {
+            return appMeta.localResource;
+        }
+        return localResource;
+    }
+
     Logger.prototype = {
         constructor: Logger,
 
         setLanguage: function (lan) {
             localResource = lan;
         },
-        
+
+
         /**
          * @method log
          * @public
@@ -80,8 +89,9 @@
                         else {
                             // lancia l'evento così eventualmente la metapage può effettuare operazioni.
                             appMeta.globalEventManager.trigger(appMeta.EventEnum.ERROR_SERVER);
-                            let winModal = new appMeta.BootstrapModal(localResource.error, params[0], [appMeta.localResource.ok],
-                                appMeta.localResource.cancel, time + ": " + JSON.stringify(params));
+                            let winModal = new appMeta.BootstrapModal(getLocalResource().dictionary.error, params[0],
+                                [getLocalResource().dictionary.ok],
+                                getLocalResource().dictionary.cancel, time + ": " + JSON.stringify(params));
                             return winModal.show();
                         }
                     break;
@@ -204,7 +214,7 @@
     }
 
 }(
-    (typeof appMeta === 'undefined') ? require('./LocalResource').localResource : appMeta.localResource,
+    (typeof appMeta === 'undefined') ? require('./LocalResource').localResource : undefined,
     (typeof $ === 'undefined') ? require('JQDeferred') : $.Deferred,
 ));
 

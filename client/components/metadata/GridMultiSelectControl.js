@@ -325,6 +325,7 @@
                 case "Single":
                 case "Int32":
                 case "DateTime":
+                case "date":
                     return appMeta.cssDefault.alignNumericColumn;
                 case "String":
                     return appMeta.cssDefault.alignStringColumn;

@@ -59,7 +59,7 @@
 
 			appMeta.currApp.toolBarManager = null;
 			appMeta.currApp.initToolBarManager();
-			// rebase del path poichè i file necessari per il test, in particolare la MetaPage derivata sta sotto base/test/spec_e2e/registry
+			// rebase del path poiché i file necessari per il test, in particolare la MetaPage derivata sta sotto base/test/spec_e2e/registry
 			appMeta.currApp.rootElement = "#metaRoot";
 
 			// reinizializzo array di MetaPage e Html, altrimenti ad ogni test non posso usare stesso tableName ed EditType, prenderebbe steso .js e .html
@@ -81,9 +81,6 @@
 
 			//nell'ambiente di Quality Assurance attivo il log al livello debug altrimento lascio quello di produzione ERROR
 			appMeta.logger.levelLog = appMeta.logTypeEnum.ERROR;
-
-			// registra ws utilizzato in app_segreterie metaPage perfvalutazionepersonale_default
-			appMeta.routing.builderConnObj("calcolaComportamenti", 'POST', 'performance', false, true);
 
 			appMeta.basePath = 'base/test_client/';
 			appMeta.serviceBasePath = "/test_client/", // path relativo dove si trovano i servizi
@@ -114,7 +111,7 @@
 			$("body").append('<link rel="stylesheet" href="base/test_client/components/styles/select2.min.css" />');
 			// Configurazioni generali
 			appMeta.currApp.rootElement = "#metaRoot";
-			// ad ogni test rinizializzo la toolbar
+			// ad ogni test reinizializzo la toolbar
 			appMeta.currApp.toolBarManager = null;
 			appMeta.currApp.start();
 		},
@@ -144,15 +141,7 @@
 			var idmenuweb = "99999";
 			// creo fake row
 			var objrow1 = { tableName: tname, editType: edittype, idmenuweb: idmenuweb };
-			// per pagine custom
-			var objrow2 = { tableName: "didprogcurr", editType: "default", idmenuweb: idmenuweb };
-			var objrow3 = { tableName:"fasciaiseedef", editType: "default", idmenuweb: idmenuweb };
-			var objrow3 = { tableName:"fasciaiseedef", editType: "more", idmenuweb: idmenuweb };
-			var objrow4 = { tableName:"fasciaiseedef", editType: "sconti", idmenuweb: idmenuweb };
-			dtMenuWeb.add(objrow1);
-			dtMenuWeb.add(objrow2);
-			dtMenuWeb.add(objrow3);
-			dtMenuWeb.add(objrow4);
+
 			dtMenuWeb.acceptChanges();
 			// assegno fake dtMenuWeb
 			appMeta.security.dtMenuWeb = dtMenuWeb;
@@ -216,7 +205,9 @@
          * @param {string} htmlTagType. html tag, can be input, div, select, etc..
          */
 		htmlNodeByTagExists: function (tag, htmlTagType) {
-			if (!htmlTagType) htmlTagType = "input";
+			if (!htmlTagType) {
+				htmlTagType = "input";
+			}
 			expect($(htmlTagType + "[data-tag='" + tag + "']").length).toBe(1);
 		},
 
@@ -251,7 +242,9 @@
 		 * @param {string} htmlTagType
          */
 		htmlNodeByTagValueFilled: function (tag,htmlTagType) {
-			if (!htmlTagType) htmlTagType = "input";
+			if (!htmlTagType) {
+				htmlTagType = "input";
+			};
 			let tagVal = $(htmlTagType + "[data-tag='" + tag + "']").val();
 			expect(tagVal).not.toBe("", " at tag " + tag + " of type " + htmlTagType); // non vuoto
 
@@ -726,7 +719,7 @@
 								var detailTableNameReal = metapage.state.DS.tables[detailTableName].tableForReading();
 								// 2.  recupero valori del vettore di configurazione del dettaglio per capire quali valori avevo inserito
 								var detailTestPrototype = 'appMeta.' + detailTableNameReal + '_' + detailEditType;
-								var myinstance = eval(detailTestPrototype);
+								var myinstance = appMeta[detailTableNameReal+"_"+detailEditType]; // eval(detailTestPrototype);
 								if (!myinstance) {
 									self.log(detailTestPrototype + " non trovato durante check valori di riga del grid");
 								} else {

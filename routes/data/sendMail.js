@@ -38,7 +38,7 @@ async function sendMail(req,res,next){
     let  transporter = nodemailer.createTransport({
         host: smtpserver,
         port: smtpport,
-        secure: false,
+        secure: smtpport===465,
         auth: {
             user: smtpuser,
             pass: smtppwd,
@@ -57,10 +57,11 @@ async function sendMail(req,res,next){
     // Invio della mail
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            //console.error('Errore nell\'invio della mail:', error);
+            console.error('Errore nell\'invio della mail:', error);
             res.status(200).send(error);
-        } else {
-            //console.log('Mail inviata con successo:', info.response);
+        }
+        else {
+            console.log('Mail inviata con successo:', info.response);
             res.status(200).send(info.response);
         }
     });

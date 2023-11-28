@@ -95,8 +95,7 @@ Crea un contesto in base al token, anonimo se il token non c'è o è un token anon
 
 Il contesto ([Context](Context.md)) è sempre creato come anonimo, poi in fase di autenticazione si provvede a 
 ricalcolare l'environment, e a marcare il contesto come non più anonimo. Per fare questo è possibile 
-richiamare il metodo _doLogin del modulo
- routes/_authUtils
+richiamare il metodo _doLogin del modulo routes/_authUtils
 
 
 

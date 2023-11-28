@@ -677,6 +677,7 @@ describe("helpForm midway",
                                 table2.add(objrow2);
                                 table2.add(objrow3);
                                 table2.add(objrow4);
+                                table2.acceptChanges();
 
                                 var datasource = ds.newTable("datasource");
                                 datasource.isTemporaryTable = false;
@@ -691,6 +692,8 @@ describe("helpForm midway",
                                 datasource.add(objrow5);
                                 datasource.add(objrow6);
                                 datasource.add(objrow7);
+                                datasource.acceptChanges();
+
 
                                 state.DS = ds;
                                 state.meta = new appMeta.MetaData('dmaster');
@@ -707,20 +710,11 @@ describe("helpForm midway",
                                 })
                                 .then(() => {
                                     stabilize(true).then(function (){
-                                        // setto lo stato unchanged
-                                        table2.rows[0].getRow().state = jsDataSet.dataRowState.unchanged;
-                                        table2.rows[1].getRow().state = jsDataSet.dataRowState.unchanged;
-                                        table2.rows[2].getRow().state = jsDataSet.dataRowState.unchanged;
-                                        table2.rows[3].getRow().state = jsDataSet.dataRowState.unchanged;
-
-                                        datasource.rows[0].getRow().state = jsDataSet.dataRowState.unchanged;
-                                        datasource.rows[1].getRow().state = jsDataSet.dataRowState.unchanged;
-                                        datasource.rows[2].getRow().state = jsDataSet.dataRowState.unchanged;
-
 
                                         expect($("#grid1").find("tr").length).toBe(5);
                                         expect($("#combo3").val()).toBe("1");
-                                        //expect($("#combo3").html()).toBe('<option value=""></option><option value="4">quattro</option><option value="3">tre</option><option value="1" data-select2-id="2">uno</option>');
+                                        expect($("#combo3").html()).toBe(
+                                            '<option value=""></option><option value="4">quattro</option><option value="3">tre</option><option value="1" data-select2-id="16">uno</option>');
                                         var res = stabilize();
                                         $("#grid1").find("tr").eq(1).click(); // clicco sulla prima riga dei dati
                                         return res;
@@ -732,9 +726,14 @@ describe("helpForm midway",
                                         return res;
                                     })
                                     .then(function (){
-
                                         expect($("#combo3").val()).toBe(null); // non esiste il valore sulla combo
                                         var res = stabilize();
+                                        common.pageEventWaiter(metapage, appMeta.EventEnum.showModalWindow)
+                                        .then(function (){
+                                            //si apre la maschera di warning poiché il dato è cambiato non
+                                            // avendo trovato la riga del combo
+                                            $(".modal").find("button")[1].click(); //Ok button
+                                        });
                                         $("#grid1").find("tr").eq(3).click(); // clicco sulla prima terza dei dati
                                         return res;
                                     })
@@ -792,6 +791,7 @@ describe("helpForm midway",
                                 state.DS = ds;
                                 state.meta = new appMeta.MetaData('dmaster');
                                 state.currentRow = objrow1;
+                                state.setEditState();
                                 var metapage = new appMeta.MetaPage('table2', 'def', false);
                                 helpForm = new HelpForm(state, "table2", "#rootelement");
                                 helpForm.lastSelected(table2, objrow1);
@@ -1044,6 +1044,7 @@ describe("helpForm midway",
                                 // inizializzo la form
                                 var helpForm = new HelpForm(state, "table1", "#rootelement");
                                 helpForm.lastSelected(t1, r1);
+                                state.setEditState();
                                 metapage.helpForm = helpForm;
                                 var mainwin = '<div id="rootelement">' +
                                     '<div id="grid1" data-tag="table1.key" data-custom-control="grid"></div>' +

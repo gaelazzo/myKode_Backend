@@ -4,7 +4,7 @@ const $q = require("./../../client/components/metadata/jsDataQuery.js");
 
 describe('DataQuery functions', function () {
     let ds;
-
+    //console.log("DataQuery")
     function fieldGet(field) {
         return function (obj) {
             return obj[field];

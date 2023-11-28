@@ -79,9 +79,14 @@ describe('MetaPage with Clock', function () {
         metapage2.state = state2;
         var helpForm2 = new appMeta.HelpForm(state2, "table2", "#rootelement");
         metapage2.helpForm  = helpForm2;
+
+        if (appMeta.Stabilizer.nesting>0) appMeta.Stabilizer.showDeferred();
+        expect(appMeta.Stabilizer.nesting).toBe(0);
     });
     afterEach(function () {
+        if (appMeta.Stabilizer.nesting>0) appMeta.Stabilizer.showDeferred();
         expect(appMeta.Stabilizer.nesting).toBe(0);
+
         appMeta.basePath = "/";
         metapage = null;
     });
@@ -149,7 +154,7 @@ describe('MetaPage with Clock', function () {
                             .then(function (res) {
                                 // ENTRA SOLO in DEBUG
                                 expect(res).toBeTruthy();
-                              
+
                             });
                         
                         expect(mp.showMessageOkCancel).not.toHaveBeenCalled();

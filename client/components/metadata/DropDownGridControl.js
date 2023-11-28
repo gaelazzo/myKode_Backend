@@ -48,8 +48,8 @@
       var startFilter = helpForm.getFilterFormDataAttribute(el);
       var kind = 'AutoChoose';
       this.startField = helpForm.getColumnName(this.tag);
-      var col = this.dataTable.columns[this.startField];
-      $(el).attr("maxlength", metaModel.getMaxLen(col));
+      this.startFieldCol = this.dataTable.columns[this.startField];
+      $(el).attr("maxlength", metaModel.getMaxLen(this.startFieldCol));
 
       this.ai = new appMeta.AutoInfo(this.rootElement, this.listingType, startFilter, this.startField, table.name, kind);
       $(el).on("keyup", _.partial(this.keyUpDelay, this.msDelay, this));
@@ -120,7 +120,8 @@
          var startFilter = that.helpForm.getFilterFormDataAttribute(that.el);
          var startValue = $(that.el).val().trim();
 
-         // costrusico filtro
+         this.rowSelected = false;
+         // costruisco filtro
          var filter = jsDataQuery.like(that.startField, "%" + startValue + "%");
          if (startValue.length < that.minCharacter && !buttonPressed) {
             if (startValue.length === 0 && that.listManager) {
@@ -131,7 +132,7 @@
          var staticFilter = that.dataTable.staticFilter();
          filter = that.helpForm.mergeFilters(filter, staticFilter);
          filter = that.helpForm.mergeFilters(filter, startFilter);
-         this.rowSelected = false;
+
          var dataTablePaged, totPage, totRows;
          // eseguo chiamata al ws
          return that.metaPage.getFormData(true).then(function () {
@@ -253,21 +254,22 @@
       fillControl: function (el, value) {
          var def = Deferred("DropDown-fillControl");
          var dataTable = this.metaPage.state.DS.tables[this.tableName];
-         this.helpForm.setControl(el || this.el, dataTable, value, this.startField);
+         this.helpForm.setControl(el || this.el, dataTable, value, this.startFieldCol);
          this.lastText = this.getLastText();
+         return def.resolve();
 
          // -> *** Le PROSSIME RIGHE SERVONO A CORREGGERE il caso in cui una subpage
          // abbia un dropdowngrid e una select che dipende da lei. Quindi nell'afterRowSelect di pagina programmatore gestisce
-         // il filtraggio. (vecchio esempio missioni itineration o itinerationsegview di rendicontattivitaprogetto) ma che al momento non è
-         // più implementato.) . quindi è stato disattivato, poichè genera un altro tipo di errore più grave
+         // il filtraggio. (vecchio esempio missioni itineration o itinerationsegview di rendicontattivitaprogetto)
+         // ma che al momento non è più implementato.) . Quindi è stato disattivato, poichè genera un altro tipo di errore più grave
          // in pagina principale (es: progetto seg) in cui al salvataggio poi gli eventi non fanno popolare la combo slave.
          // -> *** LO LASCIAMO QUINDI COMMENTATO FINCHE' NON ABBIAMO UN CASO REALE DOVE PROVARE ENTRMABE I BUG.
 
          //*************************
          // esegue una rowselect sulla pagina come da flusso normale.
-         var dtRow = this.findDtRowRelated();
-         var objRow = !!dtRow ? (dtRow.current ? dtRow.current : null) : null;
-         return def.from(this.metaPage.rowSelect(el, this.dataTable, objRow));
+         // var dtRow = this.findDtRowRelated();
+         // var objRow = !!dtRow ? (dtRow.current ? dtRow.current : null) : null;
+         // return def.from(this.metaPage.rowSelect(el, this.dataTable, objRow));
          //*************************
       },
 
@@ -318,7 +320,31 @@
       addEvents: function (el, metaPage, subscribe) {
          this.metaPage = metaPage;
          this.metaPage.eventManager.subscribe(appMeta.EventEnum.listManagerHideControl, this.listManagerHideControl, this);
+         if (metaPage && metaPage.eventManager) {  //era && subscribe
+            //when in a listManager, metaPage is the listManager and does not have an eventManager
+            metaPage.eventManager.subscribe(appMeta.EventEnum.ROW_SELECT, this.selectRowCallBack, this);
+         }
       },
+
+
+      /**
+       * @method selectRowCallBack
+       * @private
+       * @description ASYNC
+       * It is the callback triggered after a ROW_SELECT event on metapage.
+       * @param {element|object} sender
+       * @param {DataTable} table
+       * @param {ObjectRow} row
+       * @returns {Deferred}
+       */
+      selectRowCallBack: function (sender, table, row) {
+         if (sender === this.el) return Deferred("selectRowCallBack").resolve(); //does never enter in a loop
+         if (table.name !== this.tableName) return Deferred("selectRowCallBack").resolve(); // it is not the "listened" table
+         let value = row ? row[this.startField] : null;
+         this.helpForm.setControl(this.el, table, value, table.columns[this.startField]);
+         return Deferred("selectRowCallBack").resolve();
+      },
+
 
       /**
        * close the list manager associated to the control
@@ -327,7 +353,7 @@
          if (this.listManager) this.listManager.closeListManager();
          this.$buttonClose.hide();
          this.$buttonSearch.show();
-         this.listManager = null
+         this.listManager = null;
       },
 
       /**

@@ -1,10 +1,11 @@
+/*global jsDataSet */
 /**
  * @module MetaPageState
  * @description
  * Represents the state of the MetaPage
  */
 (function() {
-
+    const dataRowState = jsDataSet.dataRowState;
     /**
      * @constructor
      * @description
@@ -218,7 +219,31 @@
         sourceRow: function () {
             if (!this.callerState) return null;
             return this.callerState.editedRow;
-        }
+        },
+
+        /**
+         * @method updateState
+         * @public
+         * @description SYNC
+         * Aligns form state to the current row state
+         */
+        updateState: function() {
+            if (!this.currentRow) {
+                this.setSearchState();
+                return;
+            }
+            const stateDetached = !this.currentRow.getRow;
+            if (stateDetached) {
+                this.currentRow = null;
+                this.setSearchState();
+                return;
+            }
+            if (this.currentRow.getRow().state === dataRowState.added) {
+                this.setInsertState();
+                return;
+            }
+            this.setEditState();
+        },
 
     };
 

@@ -54,7 +54,10 @@ function select(req,res,next){
             .fail(err=>{
                 res.status(410).send("Error selecting rows from table: " + tableName+","+err);
             });
-        });
+        })
+    .fail(err=>{
+        res.status(410).send("Error selecting rows from table: " + tableName+","+err);
+    });
 }
 
 let router = express.Router();

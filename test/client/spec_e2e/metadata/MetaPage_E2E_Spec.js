@@ -1,6 +1,7 @@
 'use strict';
 
 describe('MetaPage e2e', function () {
+
     var MetaPage = appMeta.MetaPage;
     var metapage;
     var $q = window.jsDataQuery;
@@ -16,6 +17,7 @@ describe('MetaPage e2e', function () {
 
     // effettuo login
     beforeAll(function () {
+        //console.log("MetaPage e2e")
         appMeta.basePath = "/base/client/";
         appMeta.serviceBasePath = "/test_client/"; // path relativo dove si trovano i servizi
         if (appMeta.globalEventManager === undefined) {

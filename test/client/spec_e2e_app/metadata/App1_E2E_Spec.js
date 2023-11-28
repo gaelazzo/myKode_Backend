@@ -24,8 +24,8 @@ describe('App1_E2E', function() {
             });
 
             afterEach(function () {
-                expect(appMeta.Stabilizer.nesting).toBe(0);
                 if (appMeta.Stabilizer.nesting > 0) appMeta.Stabilizer.showDeferred();
+                expect(appMeta.Stabilizer.nesting).toBe(0);
             });
 
             it('A 1. callPage() table:registry, editType:anagrafica" should be async and return data. ' + "\n" +
@@ -44,16 +44,16 @@ describe('App1_E2E', function() {
                                 testHelper.htmlNodeByTagExists('registry.idreg');
                                 testHelper.htmlNodeByTagNotFilled('registry.idreg');
 
-                                let s = stabilize(true);
+                                //let s = stabilize(true);
                                 // premo bottone di "Chiudi"
                                 testHelper.clickButtonByTag('mainclose');
-                                return s;
+                                return stabilize();
                             }).then(function () {
                                 expect(appMeta.currApp.currentMetaPage).toBeNull();
                                 done();
                             })
                     .fail(err=>{
-                        expect(err).toBeUndefined()
+                        expect(err).toBeUndefined();
                     });
 
                     // Apro la pagina
@@ -151,9 +151,9 @@ describe('App1_E2E', function() {
                             }).then(function () {
                                 //console.log("stabilization DONE");
                                 allCheckExecuted++;
-                                var s = stabilize(true);
+                                //var s = stabilize(true);
                                 testHelper.clickButtonByTag('mainclose');
-                                return s;
+                                return stabilize();
                             }).then(function () {
                                 expect(allCheckExecuted).toBe(5);
                                 done();
@@ -200,9 +200,9 @@ describe('App1_E2E', function() {
                             // dopo la pressione di effettua ricerca il form è popolato
                             testHelper.htmlNodeByTagValueFilled('registry.idreg');
                             // la close mi risolve anche il deferredResult della pagina quindi tutti i def risolti mi aspetto
-                            var s = stabilize(true);
+                            //var s = stabilize(true);
                             testHelper.clickButtonByTag('mainclose');
-                            return s;
+                            return stabilize();
                         }).then(function () {
                             expect(allCheckExecuted).toBe(2);
                             done();
@@ -244,7 +244,7 @@ describe('App1_E2E', function() {
                             testHelper.htmlNodeByTagValueFilled('registry.idreg');
 
                             // la close mi risolve anche il deferredResult della pagina quindi tutti i def risolti mi aspetto
-                            var s = stabilize(true);
+                            //var s = stabilize(true);
                             testHelper.insertValueInputByTag('registry.title', "new title");
                             // Dopo il close attendo messaggio di warning. premo ok
                             common.pageEventWaiter(mp, appMeta.EventEnum.showModalWindow).then(function () {
@@ -252,7 +252,7 @@ describe('App1_E2E', function() {
                                 $(".modal").find("button")[1].click();
                             });
                             testHelper.clickButtonByTag('mainclose');
-                            return s;
+                            return stabilize();
                     }).then(function () {
                         expect(allCheckExecuted).toBe(3);
                         done();
@@ -318,14 +318,14 @@ describe('App1_E2E', function() {
 
                             // modifico, valore, deve comaprire msg box informativa dopo prssione del close
                             testHelper.insertValueInputByTag('registry.title', "nuovo");
-                            var s = stabilize(true); // la close mi risolve anche il deferredResult della pagina quindi tutti i def risolti mi aspetto
+                            //var s = stabilize(true); // la close mi risolve anche il deferredResult della pagina quindi tutti i def risolti mi aspetto
                             // dopo il close attendo messaggio di warning . premo ok
                             common.pageEventWaiter(mp, appMeta.EventEnum.showModalWindow).then(function () {
                                 allCheckExecuted++;
                                 $(".modal").find("button")[1].click();
                             });
                             testHelper.clickButtonByTag('mainclose');
-                            return s;
+                            return stabilize();
                         
                         }).then(function () {
                             expect(allCheckExecuted).toBe(4);
