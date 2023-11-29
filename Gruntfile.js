@@ -14,10 +14,10 @@ const jasmineEnv=  {
     failSpecWithNoExpectations: true,
 
     // Stop execution of a spec after the first expectation failure in it
-    stopSpecOnExpectationFailure: false,
+    stopSpecOnExpectationFailure: true,
 
     // Stop execution of the suite after the first spec failure
-    stopOnSpecFailure: false,
+    stopOnSpecFailure: true,
 
     // Run specs in semi-random order
     random: false
@@ -193,7 +193,7 @@ module.exports = function (grunt) {
                 configFile: "test/karma_node_server_e2e.conf.js",
                 autoWatch: true,
                 singleRun: true,
-                reporters: ["dots"],
+                reporters: ["spec"],
                 specReporter: {
                     maxLogLines: 5, // limit number of lines logged per test
                     suppressErrorSummary: false, // do not print error summary
@@ -209,7 +209,7 @@ module.exports = function (grunt) {
                 configFile: "test/karma_e2e_app.conf.js",
                 autoWatch: true,
                 singleRun: true,
-                reporters: ["dots"],
+                reporters: ["spec"],
                 specReporter: {
                     maxLogLines: 5, // limit number of lines logged per test
                     suppressErrorSummary: false, // do not print error summary
@@ -224,7 +224,7 @@ module.exports = function (grunt) {
                 configFile: "test/karma_e2e.conf.js",
                 autoWatch: true,
                 singleRun: true,
-                reporters: ["dots"],
+                reporters: ["spec"],
                 specReporter: {
                     maxLogLines: 5, // limit number of lines logged per test
                     suppressErrorSummary: false, // do not print error summary

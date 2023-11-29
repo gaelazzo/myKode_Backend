@@ -20,7 +20,7 @@ const mySqlDriver = require("../../src/jsMySqlDriver");
  */
     //PUT THE  FILENAME OF YOUR FILE HERE:
 var configName = path.join('test', 'dbMySql.json');
-var dbConfig;
+let dbConfig;
 let dbName;
 dbName = "edge"+ uuidv4().replace(/\-/g, '_');
 
@@ -57,7 +57,7 @@ describe('edgeSql ', function () {
                 server: "localhost",
                 useTrustedConnection: false,
                 user: dbConfig.user,
-                pwd: dbConfig.password,
+                pwd: dbConfig.pwd,
                 database: null
             },
             bad: {
@@ -71,7 +71,7 @@ describe('edgeSql ', function () {
         dbInfo.database = dbName;
 
         dbInfoConnectionString = {
-            good: "data source=localhost;initial catalog="+dbName+";User ID ="+dbConfig.user+";Password="+dbConfig.password+";" +
+            good: "data source=localhost;initial catalog="+dbName+";User ID ="+dbConfig.user+";Password="+dbConfig.pwd+";" +
                 "Pooling=False;Connection Timeout=600;",
             bad: "data source=localhost;initial catalog="+dbName+";User ID ="+dbConfig.user+";Password=x;" +
                 "Pooling=False;Connection Timeout=600;"
@@ -83,23 +83,23 @@ describe('edgeSql ', function () {
             good: {
                 server: "localhost",
                 useTrustedConnection: false,
-                user: dbConfig.user,
-                pwd: dbConfig.password,
+                user: "user1",
+                pwd: "user1user1",
                 database: null
             },
             bad: {
                 server: "localhost",
                 useTrustedConnection: false,
-                user: dbConfig.user,
+                user: "user1",
                 pwd: "x",
                 database: null
             }
         };
 
         dbInfoConnectionString = {
-            good: "Server=localhost;database="+dbName+";uid=user1;pwd=user1user1;" +
+            good: "Server=localhost;database="+dbName+";uid="+dbConfig.user+";pwd="+dbConfig.pwd+";" +
                 "Pooling=False;Connection Timeout=600;Allow User Variables=True;",
-            bad: "Server=localhost;database="+dbName+";uid=user1;pwd=x;" +
+            bad: "Server=localhost;database="+dbName+";uid="+dbConfig.user+";pwd=x;" +
                 "Pooling=False;Connection Timeout=600;Allow User Variables=True;"
         };
         driver = 'mySql';
