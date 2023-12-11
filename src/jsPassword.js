@@ -18,13 +18,13 @@ const codeLen = 12;        // Numero di byte da generare per i codici di attivaz
  * @param {int} iterations
  * @return {boolean}
  */
-async function verify(password,salt,secureHash, iterations){
+async function verify(password,salt,secureHash, iterations,digest){
     if (!password) return  false;
     if (!salt) return  false;
     if (!secureHash) return  false;
     if (iterations<1)return  false;
     if (salt.length < 8) return false;
-
+    if (!digest) digest = 'sha1';
     let pwdHash = generateHash(password, salt, iterations);
     if (!pwdHash) {
         return false;
@@ -32,7 +32,7 @@ async function verify(password,salt,secureHash, iterations){
     if (pwdHash.compare(secureHash) === 0) {
         return true;
     }
-    pwdHash = generateHash(password, salt, iterations,'sha1');
+    pwdHash = generateHash(password, salt, iterations,digest);
     if (!pwdHash) {
         return false;
     }
@@ -44,7 +44,7 @@ async function verify(password,salt,secureHash, iterations){
  * @param {string} password
  * @param {Buffer} salt
  * @param {int} iterations
- * @param {string} digest  sha1|sha256|sha512
+ * @param {string} [digest]  sha1|sha256|sha512
  * @return {Buffer}
  */
 function generateHash(password,salt,iterations, digest){

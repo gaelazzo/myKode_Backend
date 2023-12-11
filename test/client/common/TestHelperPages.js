@@ -282,7 +282,7 @@
         /**
          * Returns a value of an input html element by its "tag"
          * @param {string} tag
-         * @returns {string}
+         * @returns {element}
          */
 		getInputByTag: function (tag) {
 			let res = $("input[data-tag='" + tag + "']");

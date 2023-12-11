@@ -50,12 +50,10 @@
 	<!-- FINE Stili della applicazione -->
 
 	<!-- bower:js -->
-	<script src="bower_components/jquery/dist/jquery.js"></script>
-	<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.bundle.js"></script>
 	<script src="bower_components/font-awesome/js/all.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.js"></script>
-	<script src="bower_components/jquery-ui/jquery-ui.js"></script>
+	<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 	<script src="bower_components/jstree/dist/jstree.js"></script>
 	<script src="bower_components/json3/lib/json3.js"></script>
 	<script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -68,7 +66,7 @@
 	<script src="bower_components/jqueryui-timepicker-addon/dist/i18n/jquery-ui-timepicker-addon-i18n.js"></script>
 	<!-- endbower -->
 
-	<!-- expand:metadata_thirdpart -->
+  	<!-- expand:metadata_thirdpart -->
 	<script src="components/metadata/thirdpart/chart.min.js"></script>
 	<script src="components/metadata/thirdpart/gauge.js"></script>
 	<script src="components/metadata/thirdpart/jsPDF.min.js"></script>
@@ -337,16 +335,35 @@
 
 
 <script>
-	$(document).on('DOMNodeInserted', function(event) {
-		// Rileva quando viene aggiunta una nuova porzione di HTML alla pagina
-		let newNode = event.target;
 
+
+	var observer = new MutationObserver(handleMutations);
+	var observerConfig = { childList: true, attributes: false, subtree: true };
+	var targetNode = document;
+
+	observer.observe(targetNode, observerConfig);
+
+	// Rileva quando viene aggiunta una nuova porzione di HTML alla pagina
+	function handleMutations(mutationsList, observer) {
+		mutationsList.forEach(function(mutation) {
+			// Verifica il tipo di mutazione
+			if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+				// Almeno un nodo è stato aggiunto
+				// Esegui le azioni desiderate
+				mutation.addedNodes.forEach(applyDatePickerToNode)
+
+			}
+		});
+	}
+
+	function applyDatePickerToNode(newNode){
+		//console.log('Nodo aggiunto:', newNode);
 		// Verifica se il nodo appena inserito è del tipo desiderato (ad esempio, un elemento div)
 		if (newNode.nodeType === Node.ELEMENT_NODE && newNode.tagName === 'DIV') {
 			let parentElement = newNode.parentNode;
 			if (parentElement && parentElement.id === 'metaRoot') {
 				// Trova tutti gli elementi con l'attributo datePickerFormat nella porzione aggiunta
-				let newElementsWithDatePicker = $(event.target).find('[data-datePickerFormat]');
+				let newElementsWithDatePicker = $(newNode).find('[data-datePickerFormat]');
 
 				// Applica il datepicker a ciascun elemento trovato
 				newElementsWithDatePicker.each(function() {
@@ -361,7 +378,7 @@
 			let parentElement = newNode.parentNode;
 			if (parentElement && parentElement.id === 'metaRoot') {
 				// Trova tutti gli elementi con l'attributo datePickerFormat nella porzione aggiunta
-				let newElementsWithDateTimePicker = $(event.target).find('[data-dateTimePickerFormat]');
+				let newElementsWithDateTimePicker = $(newNode).find('[data-dateTimePickerFormat]');
 
 				// Applica il datepicker a ciascun elemento trovato
 				newElementsWithDateTimePicker.each(function() {
@@ -371,8 +388,7 @@
 			}
 		}
 
-	});
-
+	}
 
 </script>
 

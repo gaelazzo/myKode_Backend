@@ -27,14 +27,15 @@
 	<!-- Stili aggiuntivi per jsTree -->
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css" />
 	<!-- FINE Stili per jsTree -->
-	<!-- FINE stili librerie terze parti -->
+	<!-- FINE stili librerie terze parti -->	
 
-	<!-- INIZIO stili framework-->
-	<!-- lib per visualizzazione json -->
-	<script src="components/styles/json/json-viewer.js"></script>
-	<link rel="stylesheet" href="components/styles/json/json-viewer.css">
-	<!-- FINE lib per visualizzazione json -->
-	<!-- FINE stili framework-->
+    <!-- INIZIO stili framework-->
+    <!-- lib per visualizzazione json -->
+    <link rel="stylesheet" href="components/styles/json/json-viewer.css">
+    <script src="components/styles/json/json-viewer.js"></script>
+    <!-- FINE lib per visualizzazione json -->
+    <!-- FINE stili framework-->
+
 
 	<!-- INIZIO Stili della applicazione -->
 	<link rel="stylesheet" href="styles/italia/bootstrap-italia.min.css">
@@ -89,8 +90,10 @@
 	<!-- classi derivazione del framework -->
 
 	<script src="meta/MetaXXXData.js"></script>
+	
     <!-- expand:metadata -->
 	<!-- endexpand:metadata -->
+
 	<script src="pages/MetaXXXPage.js"></script>
 	<!-- expand:pages -->
 	<!-- endexpand:pages -->
@@ -334,17 +337,37 @@
 
 </body>
 
-<script>
-	$(document).on('DOMNodeInserted', function(event) {
-// Rileva quando viene aggiunta una nuova porzione di HTML alla pagina
-		let newNode = event.target;
 
+<script>
+
+
+	var observer = new MutationObserver(handleMutations);
+	var observerConfig = { childList: true, attributes: false, subtree: true };
+	var targetNode = document;
+
+	observer.observe(targetNode, observerConfig);
+
+	// Rileva quando viene aggiunta una nuova porzione di HTML alla pagina
+	function handleMutations(mutationsList, observer) {
+		mutationsList.forEach(function(mutation) {
+			// Verifica il tipo di mutazione
+			if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+				// Almeno un nodo è stato aggiunto
+				// Esegui le azioni desiderate
+				mutation.addedNodes.forEach(applyDatePickerToNode)
+
+			}
+		});
+	}
+
+	function applyDatePickerToNode(newNode){
+		//console.log('Nodo aggiunto:', newNode);
 		// Verifica se il nodo appena inserito è del tipo desiderato (ad esempio, un elemento div)
 		if (newNode.nodeType === Node.ELEMENT_NODE && newNode.tagName === 'DIV') {
 			let parentElement = newNode.parentNode;
 			if (parentElement && parentElement.id === 'metaRoot') {
 				// Trova tutti gli elementi con l'attributo datePickerFormat nella porzione aggiunta
-				let newElementsWithDatePicker = $(event.target).find('[data-datePickerFormat]');
+				let newElementsWithDatePicker = $(newNode).find('[data-datePickerFormat]');
 
 				// Applica il datepicker a ciascun elemento trovato
 				newElementsWithDatePicker.each(function() {
@@ -359,7 +382,7 @@
 			let parentElement = newNode.parentNode;
 			if (parentElement && parentElement.id === 'metaRoot') {
 				// Trova tutti gli elementi con l'attributo datePickerFormat nella porzione aggiunta
-				let newElementsWithDateTimePicker = $(event.target).find('[data-dateTimePickerFormat]');
+				let newElementsWithDateTimePicker = $(newNode).find('[data-dateTimePickerFormat]');
 
 				// Applica il datepicker a ciascun elemento trovato
 				newElementsWithDateTimePicker.each(function() {
@@ -368,9 +391,10 @@
 				});
 			}
 		}
-	});
 
+	}
 
 </script>
+
 </html>
 

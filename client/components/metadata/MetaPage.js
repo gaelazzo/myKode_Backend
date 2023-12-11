@@ -5011,12 +5011,15 @@
          * @public
          * @description SYNC
          * Adds the dependencies between element parent and child. A child element value is calculated with a formula, that depends from parent value.
-         * @param {element} elParent usually a textBox
+         * @param {element| element[]} elParent usually a textBox
          * @param {element} elChild usually a textBox
          * @param {event} event
          */
         addDependencies:function (elParent, elChild, event) {
-
+            if (Array.isArray(elParent)){
+                elParent.forEach(el=>this.addDependencies(el,elChild,event));
+                return;
+            }
             if (!event) {
                 event = 'blur';
             }

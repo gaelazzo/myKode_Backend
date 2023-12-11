@@ -8,6 +8,10 @@
 // 'test/spec/**/*.js'
 /*globals initConfig, appPath */
 /*jshint camelcase: false */
+const path = require("path");
+const readline = require('readline');
+
+const Deferred = require("JQDeferred");
 
 const jasmineEnv=  {
     // Whether to fail a spec that ran no expectations
@@ -19,16 +23,29 @@ const jasmineEnv=  {
     // Stop execution of the suite after the first spec failure
     stopOnSpecFailure: true,
 
+    stopOnFailure: true,
+
     // Run specs in semi-random order
     random: false
 };
 
+let secret = require('./config/secret');
+const DBList = require("./src/jsDbList");
 
-const glob = require('glob');
-const jsdoc2md = require('jsdoc-to-markdown');
 
-const fs = require("fs");
-const path = require("path");
+DBList.init({
+    encrypt: false,
+    decrypt: false,
+    fileName:path.join('config','dbList.json'), //rimuovere e cancellare in produzione
+    //encryptedFileName: path.join('config','dbList.bin'), //questa è l'unica che deve rimanere
+    secret:secret
+});
+
+let glob = require('glob');
+let jsdoc2md = require('jsdoc-to-markdown');
+let Password = require("./src/jsPassword");
+let $dq= require("./client/components/metadata/jsDataQuery");
+
 const asyncCmd = require("async-exec-cmd");
 
 const JasmineClass = require('jasmine');
@@ -41,7 +58,6 @@ const JasmineConsoleReporter = require('jasmine-console-reporter');
 
 
 const rep = JasmineClass.ConsoleReporter;  //require("jasmine.console_reporter.js");
-//console.log(JasmineClass);
 
 const reporter = new JasmineConsoleReporter({
     colors: 2,           // (0|false)|(1|true)|2
@@ -62,7 +78,8 @@ jasmineObj.jasmine.getEnv().addReporter(reporter);
 const exec  = require("child_process").execFileSync;
 
 
-const {type} = require("JQDeferred/lib/jquery");
+//const {type} = require("JQDeferred/lib/jquery");
+
 
 //https://www.npmjs.com/package/grunt-contrib-jasmine
 //grunt.loadNpmTasks('grunt-contrib-jasmine');
@@ -82,7 +99,7 @@ module.exports = function (grunt) {
     require('time-grunt')(grunt);
 
 
-    //this is used with grunt.initConfig(gruntConfig), that is equivalen to grunt.config.init
+    //this is used with grunt.initConfig(gruntConfig), that is equivalent to grunt.config.init
     let gruntConfig = {
         connect: {
             server: { // <-- This is a Target named 'server'.
@@ -124,9 +141,9 @@ module.exports = function (grunt) {
             dist : {
                 plugins: ["markdown","jsdoc-summarize2"],
                 src: ['src/*.js',
-                        'client/components/*/*.js',
-                        //'client/components/i18n/*.js',
-                        'routes/*/*.js'
+                    'client/components/*/*.js',
+                    //'client/components/i18n/*.js',
+                    'routes/*/*.js'
                 ],
                 options: {
                     destination: 'docs'
@@ -166,7 +183,7 @@ module.exports = function (grunt) {
                     maxLogLines: 5, // limit number of lines logged per test
                     suppressErrorSummary: false, // do not print error summary
                     suppressFailed: false, // do not print information about failed tests
-                    suppressPassed: true, // do not print information about passed tests
+                    suppressPassed: false, // do not print information about passed tests
                     suppressSkipped: true, // do not print information about skipped tests
                     showSpecTiming: true, // print the time elapsed for each spec
                     failFast: false // test would finish with error when a first fail occurs.
@@ -177,15 +194,16 @@ module.exports = function (grunt) {
                 configFile: "test/karma_midway.conf.js",
                 autoWatch: true,
                 singleRun: true,
-                reporters: ["dots"],
+                reporters: ["spec"],
                 specReporter: {
                     maxLogLines: 5, // limit number of lines logged per test
+                    parallel: false,
                     suppressErrorSummary: false, // do not print error summary
                     suppressFailed: false, // do not print information about failed tests
                     suppressPassed: true, // do not print information about passed tests
                     suppressSkipped: true, // do not print information about skipped tests
                     showSpecTiming: true, // print the time elapsed for each spec
-                    failFast: false // test would finish with error when a first fail occurs.
+                    failFast: true // test would finish with error when a first fail occurs.
                 }
             },
 
@@ -395,32 +413,39 @@ module.exports = function (grunt) {
     grunt.registerTask("client unit", ["karma:spec"]);
     grunt.registerTask("client midway", ["createSqlDB","NodeStart","karma:midway","NodeStop","destroySqlDB"]);
     grunt.registerTask("client e2e", ["createSqlDB", "NodeStart",
-                "karma:client_e2e",  "karma:client_e2e_app",
-                "NodeStop","destroySqlDB"]);
+        "karma:client_e2e", "karma:client_e2e_app",
+        "NodeStop","destroySqlDB"]);
     grunt.registerTask("client e2e_app", ["createSqlDB", "NodeStart",
-         "karma:client_e2e_app",
+        "karma:client_e2e_app",
         "NodeStop","destroySqlDB"]);
 
     grunt.registerTask('all server',
-            [ 'jasmine:common_server', "createSqlDB","NodeStart",
-                    "karma:server_e2e",
-                    "destroySqlDB",
-                    "jasmine:midway", //jasmine:midway crea e distrugge il db
-                "NodeStop"
-            ]);
+        [ 'jasmine:common_server', "createSqlDB","NodeStart",
+            "karma:server_e2e",
+            "destroySqlDB",
+            "jasmine:midway", //jasmine:midway crea e distrugge il db
+            "NodeStop"
+        ]);
     grunt.registerTask('all client',['client unit',
-            "createSqlDB", "NodeStart" ,
-                    "karma:midway","karma:client_e2e","karma:client_e2e_app",
-             "NodeStop","destroySqlDB"]);
+        "createSqlDB", "NodeStart" ,
+        "karma:midway","karma:client_e2e","karma:client_e2e_app",
+        "NodeStop","destroySqlDB"]);
     grunt.registerTask("all",
-            ['jasmine:common_server',"karma:spec",
+        ['jasmine:common_server',"karma:spec",
+            "createSqlDB", "NodeStart" ,
+            "karma:server_e2e",
+            "karma:midway","karma:client_e2e","karma:client_e2e_app",
+            "destroySqlDB",
+            "jasmine:midway","NodeStop",
+        ]);
 
-                "createSqlDB", "NodeStart" ,
-                "karma:server_e2e",
-                "karma:midway","karma:client_e2e","karma:client_e2e_app",
-                "destroySqlDB",
-                "jasmine:midway","NodeStop",
-            ]);
+    grunt.registerTask('client pages e2e',[
+        "loginOFF",
+         "NodeStart" ,
+        "karma:client_e2e_pages",
+        "NodeStop",
+        "loginON"
+    ]);
 
     grunt.registerTask('docMD', ['jsDocMD:dist']);
 
@@ -565,6 +590,140 @@ module.exports = function (grunt) {
             }
 
         }, 5000);
+    });
+
+    function registerUser(DA, idflowchart, userName,  password){
+        return DA.open().then(()=>{
+            return DA.selectCount(
+                    {tableName:"flowchart",
+                     filter:$dq.eq("idflowchart",idflowchart)
+                    });
+        }).then(
+            (n)=>{
+                if (n>0)return Deferred().resolve(true);
+                return DA.doSingleInsert("flowchart",
+                    ["idflowchart","ayear","codeflowchart","ct","cu","lt","lu",
+                            "nlevel","paridflowchart","printingorder","title"],
+                         [idflowchart,2023,'00'+idflowchart,new Date(),'setup',new Date(),'setup',
+                             1,'0',idflowchart, 'node']
+                        );
+            }
+        ).then( ()=>{
+            //Aggiungiamo un utente virtuale al database
+            return DA.doSingleInsert("customuser",
+                ["idcustomuser","ct","cu","lt","lu","username"],
+                [userName,new Date(),'setup',new Date(),'setup',userName]);
+        }).then (()=>{
+            //Associamo l'utente virtuale al gruppo di sicurezza
+            return DA.doSingleInsert("customusergroup",
+                ["idcustomgroup","idcustomuser", "ct","cu","lt","lu"],
+                ["ORGANIGRAMMA",userName, new Date(),'setup',new Date(),'setup']);
+        }).then (()=>{
+            //Associamo l'utente alla voce di organigramma
+            return DA.doSingleInsert("flowchartuser",
+                ["idcustomuser","idflowchart","ndetail", "flagdefault", "ct","cu","lt","lu"],
+                [userName,idflowchart, 1, "S",  new Date(),'setup',new Date(),'setup']);
+        }).then (()=> {
+            //Aggiungiamo tutte le password allo stesso utente di codice 1
+            return DA.readSingleValue(
+                {tableName:"registryreference",
+                    expr: $dq.add($dq.max("idregistryreference"),1),
+                    filter: $dq.eq("idreg",1)
+                });
+        }).then ((idregistryreference)=>{
+            //Ed infine associamo una password all'utente
+            if (!idregistryreference) idregistryreference=1;
+            let salt = Password.generateSalt();
+            let now = new Date();
+            const iterations = now.getMilliseconds() * now.getSeconds() + 10;
+            var hash = Password.generateHash(password, salt, iterations);
+            return DA.doSingleInsert("registryreference",
+                ["idreg","idregistryreference", "referencename", "ct","cu","lt","lu",
+                            "userweb","passwordweb","saltweb"],
+                [1,idregistryreference, userName, new Date(),'setup',new Date(),'setup',
+                            userName,
+                                hash.toString("hex").toUpperCase(),
+                                salt.toString("hex").toUpperCase()]);
+        });
+    }
+
+    grunt.registerTask("addUser","Aggiungi utente a db",function(){
+        let done= this.async();
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+        const domande = [
+            'Inserire codice del database da usare',
+            'Inserire codice organigramma',
+            'Inserire nome utente',
+            'Inserire password',
+            'Ripetere password'
+        ];
+        const risposte = [];
+        let dbListJsonFile = fs.readFileSync (path.join('config','dbList.json'), 'utf8');
+        const dbListJson = JSON.parse(dbListJsonFile);
+        const dbCodes = Object.keys(dbListJson);
+
+
+        function faiDomanda(index) {
+            if (index <= domande.length){
+                if (index === 0){
+                    // verifica se dbCode possibile
+                    rl.question(` ${domande[index]} (${dbCodes.join(', ')}): `, function (risposta){
+                        if (dbCodes.includes(risposta)){
+                            risposte.push(risposta);
+                            faiDomanda(index + 1);
+                        }
+                        else{
+                            console.log('Invalid db Code.');
+                            faiDomanda(index); // Richiedi la stessa domanda
+                        }
+                    });
+                    return;
+                }
+                if (index === domande.length) {
+                    // Se siamo alla domanda sulla ripetizione della password
+                    const passwordInserita = risposte[risposte.length - 2];
+                    const ripetiPassword = risposte[risposte.length - 1];
+
+                    if (passwordInserita !== ripetiPassword) {
+                        // Le password non corrispondono, rimuovi le ultime due risposte
+                        risposte.pop(); // Rimuovi l'ultima risposta (ripetiPassword)
+                        risposte.pop(); // Rimuovi la penultima risposta (passwordInserita)
+
+                        grunt.log.writeln('Le password non corrispondono. Inseriscile di nuovo.');
+                        faiDomanda(index - 2); // Richiedi di nuovo la domanda precedente
+                        return;
+                    }
+                    else {
+                        //grunt.log.writeln('Le password corrispondono.');
+                        faiDomanda(index+1); //go to else section
+                    }
+                }
+                else{
+                    //domanda normale
+                    rl.question(`${domande[index]}: `, function (risposta){
+                        risposte.push(risposta);
+                        faiDomanda(index + 1);
+                    });
+                    return;
+                }
+            } else {
+                DBList.getDataAccess(risposte[0]).then((DA)=> {
+                    return registerUser(DA, risposte[1], risposte[2], risposte[3]);
+                }).then(()=>{
+                    rl.close();
+                    //grunt.log.writeln('Risposte inserite:', risposte);
+                    done();
+                })
+                .fail((err)=>{
+                    grunt.log.writeln('Error connecting to db.'+err);
+                });
+
+            }
+        }
+        faiDomanda(0);
     });
 
 

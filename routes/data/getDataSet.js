@@ -26,7 +26,6 @@ async function middleware(req,res,next){
     }
     let /*DataSet*/ ds = await ctx.getDataInvoke.createEmptyDataSet(tableName,editType);
     res.status(200).send(getDataUtils.getJsonFromJsDataSet(ds,true));
-
 }
 
 

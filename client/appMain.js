@@ -19,7 +19,6 @@
          * Initializes the App that uses "MDWL" library
          */
         init: function () {
-
             // default è italiano, il file italiano avrà sicuramente tutte le stringhe, poiché parto sempre da quello
             // per inserire nuove costanti per le stringhe
             appMeta.localResource.setLanguage("it");

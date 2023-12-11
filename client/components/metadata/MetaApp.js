@@ -1,4 +1,4 @@
-/*globals _,appMeta,$,alert */
+/*globals _,appMeta,$,alert, console */
 
 /**
  * @module MetaApp
@@ -6,13 +6,14 @@
  * It is the entry point of the application It contains the collection of metapage and the html pages
  */
 (function () {
-            "use strict";
+    "use strict";
 
     /**
      * Namespace for myKocde application
      * @constructor
      */
     function AppMeta(){
+        // console.log("creating a new AppMeta - should only happen once");
         this.allMeta = {};
 
         /**
@@ -47,21 +48,21 @@
         ];
     }
 
-	 AppMeta.prototype = {
-	        constructor: AppMeta,
-	        /**
-	         * @method addMeta
-	         * @public
-	         * @description SYNC
-	         * Adds a metadata to the application. This should be called from the defining javascript
-	         * @param {string} tableName
-	         * @param {MetaData} meta
-	         */
-	        addMeta: function (tableName, meta) {
-	            if (!this.allMeta[tableName]) {
-	                this.allMeta[tableName] = meta;
-	            }
-	        },
+    AppMeta.prototype = {
+        constructor: AppMeta,
+        /**
+         * @method addMeta
+         * @public
+         * @description SYNC
+         * Adds a metadata to the application. This should be called from the defining javascript
+         * @param {string} tableName
+         * @param {MetaData} meta
+         */
+        addMeta: function (tableName, meta) {
+            if (!this.allMeta[tableName]) {
+                this.allMeta[tableName] = meta;
+            }
+        },
 
         /**
          * @method getMeta
@@ -80,77 +81,77 @@
             return meta;
         },
 
-	    /**
-	     * @method CustomControl
-	     * @public
-	     * @description SYNC
-	     * Gets/Sets the "control" for the "controlName". Saves it in the class variable "customControls"
-	     * @param {string} controlName
-	     * @param {CustomControl} control it can be GridControl, ComboControl
-	     * @returns {constructor|this}
-	     */
-	    CustomControl:function(controlName, control) {
-	        if (control === undefined) {
+        /**
+         * @method CustomControl
+         * @public
+         * @description SYNC
+         * Gets/Sets the "control" for the "controlName". Saves it in the class variable "customControls"
+         * @param {string} controlName
+         * @param {CustomControl} control it can be GridControl, ComboControl
+         * @returns {constructor|this}
+         */
+        CustomControl:function(controlName, control) {
+            if (control === undefined) {
                 return this.customControls[controlName];
             }
             this.customControls[controlName] = control;
             return this.customControls[controlName];
         },
 
-            /**
-             * @method CustomContainer
-             * @private
-             * @description SYNC
-             * Gets/Sets the "control" container for the "controlName". Saves it in the class variable "customContainers"
-             * @param {string} controlName
-             * @param {CustomControl} control
-             * @returns {constructor|this}
-             */
-            CustomContainer:function(controlName, control) {
-                if (control === undefined) {
-                    return this.customContainers[controlName];
-                }
-                this.customContainers[controlName] = control;
-                return this;
-            },
+        /**
+         * @method CustomContainer
+         * @private
+         * @description SYNC
+         * Gets/Sets the "control" container for the "controlName". Saves it in the class variable "customContainers"
+         * @param {string} controlName
+         * @param {CustomControl} control
+         * @returns {constructor|this}
+         */
+        CustomContainer:function(controlName, control) {
+            if (control === undefined) {
+                return this.customContainers[controlName];
+            }
+            this.customContainers[controlName] = control;
+            return this;
+        },
 
-            /**
-             * @method getPage
-             * @public
-             * @description ASYNC
-             * Loads and caches an html page from server and renders in rootElement of current page
-             * @param {element} rootElement
-             * @param {string} tableName
-             * @param {string} editType
-             * @returns Promise<string>
-             */
-            getPage: function(rootElement, tableName, editType) {
-                let res = this.Deferred("getPage");
-                /*{tableName:null,editType:null,html:null}*/
-                let page = _.find(this.htmlPages, { "tableName": tableName, "editType": editType });
+        /**
+         * @method getPage
+         * @public
+         * @description ASYNC
+         * Loads and caches an html page from server and renders in rootElement of current page
+         * @param {element} rootElement
+         * @param {string} tableName
+         * @param {string} editType
+         * @returns Promise<string>
+         */
+        getPage: function(rootElement, tableName, editType) {
+            let res = this.Deferred("getPage");
+            /*{tableName:null,editType:null,html:null}*/
+            let page = _.find(this.htmlPages, { "tableName": tableName, "editType": editType });
 
-                let self = this;
-                if (page) {
-                    $(rootElement).html(page.html);
-                    return res.resolve(page.html).promise();
-                }
+            let self = this;
+            if (page) {
+                $(rootElement).html(page.html);
+                return res.resolve(page.html).promise();
+            }
 
-                let htmlFileName = this.getMetaPagePath(tableName) + "/" + tableName + "_" + editType + ".html";
-                $.get(htmlFileName)
-                .done(
-                    function (data) {
-                        self.htmlPages.push({ tableName: tableName, editType: editType, html: data });
-                        $(rootElement).html(data);
-                        res.resolve(data);
-                    })
-                .fail(
-                    function (err) {
-                        res.reject('Failed to load ' + htmlFileName + ' ' + JSON.stringify(err.responseText));
-                    });
+            let htmlFileName = this.getMetaPagePath(tableName) + "/" + tableName + "_" + editType + ".html";
+            $.get(htmlFileName)
+            .done(
+                function (data) {
+                    self.htmlPages.push({ tableName: tableName, editType: editType, html: data });
+                    $(rootElement).html(data);
+                    res.resolve(data);
+                })
+            .fail(
+                function (err) {
+                    res.reject('Failed to load ' + htmlFileName + ' ' + JSON.stringify(err.responseText));
+                });
 
-                return res.promise();
+            return res.promise();
 
-            },
+        },
 
         /**
          * @method addMetaPage
@@ -434,19 +435,18 @@
                         // console.log("got MetaPage");
                         createdPage = calledMetaPage;
                         return calledMetaPage.init(); //returns an instance of metaPage (with meta and state and dataset)
-                    }, function (err){
-                        appMeta.logger.log(appMeta.logTypeEnum.ERROR, err);
-                    })
-                    .then(appMeta.utils.skipRun(
-                        function (/*MetaPage*/ calledMetaPage) {
+                     }).then(appMeta.utils.skipRun(
+                         (/*MetaPage*/ calledMetaPage) => {
+                            // console.log("callPage skippingRun")
                             // aggiunge accorgimento grafico per far apparire la pag di dettaglio come un popup
                             if (wantsRow) $(self.rootElement).addClass(appMeta.cssDefault.detailPage);
                             if (!wantsRow) $(self.rootElement).removeClass(appMeta.cssDefault.detailPage);
                             return appMeta.getPage(self.rootElement,
                                 calledMetaPage.primaryTableName,
                                 calledMetaPage.editType); //gets and render calledMetaPage html
-                        }))
-                        .then(function (/*MetaPage*/ calledMetaPage) {
+                        })).then(
+                            (/*MetaPage*/ calledMetaPage) => {
+                                // console.log("callPage skippingRun done");
                                 if (self.currentMetaPage){
                                     // DS è dataset della CALLING PAGE
                                     // currMetaData.ExtraParameter diventa calledMetaPage.state.extraParameters
@@ -462,124 +462,131 @@
                                 self.currentMetaPage = calledMetaPage; //called page is the new current page
                                 self.toolBarManager.setMetaPage(calledMetaPage); // set the currentMetaPage for the toolbar
                                 return calledMetaPage.activate(); //activate the page
-                                }).then(function () {
-                                return createdPage.show();//this raises appMeta.EventEnum.showPage
-                                }).then(function () {
-                                self.pushPageName(createdPage.getName());
-                                // Restituisco il deferred della pagina appena aperta.
-                                // Si risolverà nel mainsave nel caso di dettaglio di un edit di una riga del grid,
-                                // o nel mainSelect nel caso di autoManage
-                                return createdPage.deferredResult;
+                            }).then(
+                                function () {
+                                     return createdPage.show();//this raises appMeta.EventEnum.showPage
+                            }).then(
+                                function () {
+                                    self.pushPageName(createdPage.getName());
+                                    // Restituisco il deferred della pagina appena aperta.
+                                    // Si risolverà nel mainsave nel caso di dettaglio di un edit di una riga del grid,
+                                    // o nel mainSelect nel caso di autoManage
+                                    return createdPage.deferredResult;
+                            }).fail(
+                                err=>{
+                                appMeta.logger.log(appMeta.logTypeEnum.ERROR, err);
                             });
-                        });
+                });
 
 
-                },
+        },
 
-                /**
-                 * @method returnToCaller
-                 * @public
-                 * @description ASYNC
-                 * Closes current page and returns to the caller page.
-                 * Sets newly the caller page as MetaPage for the main toolbar
-                 * @returns {Deferred}
-                 */
-                returnToCaller: function() {
-                    let def = appMeta.Deferred("returnToCaller");
-                    if (!this.currentMetaPage || !this.currentMetaPage.state) {
-                        //there is no caller 
-                        //console.log("rejecting returnToCaller");
-                        return def.reject('there is no caller page').promise();
-                    }
+        /**
+         * @method returnToCaller
+         * @public
+         * @description ASYNC
+         * Closes current page and returns to the caller page.
+         * Sets newly the caller page as MetaPage for the main toolbar
+         * @returns {Deferred}
+         */
+        returnToCaller: function() {
+            let def = appMeta.Deferred("returnToCaller");
+            if (!this.currentMetaPage || !this.currentMetaPage.state) {
+                //there is no caller
+                //console.log("rejecting returnToCaller");
+                return def.reject('there is no caller page').promise();
+            }
 
-                    // 1. currentRoot = root (è un node html) di currentMetaPage (metaPage)
-                    let currentMetaPageRoot = $(this.currentMetaPage.rootElement);
-                    // 2. parent = parent node di currentRoot
-                    let parentRoot = $(currentMetaPageRoot).parent();
+            // 1. currentRoot = root (è un node html) di currentMetaPage (metaPage)
+            let currentMetaPageRoot = $(this.currentMetaPage.rootElement);
+            // 2. parent = parent node di currentRoot
+            let parentRoot = $(currentMetaPageRoot).parent();
 
-                    // rimuovo pag dal array dei nomi
-                    this.popPageName();
+            // rimuovo pag dal array dei nomi
+            this.popPageName();
 
-                    if (!this.currentMetaPage.state.callerPage) {
-                        //there is no caller or the caller is not a metaPage
-                        currentMetaPageRoot.empty();
-                        this.currentMetaPage.setTitle(""); // reset del titolo
-                        this.currentMetaPage = null;
-                        this.toolBarManager.setMetaPage(null); // la toolbar si disabilita o sparisce in questo momento
-                        return def.resolve(true); // torna alla mainpage
-                    }
+            if (!this.currentMetaPage.state.callerPage) {
+                //there is no caller or the caller is not a metaPage
+                currentMetaPageRoot.empty();
+                this.currentMetaPage.setTitle(""); // reset del titolo
+                this.currentMetaPage = null;
+                this.toolBarManager.setMetaPage(null); // la toolbar si disabilita o sparisce in questo momento
+                return def.resolve(true); // torna alla mainpage
+            }
 
-                    let calledPageEntityChanged = this.currentMetaPage.entityChanged;
-                    this.currentMetaPage = this.currentMetaPage.state.callerPage;
-                    this.currentMetaPage.entityCalledChanged = calledPageEntityChanged;
-                    this.currentMetaPage.clearCalls();
-                    this.toolBarManager.setMetaPage(this.currentMetaPage); // set the currentMetaPage for the toolbar
+            let calledPageEntityChanged = this.currentMetaPage.entityChanged;
+            this.currentMetaPage = this.currentMetaPage.state.callerPage;
+            this.currentMetaPage.entityCalledChanged = calledPageEntityChanged;
+            this.currentMetaPage.clearCalls();
+            this.toolBarManager.setMetaPage(this.currentMetaPage); // set the currentMetaPage for the toolbar
 
-                    // 3. recupera savedRoot = prop. savedRoot di currentMetaPage attuale, che sarebbe la pag chiamante  
-                    let savedRoot = this.currentMetaPage.savedRoot;
+            // 3. recupera savedRoot = prop. savedRoot di currentMetaPage attuale, che sarebbe la pag chiamante
+            let savedRoot = this.currentMetaPage.savedRoot;
 
-                    // 4. esegue replace del contenuto
-                    $(parentRoot)[0].replaceChild(savedRoot[0], currentMetaPageRoot[0]);
-                    //console.log("currentMetaPage.show()", this.currentMetaPage);
-                    return def.from(this.currentMetaPage.show()).promise();
-                },
+            // 4. esegue replace del contenuto
+            $(parentRoot)[0].replaceChild(savedRoot[0], currentMetaPageRoot[0]);
+            //console.log("currentMetaPage.show()", this.currentMetaPage);
+            return def.from(this.currentMetaPage.show()).promise();
+        },
 
-                /**
-                 * 
-                 * @returns {number}
-                 */
-                getScreenWidth:function () {
-                    return  $(window).width(); //$(document).width(); la document prende la width considerando anche la scrollbar
-                },
+        /**
+         *
+         * @returns {number}
+         */
+        getScreenWidth:function () {
+            return  $(window).width(); //$(document).width(); la document prende la width considerando anche la scrollbar
+        },
 
-                /**
-                 * 
-                 * @returns {number}
-                 */
-                getScreenHeight:function () {
-                   return  $(window).height(); //screen.height; //$(document).height();
-                },
+        /**
+         *
+         * @returns {number}
+         */
+        getScreenHeight:function () {
+           return  $(window).height(); //screen.height; //$(document).height();
+        },
 
-                /**
-                 * @method callWebService
-                 * @public
-                 * @description ASYNC
-                 * call a  web service named method with prms object. prms are the pairs key:value specific for each call.
-                 * The "method" method must be registered with routing.registerService(...) function
-                 * @param {string} method "the name of web service"
-                 * @param {Object} prms pair of key:value.
-                 */
-                callWebService:function (method, prms) {
-                    let def = appMeta.Deferred('callWebService');
+        /**
+         * @method callWebService
+         * @public
+         * @description ASYNC
+         * call a  web service named method with prms object. prms are the pairs key:value specific for each call.
+         * The "method" method must be registered with routing.registerService(...) function
+         * @param {string} method "the name of web service"
+         * @param {Object} prms pair of key:value.
+         */
+        callWebService:function (method, prms) {
+            let def = appMeta.Deferred('callWebService');
 
-                    // osserva se il metodo è stato censito e registrato
-                    let objRouting  = appMeta.routing.getMethod(method);
-                    if (!objRouting){
-                        alert("method " + method + " not registered for this app. Add the configuration on Routing class calling " +
-                            "routing.registerService('method, 'GET/POST', 'my controller path', false, true);");
-                        return def.resolve();
-                    }
-                    // stampa di log
-                    appMeta.logger.log( appMeta.logTypeEnum.INFO, "called web service " + method , objRouting);
+            // osserva se il metodo è stato censito e registrato
+            let objRouting  = appMeta.routing.getMethod(method);
+            if (!objRouting){
+                alert("method " + method + " not registered for this app. Add the configuration on Routing class calling " +
+                    "routing.registerService('method, 'GET/POST', 'my controller path', false, true);");
+                return def.resolve();
+            }
+            // stampa di log
+            appMeta.logger.log( appMeta.logTypeEnum.INFO, "called web service " + method , objRouting);
 
-                    // chiamata al web service
-                    let objConn = {
-                        method: method,
-                        prm: prms
-                    };
-                    appMeta.connection.call(objConn)
-                        .then(function (jsonRes) {
-                            // non fa altro che risolvere il risultato, Lo sa chi lo chiama cosa fare con il risultato
-                            def.resolve(jsonRes);
-                        }).fail(function (err) {
-                            def.reject(err);
-                        });
-
-                    return def.promise();
-                }
-
+            // chiamata al web service
+            let objConn = {
+                method: method,
+                prm: prms
             };
-            window.appMeta.MetaApp = MetaApp;
+            appMeta.connection.call(objConn)
+                .then(function (jsonRes) {
+                    // non fa altro che risolvere il risultato, Lo sa chi lo chiama cosa fare con il risultato
+                    def.resolve(jsonRes);
+                }).fail(function (err) {
+                    def.reject(err);
+                });
+
+            return def.promise();
+        }
+
+    };
+
+    // console.log("assigning window.appMeta.MetaApp");
+    window.appMeta.MetaApp = MetaApp;
 
 }());
 

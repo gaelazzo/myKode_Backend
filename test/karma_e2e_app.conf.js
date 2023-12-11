@@ -12,7 +12,7 @@ module.exports = function(config) {
         usePolling: true,
 
         //dots  progress  junit  growl  coverage kjhtml spec
-        reporters: ['dots'],
+        reporters: ['spec'],
 
 
         // base path, that will be used to resolve files and exclude
@@ -130,6 +130,7 @@ module.exports = function(config) {
             '/test_client/data/': 'http://localhost:54471/test_client/data/',
             '/base/test_client/auth/': 'http://localhost:54471/test_client/auth/',
             '/base/test_client/data/': 'http://localhost:54471/test_client/data/',
+
             //'/base/test_client/': 'http://localhost:54471/test_client/',
 
 

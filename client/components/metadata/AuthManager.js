@@ -1,5 +1,4 @@
 /*global appMeta_ */
-
 /**
  * @module AuthManager
  * @description

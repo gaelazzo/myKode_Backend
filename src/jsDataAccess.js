@@ -493,8 +493,8 @@ DataAccess.prototype = {
      * do an insert Command
      * @method doSingleInsert
      * @param table {string}
-     * @param columns {string} array of column names
-     * @param values {string} array of corresponding value
+     * @param columns {string[]} array of column names
+     * @param values {object[]} array of corresponding value
      * @returns {Promise<int>}
      */
     doSingleInsert: function (table, columns, values) {

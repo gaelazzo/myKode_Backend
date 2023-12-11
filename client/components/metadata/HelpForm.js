@@ -314,7 +314,6 @@
                                 case "Double":
                                 case "Float":
                                 case "Single":
-                                    // console.log("adding events to ",el.tagName);
                                     $(el).on("focus", _.partial(this.enterNumTextBox, this));
                                     $(el).on("blur", this.generalLeaveTextBox);
                                     break;
@@ -1066,14 +1065,21 @@
          * "this" represents the html control that fired the event
          */
         generalLeaveTextBox: function() {
-            if ($(this).prop("disabled")) return;
-            if ($(this).prop("readonly")) return;
+            if ($(this).prop("disabled")) {
+                return;
+            }
+            if ($(this).prop("readonly")) {
+                return;
+            }
             let val = $(this).val();
             val = val.trim();
-            if (val === "") return;
+            if (val === "") {
+                return;
+            }
             const completeTag = $(this).data("tag");
             const ctype = $(this).data("mdlColType");
-            $(this).val(new TypedObject(ctype, val, completeTag).stringValue(completeTag));
+            let newValue = new TypedObject(ctype, val, completeTag).stringValue(completeTag);
+            $(this).val(newValue);
         },
 
         /**

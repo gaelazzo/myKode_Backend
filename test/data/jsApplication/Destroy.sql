@@ -304,6 +304,10 @@ BEGIN
 END
 GO
 
+IF EXISTS(select * from sysobjects where id = object_id(N'[mandateview]') and OBJECTPROPERTY(id, N'IsView') = 1)
+DROP VIEW [mandateview]
+GO
+
 IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[mandate]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
  drop table [dbo].[mandate]
@@ -315,3 +319,11 @@ BEGIN
  drop table [dbo].[mandatekind]
 END
 GO
+
+
+IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[mandatedetail]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+ drop table [dbo].[mandatedetail]
+END
+GO
+

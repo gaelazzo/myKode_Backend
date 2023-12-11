@@ -27,3 +27,9 @@ BEGIN
  drop table [dbo].[sellerkind]
 END
 GO
+
+IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[menuweb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+ drop table [dbo].[menuweb]
+END
+GO

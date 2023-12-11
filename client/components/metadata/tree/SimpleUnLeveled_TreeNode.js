@@ -66,7 +66,7 @@
                             })
                             .map(function (field) {
                                 var dc = r.table.columns[field];
-                                if (dc.ctype === 'DateTime') {
+                                if (dc.ctype === 'DateTime' || dc.ctype==="date") {
                                     return dc.caption + ": " + self.formattedDate(r.current[field])
                                 }
                                 return dc.caption + ": " + r.current[field];

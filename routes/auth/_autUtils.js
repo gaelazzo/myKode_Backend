@@ -156,6 +156,10 @@ async function _doLogin(ctx, userName, password,
         filter: q.eq("idreg",idreg),
         expr:"title"
     });
+    if (!title){
+        title = referenceRow["referencename"];
+    }
+
 
     await env.load(ctx.dataAccess);
     let idflowchart = env.sys("idflowchart");
@@ -204,8 +208,6 @@ async function _doLogin(ctx, userName, password,
         expiresOn:token.expiresOn
     };
     res.json(result);
-
-
 }
 
 
