@@ -148,6 +148,12 @@ GO
 
 
 -- GENERAZIONE DATI PER flowchart --
+IF not exists(SELECT * FROM [flowchart] WHERE idflowchart = '202099')
+INSERT INTO [flowchart] (idflowchart,address,ayear,cap,codeflowchart,ct,cu,fax,idcity,idsor1,idsor2,idsor3,location,lt,lu,nlevel,paridflowchart,phone,printingorder,title) VALUES ('202099',null,'2020',null,'SEGADM',{ts '2020-12-17 12:42:37.140'},'setup',null,null,null,null,null,null,{ts '2020-12-17 12:42:37.140'},'setup','1','20',null,'1','Segreterie Amministratori')
+IF not exists(SELECT * FROM [flowchart] WHERE idflowchart = '212099')
+INSERT INTO [flowchart] (idflowchart,address,ayear,cap,codeflowchart,ct,cu,fax,idcity,idsor1,idsor2,idsor3,location,lt,lu,nlevel,paridflowchart,phone,printingorder,title) VALUES ('212099',null,'2021',null,'SEGADM',{ts '2021-01-07 09:55:09.177'},'setup',null,null,null,null,null,null,{ts '2021-01-07 09:55:09.177'},'setup','1','21',null,'1','Segreterie Amministratori')
+IF not exists(SELECT * FROM [flowchart] WHERE idflowchart = '222099')
+INSERT INTO [flowchart] (idflowchart,address,ayear,cap,codeflowchart,ct,cu,fax,idcity,idsor1,idsor2,idsor3,location,lt,lu,nlevel,paridflowchart,phone,printingorder,title) VALUES ('222099',null,'2022',null,'SEGADM',{ts '2022-01-03 09:49:32.573'},'setup',null,null,null,null,null,null,{ts '2022-01-03 09:49:32.573'},'setup','1','22',null,'1','Segreterie Amministratori')
 IF not exists(SELECT * FROM [flowchart] WHERE idflowchart = '232099')
 INSERT INTO [flowchart] (idflowchart,address,ayear,cap,codeflowchart,ct,cu,fax,idcity,idsor1,idsor2,idsor3,location,lt,lu,nlevel,paridflowchart,phone,printingorder,title) VALUES ('232099',null,'2023',null,'SEGADM',{ts '2023-01-09 15:47:50.303'},'setup',null,null,null,null,null,null,{ts '2023-01-09 15:47:50.303'},'setup','1','23',null,'1','Segreterie Amministratori')
 GO
@@ -220,6 +226,24 @@ GO
 
 
 -- GENERAZIONE DATI PER customuser --
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'AZZURRO')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('AZZURRO',{ts '2011-10-18 11:11:10.937'},'sa',null,null,{ts '2011-10-18 11:11:10.937'},'sa','AZZURRO')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'BIANCO')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('BIANCO',{ts '2011-04-07 13:06:12.157'},'sa',null,null,{ts '2011-04-07 13:06:12.157'},'sa','BIANCO')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'MARIO.ROSSI')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('MARIO.ROSSI',{ts '2011-06-27 14:12:40.297'},'sa',null,null,{ts '2011-06-27 14:12:40.297'},'sa','MARIO.ROSSI')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'NERO')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('NERO',{ts '2011-04-07 13:06:21.670'},'sa',null,null,{ts '2011-04-07 13:06:21.670'},'sa','NERO')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'nino')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('nino',{ts '2015-06-05 15:29:32.073'},'Nino',null,null,{ts '2015-06-05 15:29:32.073'},'Nino','nino')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'PROVA.SICUREZZA')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('PROVA.SICUREZZA',{ts '2012-10-25 11:52:41.093'},'sa',null,null,{ts '2012-10-25 11:52:41.093'},'sa','PROVA.SICUREZZA')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'ROSA')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('ROSA',{ts '2011-10-24 16:43:06.687'},'sa',null,null,{ts '2011-10-24 16:43:06.687'},'sa','ROSA')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'sara')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('sara',{ts '2009-12-09 09:29:44.780'},'SARA',null,null,{ts '2009-12-09 09:29:44.780'},'SARA','SARA')
+IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'UTENTE')
+INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('UTENTE',{ts '2009-12-09 09:29:44.780'},'UTENTE',null,null,{ts '2009-12-09 09:29:44.780'},'UTENTE','UTENTE')
 IF not exists(SELECT * FROM [customuser] WHERE idcustomuser = 'seg_fcaprilli')
 INSERT INTO [customuser] (idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu,username) VALUES ('seg_fcaprilli',{ts '2020-11-26 11:46:14.673'},'seg_psuma',null,null,{ts '2020-11-26 11:46:14.673'},'seg_psuma','seg_fcaprilli')
 GO
@@ -228,6 +252,12 @@ delete from flowchartuser
 GO
 
 
+IF not exists(SELECT * FROM [flowchartuser] WHERE idcustomuser = 'seg_fcaprilli' AND idflowchart = '202099' AND ndetail = '2')
+INSERT INTO [flowchartuser] (idcustomuser,idflowchart,ndetail,all_sorkind01,all_sorkind02,all_sorkind03,all_sorkind04,all_sorkind05,ct,cu,flagdefault,idsor01,idsor02,idsor03,idsor04,idsor05,lt,lu,sorkind01_withchilds,sorkind02_withchilds,sorkind03_withchilds,sorkind04_withchilds,sorkind05_withchilds,start,stop,title) VALUES ('seg_fcaprilli','202099','2',null,null,null,null,null,{ts '2020-12-17 13:18:45.047'},'assistenza','N',null,null,null,null,null,{ts '2020-12-17 13:18:45.047'},'assistenza',null,null,null,null,null,{d '1900-01-01'},null,null)
+IF not exists(SELECT * FROM [flowchartuser] WHERE idcustomuser = 'seg_fcaprilli' AND idflowchart = '212099' AND ndetail = '2')
+INSERT INTO [flowchartuser] (idcustomuser,idflowchart,ndetail,all_sorkind01,all_sorkind02,all_sorkind03,all_sorkind04,all_sorkind05,ct,cu,flagdefault,idsor01,idsor02,idsor03,idsor04,idsor05,lt,lu,sorkind01_withchilds,sorkind02_withchilds,sorkind03_withchilds,sorkind04_withchilds,sorkind05_withchilds,start,stop,title) VALUES ('seg_fcaprilli','212099','2',null,null,null,null,null,{ts '2021-01-07 09:55:09.180'},'assistenza','N',null,null,null,null,null,{ts '2021-07-22 14:40:13.007'},'assistenza',null,null,null,null,null,{d '1900-01-01'},null,null)
+IF not exists(SELECT * FROM [flowchartuser] WHERE idcustomuser = 'seg_fcaprilli' AND idflowchart = '222099' AND ndetail = '2')
+INSERT INTO [flowchartuser] (idcustomuser,idflowchart,ndetail,all_sorkind01,all_sorkind02,all_sorkind03,all_sorkind04,all_sorkind05,ct,cu,flagdefault,idsor01,idsor02,idsor03,idsor04,idsor05,lt,lu,sorkind01_withchilds,sorkind02_withchilds,sorkind03_withchilds,sorkind04_withchilds,sorkind05_withchilds,start,stop,title) VALUES ('seg_fcaprilli','222099','2',null,null,null,null,null,{ts '2022-01-03 09:49:32.577'},'assistenza','N',null,null,null,null,null,{ts '2022-12-02 09:59:06.987'},'assistenza',null,null,null,null,null,{d '1900-01-01'},null,null)
 IF not exists(SELECT * FROM [flowchartuser] WHERE idcustomuser = 'seg_fcaprilli' AND idflowchart = '232099' AND ndetail = '2')
 INSERT INTO [flowchartuser] (idcustomuser,idflowchart,ndetail,all_sorkind01,all_sorkind02,all_sorkind03,all_sorkind04,all_sorkind05,ct,cu,flagdefault,idsor01,idsor02,idsor03,idsor04,idsor05,lt,lu,sorkind01_withchilds,sorkind02_withchilds,sorkind03_withchilds,sorkind04_withchilds,sorkind05_withchilds,start,stop,title) VALUES ('seg_fcaprilli','232099','2',null,null,null,null,null,{ts '2023-01-09 15:47:50.310'},'assistenza','N',null,null,null,null,null,{ts '2023-01-09 15:47:50.310'},'assistenza',null,null,null,null,null,{d '1900-01-01'},null,null)
 GO
@@ -241,11 +271,31 @@ INSERT INTO [customgroup] (idcustomgroup,ct,cu,description,groupname,lastmodtime
 GO
 
 
-
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'AZZURRO')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','AZZURRO',{ts '2011-10-18 11:11:12.563'},'sa',{ts '2011-10-18 11:11:12.420'},'Software and More',{ts '2011-10-18 11:11:12.563'},'sa')
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'BIANCO')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','BIANCO',{ts '2012-06-05 11:47:01.327'},'sa',null,null,{ts '2012-06-05 11:47:01.327'},'sa')
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'MARIO.ROSSI')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','MARIO.ROSSI',{ts '2011-06-27 14:12:42.127'},'sa',{ts '2011-06-27 14:12:41.610'},'Software and More',{ts '2011-06-27 14:12:42.127'},'sa')
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'NERO')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','NERO',{ts '2011-04-07 13:06:22.563'},'sa',{ts '2011-04-07 13:06:22.467'},'Software and More',{ts '2011-04-07 13:06:22.563'},'sa')
+GO
 IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'seg_fcaprilli')
 INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','seg_fcaprilli',{ts '2020-11-26 11:46:14.673'},'seg_psuma',{ts '2020-11-26 11:46:14.673'},'seg_psuma',{ts '2020-11-26 11:46:14.673'},'seg_psuma')
 GO
 
+
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'PROVA.SICUREZZA')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','PROVA.SICUREZZA',{ts '2012-10-25 11:52:42.280'},'sa',{ts '2012-10-25 11:52:42.217'},'Software and More',{ts '2012-10-25 11:52:42.280'},'sa')
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'ROSA')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','ROSA',{ts '2011-10-24 16:43:08.610'},'sa',{ts '2011-10-24 16:43:08.030'},'Software and More',{ts '2011-10-24 16:43:08.610'},'sa')
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'sara')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','sara',{ts '2009-12-09 09:29:45.843'},'SARA',{ts '2009-12-09 09:29:45.733'},'Software and More',{ts '2009-12-09 09:29:45.843'},'SARA')
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'ORGANIGRAMMA' AND idcustomuser = 'UTENTE')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA','UTENTE',{ts '2011-03-01 15:17:18.110'},'sa',{ts '2011-03-01 15:17:17.780'},'Software and More',{ts '2011-03-01 15:17:18.110'},'sa')
+IF not exists(SELECT * FROM [customusergroup] WHERE idcustomgroup = 'SPLITPAYMENT' AND idcustomuser = 'PROVA.SICUREZZA')
+INSERT INTO [customusergroup] (idcustomgroup,idcustomuser,ct,cu,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('SPLITPAYMENT','PROVA.SICUREZZA',{ts '2015-02-02 14:32:19.390'},'assistenza',null,null,{ts '2015-02-02 14:32:19.390'},'assistenza')
+GO
 
 -- FINE GENERAZIONE SCRIPT --
 -- CREAZIONE TABELLA userenvironment --
