@@ -27,19 +27,18 @@
 	<!-- Stili aggiuntivi per jsTree -->
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css" />
 	<!-- FINE Stili per jsTree -->
-	<!-- FINE stili librerie terze parti -->	
+	<!-- FINE stili librerie terze parti -->
 
-    <!-- INIZIO stili framework-->
-    <!-- lib per visualizzazione json -->
-    <link rel="stylesheet" href="components/styles/json/json-viewer.css">
-    <script src="components/styles/json/json-viewer.js"></script>
-    <!-- FINE lib per visualizzazione json -->
-    <!-- FINE stili framework-->
-
+	<!-- INIZIO stili framework-->
+	<!-- lib per visualizzazione json -->
+	<script src="components/styles/json/json-viewer.js"></script>
+	<link rel="stylesheet" href="components/styles/json/json-viewer.css">
+	<!-- FINE lib per visualizzazione json -->
+	<!-- FINE stili framework-->
 
 	<!-- INIZIO Stili della applicazione -->
-	<link rel="stylesheet" href="styles/italia/bootstrap-italia.min.css">
-	<link rel="stylesheet" href="styles/italia/italia-icon-font.css">
+	<!--link rel="stylesheet" href="styles/italia/bootstrap-italia.min.css"-->
+	<!--link rel="stylesheet" href="styles/italia/italia-icon-font.css"-->
 	<link rel="stylesheet" href="components/styles/app.css">
 	<link rel="stylesheet" href="styles/custom.css">
 	<link rel="stylesheet" href="components/styles/jquery.toast.css">
@@ -47,9 +46,29 @@
 	<!-- FINE Stili della applicazione -->
 
 	<!-- bower:js -->
+	<!--script src="bower_components/jquery/dist/jquery.js"></script-->
+	<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.bundle.js"></script>
+	<script src="bower_components/font-awesome/js/all.min.js"></script>
+	<script src="bower_components/jstree/dist/jstree.js"></script>
+	<script src="bower_components/json3/lib/json3.js"></script>
+	<!--script src="bower_components/es5-shim/es5-shim.js"></script-->
+	<!--script src="bower_components/lodash/lodash.js"></script-->
+	<script src="bower_components/observe-js/src/observe.js"></script>
+	<script src="bower_components/moment/min/moment.min.js"></script>
+	<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
+	<script src="bower_components/fullcalendar/dist/locale-all.js"></script>
+	<script src="bower_components/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.js"></script>
+	<script src="bower_components/jqueryui-timepicker-addon/dist/i18n/jquery-ui-timepicker-addon-i18n.js"></script>
 	<!-- endbower -->
 
 	<!-- expand:metadata_thirdpart -->
+	<script src="components/metadata/thirdpart/jsPDF.min.js"></script>
+	<!--script src="components/metadata/thirdpart/chart.min.js"></script>
+	<script src="components/metadata/thirdpart/gauge.js"></script>
+
+	<script src="components/metadata/thirdpart/jspdf.plugin.autotable.js"></script>
+	<script src="components/metadata/thirdpart/jspdf.umd.min.js"></script-->
 	<!-- endexpand:metadata_thirdpart -->
 
 	<!-- INIZIO librerie terze parti-->
@@ -57,14 +76,14 @@
 	<script src="components/utility/select2.min.js"></script>
 
 	<!-- read excel -->
-	<script src="https://unpkg.com/xlsx/dist/shim.min.js"></script>
-	<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+	<!--script src="https://unpkg.com/xlsx/dist/shim.min.js"></script>
+	<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script-->
 
 	<!-- External files for exporting -->
 	<script src="https://www.igniteui.com/js/external/FileSaver.js"></script>
 	<script src="https://www.igniteui.com/js/external/Blob.js"></script>
 
-	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/infragistics.core.js"></script>
+	<!--script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/infragistics.core.js"></script>
 	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.ext_core.js"></script>
 	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.ext_collections.js"></script>
 	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.ext_text.js"></script>
@@ -77,12 +96,80 @@
 	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.ext_web.js"></script>
 	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.xml.js"></script>
 	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.documents.core_openxml.js"></script>
-	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.excel_serialization_openxml.js"></script>
+	<script type="text/javascript" src="https://cdn-na.infragistics.com/igniteui/2020.1/latest/js/modules/infragistics.excel_serialization_openxml.js"></script-->
 
 	<!-- APP Seg + fmw mdlw -->
 	<!--mdlw-bundle-file-->
 
 	<!-- expand:metacomponents -->
+	<!--script src="components/metadata/jsDataQuery.js"></script-->
+	<!--script src="components/metadata/jsDataSet.js"></script-->
+	<!--script src="components/metadata/MetaApp.js"></script-->
+	<script src="components/metadata/Enum.js"></script>
+	<script src="components/metadata/LocalResource.js"></script>
+	<!--script src="components/metadata/Config.js"></script-->
+	<!--script src="components/metadata/Logger.js"></script-->
+	<script src="components/metadata/DbProcedureMessage.js"></script>
+	<!--script src="components/metadata/Routing.js"></script-->
+	<!--script src="components/metadata/EventManager.js"></script-->
+	<!--script src="components/metadata/utils.js"></script-->
+	<script src="components/metadata/GetDataUtils.js"></script>
+	<script src="components/metadata/ConnWebService.js"></script>
+	<script src="components/metadata/ConnWebSocket.js"></script>
+	<script src="components/metadata/Connection.js"></script>
+	<script src="components/metadata/MetaModel.js"></script>
+	<script src="components/metadata/GetData.js"></script>
+	<script src="components/metadata/Security.js"></script>
+	<script src="components/metadata/AuthManager.js"></script>
+	<script src="components/metadata/PostData.js"></script>
+	<script src="components/metadata/BootstrapContainerTab.js"></script>
+	<script src="components/metadata/FormProcedureMessages.js"></script>
+	<script src="components/metadata/LoaderControl.js"></script>
+	<script src="components/metadata/ModalLoaderControl.js"></script>
+	<script src="components/metadata/ListManager.js"></script>
+	<script src="components/metadata/ListManagerCalendar.js"></script>
+	<script src="components/metadata/CssDefault.js"></script>
+	<script src="components/metadata/TypedObject.js"></script>
+	<script src="components/metadata/MetaPageState.js"></script>
+	<script src="components/metadata/HelpForm.js"></script>
+	<script src="components/metadata/CheckBoxListControl.js"></script>
+	<script src="components/metadata/GridControl.js"></script>
+	<script src="components/metadata/GridControlX.js"></script>
+	<script src="components/metadata/GridControlXMultiSelect.js"></script>
+	<script src="components/metadata/ListManagerMultiSelect.js"></script>
+	<script src="components/metadata/GridControlXChild.js"></script>
+	<script src="components/metadata/GridControlXEdit.js"></script>
+	<script src="components/metadata/CalendarControl.js"></script>
+	<script src="components/metadata/SliderControl.js"></script>
+	<script src="components/metadata/MetaData.js"></script>
+	<script src="components/metadata/MetaPage.js"></script>
+	<script src="components/metadata/ComboManager.js"></script>
+	<script src="components/metadata/MainToolBarManager.js"></script>
+	<script src="components/metadata/DropDownGridControl.js"></script>
+	<script src="components/metadata/GridControlXScrollable.js"></script>
+	<script src="components/metadata/ListManagerScrollable.js"></script>
+	<script src="components/metadata/TreeNode.js"></script>
+	<script src="components/metadata/TreeNode_Dispatcher.js"></script>
+	<script src="components/metadata/TreeViewManager.js"></script>
+	<script src="components/metadata/TreeNodeUnLeveled.js"></script>
+	<script src="components/metadata/TreeNodeLeveled.js"></script>
+	<script src="components/metadata/TreeNodeUnLeveled_Dispatcher.js"></script>
+	<script src="components/metadata/TreeNodeLeveled_Dispatcher.js"></script>
+	<script src="components/metadata/tree/SimpleUnLeveled_TreeNode.js"></script>
+	<script src="components/metadata/tree/SimpleUnLeveled_TreeNode_Dispatcher.js"></script>
+	<script src="components/metadata/tree/SimpleUnLeveled_TreeViewManager.js"></script>
+	<script src="components/metadata/tree/TreeControl.js"></script>
+	<script src="components/metadata/Attachment.js"></script>
+	<!--script src="components/metadata/BootstrapModal.js"></script-->
+	<script src="components/metadata/ConfigDev.js"></script>
+	<script src="components/metadata/GridMultiSelectControl.js"></script>
+	<script src="components/metadata/ModalForm.js"></script>
+	<script src="components/metadata/MultiSelectControl.js"></script>
+	<script src="components/metadata/PdfExport.js"></script>
+	<script src="components/metadata/UploadControl.js"></script>
+	<script src="components/metadata/UploadControlWin.js"></script>
+	<script src="components/metadata/tachimetro/TachimetroControl.js"></script>
+	<script src="components/metadata/graph/GraphControl.js"></script>
 	<!-- endexpand:metacomponents -->
 
 	<script src="MetaXXXApp.js"></script>
@@ -90,12 +177,27 @@
 	<!-- classi derivazione del framework -->
 
 	<script src="meta/MetaXXXData.js"></script>
-	
-    <!-- expand:metadata -->
+
+	<!-- expand:metadata -->
+	<script src="meta/meta_attach.js"></script>
+	<script src="meta/meta_mandate.js"></script>
+	<script src="meta/meta_mandatedetail.js"></script>
+	<script src="meta/meta_mandatekind.js"></script>
+	<script src="meta/meta_mandateview.js"></script>
+	<script src="meta/meta_menuweb.js"></script>
 	<!-- endexpand:metadata -->
 
-	<script src="pages/MetaXXXPage.js"></script>
+
+	<!--script src="pages/MetaXXXPage.js"></script-->
+
 	<!-- expand:pages -->
+	<script src="pages/MetaXXXPage.js"></script>
+	<script src="pages/mandate_default.js"></script>
+	<script src="pages/mandatedetail_detail.js"></script>
+	<script src="pages/menuweb_tree.js"></script>
+	<script src="pages/Menuweb_TreeNode_Dispatcher.js"></script>
+	<script src="pages/Menuweb_TreeNode.js"></script>
+	<script src="pages/Menuweb_TreeViewManager.js"></script>
 	<!-- endexpand:pages -->
 
 	<script src="custom.js"></script>
@@ -133,7 +235,7 @@
 			<div class="container">
 				<a class="navbar-brand" href="#">
 					<img class="portale_brand_logo_id" src="" alt="logo" style="max-height: 40px; height: auto; width: auto;/>
-					<span class="portale_brand_name_id">MetaGoldApp</span>
+					<span class="portale_brand_name_id">MetaXXXApp</span>
 				</a> <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbar11">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -176,7 +278,7 @@
 	<div id="toolbar"></div>
 	<!-- FINE toolbar -->
 	<!-- form di login per ora in spa -->
-	<div id="login" class="container">
+	<div id="login" class="container" style="display: none">
 
 		<form>
 			<div class="row">
