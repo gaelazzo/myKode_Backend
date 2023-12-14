@@ -1,5 +1,6 @@
 --setuser 'amministrazione'
 
+
 IF EXISTS(select * from sysobjects where id = object_id(N'[fin]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
  drop table [fin]
@@ -11,9 +12,9 @@ BEGIN
 END
 GO
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[customuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].[customuser]
+ drop table [customuser]
 END
 GO
 
@@ -24,242 +25,242 @@ END
 GO
 
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customgroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[customgroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].[customgroup]
+ drop table [customgroup]
 END
 GO
 
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].web_listredir
-END
-GO
-
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customusergroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-BEGIN
- drop table [dbo].[customusergroup]
+ drop table web_listredir
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[customusergroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[customgroupoperation]
+ drop table [customusergroup]
+END
+GO
+
+IF EXISTS(select * from sysobjects where id = object_id(N'[customusergroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+ drop table [customgroupoperation]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[flowchartuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].flowchartuser
+ drop table flowchartuser
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[customgroupoperation]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[customgroupoperation]
+ drop table [customgroupoperation]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[menu]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[menu]
+ drop table [menu]
 END
 
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[flowchart]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[flowchart]
+ drop table [flowchart]
 END
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[compute_environment]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO].[compute_environment]
+drop procedure [compute_environment]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[compute_allowform]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO].[compute_allowform]
+drop procedure [compute_allowform]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[compute_notable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO].[compute_notable]
+drop procedure [compute_notable]
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[customer]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[customer]
+ drop table [customer]
 END
 GO
 IF EXISTS(select * from sysobjects where id = object_id(N'[seller]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[seller]
+ drop table [seller]
 END
 GO
 if exists (select * from dbo.sysobjects where id = object_id(N'[testSP2]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO].[testSP2]
+drop procedure [testSP2]
 GO
 if exists (select * from dbo.sysobjects where id = object_id(N'[testSP1]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO].[testSP1]
+drop procedure [testSP1]
 GO
 if exists (select * from dbo.sysobjects where id = object_id(N'[testSP3]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO].[testSP3]
+drop procedure [testSP3]
 GO
 IF EXISTS(select * from sysobjects where id = object_id(N'[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[customerkind]
+ drop table [customerkind]
 END
 GO
 IF EXISTS(select * from sysobjects where id = object_id(N'[sellerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[sellerkind]
+ drop table [sellerkind]
 END
 GO
 IF EXISTS(select * from sysobjects where id = object_id(N'[userenvironment]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[userenvironment]
+ drop table [userenvironment]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[flowchartrestrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[flowchartrestrictedfunction]
+ drop table [flowchartrestrictedfunction]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[restrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[restrictedfunction]
+ drop table [restrictedfunction]
 END
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[compute_roles]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO].[compute_roles]
+drop procedure [compute_roles]
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[audit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[audit]
+ drop table [audit]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[auditparameter]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[auditparameter]
+ drop table [auditparameter]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[auditcheck]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[auditcheck]
+ drop table [auditcheck]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[auditcheckview]') and OBJECTPROPERTY(id, N'IsView') = 1)
 BEGIN
- drop view [DBO].[auditcheckview]
+ drop view [auditcheckview]
 END
 GO
 
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[check_customuser_u_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 BEGIN
- drop procedure [DBO].[check_customuser_u_post]
+ drop procedure [check_customuser_u_post]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[virtualuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[virtualuser]
+ drop table [virtualuser]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[registry]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[registry]
+ drop table [registry]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[registryreference]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[registryreference]
+ drop table [registryreference]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[attach]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[attach]
+ drop table [attach]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[accmotive]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[accmotive]
+ drop table [accmotive]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[category]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[category]
+ drop table [category]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[centralizedcategory]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[centralizedcategory]
+ drop table [centralizedcategory]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[costoorario]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[costoorario]
+ drop table [costoorario]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[centralizedcategory]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[centralizedcategory]
+ drop table [centralizedcategory]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[geo_city]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[geo_city]
+ drop table [geo_city]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[geo_nation]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[geo_nation]
+ drop table [geo_nation]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[maritalstatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[maritalstatus]
+ drop table [maritalstatus]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[registryclass]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[registryclass]
+ drop table [registryclass]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[registryaddress]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[registryaddress]
+ drop table [registryaddress]
 END
 GO
 
@@ -267,40 +268,40 @@ GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[registrykind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[registrykind]
+ drop table [registrykind]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[registrypaymethod]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[registrypaymethod]
+ drop table [registrypaymethod]
 END
 GO
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[residence]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[residence]
+ drop table [residence]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[timbratura]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[timbratura]
+ drop table [timbratura]
 END
 GO
 
 
 IF EXISTS(select * from sysobjects where id = object_id(N'[title]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [DBO].[title]
+ drop table [title]
 END
 GO
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[menuweb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[menuweb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].[menuweb]
+ drop table [menuweb]
 END
 GO
 
@@ -308,22 +309,22 @@ IF EXISTS(select * from sysobjects where id = object_id(N'[mandateview]') and OB
 DROP VIEW [mandateview]
 GO
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[mandate]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[mandate]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].[mandate]
+ drop table [mandate]
 END
 GO
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[mandatekind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[mandatekind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].[mandatekind]
+ drop table [mandatekind]
 END
 GO
 
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[mandatedetail]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[mandatedetail]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
- drop table [dbo].[mandatedetail]
+ drop table [mandatedetail]
 END
 GO
 

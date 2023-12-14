@@ -4,9 +4,9 @@ SET NOCOUNT ON
 --[DBO]--
 
 -- CREAZIONE TABELLA web_listredir --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[web_listredir] (
+CREATE TABLE [web_listredir] (
 tablename varchar(50) NOT NULL,
 listtype varchar(50) NOT NULL,
 ct datetime NULL,
@@ -31,9 +31,9 @@ GO
 
 
 -- CREAZIONE TABELLA customuser --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[customuser] (
+CREATE TABLE [customuser] (
 idcustomuser varchar(50) NOT NULL,
 ct datetime NULL,
 cu varchar(64) NULL,
@@ -53,9 +53,9 @@ GO
 
 
 -- CREAZIONE TABELLA customgroup 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customgroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customgroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[customgroup] (
+CREATE TABLE [customgroup] (
 idcustomgroup varchar(50) NOT NULL,
 ct datetime NULL,
 cu varchar(64) NULL,
@@ -72,9 +72,9 @@ END
 GO
 
 -- CREAZIONE TABELLA customusergroup --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customusergroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customusergroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[customusergroup] (
+CREATE TABLE [customusergroup] (
 idcustomgroup varchar(50) NOT NULL,
 idcustomuser varchar(50) NOT NULL,
 ct datetime NULL,
@@ -91,9 +91,9 @@ END
 GO
 
 -- CREAZIONE TABELLA customgroupoperation --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[customgroupoperation]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customgroupoperation]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[customgroupoperation] (
+CREATE TABLE [customgroupoperation] (
 idgroup varchar(50) NOT NULL,
 operation char(1) NOT NULL,
 tablename varchar(50) NOT NULL,
@@ -117,7 +117,7 @@ GO
 -- CREAZIONE TABELLA flowchart --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchart]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[flowchart] (
+CREATE TABLE [flowchart] (
 idflowchart varchar(34) NOT NULL,
 address varchar(100) NULL,
 ayear int NULL,
@@ -162,7 +162,7 @@ GO
 -- CREAZIONE TABELLA flowchartuser --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchartuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[flowchartuser] (
+CREATE TABLE [flowchartuser] (
 idflowchart varchar(34) NOT NULL,
 ndetail int NOT NULL,
 idcustomuser varchar(50) NOT NULL,
@@ -203,7 +203,7 @@ GO
 -- CREAZIONE TABELLA menu --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[menu]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[menu] (
+CREATE TABLE [menu] (
 idmenu int NOT NULL,
 edittype varchar(60) NULL,
 lt datetime NULL,
@@ -301,7 +301,7 @@ GO
 -- CREAZIONE TABELLA userenvironment --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[userenvironment]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[userenvironment] (
+CREATE TABLE [userenvironment] (
 idcustomuser varchar(50) NOT NULL,
 variablename varchar(50) NOT NULL,
 flagadmin char(1) NULL,
@@ -318,7 +318,7 @@ GO
 -- CREAZIONE TABELLA flowchartrestrictedfunction --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchartrestrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[flowchartrestrictedfunction] (
+CREATE TABLE [flowchartrestrictedfunction] (
 idflowchart varchar(34) NOT NULL,
 idrestrictedfunction int NOT NULL,
 ct datetime NOT NULL,
@@ -333,9 +333,9 @@ END
 GO
 
 -- CREAZIONE TABELLA restrictedfunction --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[restrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[restrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[restrictedfunction] (
+CREATE TABLE [restrictedfunction] (
 idrestrictedfunction int NOT NULL,
 ct datetime NOT NULL,
 cu varchar(64) NOT NULL,
@@ -593,7 +593,7 @@ GO
 
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customer]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].customer(
+CREATE TABLE customer(
 	idcustomer int NOT NULL,
 	name varchar(100) NULL,
 	age int NULL,
@@ -644,7 +644,7 @@ DROP PROCEDURE  ctemp;
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[seller]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
-CREATE TABLE [DBO].seller(
+CREATE TABLE seller(
 	idseller int NOT NULL,
 	name varchar(100) NULL,
 	age int NULL,
@@ -700,7 +700,7 @@ IF NOT EXISTS(select * from sysobjects where id = object_id(N'[sellerkind]') and
 BEGIN
 
 
-CREATE TABLE [DBO].sellerkind(
+CREATE TABLE sellerkind(
 	idsellerkind int NOT NULL,
 	name varchar(100) NULL,
 	rnd int NULL,
@@ -746,7 +746,7 @@ DROP PROCEDURE  ctemp;
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
-CREATE TABLE [DBO].customerkind(
+CREATE TABLE customerkind(
 	idcustomerkind int NOT NULL,
 	name varchar(100) NULL,
 	rnd int NULL,
@@ -851,9 +851,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA web_listredir --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[web_listredir] (
+CREATE TABLE [web_listredir] (
 tablename varchar(50) NOT NULL,
 listtype varchar(50) NOT NULL,
 ct datetime NULL,
@@ -906,7 +906,7 @@ GO
 -- CREAZIONE TABELLA audit --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[audit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[audit] (
+CREATE TABLE [audit] (
 idaudit varchar(30) NOT NULL,
 consequence text NULL,
 flagsystem char(1) NULL,
@@ -926,7 +926,7 @@ GO
 -- CREAZIONE TABELLA auditparameter --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[auditparameter]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[auditparameter] (
+CREATE TABLE [auditparameter] (
 tablename varchar(150) NOT NULL,
 opkind char(1) NOT NULL,
 isprecheck char(1) NOT NULL,
@@ -949,7 +949,7 @@ GO
 -- CREAZIONE TABELLA auditcheck --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[auditcheck]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[auditcheck] (
+CREATE TABLE [auditcheck] (
 tablename varchar(150) NOT NULL,
 opkind char(1) NOT NULL,
 idaudit varchar(30) NOT NULL,
@@ -1298,9 +1298,9 @@ GO
 ------------------------------------------------------------------------------------------------------------------------
 --[DBO]--
 -- CREAZIONE TABELLA virtualuser --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[virtualuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[virtualuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[virtualuser] (
+CREATE TABLE [virtualuser] (
 idvirtualuser int NOT NULL,
 birthdate date NULL,
 cf varchar(16) NULL,
@@ -1323,18 +1323,18 @@ delete from virtualuser
 GO
 
 --[DBO]--
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registry]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF EXISTS(select * from sysobjects where id = object_id(N'[registry]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
-DROP TABLE [dbo].[registry]
+DROP TABLE [registry]
 END
 
 
 GO
 -- CREAZIONE TABELLA registry --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registry]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[registry]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[registry] (
+CREATE TABLE [registry] (
 idreg int NOT NULL,
 active char(1) NOT NULL,
 annotation varchar(400) NULL,
@@ -1394,9 +1394,9 @@ GO
 -- FINE GENERAZIONE SCRIPT --
 
 -- CREAZIONE TABELLA registryclass --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registryclass]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[registryclass]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[registryclass] (
+CREATE TABLE [registryclass] (
 idregistryclass varchar(2) NOT NULL,
 active char(1) NULL,
 ct datetime NOT NULL,
@@ -1462,9 +1462,9 @@ INSERT INTO [registryclass] (idregistryclass,active,ct,cu,description,flagbadgec
 GO
 
 -- CREAZIONE TABELLA registryreference --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registryreference]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[registryreference]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[registryreference] (
+CREATE TABLE [registryreference] (
 idreg int NOT NULL,
 idregistryreference int NOT NULL,
 activeweb char(1) NULL,
@@ -1528,9 +1528,9 @@ GO
 
 
 -- CREAZIONE TABELLA registryaddress --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registryaddress]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[registryaddress]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[registryaddress] (
+CREATE TABLE [registryaddress] (
 idreg int NOT NULL,
 start date NOT NULL,
 idaddresskind int NOT NULL,
@@ -3967,9 +3967,9 @@ GO
 
 
 -- CREAZIONE TABELLA registrypaymethod --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registrypaymethod]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[registrypaymethod]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[registrypaymethod] (
+CREATE TABLE [registrypaymethod] (
 idreg int NOT NULL,
 idregistrypaymethod int NOT NULL,
 active char(1) NULL,
@@ -4024,9 +4024,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA attach --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[attach]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[attach]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[attach] (
+CREATE TABLE [attach] (
 idattach int NOT NULL,
 attachment image NULL,
 counter int NULL,
@@ -4048,9 +4048,9 @@ GO
 
 
 -- CREAZIONE TABELLA residence --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[residence]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[residence]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[residence] (
+CREATE TABLE [residence] (
 idresidence int NOT NULL,
 active char(1) NULL,
 coderesidence varchar(10) NOT NULL,
@@ -4075,9 +4075,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA timbratura --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[timbratura]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[timbratura]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[timbratura] (
+CREATE TABLE [timbratura] (
 idtimbratura int NOT NULL,
 idreg int NOT NULL,
 convalida char(1) NULL,
@@ -4141,9 +4141,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA costoorario --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[costoorario]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[costoorario]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[costoorario] (
+CREATE TABLE [costoorario] (
 idcostoorario int NOT NULL,
 idreg int NOT NULL,
 ct datetime NOT NULL,
@@ -4204,9 +4204,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA title --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[title]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[title]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[title] (
+CREATE TABLE [title] (
 idtitle varchar(20) NOT NULL,
 active char(1) NULL,
 ct datetime NOT NULL,
@@ -4243,9 +4243,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA maritalstatus --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[maritalstatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[maritalstatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[maritalstatus] (
+CREATE TABLE [maritalstatus] (
 idmaritalstatus varchar(20) NOT NULL,
 active char(1) NULL,
 ct datetime NOT NULL,
@@ -4275,9 +4275,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA web_listredir --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[web_listredir] (
+CREATE TABLE [web_listredir] (
 tablename varchar(50) NOT NULL,
 listtype varchar(50) NOT NULL,
 ct datetime NULL,
@@ -4330,9 +4330,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA registrykind --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registrykind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[registrykind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[registrykind] (
+CREATE TABLE [registrykind] (
 idregistrykind int NOT NULL,
 ct datetime NOT NULL,
 cu varchar(64) NOT NULL,
@@ -4347,9 +4347,9 @@ END
 GO
 --[DBO]--
 -- CREAZIONE TABELLA category --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[category]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[category]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[category] (
+CREATE TABLE [category] (
 idcategory varchar(2) NOT NULL,
 active char(1) NULL,
 ct datetime NOT NULL,
@@ -4364,9 +4364,9 @@ END
 GO
 --[DBO]--
 -- CREAZIONE TABELLA accmotive --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[accmotive]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[accmotive]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[accmotive] (
+CREATE TABLE [accmotive] (
 idaccmotive varchar(36) NOT NULL,
 active char(1) NULL,
 codemotive varchar(50) NOT NULL,
@@ -4388,9 +4388,9 @@ END
 
 --[DBO]--
 -- CREAZIONE TABELLA geo_nation --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[geo_nation]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[geo_nation]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[geo_nation] (
+CREATE TABLE [geo_nation] (
 idnation int NOT NULL,
 idcontinent int NULL,
 lang varchar(64) NULL,
@@ -4408,14 +4408,14 @@ END
 GO
 
 -- CREAZIONE VISTA registrymainview
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registrymainview]') and OBJECTPROPERTY(id, N'IsView') = 1)
-DROP VIEW [dbo].[registrymainview]
+IF EXISTS(select * from sysobjects where id = object_id(N'[registrymainview]') and OBJECTPROPERTY(id, N'IsView') = 1)
+DROP VIEW [registrymainview]
 GO
 
 -- CREAZIONE TABELLA geo_city --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[geo_city]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[geo_city]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[geo_city] (
+CREATE TABLE [geo_city] (
 idcity int NOT NULL,
 idcountry int NULL,
 lt datetime NULL,
@@ -4448,7 +4448,7 @@ GO
 
 
 -- CREAZIONE VISTA registrymainview
-CREATE   VIEW [DBO].[registrymainview]
+CREATE   VIEW [registrymainview]
 (
 	idreg,
 	title,
@@ -4590,9 +4590,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA centralizedcategory --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[centralizedcategory]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[centralizedcategory]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[centralizedcategory] (
+CREATE TABLE [centralizedcategory] (
 idcentralizedcategory varchar(20) NOT NULL,
 active char(1) NULL,
 ct datetime NOT NULL,
@@ -4607,37 +4607,37 @@ END
 GO
 --[DBO]--
 -- CREAZIONE VISTA registrydefaultview
-IF EXISTS(select * from sysobjects where id = object_id(N'[dbo].[registrydefaultview]') and OBJECTPROPERTY(id, N'IsView') = 1)
-DROP VIEW [dbo].[registrydefaultview]
+IF EXISTS(select * from sysobjects where id = object_id(N'[registrydefaultview]') and OBJECTPROPERTY(id, N'IsView') = 1)
+DROP VIEW [registrydefaultview]
 GO
 
 
-CREATE VIEW [dbo].[registrydefaultview] AS
+CREATE VIEW [registrydefaultview] AS
 SELECT CASE WHEN registry.active = 'S' THEN 'Si' WHEN registry.active = 'N' THEN 'No' END AS registry_active, registry.annotation AS registry_annotation,CASE WHEN registry.authorization_free = 'S' THEN 'Si' WHEN registry.authorization_free = 'N' THEN 'No' END AS registry_authorization_free, registry.badgecode AS registry_badgecode, registry.birthdate AS registry_birthdate, registry.ccp AS registry_ccp, registry.cf AS registry_cf, registry.ct AS registry_ct, registry.cu AS registry_cu, registry.email_fe AS registry_email_fe, registry.extension AS registry_extension, registry.extmatricula AS registry_extmatricula,CASE WHEN registry.flag_pa = 'S' THEN 'Si' WHEN registry.flag_pa = 'N' THEN 'No' END AS registry_flag_pa,CASE WHEN registry.flagbankitaliaproceeds = 'S' THEN 'Si' WHEN registry.flagbankitaliaproceeds = 'N' THEN 'No' END AS registry_flagbankitaliaproceeds, registry.foreigncf AS registry_foreigncf, registry.forename AS registry_forename,CASE WHEN registry.gender = 'S' THEN 'Si' WHEN registry.gender = 'N' THEN 'No' END AS registry_gender,
- [dbo].accmotive.codemotive AS accmotive_codemotive, [dbo].accmotive.title AS accmotive_title, registry.idaccmotivecredit,
+ accmotive.codemotive AS accmotive_codemotive, accmotive.title AS accmotive_title, registry.idaccmotivecredit,
  accmotive_registry.codemotive AS accmotive_registry_codemotive, accmotive_registry.title AS accmotive_registry_title, registry.idaccmotivedebit,
- [dbo].category.description AS category_description, registry.idcategory,
- [dbo].centralizedcategory.description AS centralizedcategory_description, registry.idcentralizedcategory,
- [dbo].geo_city.title AS geo_city_title, registry.idcity, registry.idexternal AS registry_idexternal,
- [dbo].maritalstatus.description AS maritalstatus_description, registry.idmaritalstatus AS registry_idmaritalstatus,
- [dbo].geo_nation.title AS geo_nation_title, registry.idnation, registry.idreg,
- [dbo].registryclass.description AS registryclass_description, registry.idregistryclass,
- [dbo].registrykind.description AS registrykind_description, registry.idregistrykind AS registry_idregistrykind,
- [dbo].title.description AS title_description, registry.idtitle, registry.ipa_fe AS registry_ipa_fe, registry.ipa_perlapa AS registry_ipa_perlapa, registry.location AS registry_location, registry.lt AS registry_lt, registry.lu AS registry_lu, registry.maritalsurname AS registry_maritalsurname,CASE WHEN registry.multi_cf = 'S' THEN 'Si' WHEN registry.multi_cf = 'N' THEN 'No' END AS registry_multi_cf, registry.p_iva AS registry_p_iva, registry.pec_fe AS registry_pec_fe,
- [dbo].residence.description AS residence_description, registry.residence, registry.rtf AS registry_rtf, registry.sdi_defrifamm AS registry_sdi_defrifamm,CASE WHEN registry.sdi_norifamm = 'S' THEN 'Si' WHEN registry.sdi_norifamm = 'N' THEN 'No' END AS registry_sdi_norifamm, registry.surname AS registry_surname, registry.title, registry.toredirect AS registry_toredirect, registry.txt AS registry_txt,
+ category.description AS category_description, registry.idcategory,
+ centralizedcategory.description AS centralizedcategory_description, registry.idcentralizedcategory,
+ geo_city.title AS geo_city_title, registry.idcity, registry.idexternal AS registry_idexternal,
+ maritalstatus.description AS maritalstatus_description, registry.idmaritalstatus AS registry_idmaritalstatus,
+ geo_nation.title AS geo_nation_title, registry.idnation, registry.idreg,
+ registryclass.description AS registryclass_description, registry.idregistryclass,
+ registrykind.description AS registrykind_description, registry.idregistrykind AS registry_idregistrykind,
+ title.description AS title_description, registry.idtitle, registry.ipa_fe AS registry_ipa_fe, registry.ipa_perlapa AS registry_ipa_perlapa, registry.location AS registry_location, registry.lt AS registry_lt, registry.lu AS registry_lu, registry.maritalsurname AS registry_maritalsurname,CASE WHEN registry.multi_cf = 'S' THEN 'Si' WHEN registry.multi_cf = 'N' THEN 'No' END AS registry_multi_cf, registry.p_iva AS registry_p_iva, registry.pec_fe AS registry_pec_fe,
+ residence.description AS residence_description, registry.residence, registry.rtf AS registry_rtf, registry.sdi_defrifamm AS registry_sdi_defrifamm,CASE WHEN registry.sdi_norifamm = 'S' THEN 'Si' WHEN registry.sdi_norifamm = 'N' THEN 'No' END AS registry_sdi_norifamm, registry.surname AS registry_surname, registry.title, registry.toredirect AS registry_toredirect, registry.txt AS registry_txt,
  isnull('Denominazione: ' + registry.title + '; ','') as dropdown_title
-FROM [dbo].registry WITH (NOLOCK)
-LEFT OUTER JOIN [dbo].accmotive WITH (NOLOCK) ON registry.idaccmotivecredit = [dbo].accmotive.idaccmotive
-LEFT OUTER JOIN [dbo].accmotive AS accmotive_registry WITH (NOLOCK) ON registry.idaccmotivedebit = accmotive_registry.idaccmotive
-LEFT OUTER JOIN [dbo].category WITH (NOLOCK) ON registry.idcategory = [dbo].category.idcategory
-LEFT OUTER JOIN [dbo].centralizedcategory WITH (NOLOCK) ON registry.idcentralizedcategory = [dbo].centralizedcategory.idcentralizedcategory
-LEFT OUTER JOIN [dbo].geo_city WITH (NOLOCK) ON registry.idcity = [dbo].geo_city.idcity
-LEFT OUTER JOIN [dbo].maritalstatus WITH (NOLOCK) ON registry.idmaritalstatus = [dbo].maritalstatus.idmaritalstatus
-LEFT OUTER JOIN [dbo].geo_nation WITH (NOLOCK) ON registry.idnation = [dbo].geo_nation.idnation
-LEFT OUTER JOIN [dbo].registryclass WITH (NOLOCK) ON registry.idregistryclass = [dbo].registryclass.idregistryclass
-LEFT OUTER JOIN [dbo].registrykind WITH (NOLOCK) ON registry.idregistrykind = [dbo].registrykind.idregistrykind
-LEFT OUTER JOIN [dbo].title WITH (NOLOCK) ON registry.idtitle = [dbo].title.idtitle
-LEFT OUTER JOIN [dbo].residence WITH (NOLOCK) ON registry.residence = [dbo].residence.idresidence
+FROM registry WITH (NOLOCK)
+LEFT OUTER JOIN accmotive WITH (NOLOCK) ON registry.idaccmotivecredit = accmotive.idaccmotive
+LEFT OUTER JOIN accmotive AS accmotive_registry WITH (NOLOCK) ON registry.idaccmotivedebit = accmotive_registry.idaccmotive
+LEFT OUTER JOIN category WITH (NOLOCK) ON registry.idcategory = category.idcategory
+LEFT OUTER JOIN centralizedcategory WITH (NOLOCK) ON registry.idcentralizedcategory = centralizedcategory.idcentralizedcategory
+LEFT OUTER JOIN geo_city WITH (NOLOCK) ON registry.idcity = geo_city.idcity
+LEFT OUTER JOIN maritalstatus WITH (NOLOCK) ON registry.idmaritalstatus = maritalstatus.idmaritalstatus
+LEFT OUTER JOIN geo_nation WITH (NOLOCK) ON registry.idnation = geo_nation.idnation
+LEFT OUTER JOIN registryclass WITH (NOLOCK) ON registry.idregistryclass = registryclass.idregistryclass
+LEFT OUTER JOIN registrykind WITH (NOLOCK) ON registry.idregistrykind = registrykind.idregistrykind
+LEFT OUTER JOIN title WITH (NOLOCK) ON registry.idtitle = title.idtitle
+LEFT OUTER JOIN residence WITH (NOLOCK) ON registry.residence = residence.idresidence
 WHERE  registry.idreg IS NOT NULL
 
 GO
@@ -5057,7 +5057,7 @@ GO
 -- CREAZIONE TABELLA upb --
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[upb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[upb] (
+CREATE TABLE [upb] (
 idupb varchar(36) NOT NULL,
 active char(1) NULL,
 assured char(1) NULL,
@@ -5120,7 +5120,7 @@ GO
 
 IF NOT EXISTS(select * from sysobjects where id = object_id(N'[fin]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [DBO].[fin] (
+CREATE TABLE [fin] (
 idfin int NOT NULL,
 ayear smallint NOT NULL,
 codefin varchar(50) NOT NULL,
@@ -5160,9 +5160,9 @@ GO
 
 --[DBO]--
 -- CREAZIONE TABELLA menuweb --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[menuweb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[menuweb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [dbo].[menuweb] (
+CREATE TABLE [menuweb] (
 idmenuweb int NOT NULL,
 editType nvarchar(60) NULL,
 idmenuwebparent int NULL,
