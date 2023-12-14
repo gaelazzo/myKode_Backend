@@ -3,6 +3,9 @@
 
 const fs = require("fs");
 const C = require('crypto-js');
+
+const fmtJson = 2;
+
 let defaultSecret = {
     key: C.enc.Hex.parse('0001020304050607'),
     iv: C.enc.Hex.parse('08090a0b0c0d0e0f'),
@@ -106,7 +109,7 @@ EncryptedFile.prototype = {
         if (newData !== undefined) {
             this.data = newData;
         }
-        const txtFile = JSON.stringify(this.data);
+        const txtFile = JSON.stringify(this.data,null,fmtJson);
 
         if (this.encrypt) {
             fs.writeFileSync(this.encryptedFileName, this.doEncrypt(txtFile));

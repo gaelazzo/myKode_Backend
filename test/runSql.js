@@ -1,19 +1,19 @@
 let fs =require("fs");
 let path =require("path");
 
-
 let dbConfigFileName= process.argv[2];
 let scriptName= process.argv[3];
+
 let dbCode= process.argv[4];
 
 let content = fs.readFileSync(dbConfigFileName,"utf-8");
 let dbConfig = JSON.parse(content.toString());
 
-
 if (dbCode) {
     dbConfig= dbConfig[dbCode];
 }
 let driverKind = dbConfig.sqlModule;
+
 
 const driverClass = require(path.join("..","src",driverKind));
 
@@ -29,6 +29,7 @@ dbConn.open().done(function (){
         if (err) console.log(err);
         stop=true;
     }).fail((err)=>{
+        console.log(err);
         stop=true;
     });
 

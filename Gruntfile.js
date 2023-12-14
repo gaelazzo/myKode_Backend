@@ -31,7 +31,19 @@ const jasmineEnv=  {
 
 let secret = require('./config/secret');
 const DBList = require("./src/jsDbList");
+const chalk = import('chalk');
 
+
+function writeOutput(err, res, code, buffer){
+    //if (err) grunt.log.writeln(chalk.red('Error: ') + err);
+
+    chalk.then((c)=> {
+        c = new c.Chalk();
+        if (res) grunt.log.writeln(c.green('Output:\n') + res);
+        if (code) grunt.log.writeln(c.yellow('Exit Code:\n') + code);
+        //if (buffer) grunt.log.writeln(c.blue('Buffer: ') + buffer);
+    });
+}
 
 DBList.init({
     encrypt: false,
@@ -460,6 +472,8 @@ module.exports = function (grunt) {
             "node",
             ["--inspect", "server.js"],
             function (err, res, code, buffer) {
+                writeOutput(err,res,code,buffer);
+
                 if (err) {
                     grunt.log.writeln("NodeStart error");
                     grunt.log.writeln(err, code);
@@ -483,6 +497,8 @@ module.exports = function (grunt) {
             "npx",
             ["jasmine", "test/client/jsDataSetSpec.js"],
             function (err, res, code, buffer) {
+                writeOutput(err,res,code,buffer);
+
                 if (err) {
                     grunt.log.writeln("Node Version error");
                     grunt.log.writeln(err, code);
@@ -508,6 +524,8 @@ module.exports = function (grunt) {
             "taskkill",
             ["/F", "/IM", "node.exe"],
             function (err, res, code, buffer) {
+                writeOutput(err,res,code,buffer);
+
                 if (err) {
                     grunt.log.writeln("NodeStop error");
                     grunt.log.writeln(err, code);
@@ -538,6 +556,8 @@ module.exports = function (grunt) {
                 "test_sqlServer"
             ],
             function (err, res, code, buffer) {
+                writeOutput(err,res,code,buffer);
+
                 if (err) {
                     grunt.log.writeln("createSqlDB error");
                     grunt.log.writeln(err, code);
@@ -570,6 +590,8 @@ module.exports = function (grunt) {
                 "test_sqlServer"
             ],
             function (err, res, code, buffer) {
+                writeOutput(err,res,code,buffer);
+
                 if (err) {
                     grunt.log.writeln("destroySqlDB error");
                     grunt.log.writeln(err, code);
