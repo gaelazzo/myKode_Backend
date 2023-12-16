@@ -34,16 +34,7 @@ const DBList = require("./src/jsDbList");
 const chalk = import('chalk');
 
 
-function writeOutput(err, res, code, buffer){
-    //if (err) grunt.log.writeln(chalk.red('Error: ') + err);
-
-    chalk.then((c)=> {
-        c = new c.Chalk();
-        if (res) grunt.log.writeln(c.green('Output:\n') + res);
-        if (code) grunt.log.writeln(c.yellow('Exit Code:\n') + code);
-        //if (buffer) grunt.log.writeln(c.blue('Buffer: ') + buffer);
-    });
-}
+const getDescriptor= require("./src/jsDbList").getDescriptor;
 
 DBList.init({
     encrypt: false,
@@ -53,12 +44,13 @@ DBList.init({
     secret:secret
 });
 
+
 let glob = require('glob');
 let jsdoc2md = require('jsdoc-to-markdown');
 let Password = require("./src/jsPassword");
 let $dq= require("./client/components/metadata/jsDataQuery");
 
-const asyncCmd = require("async-exec-cmd");
+
 
 const JasmineClass = require('jasmine');
 const jasmineObj = new JasmineClass();
@@ -212,7 +204,7 @@ module.exports = function (grunt) {
                     parallel: false,
                     suppressErrorSummary: false, // do not print error summary
                     suppressFailed: false, // do not print information about failed tests
-                    suppressPassed: true, // do not print information about passed tests
+                    suppressPassed: false, // do not print information about passed tests
                     suppressSkipped: true, // do not print information about skipped tests
                     showSpecTiming: true, // print the time elapsed for each spec
                     failFast: true // test would finish with error when a first fail occurs.
@@ -228,7 +220,7 @@ module.exports = function (grunt) {
                     maxLogLines: 5, // limit number of lines logged per test
                     suppressErrorSummary: false, // do not print error summary
                     suppressFailed: false, // do not print information about failed tests
-                    suppressPassed: true, // do not print information about passed tests
+                    suppressPassed: false, // do not print information about passed tests
                     suppressSkipped: false, // do not print information about skipped tests
                     showSpecTiming: true, // print the time elapsed for each spec
                     failFast: false // test would finish with error when a first fail occurs.
@@ -302,6 +294,22 @@ module.exports = function (grunt) {
     let classesClient = [];
     let classesMidway = [];
 
+    function setTestE2e(dbCode,value){
+        let dbInfo = DBList.getDbInfo(dbCode);
+        dbInfo.createTestSession=value;
+        DBList.setDbInfo(dbCode,dbInfo);
+    }
+
+    function setTestE2eOn(){
+        setTestE2e("main",true);
+    }
+
+    function setTestE2eOff(){
+        setTestE2e("main",false);
+    }
+
+    grunt.registerTask("loginON", "set test ON", setTestE2eOn);
+    grunt.registerTask("loginOFF","set test OFF", setTestE2eOff);
 
     gruntConfig.jasmine["all_e2e_app"] = {
         spec_dir: './test/spec_e2e_app/',
@@ -426,7 +434,7 @@ module.exports = function (grunt) {
     grunt.registerTask("client midway", ["createSqlDB","NodeStart","karma:midway","NodeStop","destroySqlDB"]);
     grunt.registerTask("client e2e", ["createSqlDB", "NodeStart",
         "karma:client_e2e", "karma:client_e2e_app",
-        "NodeStop","destroySqlDB"]);
+        "destroySqlDB","NodeStop"]);
     grunt.registerTask("client e2e_app", ["createSqlDB", "NodeStart",
         "karma:client_e2e_app",
         "NodeStop","destroySqlDB"]);
@@ -542,6 +550,17 @@ module.exports = function (grunt) {
         }, 5000);
     });
 
+    function writeOutput(err, res, code, buffer){
+        //if (err) grunt.log.writeln(chalk.red('Error: ') + err);
+
+        chalk.then((c)=> {
+            c = new c.Chalk();
+            if (res) grunt.log.writeln(c.green('Output:\n') + res);
+            if (code) grunt.log.writeln(c.yellow('Exit Code:\n') + code);
+            //if (buffer) grunt.log.writeln(c.blue('Buffer: ') + buffer);
+        })
+    }
+
     //grunt.registerTask('serverStart', ['shell:startNode']);
     //grunt.registerTask('serverStop', ['shell:stopNode']);
 
@@ -591,7 +610,6 @@ module.exports = function (grunt) {
             ],
             function (err, res, code, buffer) {
                 writeOutput(err,res,code,buffer);
-
                 if (err) {
                     grunt.log.writeln("destroySqlDB error");
                     grunt.log.writeln(err, code);
@@ -615,6 +633,9 @@ module.exports = function (grunt) {
     });
 
     function registerUser(DA, idflowchart, userName,  password){
+        let AA = new Date().getFullYear().toString().slice(-2);
+        let idcustomuser;
+        let existed = false;
         return DA.open().then(()=>{
             return DA.selectCount(
                     {tableName:"flowchart",
@@ -630,21 +651,46 @@ module.exports = function (grunt) {
                              1,'0',idflowchart, 'node']
                         );
             }
-        ).then( ()=>{
+        ).then( ()=> {
+            return DA.readSingleValue({tableName:"customuser",
+                expr:"idcustomuser",
+                filter: $dq.eq("username", userName)});
+        }).then( (_idcustomuser) =>{
+            idcustomuser = _idcustomuser;
+            if (idcustomuser){
+                existed = true;
+                return  true;
+            }
+            idcustomuser = userName;
             //Aggiungiamo un utente virtuale al database
             return DA.doSingleInsert("customuser",
                 ["idcustomuser","ct","cu","lt","lu","username"],
                 [userName,new Date(),'setup',new Date(),'setup',userName]);
         }).then (()=>{
+            return DA.readSingleValue({tableName:"customusergroup",expr:"idcustomuser",
+                    filter: $dq.mcmpEq({idcustomgroup:"ORGANIGRAMMA", idcustomuser:idcustomuser})});
+        }).then ((_idcustomuser)=>{
+
+            if (_idcustomuser) {
+                grunt.log.writeln("idcustomuser "+ _idcustomuser+" found in table customusergroup");
+                return true;
+            }
             //Associamo l'utente virtuale al gruppo di sicurezza
             return DA.doSingleInsert("customusergroup",
                 ["idcustomgroup","idcustomuser", "ct","cu","lt","lu"],
-                ["ORGANIGRAMMA",userName, new Date(),'setup',new Date(),'setup']);
+                ["ORGANIGRAMMA",idcustomuser, new Date(),'setup',new Date(),'setup']);
         }).then (()=>{
+            return DA.readSingleValue({tableName:"flowchartuser",expr:"idcustomuser",
+                    filter: $dq.mcmpEq({"idcustomuser": idcustomuser, idflowchart:idflowchart})});
+        }).then ((_idcustomuser)=>{
+            if (_idcustomuser) {
+                grunt.log.writeln("idcustomuser "+ _idcustomuser+" found in table flowchartuser");
+                return true;
+            }
             //Associamo l'utente alla voce di organigramma
             return DA.doSingleInsert("flowchartuser",
                 ["idcustomuser","idflowchart","ndetail", "flagdefault", "ct","cu","lt","lu"],
-                [userName,idflowchart, 1, "S",  new Date(),'setup',new Date(),'setup']);
+                [idcustomuser,idflowchart, 1, "S",  new Date(),'setup',new Date(),'setup']);
         }).then (()=> {
             //Aggiungiamo tutte le password allo stesso utente di codice 1
             return DA.readSingleValue(
@@ -653,20 +699,25 @@ module.exports = function (grunt) {
                     filter: $dq.eq("idreg",1)
                 });
         }).then ((idregistryreference)=>{
+            grunt.log.writeln("idregistryreference in table registryreference was "+idregistryreference);
             //Ed infine associamo una password all'utente
-            if (!idregistryreference) idregistryreference=1;
             let salt = Password.generateSalt();
             let now = new Date();
             const iterations = now.getMilliseconds() * now.getSeconds() + 10;
             var hash = Password.generateHash(password, salt, iterations);
+            if (!idregistryreference){
+                idregistryreference=1;
+            }
             return DA.doSingleInsert("registryreference",
                 ["idreg","idregistryreference", "referencename", "ct","cu","lt","lu",
-                            "userweb","passwordweb","saltweb"],
+                            "userweb","passwordweb","saltweb","iterweb"],
                 [1,idregistryreference, userName, new Date(),'setup',new Date(),'setup',
                             userName,
                                 hash.toString("hex").toUpperCase(),
-                                salt.toString("hex").toUpperCase()]);
-        });
+                                salt.toString("hex").toUpperCase(),
+                                iterations
+                ]);
+        }).fail(err=>grunt.log.writeln(err));
     }
 
     grunt.registerTask("addUser","Aggiungi utente a db",function(){
