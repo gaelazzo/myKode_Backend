@@ -3081,6 +3081,9 @@
             if (this.tables[childTableName] === undefined) {
                 throw ("Child table:" + childTableName + " of relation " + relationName + " is not a dataSet table");
             }
+            if (!parentColsName){
+                parentColsName= this.tables[parentTableName].key();
+            }
 
             let rel = new DataRelation(relationName, parentTableName, parentColsName, childTableName, childColsName);
             rel.dataset = this;

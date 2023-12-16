@@ -153,3 +153,6 @@ In summary, each class deriving from MetaData centralizes information about a ta
 - Structure of lists on that table: which fields should appear, with what label, sorting, etc.
 
 Details can be found in the [MetaData](jsMetaData.md) file.
+
+
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](https://gruntjs.com/)

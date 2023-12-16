@@ -230,3 +230,4 @@ I dettagli nel file [MetaData](jsMetaData.md)
 
 
 
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](https://gruntjs.com/)

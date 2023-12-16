@@ -44,27 +44,30 @@ GetDataSet.prototype = {
      */
     getDataSet: function (tableName, editType, ctx){
         let dsName= tableName+"_"+editType;
-        let data;
+        let dsData=null;
         let dsPathToUse= this.dsPath;
         if (ctx && ctx.dsPath){
             dsPathToUse= ctx.dsPath;
         }
         try {
-            if (this.cache[dsName]) {
-                data = this.cache[dsName];
-            } else {
-                data = fs.readFileSync(Path.join(dsPathToUse, 'dsmeta_' + dsName + ".json"), 'utf8');
+            if (!this.cache[dsName]) {
+                let jsonPathFileName=Path.join(dsPathToUse, 'dsmeta_' + dsName + ".json");
+                if (fs.existsSync(jsonPathFileName)){
+                    let data = fs.readFileSync(jsonPathFileName, 'utf8');
+                    dsData = JSON.parse(data);
+                    let ds= new DataSet(dsName);
+                    ds.deSerialize(dsData,true);
+                    this.cache[dsName] = ds;
+                }
+                return null;
             }
+            let res= this.cache[dsName].clone();
+            res.name = dsName; //a volte sovrascrive quello nel json
+            return res;
         }
         catch {
             return null;
         }
-        let dsData = JSON.parse(data);
-
-        let ds= new DataSet(dsName);
-        ds.deSerialize(dsData,true);
-        ds.name = dsName; //a volte sovrascrive quello nel json
-        return  ds;
     },
 
     /**

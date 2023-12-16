@@ -181,13 +181,18 @@ DbDescriptor.prototype.table = function (tableName, tableDescriptor) {
 /**
  * Creates a DataTable or view having the specified name
  * @param {string} tableName
+ * @param {string| string[]} columnList
  * @returns {Promise<DataTable>}
  */
-DbDescriptor.prototype.createTable = function (tableName){
+DbDescriptor.prototype.createTable = function (tableName,columnList){
     return this.table(tableName)
         .then(descriptor => {
             let t = new DataTable(tableName);
+            if (typeof columnList === 'string'){
+                columnList = columnList.split(',').map((s) => s.trim());
+            }
             descriptor.describeTable(t);
+
             return t;
         });
 };
