@@ -12,7 +12,7 @@ module.exports = function(config) {
         usePolling: true,
 
         //dots  progress  junit  growl  coverage kjhtml spec
-        reporters: ['progress'],
+        reporters: ['spec'],
 
 
         // base path, that will be used to resolve files and exclude

@@ -182,7 +182,7 @@ module.exports = function (grunt) {
                 configFile: "test/karma.conf.js",
                 autoWatch: true,
                 singleRun: true,
-                reporters: ["dots"],
+                reporters: ["spec"], //dots  progress  junit  growl  coverage kjhtml spec
                 specReporter: {
                     maxLogLines: 5, // limit number of lines logged per test
                     suppressErrorSummary: false, // do not print error summary
