@@ -428,16 +428,16 @@ module.exports = function (grunt) {
     grunt.registerTask('common unit', ['jasmine:common']);
     grunt.registerTask('server unit', ['jasmine:server']);
     grunt.registerTask("server midway",["NodeStart","jasmine:midway","NodeStop"]); // , "NodeStop"
-    grunt.registerTask("server e2e", ["createSqlDB","NodeStart",  "karma:server_e2e","NodeStop","destroySqlDB"]);
+    grunt.registerTask("server e2e", ["createSqlDB","NodeStart",  "karma:server_e2e","destroySqlDB","NodeStop"]);
 
     grunt.registerTask("client unit", ["karma:spec"]);
-    grunt.registerTask("client midway", ["createSqlDB","NodeStart","karma:midway","NodeStop","destroySqlDB"]);
+    grunt.registerTask("client midway", ["createSqlDB","NodeStart","karma:midway","destroySqlDB","NodeStop"]);
     grunt.registerTask("client e2e", ["createSqlDB", "NodeStart",
         "karma:client_e2e", "karma:client_e2e_app",
         "destroySqlDB","NodeStop"]);
     grunt.registerTask("client e2e_app", ["createSqlDB", "NodeStart",
         "karma:client_e2e_app",
-        "NodeStop","destroySqlDB"]);
+        "destroySqlDB", "NodeStop"]);
 
     grunt.registerTask('all server',
         [ 'jasmine:common_server', "createSqlDB","NodeStart",
@@ -449,7 +449,7 @@ module.exports = function (grunt) {
     grunt.registerTask('all client',['client unit',
         "createSqlDB", "NodeStart" ,
         "karma:midway","karma:client_e2e","karma:client_e2e_app",
-        "NodeStop","destroySqlDB"]);
+        "destroySqlDB", "NodeStop"]);
     grunt.registerTask("all",
         ['jasmine:common_server',"karma:spec",
             "createSqlDB", "NodeStart" ,

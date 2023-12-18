@@ -164,7 +164,7 @@ module.exports = function(config) {
 
         // Which plugins to enable
         plugins: [
-            'karma-phantomjs-launcher', 'karma-jasmine',
+            'karma-jasmine',
             'karma-jasmine-html-reporter',
             'karma-chrome-launcher',
             'karma-junit-reporter',
