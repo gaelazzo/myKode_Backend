@@ -1,10 +1,13 @@
 language: node_js
 node_js:
-  - "node"
+  - "20"
+services:
+      - mysql
 env:
   - CXX=g++-4.8
 before_install: npm install -g grunt-cli
 install: npm install
 before_script:
-  - npm install -g bower
+  - mysql -e "create database IF NOT EXISTS test;" -uroot
+  - npm install -g grunt-cli  - npm install -g bower
   - bower install
