@@ -10,6 +10,8 @@
 /*jshint camelcase: false */
 const path = require("path");
 const readline = require('readline');
+const chalk = import('chalk');
+
 
 const Deferred = require("JQDeferred");
 
@@ -31,7 +33,6 @@ const jasmineEnv=  {
 
 let secret = require('./config/secret');
 const DBList = require("./src/jsDbList");
-const chalk = import('chalk');
 
 
 const getDescriptor= require("./src/jsDbList").getDescriptor;
@@ -50,7 +51,7 @@ let jsdoc2md = require('jsdoc-to-markdown');
 let Password = require("./src/jsPassword");
 let $dq= require("./client/components/metadata/jsDataQuery");
 
-
+const asyncCmd = require("async-exec-cmd");
 
 const JasmineClass = require('jasmine');
 const jasmineObj = new JasmineClass();

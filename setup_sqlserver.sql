@@ -24,8 +24,6 @@ GO
 delete from web_listredir
 GO
 
-insert into web_listredir(tablename,listtype, newtablename, newlisttype, ct,cu,lt,lu)
-    values('mandate','on_view','mandateview','default',getdate(),'nino',getdate(),'nino')
 
 GO
 
@@ -220,13 +218,9 @@ delete from menu
 GO
 
 
--- GENERAZIONE DATI PER customuser --
-
 delete from flowchartuser
 GO
 
-
--- GENERAZIONE DATI PER customgroup --
 
 
 -- FINE GENERAZIONE SCRIPT --

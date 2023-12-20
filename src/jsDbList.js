@@ -170,7 +170,6 @@ DbDescriptor.prototype.table = function (tableName, tableDescriptor) {
                 def.resolve(that.tables[tableName]);
             })
             .fail(function (err) {
-                console.log(err)
                 def.reject(err);
             });
         return def.promise();
