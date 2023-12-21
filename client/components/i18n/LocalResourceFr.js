@@ -3,176 +3,205 @@
  * @description
  * Collection of the localized strings . FRANCAISE
  */
-(function () {
+(function (){
 
-    /**
-     * @constructor LocalResourceFr
-     * @description
-     */
-    function LocalResourceFr() {
-        "use strict";
+
+    const LocalResourceFr = {
+        yes: "Oui",
+        no: "Non",
+        error: "Erreur",
+        and: "et",
+        alert: "Alerte",
+        ok: "D'accord",
+        of: "de",
+        cancel: "Annuler",
+        eliminate: "Supprimer",
+        confirm: "Confirmer",
+        close: "Fermer",
+        changesUnsaved: "Il y a des modifications non enregistrées. Voulez-vous perdre les modifications ?",
+        emptyKeyMsg: "Un champ clé ne peut pas être vide ou dupliqué.",
+        emptyFieldMsg: "Un champ spécifique ne peut pas être vide.",
+        stringTooLong: "Champ trop long",
+        noDataSelected: "Aucune donnée sélectionnée",
+        saveLayout: "Enregistrer la mise en page",
+        visible: 'visible',
+        column: 'colonne',
+        from: "de",
+        to: "à",
+        date: 'Date',
+        start: 'Début',
+        end: 'Fin',
+        infoevent: 'Info événement',
+        loading: 'Chargement...',
+        eq: '=',
+        like: 'comme',
+        cambioRuolo: 'Changement de rôle',
+        logoutMsg: "Voulez-vous quitter l'application?",
+        logoutSSOMsg: "Voulez-vous également vous déconnecter du système de \"Single sign on\"?",
+        noNetwork: "Votre appareil n'est connecté à aucun réseau! Essayez de vous connecter et réessayez",
+        networkConnectionError: "Erreur de connexion au serveur. Vérifiez la connexion et réessayez!",
+        itemChooseNotSelectable: "L'élément choisi ne pouvait pas être sélectionné",
+        toast_login_success: "Connexion réussie",
+        toast_reg_success: "Enregistrement réussi",
+        info_not_avalilable: "Informations de ligne non disponibles pour cet objet",
+        rowSelectedNoMoreInDb: "La ligne sélectionnée n'est plus présente dans la base de données",
+        noElementFound: "Aucun élément trouvé",
+        sameValuesForTheKey: "Une ligne avec la même clé primaire qu'une autre existante a été ajoutée. Vous devez modifier les données saisies pour les enregistrer.",
+        noPrimaryDataSelected: "Aucune ligne principale sélectionnée",
+        selectRowInAGrid: "Sélectionnez une ligne à modifier",
+        requiredRow_not_found: "Ligne requise introuvable dans l'arborescence",
+        selectedRowIsNotOperative: "La ligne sélectionnée n'est pas opérationnelle",
+        gridEmpty: "Aucune donnée présente",
+        editButton: "Modifier",
+        deleteButton: "Supprimer",
+        insertButton: "Ajouter",
+        unlinkButton: "Détacher",
+        searchTitle: "Recherche",
+        changeTitle: "Modifier",
+        insertTitle: "Insertion",
+        insertFilterSearch: "Insérez des filtres de recherche",
+        mainsetsearch: "Aller à la recherche",
+        maindosearch: "Rechercher",
+        maininsert: "Nouveau",
+        maininsertcopy: "Créer une copie",
+        mainsave: "Enregistrer",
+        mainselect: "Sélectionner",
+        maindelete: "Supprimer",
+        editnotes: "Modifier les notes",
+        mainclose: "Fermer",
+        showlast: "Info ligne",
+        mainexportpdf: "Imprimer",
+        emptyField: "Effacer les champs",
+        isValidFieldMandatory: "Attention! Le champ <strong>S%field%S</strong> est obligatoire",
+        isValidMaxLength: "Attention! le champ <strong>S%field%S</strong> a une longueur maximale de <strong>S%maxlenght%S</strong> caractères",
+        multiSelect_addRows: "Ajouter",
+        multiSelect_removeRows: "Retirer",
+        multiSelect_addRowsTitle: "À ajouter",
+        multiSelect_toolbarButtonsTitle: "Vous pouvez sélectionner_TODO",
+        multiSelect_lbl_toAdd: "À ajouter",
+        multiSelect_lbl_added: "Ajouté",
+        multiSelect_lbl_description: "Ctrl/Shift + Clic pour sélectionner ou désélectionner une ou plusieurs lignes d'une liste. <BR\> Clic droit pour sélectionner ou désélectionner toutes les lignes d'une liste",
+        multiSelect_lbl_wait: "Attendez le chargement des tableaux",
+        procedureMessage_btn_nosave: "Ne pas enregistrer",
+        procedureMessage_btn_ignoreandsave: "Ignorer les messages et enregistrer quand même",
+        procedureMessage_modal_title: "Liste des erreurs et avertissements",
+        prodMess_id: "Id",
+        prodMess_lonMsg: "Message",
+        prodMess_type: "Type",
+        loader_waitListLoading: "Chargement de la liste des résultats",
+        modalLoader_wait_search: "Recherche en cours",
+        modalLoader_wait_save: "Enregistrement en cours",
+        modalLoader_wait_insertcopy: "Copie en cours, attendez avant de modifier et d'enregistrer",
+        modalLoader_wait_metapage_loading: "Chargement de la page",
+        modalLoader_wait_metapageDetail_loading: "Chargement de la page de détail",
+        modalLoader_wait_insert: "Création d'une nouvelle ligne, attendez avant de pouvoir modifier",
+        modalLoader_wait_delete: "Suppression de la ligne sélectionnée en cours",
+        modalLoader_wait_page_update: "Attendez la mise à jour de la page",
+        modalLoader_wait_tree_updating: "Mise à jour de l'arbre",
+        modalLoader_wait_tree_node_search: "Recherche de nœud dans l'arbre",
+        modalLoader_wait_unlink_row: "Détachement de la ligne sélectionnée",
+        modalLoader_wait_valuesSearching: "Recherche des valeurs en cours",
+        modalLoader_wait_for_registration: "Attendez l'inscription de l'utilisateur",
+        modalLoader_wait_for_save_layout: "Enregistrement de la mise en page en cours",
+        modalLoader_wait_page_init: "Initialisation de la page",
+        modalLoader_wait_tree_navigation: "Navigation dans l'arbre en cours",
+        modalLoader_wait_waiting: "Attendez...",
+        serverUnracheable: "Réseau non disponible, ou appel bloqué par un système de sécurité (essayez de désactiver le pare-feu ou l'antivirus)",
+        serverErrorInternal: "Erreur interne du serveur: ",
+        saveSuccesfully: "Données enregistrées avec succès",
+        adding_row: "Ajout d'une ligne..",
+        newEvent: "Nouvel événement pour",
+        calendarWrongConfig: "La table du calendrier ne contient pas les colonnes configurées correctement. Contactez le développeur!",
+        calendarNotRowCorrect: "Dans le contrôle du calendrier, les événements ne sont pas des objets de la table. Contactez le développeur!",
+        agenda: "Agenda",
+        details: "Détails",
+        dragHereColumns: "Faites glisser ici les colonnes que vous souhaitez regrouper",
+        configAggrTitle: "Sélectionnez les fonctions d'agrégation",
+        download_attach: "Télécharger la pièce jointe",
+        upload_attach: "Télécharger",
+        noAttachmentToUpload: "Vous devez spécifier une pièce jointe!",
+        attachment: "pièce jointe",
+        tableAttachNotAvailable: "La colonne S%cname%S n'est pas présente sur la table principale de la page",
+        waitAttachLoading: "Attendez le chargement de la pièce jointe",
+        attachSent: "La pièce jointe a été envoyée avec succès, continuez vos modifications, puis appuyez sur Enregistrer pour confirmer!",
+        downloadAttachWaiting: "Téléchargement en cours",
+        removeAttachWaiting: "Suppression de la pièce jointe en cours",
+        removeAttach: "Supprimer la pièce jointe",
+        tableNotMatch: "La table principale ne correspond pas à celle configurée sur l'étiquette du contrôle de téléchargement",
+        calendarEventResizeEnd: "Voulez-vous modifier la fin de l'événement : <br/> S%eventTitle%S date-fin : <strong>S%endDate%S?</strong> <br/> <br/> N'oubliez pas que pour rendre votre modification effective, vous devez appuyer sur le bouton <strong>Enregistrer</strong>",
+        calendarEventMoveEventQuestion: "Vous modifiez l'événement <br/> S%eventTitle%S en mettant la date de début : <strong>S%startDate%S</strong> date-fin : <strong>S%endDate%S</strong>. <br/><br/> N'oubliez pas que pour rendre votre modification effective, vous devez appuyer sur le bouton <strong>Enregistrer</strong>",
+        errorListingTypeNull: "ListingType est nul sur la table S%searchTableName%S avec le filtre S%filter%S dans la MetaPage S%title%S",
+        errorLoadingMetaData: "Erreur lors du chargement des métadonnées S%searchTableName%S, redémarrez l'application",
+        commandExecutionError: "Erreur lors de l'exécution de la commande S%command%S",
+        entityNotfound: "Entité S%unaliased%S non trouvée dans le formulaire S%formTitle%S",
+        gridControlTagWrong: "DataGrid avec l'étiquette S%gridTag%S dans le formulaire S%formTitle%S est incorrect",
+        deleteRowConfirm: "La ligne sélectionnée sera supprimée immédiatement de la base de données. Confirmez-vous la suppression de la ligne sélectionnée?",
+        cantUnlinkDataTable: "Impossible de détacher. DataTable S%sourceTableName%S n'est pas " + decodeURI('%C3%A8') + " enfant de  S%primaryTableName%S",
+        missingTableDataSet: "La table S%tableName%S n'est pas " + decodeURI('%C3%A8') + " présente sur le DataSet",
+        moreThenRow: "Erreur : il y a plus d'une ligne dans la table S%tableName%S",
+        gridDataNoValid: "La table S%tableName%S contient des données non valides. Contactez le service d'assistance",
+        cancelObjInsert: "Annulation de l'insertion de l'objet <strong>S%formTitle%S</strong>",
+        deleteObjInsert: "Supprimer l'objet sélectionné?", // S%formTitle%S
+        formNoMainTreeView: "Le formulaire S%formTitle%S n'a pas de treeview principal",
+        invalidData: "La table S%tableName%S contient des données non valides. Contactez le service d'assistance",
+        noRowSelected: "Aucune ligne sélectionnée dans la table S%tableName%S",
+        minNumrowRequired: "Vous devez insérer au moins S%numrows%S S%msg%S",
+        unvalidEMail: "L'e-mail S%email%S n'est pas correcte, veuillez saisir une adresse e-mail valide",
+        unvalidIp: "L'adresse IP S%ip%S saisie n'est pas correcte",
+        filterDateString: "Date comprise entre S%date1%S et S%date2%S",
+        rowCouldBeDetached: "La ligne sélectionnée pourrait être en état détaché",
+        rowCouldBeDetachedOrDeleted: "La ligne sélectionnée pourrait être en état détaché ou supprimé",
+        copyPressedMsg: "Le bouton de copie a été pressé. Voulez-vous vraiment créer une copie des données déjà enregistrées?",
+        noRowOnTable: "Aucune ligne trouvée dans la table S%searchTableName%S.\r\n",
+        filterWas: "La condition de recherche définie était : S%mergedFilter%S \r\n",
+        listName: "Nom de la liste",
+        onDate: "le",
+        createdByStr: "Créé par S%user%S",
+        createdOnStr: "Créé le S%time%S",
+        modifiedByStr: "Modifié par S%user%S",
+        modifiedOnStr: "Modifié le S%time%S",
+        result: "Résultats : S%count%S",
+        noNumericColumnForAggregation: "Aucune colonne numérique présente sur laquelle calculer des fonctions d'agrégation",
+        sum: "somme",
+        avg: "moyenne",
+        max: "max",
+        min: "min",
+        passwordMismatched: "La confirmation du mot de passe ne correspond pas",
+        serverErrorDataNotPermitted: "Accès non autorisé à cette date en fonction de la gestion de la sécurité.",
+        serverErrorNoCredential: "Veuillez saisir vos identifiants",
+        serverErrorExpiredCredential: "Identifiants expirés, veuillez vous reconnecter",
+        serverErrorExpiredSession: "Session expirée, veuillez vous reconnecter",
+        serverErrorBadCredential: "Identifiants incorrects, réessayez de saisir le nom d'utilisateur et/ou le mot de passe",
+        serverErrorTokenEmpty: "Vous avez été déconnecté",
+        serverErrorUserNotSecurity: "L'utilisateur est en dehors de la gestion de la sécurité. " +
+            "1. Contactez les administrateurs pour ajouter l'utilisateur et l'inclure dans l'organigramme (Organigramme -> profil -> onglet utilisateurs). " +
+            "2. Il peut être nécessaire de fermer l'année précédente et de générer le nouvel organigramme pour la nouvelle année.",
+        serverErrorAnonymous: "Opération anonyme non autorisée, veuillez essayer de vous reconnecter",
+        serverErrorSSO: "Impossible de s'authentifier via SSO",
+        dataContabileMissing: "Il faut spécifier une date comptable",
+        filterWithUndefined: "La condition de filtre contient des erreurs :",
+
+        gridoption_tab1: "Options des colonnes",
+        gridoption_tab2: "Enregistrer la mise en page",
+        savingLayoutError: "Erreur lors de l'enregistrement de la mise en page",
+        savingLayoutSucceded: "Mise en page de la grille enregistrée avec succès",
+
+        pressSaveAfterDelete: "Appuyez sur OK pour supprimer l'objet :<br/><br/><strong> S%valuecell%S </strong><br/> Ensuite, appuyez sur Enregistrer sur la page si vous souhaitez sauvegarder les modifications !",
+
+        confirmSelection: "Confirmer la sélection",
+        selectedRows: "lignes sélectionnées"
+    };
+    let resource = localResourceFr;
+
+
+    if (typeof appMeta !== "undefined"){
+        appMeta.LocalResource.prototype.registerDictionary("fr", resource);
+    }
+    else {
+        module.exports = resource;
     }
 
-    LocalResourceFr.prototype = {
-        constructor: LocalResourceFr,
-        error : "Erreur",
-        alert : "Avertissement",
-        ok : "Ok",
-        of : "de",
-        cancel : "Annulation",
-        eliminate : "Cancellation",
-        confirm: "Confirmation",
-        close : "Fermè",
-        changesUnsaved : "Ci sono modifiche ai dati non salvate. Si desidera perdere le modifiche?",
-        emptyKeyMsg : "Un campo chiave non può essere vuoto o duplicato.",
-        emptyFieldMsg : "Un determinato campo non può essere vuoto.",
-        stringTooLong : "Campo troppo lungo",
-        noDataSelected : "Aucun date selection" ,
 
-        start: 'Debut',
-        end: 'Fin',
-        infoevent: 'Info event',
-
-        networkConnectionError : "Errore di connessione con il server. Controllare la connessione e riprovare",
-        itemChooseNotSelectable : "La voce scelta non potoeva essere selezionata",
-
-        rowSelectedNoMoreInDb : "La riga selezionata non è più presente nel db",
-        noElementFound:"Nessun elemento trovato",
-
-        sameValuesForTheKey: "E' stata inserita una riga con la stessa chiave primaria di un altra esistente. " +
-        " E' necessario modificare i dati immessi per salvarli.",
-
-        noPrimaryDataSelected: "Nessuna riga principale selezionata",
-        selectRowInAGrid: "Seleziona una riga da modificare",
-
-        requiredRow_not_found: "Riga richesta non trovata sul tree",
-        selectedRowIsNotOperative: "La riga selezionata non è operativa",
-
-        // label bottoni standard
-        editButton : "Corrige",
-        deleteButton : "Annule",
-        insertButton : "Ajoute",
-        unlinkButton : "Unlink",
-
-        // form title suffux
-        searchTitle : "Recherche",
-        changeTitle : "Changez",
-        insertTitle : "Insertion",
-
-        // Main Command button label, la chiave è il tag
-        mainsetsearch : "Allè a la recherche",
-        maindosearch : "Recherche",
-        maininsert : "Neuf",
-        maininsertcopy : "Créer une copie",
-        mainsave : "Sauve",
-        mainselect : "Sélection",
-        maindelete : "Eliminè",
-        editnotes : "Edita Note",
-        mainclose : "Fermeè",
-        showlast: "ligne information",
-
-        emptyField: "Svuota campi",
-
-        isValidFieldMandatory: "Attenzione! Il campo S%field%S è obbligatorio",
-        isValidMaxLength: "Attenzione! il campo S%field%S è al massimo di S%maxlenght%S caratteri",
-
-        multiSelect_addRows: "Aggiungi",
-        multiSelect_removeRows : "Rimuovi",
-        multiSelect_addRowsTitle: "Da aggiungere",
-        multiSelect_toolbarButtonsTitle:  "E' possibile selzionare_ TODO",
-        multiSelect_lbl_toAdd: "Da aggiungere",
-        multiSelect_lbl_added: "Aggiunti",
-        multiSelect_lbl_descrtiption: "Ctrl/Shift + Click &egrave; possibile selezionare o deselezionare una o pi&ugrave; righe di un elenco. \<BR\> Con il tasto destro &egrave; possibile selezionare o deselezionare tutte le righe di un elenco",
-        multiSelect_lbl_wait: "Attendi caricamento delle tabelle",
-
-        procedureMessage_btn_nosave : "Non salvare",
-        procedureMessage_btn_ignoreandsave : "Ignora i messaggi e salva lo stesso",
-        procedureMessage_modal_title: "Elenco errori ed avvertimenti",
-
-        // header columns
-        prodMess_id: "Id",
-        prodMess_lonMsg: "Messaggio",
-        prodMess_type: "Tipo",
-
-        // messaggi su indicatori di attesa
-        loader_waitListLoading:"Caricamento lista dei risultati",
-
-        modalLoader_wait_search: "Ricerca in corso",
-        modalLoader_wait_save: "Salvataggio in corso",
-        modalLoader_wait_insertcopy: "Copia in corso, attendi per modificare e salvare",
-        modalLoader_wait_metapage_loading: "Caricamento pagina",
-        modalLoader_wait_metapageDetail_loading: "Caricamento pagina di dettaglio",
-        modalLoader_wait_insert: "Creazione nuova riga, attendi prima di poter modificare",
-        modalLoader_wait_delete: "Cancellazione della riga selezionata in corso",
-        modalLoader_wait_page_update:"Attendi aggiornamento pagina",
-        modalLoader_wait_tree_updating: "Aggiornamento albero",
-        modalLoader_wait_tree_node_search : "Ricerca nodo sull'albero",
-        modalLoader_wait_unlink_row : "Unlink della riga selezionata",
-        modalLoader_wait_valuesSearching : "Ricerca valori in corso",
-
-        // server error
-        serverUnracheable: "Rete non disponibile, o web server non raggiungibile ",
-        serverErrorInternal : "Errore interno nel server, metodo: ",
-
-        saveSuccesfully: "Dati salvati correttamente",
-
-        adding_row: "Aggiungo riga..",
-        newEvent: "Nuovo evento per",
-
-        calendarWrongConfig: "La tabella del calendario non contiene le giuste colonne configurate. Contatta lo sviluppatore!",
-        calendarNotRowCorrect : "Nel controllo calendario gli eventi non sono oggetti della tabella. Contatta lo sviluppatore!",
-        agenda : "Agenda",
-        details: "Dettagli",
-
-        // Attachment
-        download_attach: "Scarica allegato",
-        upload_attach : "Carica",
-        noAttachmentToUpload: "Devi specificare un allegato!",
-        attachment : "allegato",
-        tableAttachNotAvailable: "Non è presente la colonna S%cname%S sulla tabella principale della pagina",
-        waitAttachLoading: "Attendi il caricamento dell'allegato",
-        attachSent : "L'allegato è stato inviato correttamente, continua le tue modifiche e poi premi salva per confermare!",
-        downloadAttachWaiting: "Download in corso",
-        removeAttachWaiting : "Rimozione allegato in corso",
-        removeAttach : "Rimuovi allegato",
-        tableNotMatch: "La tabella principale non corrisponde a quella configurata sul tag del controllo di upload",
-        //attachRemoved : "L'allegato è stato rimosso."
-
-        // BEGIN STRING with the replacement
-        calendarEventResizeEnd:  "Vuoi modificare la fine dell'evento S%eventTitle%S data-fine: S%endDate%S",
-        calendarEventMoveEventQuestion : "Stai modificando l'evento S%eventTitle%S mettendo data inizio: S%startDate%S data-fine: S%endDate%S",
-
-        errorListingTypeNull : "ListingType è nullo sulla tabella S%searchTableName%S con il filtro S%filter%S nella MetaPage S%title%S",
-        errorLoadingMetaData: "Errore nel caricamento del metadato  S%searchTableName%S è necessario riavviare l'applicazione",
-        commandExecutionError: "Errore nell'esecuzione del comando S%command%S",
-        entityNotfound: "Entità S%unaliased%S non trovata nel form S%formTitle%S",
-        gridControlTagWrong : "DataGrid con tag S%gridTag%S nel form  S%formTitle%S è sbagliato",
-        deleteRowConfirm : "Confermi la cancellazione della riga dalla tabella S%tableName%S?",
-        cantUnlinkDataTable: "Impossibile unlink. DataTable S%sourceTableName%S  non " + decodeURI('%C3%A8') + " child di  S%primaryTableName%S",
-        missingTableDataSet: "La tabella  S%tableName%S  non " + decodeURI('%C3%A8') + " presente sul DataSet",
-        moreThenRow: "Errore: c'" + decodeURI('%C3%A8') + " più di una riga nella tabella S%tableName%S",
-        gridDataNoValid : "La tabella S%tableName%S contiene dati non validi. Contattare il servizio di assistenza",
-        cancelObjInsert: "Annullo l'inserimento dell'oggetto S%formTitle%S nella tabella S%tableName%S?",
-        deleteObjInsert : "Cancello l'oggetto S%formTitle%S nella tabella S%tableName%S?",
-        formNoMainTreeView : "Il form S%formTitle%S non ha un treeview principale",
-        invalidData : "La tabella S%tableName%S contiene dati non validi. Contattare il servizio di assistenza",
-        noRowSelected : "Nessuna riga selezionata sulla tabella S%tableName%S",
-
-        rowCouldBeDetached: "La riga selezionata potrebbe essere in stato detached",
-        rowCouldBeDetachedOrDeleted: "La riga selezionata potrebbe essere in stato detached o deleted",
-        copyPressedMsg : "E' stato premuto il tasto inserisci copia. Si desidera davvero creare una copia dei dati già salvati?",
-        noRowOnTable: "Nella tabella S%searchTableName%S non è stata trovata alcuna riga.\r\n",
-        filterWas: "La condizione di ricerca impostata era: S%mergedFilter%S \r\n",
-        listName: "Nome Elenco",
-        onDate: "il",
-        createdByStr:  "Creato da S%user%S",
-        createdOnStr:  "Creato il S%time%S",
-        modifiedByStr:  "Modificato da S%user%S",
-        modifiedOnStr: "Modificato il S%time%S",
-        result: "Risultati: S%count%S"
-    };
-    
-    appMeta.localResourceFr = LocalResourceFr;
 }());
 
 
