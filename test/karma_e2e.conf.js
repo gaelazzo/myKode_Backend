@@ -59,7 +59,7 @@ module.exports = function(config) {
             'client/components/metadata/LoaderControl.js',
             'client/components/metadata/ModalLoaderControl.js',
             'client/Localization.js',
-            'client/assets/i18n/LocalResourceIt.js',
+            'client/assets/i18n/*.js',
 
             'client/components/metadata/CssDefault.js', //deve precedere HelpForm
             'client/components/metadata/HelpForm.js',

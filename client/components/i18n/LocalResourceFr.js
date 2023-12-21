@@ -191,7 +191,7 @@
         confirmSelection: "Confirmer la sélection",
         selectedRows: "lignes sélectionnées"
     };
-    let resource = localResourceFr;
+    let resource = LocalResourceFr;
 
 
     if (typeof appMeta !== "undefined"){
