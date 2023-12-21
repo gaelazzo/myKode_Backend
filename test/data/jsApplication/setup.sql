@@ -3,31 +3,6 @@ SET NOCOUNT ON
 
 --[DBO]--
 
--- CREAZIONE TABELLA web_listredir --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-BEGIN
-CREATE TABLE [dbo].[web_listredir] (
-tablename varchar(50) NOT NULL,
-listtype varchar(50) NOT NULL,
-ct datetime NULL,
-cu varchar(64) NULL,
-lt datetime NULL,
-lu varchar(64) NULL,
-newlisttype varchar(50) NULL,
-newtablename varchar(50) NULL,
- CONSTRAINT xpkweb_listredir PRIMARY KEY (tablename,listtype
-)
-)
-END
-GO
-
-delete from web_listredir
-GO
-
-insert into web_listredir(tablename,listtype, newtablename, newlisttype, ct,cu,lt,lu)
-    values('mandate','on_view','mandateview','default',getdate(),'nino',getdate(),'nino')
-
-GO
 
 
 -- CREAZIONE TABELLA customuser --
@@ -264,7 +239,7 @@ GO
 
 -- GENERAZIONE DATI PER customgroup --
 
-IF exists(SELECT * FROM [customgroup] WHERE idcustomgroup = 'ORGANIGRAMMA')
+IF exists(SELECT * FROM [DBO].[customgroup] WHERE idcustomgroup = 'ORGANIGRAMMA')
 UPDATE [customgroup] SET ct = {ts '2007-06-22 14:21:39.013'},cu = 'sa',description = 'Organigramma',groupname = 'Organigramma',lastmodtimestamp = {ts '2007-06-22 14:21:39.013'},lastmoduser = 'sa',lt = {ts '2007-06-22 14:21:39.013'},lu = '''sa''' WHERE idcustomgroup = 'ORGANIGRAMMA'
 ELSE
 INSERT INTO [customgroup] (idcustomgroup,ct,cu,description,groupname,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA',{ts '2007-06-22 14:21:39.013'},'sa','Organigramma','Organigramma',{ts '2007-06-22 14:21:39.013'},'sa',{ts '2007-06-22 14:21:39.013'},'''sa''')
@@ -609,11 +584,11 @@ GO
 delete from customer
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[ctemp]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure ctemp
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[ctemp]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].ctemp
 GO
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 DECLARE @i int;
 SET @i = 1;
@@ -637,7 +612,7 @@ GO
 
 
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 
 
@@ -666,7 +641,7 @@ GO
 
 
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 declare @i int
 set @i=1;
@@ -692,7 +667,7 @@ GO
 exec ctemp;
 
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 
 
@@ -717,7 +692,7 @@ delete from sellerkind
 GO
 
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 declare @i int
 
@@ -739,11 +714,11 @@ GO
 exec ctemp;
 
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 
 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
 CREATE TABLE [DBO].customerkind(
@@ -762,7 +737,7 @@ delete from customerkind
 GO
 
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 declare @i int
 
@@ -785,7 +760,7 @@ GO
 exec ctemp;
 GO
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 GO
 
@@ -849,25 +824,6 @@ VALUES ('AZZURRO','210001','1',null,null,null,null,null,{ts '2020-12-21 11:00:20
 {ts '2020-12-21 11:00:20.257'},'assistenza',null,null,null,null,null,{d '2000-01-01'},null,'Prova Classificazione')
 GO
 
---[DBO]--
--- CREAZIONE TABELLA web_listredir --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-BEGIN
-CREATE TABLE [dbo].[web_listredir] (
-tablename varchar(50) NOT NULL,
-listtype varchar(50) NOT NULL,
-ct datetime NULL,
-cu varchar(64) NULL,
-lt datetime NULL,
-lu varchar(64) NULL,
-newlisttype varchar(50) NOT NULL,
-newtablename varchar(50) NOT NULL,
- CONSTRAINT xpkweb_listredir PRIMARY KEY (tablename,
-listtype
-)
-)
-END
-GO
 
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[compute_roles]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -4327,6 +4283,11 @@ INSERT INTO [web_listredir] (listtype,tablename,ct,cu,lt,lu,newlisttype,newtable
 INSERT INTO [web_listredir] (listtype,tablename,ct,cu,lt,lu,newlisttype,newtablename) VALUES ('user','registry',null,null,null,null,'user','registryuserview')
 GO
 
+insert into web_listredir(tablename,listtype, newtablename, newlisttype, ct,cu,lt,lu)
+    values('mandate','on_view','mandateview','default',getdate(),'nino',getdate(),'nino')
+
+GO
+
 
 --[DBO]--
 -- CREAZIONE TABELLA registrykind --
@@ -4645,7 +4606,7 @@ GO
 -- FINE GENERAZIONE SCRIPT --
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_u_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [DBO]. [check_registryreference_u_post]
+drop procedure [DBO].[check_registryreference_u_post]
 GO
 
 CREATE PROCEDURE [DBO].[check_registryreference_u_post] @res SMALLINT OUT, @NEW_idregistryreference int=null, @NEW_idreg int=null, @NEW_flagdefault char(1)=null, @NEW_email varchar(200)=null, @NEW_userweb varchar(40)=null AS

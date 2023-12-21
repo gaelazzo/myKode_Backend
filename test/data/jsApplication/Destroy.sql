@@ -327,15 +327,52 @@ BEGIN
 END
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_u_pre]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[check_registryreference_u_pre]
+GO
 
-IF EXISTS(select * from sysobjects where id = object_id(N'[DBO].[[registrydefaultview]]') and OBJECTPROPERTY(id, N'IsView') = 1)
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_u_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].check_registryreference_u_post
+GO
+
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_i_pre]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].check_registryreference_i_pre
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_i_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].check_registryreference_i_post
+GO
+
+
+
+IF EXISTS(select * from sysobjects where id = object_id(N'[DBO].[registrydefaultview]') and OBJECTPROPERTY(id, N'IsView') = 1)
 BEGIN
  drop view [DBO].[registrydefaultview]
 END
 GO
 
+
 IF EXISTS(select * from sysobjects where id = object_id(N'[DBO].[registrymainview]') and OBJECTPROPERTY(id, N'IsView') = 1)
-BEGIN
- drop view [DBO].[registrymainview]
-END
+DROP VIEW [DBO].registrymainview
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[testSP1]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].testSP1
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[testSP2]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].testSP2
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[testSP3]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].testSP3
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[compute_allowform]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].compute_allowform
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[compute_notable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].compute_notable
 GO
