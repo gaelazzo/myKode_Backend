@@ -3,31 +3,6 @@ SET NOCOUNT ON
 
 --[DBO]--
 
--- CREAZIONE TABELLA web_listredir --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-BEGIN
-CREATE TABLE [dbo].[web_listredir] (
-tablename varchar(50) NOT NULL,
-listtype varchar(50) NOT NULL,
-ct datetime NULL,
-cu varchar(64) NULL,
-lt datetime NULL,
-lu varchar(64) NULL,
-newlisttype varchar(50) NULL,
-newtablename varchar(50) NULL,
- CONSTRAINT xpkweb_listredir PRIMARY KEY (tablename,listtype
-)
-)
-END
-GO
-
-delete from web_listredir
-GO
-
-insert into web_listredir(tablename,listtype, newtablename, newlisttype, ct,cu,lt,lu)
-    values('mandate','on_view','mandateview','default',getdate(),'nino',getdate(),'nino')
-
-GO
 
 
 -- CREAZIONE TABELLA customuser --
@@ -115,7 +90,7 @@ END
 GO
 
 -- CREAZIONE TABELLA flowchart --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchart]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[flowchart]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[flowchart] (
 idflowchart varchar(34) NOT NULL,
@@ -160,7 +135,7 @@ GO
 
 
 -- CREAZIONE TABELLA flowchartuser --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchartuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[flowchartuser]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[flowchartuser] (
 idflowchart varchar(34) NOT NULL,
@@ -201,7 +176,7 @@ delete from flowchartuser
 GO
 
 -- CREAZIONE TABELLA menu --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[menu]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[menu]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[menu] (
 idmenu int NOT NULL,
@@ -264,7 +239,7 @@ GO
 
 -- GENERAZIONE DATI PER customgroup --
 
-IF exists(SELECT * FROM [customgroup] WHERE idcustomgroup = 'ORGANIGRAMMA')
+IF exists(SELECT * FROM [DBO].[customgroup] WHERE idcustomgroup = 'ORGANIGRAMMA')
 UPDATE [customgroup] SET ct = {ts '2007-06-22 14:21:39.013'},cu = 'sa',description = 'Organigramma',groupname = 'Organigramma',lastmodtimestamp = {ts '2007-06-22 14:21:39.013'},lastmoduser = 'sa',lt = {ts '2007-06-22 14:21:39.013'},lu = '''sa''' WHERE idcustomgroup = 'ORGANIGRAMMA'
 ELSE
 INSERT INTO [customgroup] (idcustomgroup,ct,cu,description,groupname,lastmodtimestamp,lastmoduser,lt,lu) VALUES ('ORGANIGRAMMA',{ts '2007-06-22 14:21:39.013'},'sa','Organigramma','Organigramma',{ts '2007-06-22 14:21:39.013'},'sa',{ts '2007-06-22 14:21:39.013'},'''sa''')
@@ -299,7 +274,7 @@ GO
 
 -- FINE GENERAZIONE SCRIPT --
 -- CREAZIONE TABELLA userenvironment --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[userenvironment]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[userenvironment]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[userenvironment] (
 idcustomuser varchar(50) NOT NULL,
@@ -316,7 +291,7 @@ variablename
 END
 GO
 -- CREAZIONE TABELLA flowchartrestrictedfunction --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[flowchartrestrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[flowchartrestrictedfunction]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[flowchartrestrictedfunction] (
 idflowchart varchar(34) NOT NULL,
@@ -351,12 +326,12 @@ GO
 
 
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[compute_environment]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [compute_environment]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[compute_environment]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[compute_environment]
 GO
 
 
-CREATE  PROCEDURE [compute_environment]
+CREATE  PROCEDURE [DBO].[compute_environment]
 (
 	@ayear int,
 	@idcustomuser varchar(50),
@@ -496,11 +471,11 @@ INSERT  #tab_allowform EXEC compute_allowform @ayear,@idcustomuser,@idflowchart,
 END
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[compute_allowform]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [compute_allowform]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[compute_allowform]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[compute_allowform]
 GO
 
-CREATE PROCEDURE [compute_allowform]
+CREATE PROCEDURE [DBO].[compute_allowform]
 (
 	@ayear int,
 	@iduser varchar(10),
@@ -547,11 +522,11 @@ GO
 
 
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[compute_notable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [compute_notable]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[compute_notable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[compute_notable]
 GO
 
-CREATE PROCEDURE compute_notable
+CREATE PROCEDURE [DBO].compute_notable
 (
 	@ayear int,
 	@iduser varchar(10),
@@ -591,7 +566,7 @@ END
 GO
 
 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customer]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[customer]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].customer(
 	idcustomer int NOT NULL,
@@ -609,11 +584,11 @@ GO
 delete from customer
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[ctemp]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure ctemp
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[ctemp]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].ctemp
 GO
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 DECLARE @i int;
 SET @i = 1;
@@ -637,11 +612,11 @@ GO
 
 
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 
 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[seller]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[seller]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
 CREATE TABLE [DBO].seller(
@@ -666,7 +641,7 @@ GO
 
 
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 declare @i int
 set @i=1;
@@ -692,11 +667,11 @@ GO
 exec ctemp;
 
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 
 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[sellerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[sellerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
 
@@ -717,7 +692,7 @@ delete from sellerkind
 GO
 
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 declare @i int
 
@@ -739,11 +714,11 @@ GO
 exec ctemp;
 
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 
 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[customerkind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 
 CREATE TABLE [DBO].customerkind(
@@ -762,7 +737,7 @@ delete from customerkind
 GO
 
 
-CREATE PROCEDURE ctemp AS
+CREATE PROCEDURE [DBO].ctemp AS
 BEGIN
 declare @i int
 
@@ -785,16 +760,16 @@ GO
 exec ctemp;
 GO
 
-DROP PROCEDURE  ctemp;
+DROP PROCEDURE  [DBO].ctemp;
 
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[testSP2]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure testSP2
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[testSP2]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].testSP2
 GO
 
 
-CREATE PROCEDURE testSP2 (@esercizio int,   @meseinizio int,  @mess varchar(200),   @defparam decimal(19,2)=2 ) AS
+CREATE PROCEDURE [DBO].testSP2 (@esercizio int,   @meseinizio int,  @mess varchar(200),   @defparam decimal(19,2)=2 ) AS
 BEGIN
          select 'aa' as colA, 'bb' as colB, 12 as colC , @esercizio as original_esercizio,
          replace(@mess,'a','z') as newmess,   @defparam*2 as newparam;
@@ -802,12 +777,12 @@ END
 GO
 
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[testSP1]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure testSP1
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[testSP1]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].testSP1
 GO
 
 
-CREATE PROCEDURE testSP1( @esercizio int, @meseinizio int, @mesefine int OUTPUT,	@mess varchar(200), 	@defparam decimal(19,2)=2 ) AS
+CREATE PROCEDURE [DBO].testSP1( @esercizio int, @meseinizio int, @mesefine int OUTPUT,	@mess varchar(200), 	@defparam decimal(19,2)=2 ) AS
 BEGIN
 	set @mesefine= 12;
 	select 'a' as colA, 'b' as colB, 12 as colC , @esercizio as original_esercizio,
@@ -818,11 +793,11 @@ END
 GO
 
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[testSP3]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure testSP3
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[testSP3]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].testSP3
 GO
 
-CREATE  PROCEDURE  testSP3 (@esercizio int=0) AS
+CREATE  PROCEDURE  [DBO].testSP3 (@esercizio int=0) AS
 BEGIN
 	select top 100 * from customer ;
 	select top 100 * from seller ;
@@ -849,34 +824,15 @@ VALUES ('AZZURRO','210001','1',null,null,null,null,null,{ts '2020-12-21 11:00:20
 {ts '2020-12-21 11:00:20.257'},'assistenza',null,null,null,null,null,{d '2000-01-01'},null,'Prova Classificazione')
 GO
 
---[DBO]--
--- CREAZIONE TABELLA web_listredir --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[dbo].[web_listredir]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-BEGIN
-CREATE TABLE [dbo].[web_listredir] (
-tablename varchar(50) NOT NULL,
-listtype varchar(50) NOT NULL,
-ct datetime NULL,
-cu varchar(64) NULL,
-lt datetime NULL,
-lu varchar(64) NULL,
-newlisttype varchar(50) NOT NULL,
-newtablename varchar(50) NOT NULL,
- CONSTRAINT xpkweb_listredir PRIMARY KEY (tablename,
-listtype
-)
-)
-END
-GO
 
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[compute_roles]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [compute_roles]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[compute_roles]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[compute_roles]
 GO
 --setuser 'amm'
 --select * from flowchartuser
 --compute_roles '01-01-2020','bianco'
-CREATE PROCEDURE compute_roles
+CREATE PROCEDURE [DBO].compute_roles
 (
 	@currdate date,
 	@idcustomuser varchar(50)
@@ -904,7 +860,7 @@ SET ANSI_NULLS ON
 GO
 
 -- CREAZIONE TABELLA audit --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[audit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[audit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[audit] (
 idaudit varchar(30) NOT NULL,
@@ -924,7 +880,7 @@ delete from audit
 GO
 
 -- CREAZIONE TABELLA auditparameter --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[auditparameter]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[auditparameter]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[auditparameter] (
 tablename varchar(150) NOT NULL,
@@ -947,7 +903,7 @@ delete from auditparameter
 GO
 
 -- CREAZIONE TABELLA auditcheck --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[auditcheck]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[auditcheck]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[auditcheck] (
 tablename varchar(150) NOT NULL,
@@ -1226,11 +1182,11 @@ VALUES
 GO
 
 -- CREAZIONE VISTA auditcheckview
-IF EXISTS(select * from sysobjects where id = object_id(N'[auditcheckview]') and OBJECTPROPERTY(id, N'IsView') = 1)
-DROP VIEW [auditcheckview]
+IF EXISTS(select * from sysobjects where id = object_id(N'[DBO].[auditcheckview]') and OBJECTPROPERTY(id, N'IsView') = 1)
+DROP VIEW [DBO].[auditcheckview]
 GO
 
-CREATE VIEW auditcheckview
+CREATE VIEW [DBO].auditcheckview
 	(
 	tablename,
 	opkind,
@@ -1268,11 +1224,11 @@ CREATE VIEW auditcheckview
 GO
 
 --- SP per regola 'TEST001'
-if exists (select * from dbo.sysobjects where id = object_id(N'[check_customuser_u_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [check_customuser_u_post]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_customuser_u_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[check_customuser_u_post]
 GO
 
-CREATE PROCEDURE check_customuser_u_post
+CREATE PROCEDURE [DBO].check_customuser_u_post
 (
     @res SMALLINT OUT,
     @new_idcustomuser varchar(50) = ''
@@ -4327,6 +4283,11 @@ INSERT INTO [web_listredir] (listtype,tablename,ct,cu,lt,lu,newlisttype,newtable
 INSERT INTO [web_listredir] (listtype,tablename,ct,cu,lt,lu,newlisttype,newtablename) VALUES ('user','registry',null,null,null,null,'user','registryuserview')
 GO
 
+insert into web_listredir(tablename,listtype, newtablename, newlisttype, ct,cu,lt,lu)
+    values('mandate','on_view','mandateview','default',getdate(),'nino',getdate(),'nino')
+
+GO
+
 
 --[DBO]--
 -- CREAZIONE TABELLA registrykind --
@@ -4644,11 +4605,11 @@ GO
 
 -- FINE GENERAZIONE SCRIPT --
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[check_registryreference_u_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [check_registryreference_u_post]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_u_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[check_registryreference_u_post]
 GO
 
-CREATE PROCEDURE [check_registryreference_u_post] @res SMALLINT OUT, @NEW_idregistryreference int=null, @NEW_idreg int=null, @NEW_flagdefault char(1)=null, @NEW_email varchar(200)=null, @NEW_userweb varchar(40)=null AS
+CREATE PROCEDURE [DBO].[check_registryreference_u_post] @res SMALLINT OUT, @NEW_idregistryreference int=null, @NEW_idreg int=null, @NEW_flagdefault char(1)=null, @NEW_email varchar(200)=null, @NEW_userweb varchar(40)=null AS
 BEGIN
  SET NOCOUNT ON
 -- LAST MODIFIED: 09/01/2023  15:08
@@ -4709,12 +4670,12 @@ END
 
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[check_registryreference_i_pre]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [check_registryreference_i_pre]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_i_pre]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[check_registryreference_i_pre]
 GO
 
 
-CREATE PROCEDURE [check_registryreference_i_pre] @res SMALLINT OUT, @NEW_idregistryreference int=null, @NEW_idreg int=null AS
+CREATE PROCEDURE [DBO].[check_registryreference_i_pre] @res SMALLINT OUT, @NEW_idregistryreference int=null, @NEW_idreg int=null AS
 BEGIN
  SET NOCOUNT ON
 -- LAST MODIFIED: 09/01/2023  15:08
@@ -4739,11 +4700,11 @@ END
 
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[check_registryreference_u_pre]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [check_registryreference_u_pre]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_u_pre]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[check_registryreference_u_pre]
 GO
 
-CREATE PROCEDURE [check_registryreference_u_pre] @res SMALLINT OUT AS
+CREATE PROCEDURE [DBO].[check_registryreference_u_pre] @res SMALLINT OUT AS
 BEGIN
  SET NOCOUNT ON
 -- LAST MODIFIED: 09/01/2023  15:08
@@ -4761,12 +4722,12 @@ GO
 
 
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[check_registryreference_i_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [check_registryreference_i_post]
+if exists (select * from dbo.sysobjects where id = object_id(N'[DBO].[check_registryreference_i_post]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [DBO].[check_registryreference_i_post]
 GO
 
 
-CREATE PROCEDURE [check_registryreference_i_post] @res SMALLINT OUT, @NEW_idregistryreference int=null,
+CREATE PROCEDURE [DBO].[check_registryreference_i_post] @res SMALLINT OUT, @NEW_idregistryreference int=null,
  @NEW_idreg int=null, @NEW_flagdefault char(1)=null, @NEW_email varchar(200)=null, @NEW_userweb varchar(40)=null AS
 BEGIN
  SET NOCOUNT ON
@@ -5055,7 +5016,7 @@ GO
 -- FINE GENERAZIONE SCRIPT --
 
 -- CREAZIONE TABELLA upb --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[upb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[upb]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[upb] (
 idupb varchar(36) NOT NULL,
@@ -5118,7 +5079,7 @@ GO
 
 
 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[fin]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[fin]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
 CREATE TABLE [DBO].[fin] (
 idfin int NOT NULL,
@@ -5198,9 +5159,9 @@ insert into [menuweb] (idmenuweb, edittype, idmenuwebparent, sort,tablename, lab
 
 GO
 
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[mandate]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[mandate]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [mandate] (
+CREATE TABLE [DBO].[mandate] (
 idmankind varchar(20) NOT NULL,
 yman smallint NOT NULL,
 nman int NOT NULL,
@@ -5226,9 +5187,9 @@ GO
 
 
 -- CREAZIONE TABELLA mandatekind --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[mandatekind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[mandatekind]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [mandatekind] (
+CREATE TABLE [DBO].[mandatekind] (
 idmankind varchar(20) NOT NULL,
 active char(1) NULL,
 description varchar(150) NOT NULL,
@@ -5284,12 +5245,12 @@ GO
 
 
 -- CREAZIONE VISTA mandateview
-IF EXISTS(select * from sysobjects where id = object_id(N'[mandateview]') and OBJECTPROPERTY(id, N'IsView') = 1)
-DROP VIEW [mandateview]
+IF EXISTS(select * from sysobjects where id = object_id(N'[DBO].[mandateview]') and OBJECTPROPERTY(id, N'IsView') = 1)
+DROP VIEW [DBO].[mandateview]
 GO
 
 
-CREATE VIEW mandateview
+CREATE VIEW [DBO].mandateview
 	AS SELECT
 	mandate.* ,
 	mandatekind.description as mandatekind
@@ -5301,9 +5262,9 @@ GO
 
 
 -- CREAZIONE TABELLA mandatedetail --
-IF NOT EXISTS(select * from sysobjects where id = object_id(N'[mandatedetail]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+IF NOT EXISTS(select * from sysobjects where id = object_id(N'[DBO].[mandatedetail]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-CREATE TABLE [mandatedetail] (
+CREATE TABLE [DBO].[mandatedetail] (
 idmankind varchar(20) NOT NULL,
 yman smallint NOT NULL,
 nman int NOT NULL,

@@ -25,6 +25,17 @@
         constructor: Localization,
         addSupportedLanguage(lanName, Dict){
             Localization.prototype.supportedLanguages[lanName]=Dict;
+
+            let systemDict = appMeta.localResource.getDictionary(lanName);
+
+            if (systemDict===undefined){
+                console.log("System language resources wasn't found for language "+lanName);
+                return;
+            }
+
+            let dict= _.extend(systemDict, Dict);
+            appMeta.localResource.registerDictionary(lanName, dict);
+
             if (Localization.prototype.defaultLanguage===lanName){
                 this.setLanguage(lanName);
             }
@@ -48,9 +59,7 @@
             this.currLanguage = this.getAppLanguage(lang);
 
             //dictionary dal framework, ossia da LocalResourceXX
-            this.dictionary = _.extend({},
-                        appMeta.localResource.dictionary,
-                        Localization.prototype.supportedLanguages[this.currLanguage]);
+            this.dictionary = appMeta.localResource.getDictionary(this.currLanguage);
 
             // creo il nome del prototipo a runtime senza cablare la switch così se aggiungo una lingua
             // viene automaticamente presa
@@ -79,16 +88,12 @@
                     }
 
                 }
-                else {
-                    this.dictionary = this.getDictionary(lang);
-                }
+
 
             } catch (e){
                 console.log(e);
                 console.log("Language " + lang + " doesn't exist! Go to i18n folder and create the file localResource " + lang + ".js");
             }
-
-
 
         },
 
@@ -285,7 +290,7 @@
                         "_" + rowitem.editType.toLowerCase();
                 let valueTranslated = dict[lockey];
                 rowitem.label = valueTranslated || rowitem.label ;
-            })
+            });
         },
 
         /**

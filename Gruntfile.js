@@ -559,7 +559,7 @@ module.exports = function (grunt) {
             if (res) grunt.log.writeln(c.green('Output:\n') + res);
             if (code) grunt.log.writeln(c.yellow('Exit Code:\n') + code);
             //if (buffer) grunt.log.writeln(c.blue('Buffer: ') + buffer);
-        })
+        });
     }
 
     //grunt.registerTask('serverStart', ['shell:startNode']);
@@ -639,18 +639,18 @@ module.exports = function (grunt) {
         let existed = false;
         return DA.open().then(()=>{
             return DA.selectCount(
-                    {tableName:"flowchart",
-                     filter:$dq.eq("idflowchart",idflowchart)
-                    });
+                {tableName:"flowchart",
+                    filter:$dq.eq("idflowchart",idflowchart)
+                });
         }).then(
             (n)=>{
                 if (n>0)return Deferred().resolve(true);
                 return DA.doSingleInsert("flowchart",
                     ["idflowchart","ayear","codeflowchart","ct","cu","lt","lu",
-                            "nlevel","paridflowchart","printingorder","title"],
-                         [idflowchart,2023,'00'+idflowchart,new Date(),'setup',new Date(),'setup',
-                             1,'0',idflowchart, 'node']
-                        );
+                        "nlevel","paridflowchart","printingorder","title"],
+                    [idflowchart,new Date().getFullYear(),'00'+idflowchart,new Date(),'setup',new Date(),'setup',
+                        1,'0',idflowchart, 'node']
+                );
             }
         ).then( ()=> {
             return DA.readSingleValue({tableName:"customuser",
@@ -700,7 +700,7 @@ module.exports = function (grunt) {
                     filter: $dq.eq("idreg",1)
                 });
         }).then ((idregistryreference)=>{
-            grunt.log.writeln("idregistryreference in table registryreference was "+idregistryreference);
+            //grunt.log.writeln("idregistryreference in table registryreference was "+idregistryreference);
             //Ed infine associamo una password all'utente
             let salt = Password.generateSalt();
             let now = new Date();
@@ -711,12 +711,12 @@ module.exports = function (grunt) {
             }
             return DA.doSingleInsert("registryreference",
                 ["idreg","idregistryreference", "referencename", "ct","cu","lt","lu",
-                            "userweb","passwordweb","saltweb","iterweb"],
+                    "userweb","passwordweb","saltweb","iterweb"],
                 [1,idregistryreference, userName, new Date(),'setup',new Date(),'setup',
-                            userName,
-                                hash.toString("hex").toUpperCase(),
-                                salt.toString("hex").toUpperCase(),
-                                iterations
+                    userName,
+                    hash.toString("hex").toUpperCase(),
+                    salt.toString("hex").toUpperCase(),
+                    iterations
                 ]);
         }).fail(err=>grunt.log.writeln(err));
     }
