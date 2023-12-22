@@ -19,7 +19,7 @@ env:
 before_install:
   - npm install -g grunt-cli
 install:
-  - wget https://download.visualstudio.microsoft.com/download/pr/4f11b8a7-3996-4c91-9ab2-2b1b7b3cd70a/6cb7f3f9c7022b94f62c997a28d6e404/dotnet-sdk-5.0.301-linux-x64.tar.gz -O dotnet.tar.gz
+ - wget https://download.visualstudio.microsoft.com/download/pr/ILe3eqRCs0xdF-rVJD9CtIb74hzxtn4woNcxU8XM-GU/7bf8a9fcca4187b3f8134e7c59c8002a/dotnet-sdk-5.0.301-linux-x64.tar.gz -O dotnet.tar.gz
   - mkdir -p $HOME/dotnet
   - tar zxf dotnet.tar.gz -C $HOME/dotnet
   - export DOTNET_ROOT=$HOME/dotnet
