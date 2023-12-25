@@ -1,4 +1,10 @@
-language: node_js
+image:
+  - Visual Studio 2015
+  - Ubuntu2004
+
+language:
+  - node_js
+  - csharp
 
 os:
   - linux
@@ -19,12 +25,22 @@ env:
 before_install:
   - npm install -g grunt-cli
 install:
- - wget https://download.visualstudio.microsoft.com/download/pr/1cac4d08-3025-4c00-972d-5c7ea446d1d7/a83bc5cbedf8b90495802ccfedaeb2e6/dotnet-sdk-6.0.417-linux-x64.tar.gz
- - mkdir -p $HOME/dotnet
- - tar zxf dotnet.tar.gz -C $HOME/dotnet
- - export DOTNET_ROOT=$HOME/dotnet
- - export PATH=$PATH:$HOME/dotnet
- - npm install -q
+- cmd: powershell Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs) x64
+- sh: sudo apt-get -qq update
+- sh: sudo apt-get -y -qq install build-essential libgconf-2-4 python libglib2.0-dev
+- sh: nvm install $nodejs
+- node -p "[process.version,process.arch].join(' ')"
+- dotnet --version
+- npm install -q
+- cmd: npm i -q  xunit-viewer >nul
+- sh: npm i xunit-viewer --silent &> /dev/null
+
+- wget https://download.visualstudio.microsoft.com/download/pr/1cac4d08-3025-4c00-972d-5c7ea446d1d7/a83bc5cbedf8b90495802ccfedaeb2e6/dotnet-sdk-6.0.417-linux-x64.tar.gz
+- mkdir -p $HOME/dotnet
+- tar zxf dotnet.tar.gz -C $HOME/dotnet
+- export DOTNET_ROOT=$HOME/dotnet
+- export PATH=$PATH:$HOME/dotnet
+- npm install -q
 
 before_script:
   - mysql -e "create database IF NOT EXISTS test;" -uroot
